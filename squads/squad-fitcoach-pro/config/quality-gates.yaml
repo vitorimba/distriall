@@ -1,0 +1,108 @@
+# Quality Gates — FitCoach Squad
+# Extraído e expandido do config.yaml principal
+# Updated: 2026-03-11
+
+quality_gates:
+  FC-QG-001:
+    name: "Client Intake Gate"
+    trigger: "Tier 0 → Tier 1/3"
+    blocking: true
+    checklist: "checklists/intake-checklist.md"
+    criteria:
+      - "Anamnese completa (6 blocos preenchidos)"
+      - "Risk flags identificados e documentados"
+      - "Classificação do cliente definida (3 eixos)"
+      - "Clearance médica quando necessário"
+      - "Routing recommendation gerado"
+    veto_if:
+      - "Cliente com condição médica sem liberação documentada"
+      - "Dados incompletos (menos de 4 dos 6 blocos preenchidos)"
+      - "Red flag Nível 3 ativo sem resolução"
+    agents_responsible:
+      - intake-analyst
+    next_gate: FC-QG-002
+
+  FC-QG-002:
+    name: "Diagnosis Complete Gate"
+    trigger: "Tier 0 Output → Tier 1 ou 3"
+    blocking: true
+    criteria:
+      - "Diagnóstico documentado (fitness ou negócio)"
+      - "Métricas baseline registradas"
+      - "Objetivos SMART definidos ou recalibrados"
+      - "Tier de destino confirmado"
+    veto_if:
+      - "Perfil do cliente incompleto sem justificativa"
+      - "Objetivos conflitantes sem resolução"
+    agents_responsible:
+      - fitcoach-chief
+    next_gate: FC-QG-003
+
+  FC-QG-003:
+    name: "Protocol Review Gate"
+    trigger: "Draft Protocol → Output Delivery"
+    blocking: true
+    checklist: "checklists/protocol-quality-checklist.md"
+    criteria:
+      - "Protocolo segue frameworks do mind correspondente"
+      - "Volume dentro dos landmarks (MEV-MRV)"
+      - "Progressão definida e lógica"
+      - "Deload planejado no mesociclo"
+      - "Sem contraindicações para o perfil do cliente"
+      - "Macros alinhados com objetivo e TDEE"
+    veto_if:
+      - "Volume acima do MRV sem protocolo supervisionado"
+      - "Déficit calórico abaixo dos limites seguros (< 1200kcal mulheres / < 1500kcal homens)"
+      - "Exercício prescrito com lesão ativa sem adaptação documentada"
+    agents_responsible:
+      - training-builder
+      - diet-builder
+    next_gate: FC-QG-005
+
+  FC-QG-004:
+    name: "Business Strategy Review Gate"
+    trigger: "Analysis → Recommendation"
+    blocking: true
+    checklist: "checklists/business-health-checklist.md"
+    criteria:
+      - "ARM calculado com dados reais"
+      - "Churn rate identificado ou estimado"
+      - "LTV calculado"
+      - "Value Equation aplicada"
+      - "ROI projetado para recomendações"
+      - "Viabilidade operacional validada"
+      - "Métricas de sucesso definidas"
+    veto_if:
+      - "Recomendação de crescimento sem Business Health Score calculado"
+      - "Estratégia com margem negativa por cliente (unit economics)"
+      - "Investimento em tráfego pago sem oferta validada organicamente"
+    agents_responsible:
+      - business-diagnostician
+    next_gate: FC-QG-005
+
+  FC-QG-005:
+    name: "Output Quality Gate"
+    trigger: "Execution → Delivery"
+    blocking: false
+    severity: WARNING
+    criteria:
+      - "Output segue template do agente"
+      - "Personalizado para o cliente específico (nome, dados, contexto)"
+      - "Linguagem adequada ao público-alvo (coach ou aluno)"
+      - "Dados validados e consistentes"
+      - "Referências a frameworks incluídas quando relevante"
+      - "Sem informações conflitantes entre tiers"
+      - "Nenhum red flag de segurança não resolvido"
+    veto_if:
+      - "Output genérico sem personalização"
+      - "Informação contraditória com dados do student_profile"
+    agents_responsible:
+      - fitcoach-chief
+    next_gate: null
+
+gate_enforcement:
+  strict_mode: true
+  allow_override: false
+  override_requires: "fitcoach-chief explicit approval"
+  log_gate_decisions: true
+  notify_coach_on_block: true

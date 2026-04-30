@@ -1,0 +1,49 @@
+# Heuristics Catalog
+#
+# Purpose: Catalog of practical heuristics (if-then rules) extracted during
+# framework extraction workflows. These are distilled, actionable rules
+# derived from mental models, RPD patterns, and expert knowledge.
+#
+# Usage: Referenced during framework extraction to avoid duplicates,
+# cross-reference existing heuristics, and build cumulative knowledge.
+#
+# Format: Each heuristic is a practical "if X then Y" rule with domain context.
+#
+# Maintained by: knowledge-architect / tacit-extractor agents
+# Last updated: TODO — fill on first real update
+
+heuristics:
+  # TODO: Populate with real heuristics extracted from content distillation sessions.
+  # Each entry follows the structure below.
+
+  - name: "TODO_heuristic_name"
+    domain: "TODO"  # e.g., marketing | sales | leadership | product | operations | content | growth
+    rule: "TODO — the if-then rule in plain language"
+    trigger: "TODO — the condition that activates this heuristic"
+    action: "TODO — what to do when the trigger fires"
+    expected_outcome: "TODO — what should happen if applied correctly"
+    when_to_use:
+      - "TODO — context 1 where this heuristic applies"
+    limitations:
+      - "TODO — known boundary or exception"
+    source_framework: "TODO — name of the framework this was derived from"
+    source_content: "TODO — video/article title"
+    confidence: 0  # 0-10
+    validated: false  # true after real-world confirmation
+
+  # EXAMPLE (remove or replace with real data):
+  # - name: "engagement_decay_rule"
+  #   domain: "content"
+  #   rule: "If post engagement drops >30% week-over-week, change the hook format before changing the topic"
+  #   trigger: "Engagement metrics drop >30% WoW"
+  #   action: "Test 3 new hook styles on the same topic before pivoting topic"
+  #   expected_outcome: "Isolate whether the problem is presentation or subject matter"
+  #   when_to_use:
+  #     - "Content series showing declining performance"
+  #     - "A/B testing content strategy"
+  #   limitations:
+  #     - "Does not apply to seasonal content or one-off viral posts"
+  #   source_framework: "content_decay_analysis"
+  #   source_content: "Content Strategy Masterclass — Channel X"
+  #   confidence: 6
+  #   validated: false

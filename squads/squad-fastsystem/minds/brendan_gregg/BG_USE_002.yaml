@@ -1,0 +1,36 @@
+id: BG_USE_002
+name: "Flame Graph Analysis"
+mind: brendan_gregg
+source: "Systems Performance, 2nd Edition (2020) — Chapter 6"
+domain: cpu-profiling
+description: >
+  Use flame graphs para identificar hot paths no codigo antes
+  de otimizar. Flame graphs mostram visualmente onde o CPU
+  gasta tempo, permitindo focar otimizacao nas areas de maior
+  impacto.
+
+applies_when:
+  - "CPU e o bottleneck identificado pelo USE method"
+  - "Aplicacao lenta sem causa obvia"
+  - "Validacao de otimizacao de CPU"
+
+action: >
+  Gerar flame graph usando perf + stackcollapse + flamegraph.pl.
+  Analisar:
+  1. Frames largos = hot paths (mais tempo de CPU)
+  2. Plateau patterns = possivel lock contention
+  3. Comparar flame graphs antes/depois de otimizacao
+
+commands:
+  record: "perf record -g -p <PID> -- sleep 30"
+  generate: "perf script | stackcollapse-perf.pl | flamegraph.pl > flamegraph.svg"
+  diff: "difffolded.pl before.folded after.folded | flamegraph.pl > diff.svg"
+
+anti_pattern: >
+  Otimizar codigo baseado em intuicao sem flame graph.
+  Desenvolvedores frequentemente otimizam funcoes que acham
+  lentas, quando o flame graph mostra que o bottleneck real
+  esta em outro lugar.
+
+severity: high
+confidence: 0.90

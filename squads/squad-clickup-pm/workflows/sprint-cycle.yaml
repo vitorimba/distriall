@@ -1,0 +1,61 @@
+name: sprint-cycle
+description: "Ciclo completo de sprint — 8 fases do pipeline de gestão"
+version: 1.0.0
+trigger: manual
+command: "*sprint-cycle"
+
+phases:
+  - name: "1. Backlog"
+    agent: sprint-planner
+    task: planejar.md
+    description: "Organizar e priorizar backlog"
+    output: "Backlog priorizado com items estimados"
+
+  - name: "2. Planning"
+    agent: meeting-master
+    task: planning.md
+    description: "Facilitar sprint planning ceremony"
+    dependencies: ["1. Backlog"]
+    output: "Sprint goal, committed items, tasks criadas"
+
+  - name: "3. Estruturar"
+    agent: task-architect
+    task: quebrar.md
+    description: "Quebrar stories em tasks/subtasks/checklists"
+    dependencies: ["2. Planning"]
+    output: "Tasks atômicas com AC e DoD"
+
+  - name: "4. Executar"
+    agent: status-reporter
+    task: dashboard.md
+    description: "Time trabalha, reporter tracka progresso"
+    dependencies: ["3. Estruturar"]
+    output: "Dashboard atualizado, blockers visíveis"
+
+  - name: "5. Automatizar"
+    agent: workflow-builder
+    task: automacao.md
+    description: "Configurar automações do sprint"
+    dependencies: ["3. Estruturar"]
+    output: "Automações ativas (status flow, notificações)"
+
+  - name: "6. Review"
+    agent: meeting-master
+    task: review.md
+    description: "Facilitar sprint review/demo"
+    dependencies: ["4. Executar"]
+    output: "Items aceitos, feedback coletado"
+
+  - name: "7. Retro"
+    agent: meeting-master
+    task: retro.md
+    description: "Facilitar retrospectiva"
+    dependencies: ["6. Review"]
+    output: "Action items com dono e prazo"
+
+  - name: "8. Report"
+    agent: status-reporter
+    task: report-sprint.md
+    description: "Gerar relatório final da sprint"
+    dependencies: ["6. Review"]
+    output: "Report com velocity, commitment rate, highlights"

@@ -1,0 +1,279 @@
+# Macro Formulas — FitCoach Squad
+# Formulas de calculo nutricional e referencias
+# Version: 1.0.0 | Updated: 2026-03-13
+
+# ===========================================================================
+# BMR FORMULAS (Basal Metabolic Rate)
+# ===========================================================================
+
+bmr_formulas:
+
+  mifflin_st_jeor:
+    name: "Mifflin-St Jeor (1990)"
+    status: "Gold standard — mais precisa para populacao geral"
+    when_to_use: "Default para maioria dos clientes. Quando nao tem dado de BF%."
+    formulas:
+      male: "10 * peso_kg + 6.25 * altura_cm - 5 * idade - 5"
+      female: "10 * peso_kg + 6.25 * altura_cm - 5 * idade - 161"
+    accuracy: "±10% na maioria dos individuos"
+    source: "Mifflin MD et al. Am J Clin Nutr. 1990;51(2):241-247"
+
+  harris_benedict:
+    name: "Harris-Benedict Revisada (Roza & Shizgal, 1984)"
+    status: "Classica — usada historicamente, tendencia a superestimar"
+    when_to_use: "Referencia cruzada. Clientes mais velhos ou com BMI >30."
+    formulas:
+      male: "88.362 + 13.397 * peso_kg + 4.799 * altura_cm - 5.677 * idade"
+      female: "447.593 + 9.247 * peso_kg + 3.098 * altura_cm - 4.330 * idade"
+    accuracy: "±14% — tende a superestimar em ~5% vs Mifflin"
+    source: "Roza AM, Shizgal HM. Am J Clin Nutr. 1984;40(1):168-182"
+
+  katch_mcardle:
+    name: "Katch-McArdle (1996)"
+    status: "Preferida quando BF% e conhecido — nao usa sexo/idade"
+    when_to_use: "Clientes com BF% medido (DEXA, plicometria confiavel, bioimpedancia calibrada)."
+    formula: "370 + 21.6 * massa_magra_kg"
+    massa_magra: "peso_kg * (1 - body_fat_decimal)"
+    accuracy: "±8% — mais precisa com BF% acurado"
+    source: "McArdle WD et al. Exercise Physiology. 1996"
+
+  cunningham:
+    name: "Cunningham (1991)"
+    status: "Variante de Katch-McArdle — melhor para atletas"
+    when_to_use: "Atletas com massa muscular acima da media."
+    formula: "500 + 22 * massa_magra_kg"
+    source: "Cunningham JJ. Am J Clin Nutr. 1991;54(6):963-969"
+
+# ===========================================================================
+# TDEE MULTIPLIERS (Total Daily Energy Expenditure)
+# ===========================================================================
+
+tdee_multipliers:
+  description: "TDEE = BMR * Activity Multiplier"
+  source: "Adaptado de Harris-Benedict activity factors + ajustes modernos"
+
+  levels:
+    - level: sedentary
+      multiplier: 1.2
+      description: "Trabalho de escritório, sem exercício programado"
+      example: "Programador que trabalha de casa, sem treino"
+
+    - level: lightly_active
+      multiplier: 1.375
+      description: "Exercício leve 1-3x/semana ou trabalho com caminhada"
+      example: "Office worker que treina 2-3x/semana leve"
+
+    - level: moderately_active
+      multiplier: 1.55
+      description: "Exercício moderado 3-5x/semana"
+      example: "Treina musculação 4x/semana + caminhada diária"
+
+    - level: very_active
+      multiplier: 1.725
+      description: "Exercício intenso 6-7x/semana ou trabalho físico + treino"
+      example: "Treina 5-6x/semana com cardio adicional"
+
+    - level: extremely_active
+      multiplier: 1.9
+      description: "Atleta profissional ou treino 2x/dia"
+      example: "Atleta em prep, 2 sessões/dia + cardio"
+
+  notes:
+    - "Multiplicadores sao estimativas. Ajustar com base em resposta real (peso/semana)."
+    - "NEAT (Non-Exercise Activity Thermogenesis) varia enormemente entre individuos."
+    - "Considerar TEF (Thermic Effect of Food): ~10% do TDEE total."
+    - "Para precision: usar app de tracking + ajustar a cada 2 semanas com base no peso."
+
+# ===========================================================================
+# PROTEIN TARGETS
+# ===========================================================================
+
+protein_targets:
+  unit: "g/kg de peso corporal total (ou massa magra quando especificado)"
+
+  by_goal:
+    cutting:
+      range: "2.0 - 2.8"
+      optimal: "2.3 - 2.5"
+      rationale: "Preservar massa magra em deficit. Quanto maior o deficit, mais proteina."
+      source: "Helms ER et al. JISSN. 2014;11:20"
+      notes:
+        - "Atletas magros (<12% BF): usar 2.5-2.8 g/kg"
+        - "Acima de 25% BF: calcular sobre massa magra estimada"
+
+    bulking:
+      range: "1.6 - 2.2"
+      optimal: "1.8 - 2.0"
+      rationale: "Superavit já protege massa magra. Excesso vira substrato energético."
+      source: "Morton RW et al. Br J Sports Med. 2018;52(6):376-384"
+      notes:
+        - "Iniciantes podem usar range inferior (1.6-1.8)"
+        - "Avançados com hipertrofia como prioridade: 2.0-2.2"
+
+    maintenance:
+      range: "1.6 - 2.0"
+      optimal: "1.8"
+      rationale: "Manter composição corporal. Nem tanto quanto cut, nem tão pouco quanto bulk."
+      notes:
+        - "Aumentar para 2.0+ se atividade fisica muito alta"
+
+    recomp:
+      range: "2.0 - 2.5"
+      optimal: "2.2"
+      rationale: "Recomposição requer proteína alta para síntese muscular em deficit leve."
+      notes:
+        - "Funciona melhor em iniciantes, retornando de layoff, ou com sobrepeso"
+        - "Deficit deve ser pequeno (-10 a -15% do TDEE)"
+
+    competition_prep:
+      range: "2.5 - 3.1"
+      optimal: "2.7"
+      rationale: "Deficit extremo + BF% baixo = máxima necessidade proteica."
+      source: "Helms ER et al. JISSN. 2014;11:20; Hector AJ & Phillips SM. 2018"
+      notes:
+        - "Últimas semanas de prep: pode chegar a 3.0+ g/kg"
+        - "Monitorar função renal com creatinina e TFG em exames"
+
+# ===========================================================================
+# CARB & FAT DISTRIBUTION
+# ===========================================================================
+
+carb_fat_distribution:
+  description: "Após definir proteína, distribuir calorias restantes entre carb e fat"
+
+  strategies:
+    high_carb:
+      name: "High Carb / Low Fat"
+      carb_range: "55-65% das calorias restantes (pós-proteína)"
+      fat_range: "15-20% do total calórico"
+      fat_minimum: "0.5 g/kg — nunca abaixo (saúde hormonal)"
+      when_to_use:
+        - "Atletas com alto volume de treino"
+        - "Bulking agressivo"
+        - "Performance como prioridade"
+      rationale: "Carbs alimentam treino de alta intensidade (glicólise). Preservam glicogênio."
+
+    moderate:
+      name: "Moderate / Balanced"
+      carb_range: "40-50% das calorias restantes"
+      fat_range: "25-30% do total calórico"
+      when_to_use:
+        - "Maioria dos clientes (default)"
+        - "Manutenção e recomposição"
+        - "Clientes que se sentem bem com variedade"
+      rationale: "Equilíbrio entre performance, saciedade e flexibilidade alimentar."
+
+    low_carb:
+      name: "Low Carb / Higher Fat"
+      carb_range: "20-30% das calorias restantes"
+      fat_range: "30-40% do total calórico"
+      when_to_use:
+        - "Clientes com resistência à insulina"
+        - "Sedentários em cutting"
+        - "Preferência pessoal por gorduras"
+      rationale: "Menor demanda por carbs quando volume de treino é baixo."
+
+    keto:
+      name: "Cetogênica (especializada)"
+      carb_range: "<50g/dia (ou <10% das calorias)"
+      fat_range: "60-75% do total calórico"
+      when_to_use:
+        - "Casos clínicos específicos (epilepsia, neuro)"
+        - "Clientes com forte preferência e compliance"
+      rationale: "NÃO recomendada para hipertrofia. Performance anaeróbica prejudicada."
+      warning: "Desempenho em treino de musculação é significativamente comprometido."
+
+# ===========================================================================
+# CALORIC DEFICIT / SURPLUS RANGES
+# ===========================================================================
+
+caloric_adjustments:
+
+  deficit:
+    conservative:
+      range_pct: "-10 a -15%"
+      range_kcal: "-250 a -375 kcal/dia"
+      weight_loss: "0.25-0.5 kg/semana"
+      when_to_use: "Recomposição, atletas magros, cutting longo"
+      muscle_loss_risk: "Mínimo"
+
+    moderate:
+      range_pct: "-15 a -25%"
+      range_kcal: "-375 a -625 kcal/dia"
+      weight_loss: "0.5-0.75 kg/semana"
+      when_to_use: "Default para cutting. Maioria dos clientes."
+      muscle_loss_risk: "Baixo se proteina alta + treino pesado"
+
+    aggressive:
+      range_pct: "-25 a -35%"
+      range_kcal: "-625 a -875 kcal/dia"
+      weight_loss: "0.75-1.0 kg/semana"
+      when_to_use: "Clientes com alto BF% (>25%). Períodos curtos (4-6 semanas)."
+      muscle_loss_risk: "Moderado — monitorar força e recovery"
+
+    very_aggressive:
+      range_pct: "-35 a -50%"
+      range_kcal: "-875 a -1250 kcal/dia"
+      weight_loss: "1.0-1.5 kg/semana"
+      when_to_use: "PSMF ou mini-cuts (1-3 semanas). Supervisão constante."
+      muscle_loss_risk: "Alto — proteina 2.5+ g/kg obrigatória"
+      warning: "Nunca mais que 3 semanas. Monitorar humor, sono, libido."
+
+  surplus:
+    lean_bulk:
+      range_pct: "+5 a +15%"
+      range_kcal: "+125 a +375 kcal/dia"
+      weight_gain: "0.25-0.5 kg/semana"
+      when_to_use: "Default para bulking. Minimiza ganho de gordura."
+      fat_gain_ratio: "~50-60% músculo / 40-50% gordura"
+
+    moderate_bulk:
+      range_pct: "+15 a +25%"
+      range_kcal: "+375 a +625 kcal/dia"
+      weight_gain: "0.5-0.75 kg/semana"
+      when_to_use: "Iniciantes com bom recovery. Hard gainers."
+      fat_gain_ratio: "~40-50% músculo / 50-60% gordura"
+
+    aggressive_bulk:
+      range_pct: "+25 a +40%"
+      range_kcal: "+625 a +1000 kcal/dia"
+      weight_gain: "0.75-1.0+ kg/semana"
+      when_to_use: "Dreamer bulk. Raramente recomendado."
+      fat_gain_ratio: "~30% músculo / 70% gordura"
+      warning: "Ganho de gordura desproporcional. Melhor usar lean bulk por mais tempo."
+
+# ===========================================================================
+# PRACTICAL GUIDELINES
+# ===========================================================================
+
+practical_guidelines:
+  meal_frequency:
+    optimal_range: "3-6 refeições/dia"
+    protein_per_meal: "30-50g por refeição para maximizar MPS"
+    source: "Schoenfeld BJ & Aragon AA. JISSN. 2018;15:10"
+    note: "Distribuição uniforme de proteína ao longo do dia > concentrar em 1-2 refeições"
+
+  peri_workout:
+    pre_workout:
+      timing: "1-3 horas antes"
+      carbs: "0.5-1.0 g/kg"
+      protein: "20-40g"
+    intra_workout:
+      when: "Sessões >90 min ou treino em jejum"
+      carbs: "30-60g/hora (maltodextrina, dextrose)"
+      eaas: "10-15g se treino em jejum"
+    post_workout:
+      timing: "Dentro de 2 horas (janela anabólica é mais larga que se pensava)"
+      protein: "30-50g (whey ideal para absorção rápida)"
+      carbs: "0.5-1.0 g/kg (repor glicogênio)"
+
+  hydration:
+    baseline: "35-40 ml/kg de peso corporal"
+    training_add: "+500-1000 ml por hora de treino"
+    creatine_add: "+500 ml/dia se suplementando creatina"
+    cutting_note: "Manter hidratação mesmo em cutting — não reduzir água para 'secar'"
+
+  fiber:
+    target: "25-40g/dia"
+    minimum: "14g por 1000 kcal"
+    note: "Crucial para saciedade em cutting. Cuidado com excesso em bulking (dificulta comer enough)."

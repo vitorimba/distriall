@@ -1,0 +1,521 @@
+##############################################################################
+# Gamification Case Studies — 22 Real-World Examples
+# Squad: squad-gamification
+# Reference for agent decisions and mechanic recommendations
+##############################################################################
+
+case_studies:
+
+  # ========================================================================
+  # CONSUMER APPS
+  # ========================================================================
+  - id: CS-001
+    name: "Duolingo"
+    domain: education
+    company: "Duolingo Inc."
+    users: "500M+ downloads"
+    year_launched: 2012
+
+    mechanics_used:
+      - "XP and levels"
+      - "Daily streaks (with streak freeze)"
+      - "Leaderboards (league-based, weekly reset)"
+      - "Hearts/lives system"
+      - "Achievements and badges"
+      - "Spaced repetition"
+      - "Narrative (characters, stories)"
+      - "Notifications (Duo the owl)"
+      - "Gems (virtual currency)"
+      - "Progress bars per skill"
+
+    frameworks_applied:
+      primary: "Hooked Model"
+      secondary: ["Octalysis", "Spaced Repetition (Ebbinghaus)"]
+
+    key_metrics:
+      dau: "~35M"
+      d7_retention: "~45%"
+      daily_time_spent: "~10 minutes"
+      streak_users: "~25% of DAU maintain 7+ day streaks"
+
+    success_factors:
+      - "Streak mechanic drives daily returns (most powerful single mechanic)"
+      - "League leaderboards create weekly competitive cycles"
+      - "Tiny Habits approach: sessions are 5-10 minutes"
+      - "Duo the owl mascot creates emotional connection"
+      - "Free-to-play with premium removes friction"
+
+    lessons_learned:
+      - "Streak anxiety is real — streak freeze was essential addition"
+      - "League system improved engagement 17% (reported)"
+      - "Notification personality matters (Duo's personality drives opens)"
+      - "Too much gamification can distract from learning (hearts system controversial)"
+
+    anti_patterns_encountered:
+      - "Hearts system criticized as punishment mechanic (loss aversion)"
+      - "Streak anxiety causing unhealthy engagement patterns"
+
+  - id: CS-002
+    name: "Nike+ Run Club"
+    domain: fitness
+    company: "Nike"
+    users: "100M+ downloads"
+    year_launched: 2006
+
+    mechanics_used:
+      - "Distance/pace tracking with XP"
+      - "Achievement badges (milestone-based)"
+      - "Challenges (monthly, with friends)"
+      - "Leaderboards (friends only)"
+      - "Trophies for personal bests"
+      - "Guided runs (narrative coaching)"
+      - "Streaks (weekly activity)"
+      - "Social sharing"
+
+    frameworks_applied:
+      primary: "Octalysis (CD2, CD5)"
+      secondary: ["4 Keys to Fun (Hard Fun + People Fun)"]
+
+    success_factors:
+      - "Personal bests create self-competition (most motivating for runners)"
+      - "Friend challenges drive social accountability"
+      - "Monthly distance challenges create short-term goals"
+      - "Guided runs add narrative and coaching (Easy Fun)"
+
+    lessons_learned:
+      - "Fitness gamification works best with self-improvement focus, not comparison"
+      - "Audio coaching during activity adds meaning (not just post-activity)"
+      - "Integration with hardware (Apple Watch) deepens engagement"
+
+  - id: CS-003
+    name: "Starbucks Rewards"
+    domain: loyalty
+    company: "Starbucks"
+    users: "30M+ active members (US)"
+    year_launched: 2009
+
+    mechanics_used:
+      - "Stars (points per purchase)"
+      - "Tier levels (Green → Gold)"
+      - "Free reward at thresholds"
+      - "Bonus star challenges"
+      - "Birthday rewards"
+      - "Double star days (variable events)"
+      - "Progress bars to next reward"
+      - "Personalized offers"
+
+    frameworks_applied:
+      primary: "Hooked Model"
+      secondary: ["Octalysis (CD4, CD6)"]
+
+    key_metrics:
+      revenue_share: "~55% of US revenue from loyalty members"
+      visit_frequency: "Loyalty members visit 3x more than non-members"
+
+    success_factors:
+      - "Spendable points create real value (not just decoration)"
+      - "Low friction: integrated into existing purchase behavior"
+      - "Personalized challenges increase relevance"
+      - "Seasonal events create excitement spikes"
+
+    lessons_learned:
+      - "Points that buy real things are infinitely more motivating than decorative points"
+      - "Tier system must have meaningful perks per tier"
+      - "Personalization dramatically increases redemption rates"
+
+  - id: CS-004
+    name: "Fitbit"
+    domain: fitness
+    company: "Fitbit (Google)"
+    users: "120M+ devices sold"
+    year_launched: 2009
+
+    mechanics_used:
+      - "Daily step goal (customizable)"
+      - "Hourly movement reminders"
+      - "Badges (lifetime distance, daily steps)"
+      - "Friend leaderboards (weekly step)"
+      - "Challenges (weekend warrior, workweek hustle)"
+      - "Adventures (virtual trails)"
+      - "Streaks (daily goal)"
+      - "Sleep/health scores"
+
+    success_factors:
+      - "10,000 step goal became cultural phenomenon (clear, memorable target)"
+      - "Hourly reminders (prompts) drive incremental movement"
+      - "Social challenges with friends create accountability"
+      - "Virtual adventures add narrative to walking"
+
+    lessons_learned:
+      - "Simple, clear goals (10K steps) outperform complex metrics"
+      - "Wearable + gamification = always-on engagement"
+      - "Passive tracking (no user action required) removes friction"
+
+  - id: CS-005
+    name: "Waze"
+    domain: navigation
+    company: "Waze (Google)"
+    users: "150M+ active users"
+    year_launched: 2008
+
+    mechanics_used:
+      - "Points for driving and reporting"
+      - "Avatars with progression (Baby → Royalty)"
+      - "Leaderboard (local area)"
+      - "Community reports (social contribution)"
+      - "Road candy (collectible items on map)"
+      - "Map editing levels (community trust)"
+
+    frameworks_applied:
+      primary: "Octalysis (CD1, CD5)"
+
+    success_factors:
+      - "Epic Meaning: 'You're helping all drivers' creates community purpose"
+      - "Low-effort contribution (one tap to report)"
+      - "Growing avatar creates visible progression while driving"
+      - "Road candy adds Easy Fun to routine commutes"
+
+    lessons_learned:
+      - "User-generated content gamification creates massive value"
+      - "Community purpose (CD1) is more sustainable than points (CD2)"
+      - "Passive gamification during existing activity has zero friction"
+
+  # ========================================================================
+  # ENTERPRISE
+  # ========================================================================
+  - id: CS-010
+    name: "Salesforce Trailhead"
+    domain: enterprise_training
+    company: "Salesforce"
+    users: "5M+ trailblazers"
+    year_launched: 2014
+
+    mechanics_used:
+      - "Badges (Trailhead badges)"
+      - "Points (Trailhead points)"
+      - "Trails (structured learning paths)"
+      - "Ranks (Scout → Ranger)"
+      - "Superbadges (advanced certifications)"
+      - "Community challenges"
+      - "Leaderboards (community)"
+      - "Trailmixes (custom learning paths)"
+
+    frameworks_applied:
+      primary: "Gamification of Learning (Kapp)"
+      secondary: ["Octalysis (CD2, CD4)"]
+
+    key_metrics:
+      badge_earning_rate: "Millions of badges earned annually"
+      certification_correlation: "Trailhead users 2x more likely to earn Salesforce certification"
+
+    success_factors:
+      - "Badges have real career value (recognized by employers)"
+      - "Structured trails prevent overwhelm"
+      - "Hands-on challenges (not just reading) verify competence"
+      - "Community creates belonging and peer learning"
+
+    lessons_learned:
+      - "Learning badges with real-world recognition are 10x more motivating"
+      - "Structured paths reduce choice paralysis"
+      - "Hands-on validation (not just quizzes) builds genuine skill"
+
+  - id: CS-011
+    name: "Microsoft Rewards"
+    domain: enterprise_ecosystem
+    company: "Microsoft"
+    users: "20M+ members"
+    year_launched: 2016
+
+    mechanics_used:
+      - "Points for Bing searches, Xbox purchases, quizzes"
+      - "Daily sets (complete 3 activities for bonus)"
+      - "Streaks (daily activity)"
+      - "Levels (Level 1 → Level 2)"
+      - "Redeemable rewards (gift cards, donations)"
+      - "Punch cards (themed collections)"
+      - "Leaderboards (friends)"
+
+    success_factors:
+      - "Points convert to real money (gift cards)"
+      - "Low effort daily activities (search = earn)"
+      - "Cross-product engagement (Edge, Bing, Xbox)"
+
+  - id: CS-012
+    name: "Deloitte Leadership Academy"
+    domain: enterprise_training
+    company: "Deloitte"
+    users: "50K+ executives"
+    year_launched: 2012
+
+    mechanics_used:
+      - "Badges and certifications"
+      - "Leaderboards (peer comparison)"
+      - "Mission-based learning paths"
+      - "Status levels"
+      - "Social sharing of achievements"
+
+    key_metrics:
+      return_rate: "37% increase in return visitors"
+      completion_rate: "47% increase in course completions"
+      time_on_site: "Average time increased significantly"
+
+    success_factors:
+      - "Executive audience responds to status and peer comparison"
+      - "Badges tied to real professional development"
+      - "Short, focused learning modules (respect executive time)"
+
+    lessons_learned:
+      - "Even C-suite executives engage with well-designed gamification"
+      - "Status mechanics work well with achievement-oriented professionals"
+      - "Must be high quality — executives reject anything that feels trivial"
+
+  - id: CS-013
+    name: "SAP Community Network"
+    domain: enterprise_community
+    company: "SAP"
+    users: "3M+ members"
+    year_launched: 2003
+
+    mechanics_used:
+      - "Reputation points for contributions"
+      - "Badges (topic expert, contributor)"
+      - "Leaderboards (monthly, yearly)"
+      - "Missions (contribute to specific topics)"
+      - "Blog post metrics (views, likes)"
+      - "Community recognition events"
+
+    success_factors:
+      - "Knowledge sharing creates real business value"
+      - "Expert recognition drives continued contribution"
+      - "Q&A gamification reduces support costs"
+
+    lessons_learned:
+      - "Quality gates essential (prevent gaming with low-quality content)"
+      - "Expert recognition must be genuine (peer-validated)"
+      - "Community reputation becomes career asset"
+
+  # ========================================================================
+  # HEALTH & WELLNESS
+  # ========================================================================
+  - id: CS-015
+    name: "Zombies, Run!"
+    domain: fitness
+    company: "Six to Start"
+    users: "10M+ downloads"
+    year_launched: 2012
+
+    mechanics_used:
+      - "Narrative missions (audio story during runs)"
+      - "Item collection (supplies for base)"
+      - "Base building (resource management)"
+      - "Zombie chases (interval training trigger)"
+      - "Season progression (episodic content)"
+      - "Community challenges"
+
+    frameworks_applied:
+      primary: "4 Keys to Fun (Easy Fun + Hard Fun)"
+      secondary: ["Octalysis (CD1, CD7)"]
+
+    success_factors:
+      - "Story transforms exercise from chore to adventure"
+      - "Zombie chases create natural interval training"
+      - "Episodic content creates return motivation ('what happens next?')"
+      - "Works with existing running behavior (no special equipment)"
+
+    lessons_learned:
+      - "Narrative gamification can transform hated activities"
+      - "Audio-only allows engagement during physical activity"
+      - "Seasonal content model keeps long-term users engaged"
+
+  # ========================================================================
+  # EDUCATION
+  # ========================================================================
+  - id: CS-017
+    name: "Khan Academy"
+    domain: education
+    company: "Khan Academy"
+    users: "120M+ registered users"
+    year_launched: 2008
+
+    mechanics_used:
+      - "Energy points for watching/completing"
+      - "Badges (meteorite → sun → black hole → challenge patches)"
+      - "Mastery progress per topic (0% → 100%)"
+      - "Streaks (daily activity)"
+      - "Avatars (customizable with earned items)"
+      - "Skill trees (math map)"
+
+    success_factors:
+      - "Mastery-based progression aligns with learning science"
+      - "Visual skill map shows knowledge topology"
+      - "Low-pressure environment (no grades, self-paced)"
+      - "Avatar customization appeals to younger audience"
+
+    lessons_learned:
+      - "Mastery-based is superior to time-based for education"
+      - "Visual knowledge maps create clear learning paths"
+      - "Gamification must not distract from learning (Sal Khan's principle)"
+
+  - id: CS-018
+    name: "Kahoot!"
+    domain: education
+    company: "Kahoot!"
+    users: "9B+ cumulative participants"
+    year_launched: 2013
+
+    mechanics_used:
+      - "Real-time quiz competition"
+      - "Points for speed and accuracy"
+      - "Leaderboard (per session)"
+      - "Music and countdown timers"
+      - "Streaks (consecutive correct answers)"
+      - "Team mode"
+      - "Podium celebration (top 3)"
+
+    success_factors:
+      - "Social learning through friendly competition"
+      - "Music/audio creates energy and excitement"
+      - "Instant feedback on every question"
+      - "Session-based (no long-term commitment required)"
+
+    lessons_learned:
+      - "Short competitive bursts can enhance learning"
+      - "Audio/visual atmosphere matters as much as mechanics"
+      - "Works because it's opt-in and time-limited"
+      - "Speed-based scoring can penalize thoughtful learners (design consideration)"
+
+  - id: CS-019
+    name: "Classcraft"
+    domain: education
+    company: "Classcraft"
+    users: "Used in 160+ countries"
+    year_launched: 2013
+
+    mechanics_used:
+      - "RPG character classes (Warrior, Mage, Healer)"
+      - "HP/AP/XP system"
+      - "Team-based (parties)"
+      - "Powers (real-world privileges)"
+      - "Boss battles (quizzes)"
+      - "Random events"
+      - "Narrative quests"
+
+    success_factors:
+      - "Full RPG overlay on classroom experience"
+      - "Team dynamics create positive peer pressure"
+      - "Powers translate to real-world classroom privileges"
+      - "Teachers have full control over rules and rewards"
+
+    lessons_learned:
+      - "Deep gamification can transform classroom dynamics"
+      - "Teacher buy-in and customization is essential"
+      - "Team mechanics reduce individual competition anxiety"
+
+  # ========================================================================
+  # PRODUCTIVITY & TOOLS
+  # ========================================================================
+  - id: CS-020
+    name: "Habitica"
+    domain: productivity
+    company: "Habitica"
+    users: "4M+ users"
+    year_launched: 2013
+
+    mechanics_used:
+      - "RPG avatar with health and XP"
+      - "Habits, Dailies, and To-Dos"
+      - "Equipment and pets (rewards)"
+      - "Party system (team accountability)"
+      - "Boss battles (group health)"
+      - "Challenges (community)"
+      - "Streaks with damage for missed dailies"
+
+    success_factors:
+      - "Full RPG system makes habit tracking fun"
+      - "Social accountability through party boss battles"
+      - "Customizable — users define their own habits"
+      - "Open source community adds continuous content"
+
+    lessons_learned:
+      - "Damage for missed habits can cause anxiety (provide rest mode)"
+      - "Pet/mount collection is surprisingly motivating"
+      - "Party system is the #1 retention driver"
+
+  - id: CS-021
+    name: "Stack Overflow"
+    domain: developer_community
+    company: "Stack Overflow (Prosus)"
+    users: "100M+ monthly visitors"
+    year_launched: 2008
+
+    mechanics_used:
+      - "Reputation points (upvotes, accepted answers)"
+      - "Badges (bronze, silver, gold)"
+      - "Privileges unlocked by reputation"
+      - "Tag badges (topic expertise)"
+      - "Bounty system (incentivize answers)"
+      - "Community moderation privileges"
+      - "User flair (displayed on other sites)"
+
+    success_factors:
+      - "Reputation has real career value"
+      - "Privilege unlocks create meaningful progression"
+      - "Community self-moderation through gamification"
+      - "Bounties create marketplace for knowledge"
+
+    lessons_learned:
+      - "Reputation-as-career-asset is the most powerful long-term motivator"
+      - "Self-moderation through gamification scales to millions"
+      - "Quality control is essential (downvotes, close votes)"
+      - "Unwelcoming environment for newcomers is a risk (addressed in 2018+)"
+
+  - id: CS-022
+    name: "GitHub"
+    domain: developer_tools
+    company: "GitHub (Microsoft)"
+    users: "100M+ developers"
+    year_launched: 2008
+
+    mechanics_used:
+      - "Contribution graph (green squares)"
+      - "Stars (social proof for repos)"
+      - "Followers/following"
+      - "Profile achievements (Arctic Vault, Mars 2020)"
+      - "Streaks (contribution consistency)"
+      - "Organization membership (belonging)"
+      - "Sponsors (support contributors)"
+
+    success_factors:
+      - "Contribution graph became iconic visual of developer activity"
+      - "Stars serve as social proof and discovery mechanism"
+      - "Profile becomes developer portfolio"
+      - "Open source contribution as Epic Meaning (CD1)"
+
+    lessons_learned:
+      - "Passive gamification (contribution graph) can become cultural icon"
+      - "Social proof (stars) drives both quality and discoverability"
+      - "Achievement-without-gamification-feel is ideal for professional audiences"
+      - "Contribution pressure can be negative (green square anxiety)"
+
+##############################################################################
+# Pattern Summary
+##############################################################################
+patterns:
+  most_effective_mechanics:
+    - mechanic: "Streaks"
+      evidence: "Duolingo, Snapchat, Fitbit all cite streaks as #1 retention driver"
+    - mechanic: "Spendable Points"
+      evidence: "Starbucks, Microsoft Rewards — real value > decorative value"
+    - mechanic: "Career-Relevant Badges"
+      evidence: "Salesforce Trailhead, StackOverflow — real-world recognition"
+    - mechanic: "Social Accountability"
+      evidence: "Habitica parties, Fitbit challenges — group commitment"
+    - mechanic: "Narrative"
+      evidence: "Zombies Run!, Classcraft — transforms mundane activities"
+
+  most_common_failures:
+    - "Pointsification (meaningless PBL)"
+    - "Global leaderboards without segmentation"
+    - "Streak anxiety without safety nets"
+    - "Extrinsic-only motivation (no path to intrinsic)"
+    - "One-size-fits-all mechanics"

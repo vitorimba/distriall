@@ -1,0 +1,692 @@
+workflow:
+  id: "FC-WF-002"
+  name: "Business Scaling"
+  version: "1.0.0"
+  squad: "fitcoach"
+  type: "business-lifecycle"
+  pattern_prefix: "FC"
+  updated_at: "2026-03-11"
+  description: >-
+    Escalar o negocio do coach de consultoria individual para plataforma
+    completa de coaching fitness. 8 fases sequenciais que cobrem desde o
+    diagnostico inicial ate a multiplicacao do sistema, passando por design
+    de oferta, funil de vendas, automacao, gamificacao, e-commerce e metricas.
+    Usa frameworks de Alex Hormozi e Chris Cooper.
+  trigger: "Coach com pelo menos 5 clientes ativos quer escalar alem do modelo 1-on-1 puro"
+
+  metadata:
+    elicit: true
+    confirmation_required: true
+    estimated_duration: "12-24 weeks (full implementation)"
+    total_phases: 8
+    tasks_involved: 4
+    sequential: true
+
+  entry_conditions:
+    - "Coach com pelo menos 5 clientes ativos"
+    - "Coach quer escalar alem do modelo 1-on-1 puro"
+    - "Coach disposto a investir tempo em construcao de sistemas"
+
+  exit_conditions:
+    - "Todas as 8 fases implementadas"
+    - "Metricas de saude do negocio estabilizadas"
+    - "Sistema rodando de forma autonoma com supervisao minima"
+
+  agents_involved:
+    - agent: "business-diagnostician"
+      role: "Diagnostico de negocio, offer design, metricas e scaling plan"
+    - agent: "automation-engineer"
+      role: "Implementacao de automacoes de lead nurturing, onboarding, tracking e retencao"
+    - agent: "ecommerce-manager"
+      role: "Setup de loja, catalogo de produtos e recomendacao personalizada"
+    - agent: "content-repurposer"
+      role: "Estrategia de conteudo para topo do funil"
+    - agent: "gamification-designer"
+      role: "Sistema de gamificacao completo (Octalysis Framework)"
+    - agent: "retention-engineer"
+      role: "Hook Model e estrategias de retencao"
+
+  advisors:
+    - name: "gym-scaler"
+      persona: "Alex Hormozi"
+      scope: "Value Equation, Grand Slam Offer, scaling strategies"
+    - name: "gym-operator"
+      persona: "Chris Cooper"
+      scope: "Metricas operacionais, EHR, 4/9ths Model, delegacao"
+    - name: "gamification-designer"
+      persona: "Yu-kai Chou"
+      scope: "Octalysis Framework e core drives"
+    - name: "retention-engineer"
+      persona: "Nir Eyal"
+      scope: "Hook Model e formacao de habitos"
+
+  phases:
+    # =====================================================
+    # PHASE 1: DIAGNOSTIC — Diagnostico do Negocio
+    # =====================================================
+    - id: "phase-1"
+      name: "DIAGNOSTIC — Diagnostico do Negocio"
+      agent: "business-diagnostician"
+      advisors: ["gym-scaler (Hormozi)", "gym-operator (Cooper)"]
+      task: "tasks/business-diagnostic.md (FC-TASK-006)"
+      duration: "Week 1-2"
+      inputs:
+        - "Dados do modelo de negocio atual do coach"
+        - "Financeiro: receita, despesas, margem"
+        - "Base de clientes: quantidade, retencao, lifetime"
+        - "Marketing: canais, leads, conversao"
+        - "Operacoes: horas, ferramentas, equipe"
+        - "Satisfacao: NPS, depoimentos, indicacoes"
+      steps:
+        - id: "1.1"
+          name: "Coleta de Dados do Negocio"
+          description: >-
+            Mapear modelo de negocio (1on1, grupo, online, hibrido), financeiro,
+            clientes, marketing, operacoes e satisfacao.
+        - id: "1.2"
+          name: "Calcular Metricas Core"
+          metrics:
+            - "ARM (Average Revenue per Member)"
+            - "LEG (Length of Engagement)"
+            - "Churn Rate mensal"
+            - "LTV (Lifetime Value)"
+            - "CAC (Customer Acquisition Cost)"
+            - "LTV/CAC Ratio"
+            - "EHR (Effective Hourly Rate)"
+            - "Margem de lucro"
+        - id: "1.3"
+          name: "Analise Hormozi"
+          description: "Value Equation aplicada ao servico. Analise da oferta atual vs Grand Slam Offer."
+        - id: "1.4"
+          name: "Analise Cooper"
+          description: "Metricas operacionais (EHR, time allocation), 4/9ths Model, retencao e experiencia do cliente."
+        - id: "1.5"
+          name: "Business Health Score"
+          description: "Score composto (0-100) em 6 dimensoes. Identificacao de areas criticas."
+      outputs:
+        - "diagnostic_report — Report completo"
+        - "business_health_score — Score com breakdown"
+        - "strategy_recommendations — Recomendacoes priorizadas"
+        - "action_plan — Plano de acao 90 dias"
+      checkpoint:
+        id: "CP-1"
+        name: "Diagnostic Complete Gate"
+        type: "blocking"
+        criteria:
+          - "Metricas core calculadas (ARM, LEG, churn, LTV, CAC)"
+          - "Value Equation aplicada"
+          - "Business Health Score calculado"
+          - "Top 3-5 recomendacoes priorizadas"
+          - "Coach revisou e concordou com diagnostico"
+        veto_conditions:
+          - "Coach nao forneceu dados financeiros suficientes"
+          - "Coach nao concordou com diagnostico"
+        on_pass: "Proceed to Phase 2"
+        on_fail: "Collect missing data, re-analyze"
+      next: "phase-2"
+
+    # =====================================================
+    # PHASE 2: OFFER DESIGN — Design da Oferta Irresistivel
+    # =====================================================
+    - id: "phase-2"
+      name: "OFFER DESIGN — Design da Oferta Irresistivel"
+      agent: "business-diagnostician"
+      advisor: "gym-scaler (Alex Hormozi)"
+      task: "tasks/create-offer.md (FC-TASK-009)"
+      duration: "Week 2-4"
+      inputs:
+        - "diagnostic_report"
+        - "business_health_score"
+        - "strategy_recommendations"
+      steps:
+        - id: "2.1"
+          name: "Redesign Value Equation"
+          executor: "business-diagnostician"
+          advisor: "gym-scaler"
+          duration: "30-45 min"
+          description: >-
+            Aplicar os 4 componentes da Value Equation (Hormozi):
+            Maximizar Dream Outcome, Maximizar Perceived Likelihood,
+            Minimizar Time Delay, Minimizar Effort & Sacrifice.
+          components:
+            dream_outcome:
+              goal: "Definir transformacao especifica e desejavel, criar naming poderoso, prova social"
+              target_score: "8-10"
+            perceived_likelihood:
+              goal: "Garantia de resultado, cases de sucesso, metodologia clara, credenciais"
+              target_score: "8-10"
+            time_delay:
+              goal: "Resultados visiveis em 2-4 semanas, quick wins, dashboard em tempo real"
+              target_score: "8-10"
+            effort_sacrifice:
+              goal: "Sistema done-for-you, substituicoes faceis, treinos eficientes, suporte continuo"
+              target_score: "8-10"
+        - id: "2.2"
+          name: "Grand Slam Offer Stack"
+          executor: "business-diagnostician"
+          advisor: "gym-scaler"
+          duration: "20-30 min"
+          description: >-
+            Construir oferta completa com core offer + bonus stack (6 bonus),
+            pricing strategy com ancoragem, escassez/urgencia real e garantia.
+          offer_structure:
+            core:
+              - "Plano de treino personalizado com periodizacao"
+              - "Plano nutricional com substituicoes"
+              - "Acompanhamento semanal com report detalhado"
+              - "Ajustes baseados em dados (AI-assisted)"
+            bonus_stack:
+              - name: "Guia de Meal Prep"
+                value: "R$97"
+              - name: "Acesso ao grupo exclusivo de comunidade"
+                value: "R$197"
+              - name: "Sessao de posing/avaliacao mensal"
+                value: "R$147"
+              - name: "Ebook de receitas fitness"
+                value: "R$47"
+              - name: "Consultoria de suplementacao"
+                value: "R$97"
+              - name: "Acesso ao sistema de gamificacao"
+                value: "R$97"
+            scarcity: "Vagas limitadas (real): Aceito apenas X novos alunos/mes"
+            urgency: "Bonus disponivel apenas nos primeiros 7 dias"
+            guarantee: "Garantia de satisfacao 30 dias ou garantia de resultado 90 dias"
+        - id: "2.3"
+          name: "Design de Tiers"
+          executor: "business-diagnostician"
+          advisor: "gym-scaler"
+          duration: "15-20 min"
+          tiers:
+            - name: "Silver"
+              subtitle: "Protocolo Guiado"
+              price_range: "R$297-497/mes"
+              target_persona: "Iniciante, quer orientacao basica"
+              includes: "Plano treino+dieta, check-in quinzenal, grupo geral"
+              margin: "Alta (escala)"
+              capacity: "Ilimitado (mais automatizado)"
+            - name: "Gold"
+              subtitle: "Acompanhamento Completo"
+              price_range: "R$697-997/mes"
+              target_persona: "Intermediario, quer resultados reais"
+              includes: "Tudo do Silver + check-in semanal, ajustes IA, gamificacao"
+              margin: "Media"
+              capacity: "30-50 clientes"
+            - name: "Platinum"
+              subtitle: "Elite Coaching"
+              price_range: "R$1497-2997/mes"
+              target_persona: "Avancado/Elite, quer atencao total"
+              includes: "Tudo do Gold + call semanal, competition prep, prioridade"
+              margin: "Media-Alta (valor premium)"
+              capacity: "10-15 clientes"
+      outputs:
+        - "offer_design — Oferta completa redesenhada"
+        - "tier_design — 3 tiers com pricing"
+        - "guarantee_terms — Termos da garantia"
+      checkpoint:
+        id: "CP-2"
+        name: "Offer Design Complete Gate"
+        type: "blocking"
+        criteria:
+          - "Value Equation redesenhada com scores melhorados"
+          - "Grand Slam Offer montada com bonus stack"
+          - "Tiers de servico definidos com pricing"
+          - "Garantia definida"
+          - "Coach aprovou a oferta"
+        veto_conditions:
+          - "Coach nao aprovou pricing"
+          - "Tiers nao cobrem custos operacionais"
+        on_pass: "Proceed to Phase 3"
+        on_fail: "Iterate on offer design"
+      next: "phase-3"
+
+    # =====================================================
+    # PHASE 3: FUNNEL — Funil de Vendas
+    # =====================================================
+    - id: "phase-3"
+      name: "FUNNEL — Funil de Vendas"
+      agent: "business-diagnostician"
+      advisors: ["gym-scaler (Hormozi)", "gym-operator (Cooper)"]
+      execution_agent: "automation-engineer"
+      duration: "Week 4-6"
+      inputs:
+        - "offer_design"
+        - "tier_design"
+      funnel_stages:
+        - stage: "INSTAGRAM (Topo do funil)"
+          description: "Conteudo diario — Reels, Stories, Provas sociais"
+        - stage: "LANDING PAGE (Captura)"
+          description: "Oferta clara, VSL ou copy, CTA forte"
+        - stage: "ANAMNESE (Qualificacao)"
+          description: "Formulario qualificador, filtra leads serios"
+        - stage: "CONSULTORIA (Conversao)"
+          description: "Call/WhatsApp, diagnostico gratuito, apresentar oferta"
+        - stage: "ONBOARDING (Entrega)"
+          description: "Client intake, full client journey"
+      steps:
+        - id: "3.1"
+          name: "Estrategia de Conteudo"
+          executor: "content-repurposer"
+          advisor: "gym-scaler"
+          duration: "20-30 min"
+          content_pillars:
+            educational: "40%"
+            social_proof: "30%"
+            entertainment: "20%"
+            sales: "10%"
+          frequency:
+            stories_daily: "5-10"
+            reels_weekly: "3-5"
+            posts_weekly: "3-5"
+            lives_weekly: "0-1"
+        - id: "3.2"
+          name: "Landing Page Design"
+          executor: "automation-engineer"
+          advisor: "gym-scaler"
+          duration: "30-60 min"
+          sections:
+            - "Hero (headline + subheadline + CTA)"
+            - "Social proof (before/after, testimonials, numbers)"
+            - "Offer details (what you get + bonuses + pricing + guarantee)"
+            - "FAQ (10 perguntas mais comuns)"
+            - "Final CTA with urgency"
+        - id: "3.3"
+          name: "Anamnese de Qualificacao (Lead Magnet)"
+          description: >-
+            Formulario mais curto que intake completo. Campos: nome, objetivo,
+            nivel de experiencia, urgencia, orcamento. Automacao de follow-up
+            baseado nas respostas.
+        - id: "3.4"
+          name: "Script de Consultoria"
+          executor: "business-diagnostician"
+          advisor: "gym-scaler"
+          duration: "15-20 min"
+          script_phases:
+            rapport: "5 min — Conexao pessoal"
+            diagnostic: "10 min — Onde esta e onde quer chegar"
+            gap: "5 min — Mostrar o gap"
+            offer: "5 min — Apresentar solucao"
+            close: "5 min — Fechamento + objecoes"
+      outputs:
+        - "content_strategy — Estrategia de conteudo calendarizada"
+        - "landing_page_blueprint — Design da landing page"
+        - "qualification_form — Formulario de qualificacao"
+        - "sales_script — Script de consultoria de conversao"
+      checkpoint:
+        id: "CP-3"
+        name: "Funnel Complete Gate"
+        type: "blocking"
+        criteria:
+          - "Estrategia de conteudo definida e calendarizada"
+          - "Landing page criada ou blueprint definido"
+          - "Formulario de qualificacao configurado"
+          - "Script de consultoria documentado"
+          - "Automacoes de follow-up configuradas"
+        veto_conditions:
+          - "Nenhum canal de aquisicao definido"
+          - "Script de conversao nao documentado"
+        on_pass: "Proceed to Phase 4"
+        on_fail: "Complete missing funnel components"
+      next: "phase-4"
+
+    # =====================================================
+    # PHASE 4: AUTOMATION — Automacao Completa
+    # =====================================================
+    - id: "phase-4"
+      name: "AUTOMATION — Automacao Completa"
+      agent: "automation-engineer"
+      advisor: "gym-operator (Cooper)"
+      duration: "Week 6-9 (2-3 semanas)"
+      inputs:
+        - "content_strategy"
+        - "sales_script"
+        - "offer_design"
+      steps:
+        - id: "4.1"
+          name: "Automacao de Lead Nurturing"
+          description: "Email sequence pos-lead captura (5-7 emails em 14 dias), WhatsApp follow-up automatico, retargeting."
+          channels: ["email", "whatsapp"]
+          sequence_length: "5-7 touchpoints over 14 days"
+        - id: "4.2"
+          name: "Automacao de Onboarding"
+          description: "Welcome message, envio de anamnese, agendamento de call, envio de boas-vindas."
+          triggers: ["payment_confirmed", "form_submitted", "call_scheduled"]
+        - id: "4.3"
+          name: "Automacao de Acompanhamento"
+          description: "Check-in semanal automatizado, lembretes de treino/dieta, notificacoes de gamificacao, reports automaticos."
+          triggers: ["scheduled_checkin", "missed_checkin", "milestone"]
+        - id: "4.4"
+          name: "Automacao de Retencao"
+          description: "Deteccao de churn risk, mensagens de re-engajamento, celebracao de milestones, NPS periodico."
+          triggers: ["churn_risk_detected", "milestone_achieved", "nps_due"]
+        - id: "4.5"
+          name: "Automacao de Cobranca"
+          description: "Billing recorrente, dunning management, upgrade/downgrade, cancelamento com retencao."
+          platform: "Stripe/Hotmart/Kiwify"
+          features: ["recurring", "dunning", "upgrade_downgrade"]
+      outputs:
+        - "automation_setup — Todas as automacoes configuradas e testadas"
+      checkpoint:
+        id: "CP-4"
+        name: "Automation Complete Gate"
+        type: "blocking"
+        criteria:
+          - "Lead nurturing sequence ativa e testada"
+          - "Onboarding automatizado end-to-end"
+          - "Check-in semanal automatizado"
+          - "Retencao automatizada com deteccao de churn"
+          - "Billing recorrente configurado"
+        veto_conditions:
+          - "Automacoes nao testadas em ambiente de staging"
+          - "Billing nao processou transacao de teste"
+        on_pass: "Proceed to Phase 5"
+        on_fail: "Complete missing automations"
+      next: "phase-5"
+
+    # =====================================================
+    # PHASE 5: GAMIFICATION — Sistema de Engajamento
+    # =====================================================
+    - id: "phase-5"
+      name: "GAMIFICATION — Sistema de Engajamento"
+      agent: "gamification-designer (Yu-kai Chou)"
+      hooks_agent: "retention-engineer (Nir Eyal)"
+      task: "tasks/setup-gamification.md (FC-TASK-007)"
+      duration: "Week 9-12"
+      inputs:
+        - "automation_setup"
+        - "offer_design"
+      implementation:
+        - "Octalysis Framework com 8 core drives mapeados para fitness"
+        - "Hook Model com 4 loops diarios"
+        - "30+ achievements e badges"
+        - "Challenges individuais e em grupo"
+        - "Leaderboard semanal, mensal e all-time"
+        - "Streaks com freeze mechanics"
+      outputs:
+        - "gamification_system — Sistema completo de gamificacao"
+      checkpoint:
+        id: "CP-5"
+        name: "Gamification Complete Gate"
+        type: "blocking"
+        criteria:
+          - "Octalysis aplicado e core drives definidos"
+          - "Hook Model desenhado com 4 loops"
+          - "Achievement system com 30+ badges"
+          - "Challenges library com 12+ challenges"
+          - "Leaderboard configurado"
+          - "Gamification engine operacional"
+        veto_conditions:
+          - "Nenhum core drive mapeado"
+          - "Gamification engine nao operacional"
+        on_pass: "Proceed to Phase 6"
+        on_fail: "Complete gamification setup"
+      next: "phase-6"
+
+    # =====================================================
+    # PHASE 6: ECOMMERCE — Loja de Produtos
+    # =====================================================
+    - id: "phase-6"
+      name: "ECOMMERCE — Loja de Produtos"
+      agent: "ecommerce-manager"
+      advisor: "gym-scaler (Hormozi)"
+      duration: "Week 12-16"
+      inputs:
+        - "gamification_system"
+        - "offer_design"
+      steps:
+        - id: "6.1"
+          name: "Catalogo de Produtos"
+          executor: "ecommerce-manager"
+          duration: "1-2 semanas"
+          categories:
+            digital:
+              items: ["Ebooks de receitas fitness", "Guias de treino especificos", "Curso em video de posing", "Templates de planilha de treino", "Masterclass gravada"]
+              margin: "90-95%"
+              delivery: "automatica"
+            physical:
+              items: ["Suplementos (whey, creatina, pre-treino)", "Acessorios de treino", "Vestuario fitness", "Shakers e meal prep containers"]
+              margin: "20-50%"
+              delivery: "parceiro/dropship"
+          gamification_integration:
+            - "Descontos como recompensa de gamificacao"
+            - "Produtos exclusivos para niveis altos"
+            - "Challenge prizes com produtos da loja"
+        - id: "6.2"
+          name: "Recomendacao Personalizada"
+          description: >-
+            Sugerir suplementos baseados no plano nutricional.
+            Cross-sell baseados no objetivo do cliente.
+            Upsell de nivel de servico baseado em engajamento.
+        - id: "6.3"
+          name: "Setup da Loja"
+          platform: "Shopify, Hotmart, ou integracao propria"
+          payment: "PIX, cartao, boleto"
+          logistics: "Parceiro de fulfillment ou dropshipping"
+      outputs:
+        - "product_catalog — Catalogo completo"
+        - "ecommerce_store — Loja operacional"
+      checkpoint:
+        id: "CP-6"
+        name: "Ecommerce Complete Gate"
+        type: "advisory"
+        blocking: false  # Ecommerce e opcional para scaling
+        criteria:
+          - "Catalogo de produtos definido (min 5 produtos)"
+          - "Loja online operacional"
+          - "Pagamento e logistica configurados"
+          - "Integracao com gamificacao ativa"
+          - "Recomendacao personalizada funcionando"
+        veto_conditions:
+          - "Pagamento nao processou transacao de teste"
+        on_pass: "Proceed to Phase 7"
+        on_fail: "Complete ecommerce setup"
+      next: "phase-7"
+
+    # =====================================================
+    # PHASE 7: METRICS — Dashboard de Metricas
+    # =====================================================
+    - id: "phase-7"
+      name: "METRICS — Dashboard de Metricas"
+      agent: "business-diagnostician"
+      advisor: "gym-operator (Cooper)"
+      duration: "Week 16-18"
+      inputs:
+        - "All operational data from phases 1-6"
+      dashboard:
+        financial:
+          frequency: "daily/weekly"
+          metrics: ["MRR", "ARM", "total_revenue (recorrente + avulsa + ecommerce)", "margin", "cash_flow"]
+        clients:
+          frequency: "weekly"
+          metrics: ["active_clients", "new_clients", "churn_rate", "LEG", "LTV"]
+        acquisition:
+          frequency: "weekly"
+          metrics: ["leads", "conversion_rate", "CAC", "LTV/CAC", "lead_source"]
+        engagement:
+          frequency: "weekly"
+          metrics: ["checkin_rate", "gamification_rate", "streak_avg", "challenge_rate", "community_rate"]
+        results:
+          frequency: "monthly"
+          metrics: ["goal_achievement", "avg_progress", "nps", "referral_rate"]
+      alerts:
+        - condition: "Churn > 10%"
+          level: "red"
+        - condition: "LTV/CAC < 3"
+          level: "yellow"
+        - condition: "NPS < 30"
+          level: "red"
+        - condition: "MRR caindo 2+ meses"
+          level: "red"
+      outputs:
+        - "metrics_dashboard — Dashboard operacional com dados em tempo real"
+      checkpoint:
+        id: "CP-7"
+        name: "Metrics Complete Gate"
+        type: "blocking"
+        criteria:
+          - "Dashboard operacional com dados em tempo real"
+          - "Alertas automaticos configurados"
+          - "Coach sabe interpretar cada metrica"
+          - "Processo de review mensal definido"
+        veto_conditions:
+          - "Dashboard sem dados reais conectados"
+        on_pass: "Proceed to Phase 8"
+        on_fail: "Complete metrics setup"
+      next: "phase-8"
+
+    # =====================================================
+    # PHASE 8: SCALE — Multiplicar o Sistema
+    # =====================================================
+    - id: "phase-8"
+      name: "SCALE — Multiplicar o Sistema"
+      agent: "business-diagnostician"
+      advisors: ["gym-scaler (Hormozi)", "gym-operator (Cooper)"]
+      duration: "Week 18+ (ongoing)"
+      inputs:
+        - "metrics_dashboard"
+        - "All systems from phases 1-7"
+      strategies:
+        capacity_scaling:
+          method: "Tier mix optimization"
+          target: "100+ clients with 40h/week"
+          formula:
+            silver: "15min/semana per client (automatizado)"
+            gold: "30min/semana per client (check-in + ajustes)"
+            platinum: "2h/semana per client (calls + atencao especial)"
+          example_mix:
+            silver_100: "100 Silver x 15min = 25h/semana"
+            gold_30: "30 Gold x 30min = 15h/semana"
+            platinum_0: "0 Platinum = 0h/semana (coach delega)"
+            total: "40h/semana, 130 clientes, receita alta"
+        team_building:
+          model: "Cooper Delegation Model"
+          hiring_plan:
+            - role: "Assistente Virtual"
+              when: "30+ clientes"
+              cost: "R$1500-3000/mes"
+              roi: "Alto (libera tempo do coach)"
+            - role: "Nutricionista"
+              when: "50+ clientes"
+              cost: "R$3000-5000/mes"
+              roi: "Medio (permite aceitar mais clientes)"
+            - role: "Outro Coach"
+              when: "80+ clientes"
+              cost: "R$4000-8000/mes"
+              roi: "Alto (duplica capacidade)"
+            - role: "Social Media"
+              when: "Qualquer momento"
+              cost: "R$1500-3000/mes"
+              roi: "Variavel"
+            - role: "Customer Success"
+              when: "100+ clientes"
+              cost: "R$2500-4000/mes"
+              roi: "Alto (retencao)"
+        offer_multiplication:
+          - "Programas em grupo (8-12 semanas, preco menor, escala maior)"
+          - "Curso online (produto digital, escala infinita)"
+          - "Franquear metodo para outros coaches"
+          - "Comunidade paga (membership recorrente)"
+          - "Eventos presenciais (workshops, retiros fitness)"
+        channel_expansion:
+          - "YouTube como segundo canal de topo de funil"
+          - "Podcast para autoridade"
+          - "Parcerias com outros coaches (niches complementares)"
+          - "Ads pagos (Facebook, Instagram, Google) quando unit economics saudavel"
+      outputs:
+        - "scaling_plan — Plano completo de escalamento"
+      checkpoint:
+        id: "CP-8"
+        name: "Scaling Health Check"
+        type: "advisory"
+        frequency: "quarterly"
+        criteria:
+          - "Revenue growing month-over-month"
+          - "EHR increasing or stable"
+          - "Client satisfaction maintained (NPS > 50)"
+          - "Coach hours not increasing proportionally to revenue"
+          - "Team performing well (if hired)"
+        veto_conditions:
+          - "EHR declining for 2+ consecutive quarters"
+          - "NPS below 30"
+        on_healthy: "Continue scaling"
+        on_plateau: "Review and optimize specific phase"
+        on_decline: "Emergency diagnostic — return to Phase 1"
+
+  # =====================================================
+  # QUALITY GATES
+  # =====================================================
+  quality_gates:
+    - id: "QG-001"
+      name: "Diagnostic to Offer Design"
+      transition: "phase-1 -> phase-2"
+      criteria:
+        - "Core metrics calculated and coach agrees with diagnostic"
+    - id: "QG-002"
+      name: "Offer to Funnel"
+      transition: "phase-2 -> phase-3"
+      criteria:
+        - "Offer stack and tiers approved by coach"
+    - id: "QG-003"
+      name: "Funnel to Automation"
+      transition: "phase-3 -> phase-4"
+      criteria:
+        - "Content strategy, landing page and sales script ready"
+    - id: "QG-004"
+      name: "Automation to Gamification"
+      transition: "phase-4 -> phase-5"
+      criteria:
+        - "All automations tested and operational"
+    - id: "QG-005"
+      name: "Gamification to Ecommerce"
+      transition: "phase-5 -> phase-6"
+      criteria:
+        - "Gamification engine operational with all mechanics"
+    - id: "QG-006"
+      name: "Ecommerce to Metrics"
+      transition: "phase-6 -> phase-7"
+      criteria:
+        - "Store operational (optional gate — non-blocking)"
+    - id: "QG-007"
+      name: "Metrics to Scale"
+      transition: "phase-7 -> phase-8"
+      criteria:
+        - "Dashboard live with real data and alerts configured"
+
+  # =====================================================
+  # CONFIGURATION
+  # =====================================================
+  configuration:
+    timeline:
+      phase_1_diagnostic: "Week 1-2"
+      phase_2_offer: "Week 2-4"
+      phase_3_funnel: "Week 4-6"
+      phase_4_automation: "Week 6-9"
+      phase_5_gamification: "Week 9-12"
+      phase_6_ecommerce: "Week 12-16"
+      phase_7_metrics: "Week 16-18"
+      phase_8_scale: "Week 18+ (ongoing)"
+    reviews:
+      frequency: "monthly"
+      participants: ["coach", "business-diagnostician"]
+      agenda: ["Metricas review", "What's working", "What's not", "Next actions"]
+    success_definition:
+      revenue: "3x revenue in 12 months"
+      clients: "3x clients in 12 months"
+      hours: "Same or fewer hours worked"
+      satisfaction: "NPS > 50 maintained"
+
+  # =====================================================
+  # ESCALATION
+  # =====================================================
+  escalation:
+    on_failure: "Return to previous phase with specific fix list"
+    on_timeout: "Monthly review meeting to unblock"
+    on_decline: "Emergency diagnostic — return to Phase 1"
+
+  tags:
+    - "business"
+    - "scaling"
+    - "hormozi"
+    - "cooper"
+    - "funnel"
+    - "automation"
+    - "ecommerce"

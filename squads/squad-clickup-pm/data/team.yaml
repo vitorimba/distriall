@@ -1,0 +1,23 @@
+# Time — ClickUp PM Squad
+# Atualize com membros reais do projeto
+
+team:
+  - name: "Felipe Oliveira"
+    role: "Tech Lead / Full Stack"
+    capacity_points_per_sprint: 20
+    skills: ["backend", "frontend", "devops", "IA"]
+    clickup_user: null # preencher com ID/email ClickUp
+
+# Adicione membros conforme o time cresce:
+# - name: "Nome"
+#   role: "Frontend Dev"
+#   capacity_points_per_sprint: 16
+#   skills: ["frontend", "react", "css"]
+#   clickup_user: "email@example.com"
+
+total_capacity: 20
+buffer_percentage: 20 # 20% buffer pra reuniões, imprevistos
+effective_capacity: 16 # total_capacity * (1 - buffer/100)
+
+working_days_per_sprint: 10 # 2 semanas
+hours_per_day: 8

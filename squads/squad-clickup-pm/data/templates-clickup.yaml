@@ -1,0 +1,135 @@
+# Templates de Tasks para ClickUp
+# Usados pelo @task-architect para criação padronizada
+
+task_templates:
+  feature:
+    title_pattern: "feat: {descrição}"
+    labels: ["feature"]
+    custom_fields:
+      story_points: null
+      sprint: null
+      epic: null
+    description_template: |
+      ## Descrição
+      Como {persona}, quero {ação} para {benefício}.
+
+      ## Acceptance Criteria
+      - [ ] AC-1: {critério}
+      - [ ] AC-2: {critério}
+
+      ## Technical Notes
+      {notas técnicas}
+
+      ## DoD
+      - [ ] Código revisado (PR approved)
+      - [ ] Testes passando
+      - [ ] Lint/typecheck limpo
+      - [ ] Docs atualizados
+
+  bug:
+    title_pattern: "fix: {descrição}"
+    labels: ["bug"]
+    custom_fields:
+      severity: null # Critical/High/Medium/Low
+      environment: null # Prod/Staging/Local
+    description_template: |
+      ## Bug Report
+      **Severity:** {severity}
+      **Environment:** {environment}
+
+      ## Steps to Reproduce
+      1. {passo}
+
+      ## Expected
+      {esperado}
+
+      ## Actual
+      {atual}
+
+      ## Fix Plan
+      - [ ] {ação}
+      - [ ] Regression test
+
+  spike:
+    title_pattern: "spike: {pergunta}"
+    labels: ["spike", "research"]
+    custom_fields:
+      timebox_hours: null
+    description_template: |
+      ## Spike: {pergunta}
+      **Timebox:** {horas}h
+
+      ## Contexto
+      {contexto}
+
+      ## Questões
+      1. {pergunta}
+
+      ## Output
+      - [ ] Findings documentados
+      - [ ] Recomendação Go/No-Go
+      - [ ] Tasks derivadas
+
+  chore:
+    title_pattern: "chore: {descrição}"
+    labels: ["chore"]
+    description_template: |
+      ## Chore
+      {descrição}
+
+      ## Tasks
+      - [ ] {ação}
+
+      ## DoD
+      - [ ] Verificado em staging
+
+  epic:
+    title_pattern: "epic: {descrição}"
+    labels: ["epic"]
+    description_template: |
+      ## Epic: {título}
+      {descrição}
+
+      ## Stories
+      - [ ] Story 1: {descrição}
+      - [ ] Story 2: {descrição}
+
+      ## Success Metrics
+      - {métrica}
+
+      ## Timeline
+      - Start: {data}
+      - Target: {data}
+
+status_flow:
+  default:
+    - "To Do"
+    - "In Progress"
+    - "In Review"
+    - "QA"
+    - "Done"
+  simplified:
+    - "To Do"
+    - "In Progress"
+    - "Done"
+  with_staging:
+    - "To Do"
+    - "In Progress"
+    - "In Review"
+    - "QA"
+    - "Staging"
+    - "Done"
+
+priority_levels:
+  - name: "Urgente"
+    color: "red"
+    sla_hours: 4
+  - name: "Alta"
+    color: "orange"
+    sla_hours: 24
+  - name: "Média"
+    color: "yellow"
+    sla_hours: 72
+  - name: "Baixa"
+    color: "blue"
+    sla_hours: null

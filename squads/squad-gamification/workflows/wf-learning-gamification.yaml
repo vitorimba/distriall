@@ -1,0 +1,570 @@
+##############################################################################
+# Workflow: Learning Gamification
+#
+# Education-focused gamification for courses, training, and LMS platforms.
+# 5 phases: Objective-Mapping → Mechanic-Design → Content-Integration → Testing → Iteration
+#
+# ID:       wf-learning-gamification
+# Squad:    squad-gamification
+# Phases:   5
+# Duration: 3-6 weeks
+# Context:  Education, corporate training, LMS, e-learning, MOOCs
+##############################################################################
+
+id: wf-learning-gamification
+name: "Learning Gamification Workflow"
+version: "1.0.0"
+description: >
+  Education-focused gamification workflow built on Karl Kapp's Gamification
+  of Learning and Instruction framework, Bloom's Taxonomy alignment, and
+  evidence-based learning science. Mechanics serve learning outcomes, never
+  the reverse.
+
+trigger:
+  manual: true
+  command: "*learn-gamify"
+  conditions:
+    - "context.product_type in ['education', 'training', 'lms', 'elearning', 'mooc']"
+
+settings:
+  max_iterations: 3
+  quality_gate_enforcement: strict
+  learning_outcome_priority: always  # mechanics SERVE learning, not vice versa
+  evidence_based: true
+  accessibility_required: true
+
+##############################################################################
+# Phase 1: OBJECTIVE MAPPING
+# Map learning objectives to gamification opportunities
+##############################################################################
+phases:
+  - id: phase_1_objective_mapping
+    name: "Objective Mapping"
+    description: >
+      Map learning objectives to Bloom's Taxonomy levels, identify which
+      objectives benefit most from gamification, and establish baseline
+      learning metrics.
+    duration_estimate: "3-5 days"
+    agents:
+      lead: learning-designer
+      support: [gamification-chief, motivation-analyst, player-profiler]
+
+    tasks:
+      - id: diagnostic
+        task_ref: gamification-diagnostic
+        required: true
+        description: "Learning environment gamification diagnostic"
+
+      - id: learner_profiling
+        task_ref: player-persona-mapping
+        required: true
+        description: "Map learner types to HEXAD profiles"
+
+    actions:
+      - id: blooms_mapping
+        agent: learning-designer
+        description: >
+          Map every learning objective to Bloom's Taxonomy:
+          Level 1 — Remember: recall facts, terms, basic concepts
+            Gamification potential: HIGH (quizzes, flashcards, spaced repetition)
+          Level 2 — Understand: explain ideas, interpret meaning
+            Gamification potential: HIGH (scenario-based, explain-to-earn)
+          Level 3 — Apply: use information in new situations
+            Gamification potential: HIGH (simulations, sandbox challenges)
+          Level 4 — Analyze: draw connections, organize, compare
+            Gamification potential: MEDIUM (detective mechanics, data puzzles)
+          Level 5 — Evaluate: justify decisions, make judgments
+            Gamification potential: MEDIUM (peer review, debate mechanics)
+          Level 6 — Create: produce new or original work
+            Gamification potential: LOW-MEDIUM (creation tools, teaching mechanics)
+
+          For each objective, document:
+            - Bloom's level
+            - Current teaching method
+            - Current completion/mastery rate
+            - Gamification fit score (1-10)
+            - Recommended mechanic type
+
+      - id: learning_science_alignment
+        agent: learning-designer
+        description: >
+          Align with evidence-based learning principles:
+          - Spaced practice (distribute learning over time)
+          - Interleaving (mix topics, don't block)
+          - Retrieval practice (testing > re-reading)
+          - Elaboration (connect new to known)
+          - Concrete examples (specific > abstract)
+          - Dual coding (words + visuals)
+          Map which gamification mechanics support each principle
+
+      - id: motivation_baseline
+        agent: motivation-analyst
+        description: >
+          Assess learner motivation landscape:
+          - Intrinsic motivation (curiosity, mastery, purpose)
+          - Extrinsic motivation (grades, certificates, career)
+          - Amotivation (learned helplessness, disengagement)
+          - Self-efficacy level per topic
+          - Prior experience with gamified learning
+          Use SDT framework (Autonomy, Competence, Relatedness)
+
+      - id: learner_segmentation
+        agent: player-profiler
+        description: >
+          Segment learners:
+          - By motivation: intrinsic vs extrinsic vs amotivated
+          - By skill: novice vs intermediate vs advanced
+          - By style: competitive vs collaborative vs independent
+          - By context: voluntary vs mandatory learning
+          - By HEXAD: Achiever-learners vs Socialiser-learners vs etc.
+
+    outputs:
+      - learning-objectives-map.yaml
+      - blooms-gamification-alignment.md
+      - learner-personas.md
+      - motivation-baseline.yaml
+      - learning-science-alignment.md
+
+    quality_gate:
+      id: GM-QG-LEARN-001
+      name: "Objective Mapping Quality Gate"
+      criteria:
+        - "All learning objectives mapped to Bloom's levels"
+        - "Gamification fit scored per objective"
+        - "Learning science principles identified"
+        - "Learner segments profiled (min 3)"
+        - "Motivation baseline established"
+        - "Mandatory vs voluntary context documented"
+      pass_threshold: 6
+      on_fail: rework
+
+##############################################################################
+# Phase 2: MECHANIC DESIGN
+# Design learning-appropriate gamification mechanics
+##############################################################################
+  - id: phase_2_mechanic_design
+    name: "Mechanic Design"
+    description: >
+      Design gamification mechanics specifically calibrated for learning
+      contexts. Every mechanic must demonstrably support a learning outcome.
+    duration_estimate: "3-5 days"
+    depends_on: [phase_1_objective_mapping]
+    agents:
+      lead: learning-designer
+      support:
+        - experience-designer
+        - engagement-engineer
+        - behavior-architect
+        - emotion-designer
+
+    tasks:
+      - id: learning_gamification
+        task_ref: learning-gamification
+        required: true
+        description: "Design learning-specific gamification mechanics"
+
+      - id: progression_design
+        task_ref: progression-design
+        required: true
+        description: "Design learning progression system (skill trees, mastery)"
+
+      - id: emotion_design
+        task_ref: emotion-mapping
+        required: true
+        description: "Map emotions to learning phases"
+
+      - id: onboarding
+        task_ref: onboarding-gamification
+        required: true
+        description: "Gamify learner onboarding"
+
+    actions:
+      - id: spaced_repetition_design
+        agent: learning-designer
+        description: >
+          Design spaced repetition system:
+          - Algorithm: Modified SM-2 with gamification overlay
+          - Visual: "Memory Strength" meter per concept
+          - Mechanic: Review challenges appear based on decay curve
+          - Reward: XP for timely reviews, streak for consistency
+          - Social: Compare review stats with study partners
+          - Notification: "Knowledge fading" prompts (non-punitive)
+
+      - id: mastery_system_design
+        agent: experience-designer
+        description: >
+          Design mastery-based progression (not time-based):
+          - Mastery threshold: demonstrate competence, not just time spent
+          - Skill trees: visual representation of knowledge domains
+          - Prerequisites: clear dependency chains between skills
+          - Multiple paths: different routes through curriculum
+          - Mastery badges: real competency indicators (not participation)
+          - Portfolio system: collect evidence of learning
+
+      - id: failure_design
+        agent: learning-designer
+        description: >
+          Critical: Design failure as learning opportunity:
+          - No permanent penalties for wrong answers
+          - Immediate instructional feedback on errors
+          - "Retry" with different question format
+          - Track improvement across attempts (celebrate growth)
+          - Normalize failure ("Scientists took 1000 attempts to...")
+          - Growth mindset messaging throughout
+          VETO: Any mechanic that punishes learning mistakes permanently
+
+      - id: social_learning_design
+        agent: experience-designer
+        description: >
+          Social learning mechanics:
+          - Study groups with shared goals
+          - Peer teaching bonuses (Protege Effect)
+          - Collaborative problem solving
+          - Discussion-based XP (quality over quantity)
+          - Peer review with constructive rubrics
+          - Accountability partners (paired streaks)
+          All social features optional (never forced)
+
+      - id: assessment_gamification
+        agent: learning-designer
+        description: >
+          Transform assessments into engaging experiences:
+          - Quizzes → Boss Battles (progressive difficulty)
+          - Assignments → Quests (clear objectives, flexible approach)
+          - Exams → Tournaments (optional competitive framing)
+          - Self-assessment → Skill radar chart (self-awareness tool)
+          - Peer assessment → Guild review quest
+          Maintain assessment validity while adding engagement
+
+    outputs:
+      - learning-mechanics-spec.md
+      - spaced-repetition-design.yaml
+      - mastery-system-spec.md
+      - failure-design-spec.md
+      - social-learning-spec.md
+      - assessment-gamification-spec.md
+      - onboarding-spec.md
+
+    quality_gate:
+      id: GM-QG-LEARN-002
+      name: "Mechanic Design Quality Gate"
+      criteria:
+        - "Every mechanic maps to a learning objective"
+        - "Failure is never permanently punished"
+        - "Mastery-based (not time-based) progression"
+        - "Spaced repetition integrated"
+        - "Social features are optional"
+        - "Assessment validity maintained"
+        - "Emotional journey supports learning phases"
+        - "Anti-pattern audit clean"
+      pass_threshold: 8
+      on_fail: rework
+
+    elicit:
+      - point: "Subject matter expert reviews mechanic-objective alignment"
+        required: true
+      - point: "Instructional designer validates pedagogical soundness"
+        required: true
+
+##############################################################################
+# Phase 3: CONTENT INTEGRATION
+# Integrate mechanics with actual learning content
+##############################################################################
+  - id: phase_3_content_integration
+    name: "Content Integration"
+    description: >
+      Integrate designed mechanics with actual curriculum content.
+      Create gamified content units, configure systems, prepare for testing.
+    duration_estimate: "1-2 weeks"
+    depends_on: [phase_2_mechanic_design]
+    agents:
+      lead: learning-designer
+      support: [engagement-engineer, experience-designer]
+
+    actions:
+      - id: content_tagging
+        agent: learning-designer
+        description: >
+          Tag all content with gamification metadata:
+          - Bloom's level (per content unit)
+          - Difficulty rating (1-5)
+          - Estimated time to complete
+          - Prerequisites (linked concepts)
+          - XP value (based on Bloom's level and difficulty)
+          - Associated badges/achievements
+          - Spaced repetition parameters
+          - Assessment type (formative/summative)
+
+      - id: challenge_creation
+        agent: learning-designer
+        description: >
+          Create gamified challenges per content module:
+          - Knowledge checks: quick recall challenges (Bloom 1-2)
+          - Application challenges: scenario-based problems (Bloom 3)
+          - Analysis challenges: case study puzzles (Bloom 4)
+          - Evaluation challenges: peer review quests (Bloom 5)
+          - Creation challenges: build/teach challenges (Bloom 6)
+          Each with: clear objectives, success criteria, XP reward, feedback
+
+      - id: narrative_integration
+        agent: experience-designer
+        description: >
+          Weave narrative through learning content:
+          - Overall story arc (hero's journey through knowledge)
+          - Per-module story beats (context for why this matters)
+          - Character progression (learner grows with knowledge)
+          - Real-world connection (why this knowledge matters)
+          Narrative enhances, never distracts from content
+
+      - id: adaptive_configuration
+        agent: engagement-engineer
+        description: >
+          Configure adaptive systems:
+          - Difficulty adjustment parameters
+          - Content recommendation algorithm
+          - Spaced repetition scheduling
+          - Prerequisite enforcement (strict vs suggested)
+          - Path flexibility settings
+          - Notification frequency tuning
+
+    outputs:
+      - content-gamification-map.yaml
+      - challenge-library.yaml
+      - narrative-design.md
+      - adaptive-config.yaml
+      - integration-guide.md
+
+    quality_gate:
+      id: GM-QG-LEARN-003
+      name: "Content Integration Quality Gate"
+      criteria:
+        - "All content units tagged with gamification metadata"
+        - "Challenges created for each Bloom's level present"
+        - "Narrative enhances (not distracts) from content"
+        - "Adaptive system configured and tested"
+        - "Accessibility verified for all gamified elements"
+      pass_threshold: 5
+      on_fail: rework
+
+##############################################################################
+# Phase 4: TESTING
+# Validate learning outcomes and engagement impact
+##############################################################################
+  - id: phase_4_testing
+    name: "Testing & Validation"
+    description: >
+      Test that gamification improves learning outcomes (not just engagement).
+      Critical distinction: engagement without learning is failure.
+    duration_estimate: "2-4 weeks"
+    depends_on: [phase_3_content_integration]
+    agents:
+      lead: learning-designer
+      support: [engagement-engineer, player-profiler, emotion-designer]
+
+    tasks:
+      - id: ab_test
+        task_ref: ab-test-gamification
+        required: true
+        description: "A/B test gamified vs non-gamified learning"
+
+      - id: anti_pattern_check
+        task_ref: anti-pattern-audit
+        required: true
+        description: "Final anti-pattern audit"
+
+    actions:
+      - id: learning_outcome_test
+        agent: learning-designer
+        description: >
+          CRITICAL: Measure learning outcomes, not just engagement:
+          Primary metrics (LEARNING):
+            - Knowledge retention (pre/post test with delayed retest)
+            - Skill application (transfer to real scenarios)
+            - Time to competency (gamified vs control)
+            - Mastery achievement rate
+            - Long-term retention (30-day retest)
+          Secondary metrics (ENGAGEMENT):
+            - Completion rate
+            - Time on platform
+            - Return rate
+            - Voluntary practice (beyond required)
+          Guardrail metrics:
+            - Learner satisfaction
+            - Cognitive load (not overwhelming)
+            - Anxiety levels (not stressful)
+          RULE: If engagement increases but learning doesn't, mechanic FAILS
+
+      - id: usability_test
+        agent: experience-designer
+        description: >
+          Usability testing with representative learners:
+          - 5-8 learners per segment
+          - Think-aloud protocol during first session
+          - Task completion success rate
+          - Navigation confusion points
+          - Gamification comprehension (do users understand the systems?)
+          - Accessibility testing with assistive technologies
+
+      - id: emotion_validation
+        agent: emotion-designer
+        description: >
+          Validate emotional experience:
+          - Is learning enjoyable (not just game-like)?
+          - Does failure feel safe (growth mindset)?
+          - Is social comparison healthy (not anxiety-inducing)?
+          - Are rewards meaningful (not trivializing knowledge)?
+          - Is the experience accessible to all learning styles?
+
+      - id: segment_analysis
+        agent: player-profiler
+        description: >
+          Per-segment impact analysis:
+          - Intrinsic learners: not undermined by extrinsic rewards?
+          - Extrinsic learners: motivated without dependency?
+          - Struggling learners: supported without condescension?
+          - Advanced learners: challenged without boredom?
+          - Mandatory learners: engaged despite compulsion?
+
+    outputs:
+      - learning-outcome-results.md
+      - ab-test-results.yaml
+      - usability-report.md
+      - emotion-validation-report.md
+      - segment-impact-report.md
+      - anti-pattern-report.md
+
+    quality_gate:
+      id: GM-QG-LEARN-004
+      name: "Learning Validation Gate"
+      criteria:
+        - "Learning outcomes improved vs control (primary metric)"
+        - "Knowledge retention improved or maintained"
+        - "No learner segment negatively impacted"
+        - "Learner satisfaction >= 7/10"
+        - "Cognitive load within acceptable range"
+        - "Anti-pattern audit clean"
+        - "Accessibility validation passed"
+      pass_threshold: 7
+      on_fail: redesign_mechanics
+
+    elicit:
+      - point: "Instructional designer validates learning outcome data"
+        required: true
+
+##############################################################################
+# Phase 5: ITERATION
+# Continuous improvement based on learning data
+##############################################################################
+  - id: phase_5_iteration
+    name: "Iteration & Improvement"
+    description: >
+      Ongoing optimization based on learning analytics, learner feedback,
+      and evolving curriculum needs.
+    duration_estimate: "Ongoing"
+    depends_on: [phase_4_testing]
+    agents:
+      lead: learning-designer
+      support: [engagement-engineer, gamification-chief]
+
+    actions:
+      - id: learning_analytics
+        agent: learning-designer
+        description: >
+          Continuous learning analytics:
+          - Per-concept mastery rates
+          - Common misconception detection (wrong answer patterns)
+          - Learning path effectiveness comparison
+          - Spaced repetition optimization
+          - Engagement-to-learning correlation
+          - Dropout prediction and intervention
+
+      - id: content_refresh
+        agent: learning-designer
+        description: >
+          Content and mechanic refresh cycle:
+          - Monthly: new challenges and quiz variations
+          - Quarterly: add new content modules with gamification
+          - Semester: curriculum alignment review
+          - Annually: full gamification strategy reassessment
+          - On-demand: respond to learner feedback
+
+      - id: adaptive_tuning
+        agent: engagement-engineer
+        description: >
+          Tune adaptive systems based on data:
+          - Adjust difficulty curves per concept
+          - Optimize spaced repetition intervals
+          - Refine content recommendation algorithm
+          - Tune notification timing and frequency
+          - Balance challenge types per learner segment
+
+      - id: mechanic_evolution
+        agent: gamification-chief
+        description: >
+          Evolve mechanics based on learner maturity:
+          - Phase out scaffolding for experienced learners
+          - Introduce advanced mechanics (creation, teaching)
+          - Add seasonal learning events
+          - Develop community-driven content creation
+          - Build peer mentoring systems
+
+    outputs:
+      - learning-analytics-report.md
+      - optimization-log.md
+      - adaptive-tuning-report.yaml
+      - iteration-roadmap.md
+
+    quality_gate:
+      id: GM-QG-LEARN-005
+      name: "Ongoing Learning Health Gate"
+      criteria:
+        - "Learning outcomes sustained or improving"
+        - "Engagement metrics stable"
+        - "Content freshness maintained"
+        - "Adaptive systems performing within parameters"
+        - "Learner satisfaction sustained >= 7/10"
+      pass_threshold: 5
+      on_fail: review_and_adjust
+
+##############################################################################
+# Error Handling
+##############################################################################
+error_handling:
+  learning_not_improved:
+    description: "Engagement improved but learning did not"
+    action: "FAIL — return to Phase 2, redesign mechanics to serve learning"
+    severity: critical
+    message: "Engagement without learning is the cardinal sin of learning gamification"
+
+  learner_anxiety:
+    description: "Gamification causing test anxiety or competitive stress"
+    action: "Disable competitive elements, add opt-out, review emotional design"
+    severity: high
+
+  overjustification_detected:
+    description: "Learners only engage for rewards, not learning"
+    action: "Reduce extrinsic rewards, increase intrinsic mechanics"
+    severity: high
+
+  accessibility_failure:
+    description: "Gamification not accessible to all learners"
+    action: "Immediate fix required before any further rollout"
+    severity: critical
+
+##############################################################################
+# Completion
+##############################################################################
+completion:
+  definition: "Initial learning gamification live, iteration ongoing"
+  minimum_success:
+    - "Learning outcomes improved vs non-gamified control"
+    - "Completion rates improved"
+    - "Learner satisfaction >= 7/10"
+    - "No negative impact on any learner segment"
+    - "Iteration cadence established"
+  artifacts:
+    - learning-objectives-map.yaml
+    - learning-mechanics-spec.md
+    - content-gamification-map.yaml
+    - learning-outcome-results.md
+    - iteration-roadmap.md

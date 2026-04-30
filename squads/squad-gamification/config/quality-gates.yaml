@@ -1,0 +1,270 @@
+##############################################################################
+# Quality Gates — Squad Gamification
+# 8 gates (GM-QG-001 through GM-QG-008)
+##############################################################################
+
+quality_gates:
+
+  - id: GM-QG-001
+    name: "Diagnostic Quality Gate"
+    phase: diagnostic
+    workflow: all
+    description: "Ensures gamification diagnostic is thorough and actionable"
+    criteria:
+      - id: QC-001-01
+        check: "All 8 Octalysis Core Drives assessed with evidence"
+        required: true
+        verification: "Each CD has score (0-10) and evidence documented"
+      - id: QC-001-02
+        check: "HEXAD distribution estimated for user base"
+        required: true
+        verification: "6 types with percentages summing to 100%"
+      - id: QC-001-03
+        check: "Minimum 3 gamification opportunities identified"
+        required: true
+        verification: "Opportunity map has 3+ entries with impact/effort scores"
+      - id: QC-001-04
+        check: "Anti-patterns verified (10-item checklist)"
+        required: true
+        verification: "Each of 10 anti-patterns checked yes/no with evidence"
+      - id: QC-001-05
+        check: "Baseline metrics documented"
+        required: true
+        verification: "DAU/MAU, retention (D1/D7/D30), session time recorded"
+      - id: QC-001-06
+        check: "Workflow recommendation justified"
+        required: true
+        verification: "Recommended workflow (full/enterprise/app/learning) with rationale"
+    pass_threshold: "6/6 (all required)"
+    on_fail: "Return to diagnostic with specific gaps identified"
+    max_retries: 2
+
+  - id: GM-QG-002
+    name: "Player Profiling Quality Gate"
+    phase: profiling
+    workflow: all
+    description: "Ensures player profiling is comprehensive and actionable"
+    criteria:
+      - id: QC-002-01
+        check: "Minimum 3 player personas covering 80%+ of user base"
+        required: true
+        verification: "Personas have names, HEXAD type, demographics, mechanics affinity"
+      - id: QC-002-02
+        check: "All 6 HEXAD types evaluated"
+        required: true
+        verification: "Each type has estimated percentage and behavioral signals"
+      - id: QC-002-03
+        check: "Persona-mechanic alignment matrix complete"
+        required: true
+        verification: "Matrix shows High/Medium/Low per mechanic per persona"
+      - id: QC-002-04
+        check: "Motivation balance assessed"
+        required: true
+        verification: "Intrinsic vs extrinsic balance documented per persona"
+      - id: QC-002-05
+        check: "Segmentation strategy recommended"
+        required: true
+        verification: "One of: adaptive, quiz, behavioral, or hybrid with justification"
+    pass_threshold: "5/5 (all required)"
+    on_fail: "Return to profiling with gaps"
+    max_retries: 2
+
+  - id: GM-QG-003
+    name: "Strategy Quality Gate"
+    phase: strategy
+    workflow: all
+    description: "Ensures gamification strategy is aligned and prioritized"
+    criteria:
+      - id: QC-003-01
+        check: "Strategy aligned with business objectives"
+        required: true
+        verification: "Each mechanic links to a specific business objective"
+      - id: QC-003-02
+        check: "Mechanics prioritized with ICE scores"
+        required: true
+        verification: "Impact × Confidence × Ease scored for each mechanic"
+      - id: QC-003-03
+        check: "KPIs defined per mechanic"
+        required: true
+        verification: "Primary metric, secondary metrics, guardrail metrics per mechanic"
+      - id: QC-003-04
+        check: "Emotion mapping complete"
+        required: true
+        verification: "4 Keys to Fun mapped to journey stages"
+      - id: QC-003-05
+        check: "Framework selection justified"
+        required: true
+        verification: "Primary/secondary framework with context-specific rationale"
+      - id: QC-003-06
+        check: "Ethics pre-check passed"
+        required: true
+        verification: "Ethical gamification checklist initial review completed"
+    pass_threshold: "6/6 (all required)"
+    on_fail: "Return to strategy with stakeholder feedback"
+    max_retries: 2
+
+  - id: GM-QG-004
+    name: "Design Quality Gate"
+    phase: design
+    workflow: all
+    description: "Ensures all mechanics are fully specified and balanced"
+    criteria:
+      - id: QC-004-01
+        check: "All prioritized mechanics fully specified"
+        required: true
+        verification: "Each mechanic has complete spec using mechanics-spec-tmpl.md"
+      - id: QC-004-02
+        check: "Progression system balanced"
+        required: true
+        verification: "No dead zones > 3 levels; XP curve simulated"
+      - id: QC-004-03
+        check: "Engagement loops close properly"
+        required: true
+        verification: "Investment loads next trigger in every loop"
+      - id: QC-004-04
+        check: "Onboarding gamified"
+        required: true
+        verification: "First-value < 60s; first achievement < 2min"
+      - id: QC-004-05
+        check: "Emotional journey mapped"
+        required: true
+        verification: "Each stage has target emotion, risk emotion, and safeguard"
+      - id: QC-004-06
+        check: "Anti-pattern audit passed"
+        required: true
+        verification: "Zero critical anti-patterns; zero high without remediation plan"
+      - id: QC-004-07
+        check: "Accessibility requirements met"
+        required: true
+        verification: "WCAG 2.1 AA compliance for all gamification elements"
+    pass_threshold: "7/7 (all required)"
+    on_fail: "Return to design with specific gaps"
+    max_retries: 3
+
+  - id: GM-QG-005
+    name: "Build Readiness Gate"
+    phase: build
+    workflow: all
+    description: "Ensures technical specifications are complete for implementation"
+    criteria:
+      - id: QC-005-01
+        check: "Technical specs complete"
+        required: true
+        verification: "Data models, APIs, event tracking all documented"
+      - id: QC-005-02
+        check: "Data models defined"
+        required: true
+        verification: "Schema for XP, levels, badges, streaks, etc."
+      - id: QC-005-03
+        check: "Implementation sequence logical"
+        required: true
+        verification: "Dependencies respected; progressive build order"
+      - id: QC-005-04
+        check: "Test plan covers all mechanics"
+        required: true
+        verification: "Unit, integration, A/B, load, accessibility tests planned"
+      - id: QC-005-05
+        check: "Performance requirements specified"
+        required: true
+        verification: "Response time targets for all gamification operations"
+    pass_threshold: "5/5"
+    on_fail: "Return to spec with engineering feedback"
+    max_retries: 2
+
+  - id: GM-QG-006
+    name: "Launch Readiness Gate"
+    phase: test
+    workflow: all
+    description: "Ensures A/B tests pass and no harm is detected"
+    criteria:
+      - id: QC-006-01
+        check: "A/B tests show positive primary metrics"
+        required: true
+        verification: "Statistical significance (p < 0.05) for primary metric improvement"
+      - id: QC-006-02
+        check: "No guardrail metrics degraded"
+        required: true
+        verification: "No guardrail metric significantly worse than control"
+      - id: QC-006-03
+        check: "Anti-pattern audit passed"
+        required: true
+        verification: "Zero critical/high anti-patterns in final audit"
+      - id: QC-006-04
+        check: "Emotional validation positive"
+        required: true
+        verification: "User feedback confirms positive emotional experience"
+      - id: QC-006-05
+        check: "Per-persona analysis shows no harmed segments"
+        required: true
+        verification: "No HEXAD segment shows negative impact vs control"
+      - id: QC-006-06
+        check: "Ethics checklist passed"
+        required: true
+        verification: "Full ethical-gamification checklist completed and signed"
+    pass_threshold: "6/6 (all required)"
+    on_fail: "Return to design phase for affected mechanics"
+    max_retries: 2
+
+  - id: GM-QG-007
+    name: "Post-Launch Health Gate"
+    phase: launch
+    workflow: all
+    description: "Ensures gamification is healthy after deployment"
+    criteria:
+      - id: QC-007-01
+        check: "Canary metrics positive"
+        required: true
+        verification: "10% rollout shows improvement in primary metrics"
+      - id: QC-007-02
+        check: "No regression in guardrail metrics"
+        required: true
+        verification: "All guardrail metrics within acceptable range"
+      - id: QC-007-03
+        check: "User feedback sentiment positive"
+        required: true
+        verification: "Net positive user feedback (surveys, reviews, support)"
+      - id: QC-007-04
+        check: "Monitoring dashboard operational"
+        required: true
+        verification: "Real-time dashboard showing key gamification metrics"
+      - id: QC-007-05
+        check: "Optimization cadence established"
+        required: true
+        verification: "Weekly/monthly review schedule documented and assigned"
+    pass_threshold: "5/5"
+    on_fail: "Pause rollout, investigate"
+    max_retries: 3
+
+  - id: GM-QG-008
+    name: "Enterprise Readiness Gate"
+    phase: pre_deployment
+    workflow: wf-enterprise-gamification
+    description: "Enterprise-specific readiness checks"
+    criteria:
+      - id: QC-008-01
+        check: "Legal/compliance review completed"
+        required: true
+        verification: "Signed legal review document"
+      - id: QC-008-02
+        check: "No mandatory competitive elements"
+        required: true
+        verification: "All competitive features are opt-in"
+      - id: QC-008-03
+        check: "Employee safety review passed"
+        required: true
+        verification: "No surveillance, no overtime incentives, no score-based termination"
+      - id: QC-008-04
+        check: "Change management plan in place"
+        required: true
+        verification: "Communication, training, champion network documented"
+      - id: QC-008-05
+        check: "Pilot plan defined"
+        required: true
+        verification: "Pilot group selected, control group identified, success criteria set"
+      - id: QC-008-06
+        check: "Opt-out mechanism verified"
+        required: true
+        verification: "Employees can disable gamification without penalty"
+    pass_threshold: "6/6 (all required)"
+    on_fail: "Block deployment until resolved"
+    max_retries: 2

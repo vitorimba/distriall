@@ -1,0 +1,332 @@
+# ══════════════════════════════════════════════════════════════════
+# Squad NF — Notas Fiscais Brasileiras
+# Full-stack fiscal intelligence for Brazilian tax documents
+# ══════════════════════════════════════════════════════════════════
+
+squad:
+  name: squad-nf
+  version: 1.0.0
+  icon: "\U0001F9FE"
+  description: >
+    Squad especializado em Notas Fiscais Brasileiras — emissão, cálculo tributário,
+    classificação fiscal, integração com SEFAZ, compliance SPED e automação de
+    obrigações acessórias. Cobre NF-e, NFS-e, NFC-e, CT-e e MDF-e.
+  type: hybrid
+  entry_agent: nf-chief
+  slashPrefix: nf
+
+# ── Agents ─────────────────────────────────────────────────────────
+agents:
+  # Orchestrator
+  - id: nf-chief
+    file: agents/nf-chief.md
+    tier: orchestrator
+    role: Orquestrador fiscal — roteia requisições ao agente correto
+
+  # Tier 0 — Knowledge Foundations
+  - id: regime-analyst
+    file: agents/regime-analyst.md
+    tier: 0
+    role: Enquadramento tributário e análise de regimes fiscais
+
+  - id: fiscal-classifier
+    file: agents/fiscal-classifier.md
+    tier: 0
+    role: Classificação NCM/CEST e enquadramento de produtos
+
+  # Tier 1 — Core Operations
+  - id: nf-emitter
+    file: agents/nf-emitter.md
+    tier: 1
+    role: Emissão de documentos fiscais (NF-e, NFS-e, NFC-e)
+
+  - id: tax-calculator
+    file: agents/tax-calculator.md
+    tier: 1
+    role: Cálculo de ICMS, IPI, PIS, COFINS, ISS, DIFAL, ICMS-ST
+
+  - id: sefaz-integrator
+    file: agents/sefaz-integrator.md
+    tier: 1
+    role: Integração com Web Services SEFAZ e gestão de certificados
+
+  # Tier 2 — Advanced Operations
+  - id: compliance-auditor
+    file: agents/compliance-auditor.md
+    tier: 2
+    role: Auditoria SPED fiscal e prevenção de malha fina
+
+  - id: integration-architect
+    file: agents/integration-architect.md
+    tier: 2
+    role: Arquitetura de integração NF com ERPs e sistemas customizados
+
+  - id: nf-monitor
+    file: agents/nf-monitor.md
+    tier: 2
+    role: Monitoramento de certificados, obrigações e mudanças fiscais
+
+  # Tools
+  - id: rejection-resolver
+    file: agents/rejection-resolver.md
+    tier: tool
+    role: Resolução de rejeições SEFAZ (600+ códigos mapeados)
+
+  - id: schema-generator
+    file: agents/schema-generator.md
+    tier: tool
+    role: Geração de artefatos técnicos para módulo NF
+
+# ── Tasks ──────────────────────────────────────────────────────────
+tasks:
+  # System Analysis (1)
+  - id: analyze-target-system
+    file: tasks/analyze-target-system.md
+
+  # Compliance & Audit (2)
+  - id: audit-cross-check
+    file: tasks/audit-cross-check.md
+  - id: prepare-efd
+    file: tasks/prepare-efd.md
+
+  # Tax Calculation (5)
+  - id: calculate-difal
+    file: tasks/calculate-difal.md
+  - id: calculate-icms-st
+    file: tasks/calculate-icms-st.md
+  - id: calculate-icms
+    file: tasks/calculate-icms.md
+  - id: calculate-iss
+    file: tasks/calculate-iss.md
+  - id: calculate-pis-cofins
+    file: tasks/calculate-pis-cofins.md
+
+  # NF Emission (4)
+  - id: cancel-nf
+    file: tasks/cancel-nf.md
+  - id: emit-nfce
+    file: tasks/emit-nfce.md
+  - id: emit-nfe
+    file: tasks/emit-nfe.md
+  - id: emit-nfse
+    file: tasks/emit-nfse.md
+
+  # Fiscal Classification (3)
+  - id: classify-ncm
+    file: tasks/classify-ncm.md
+  - id: determine-cfop
+    file: tasks/determine-cfop.md
+  - id: determine-cst
+    file: tasks/determine-cst.md
+
+  # SEFAZ & Certificates (3)
+  - id: connect-sefaz
+    file: tasks/connect-sefaz.md
+  - id: manage-certificate
+    file: tasks/manage-certificate.md
+  - id: switch-contingency
+    file: tasks/switch-contingency.md
+
+  # NF Operations (3)
+  - id: correction-letter
+    file: tasks/correction-letter.md
+  - id: download-xml
+    file: tasks/download-xml.md
+  - id: void-numbers
+    file: tasks/void-numbers.md
+
+  # Regime & Tax (2)
+  - id: determine-tax-regime
+    file: tasks/determine-tax-regime.md
+  - id: regime-change-impact
+    file: tasks/regime-change-impact.md
+
+  # Integration & Module Design (8)
+  - id: design-nf-module
+    file: tasks/design-nf-module.md
+  - id: connect-nf-provider
+    file: tasks/connect-nf-provider.md
+  - id: generate-nf-schema
+    file: tasks/generate-nf-schema.md
+  - id: generate-nf-endpoints
+    file: tasks/generate-nf-endpoints.md
+  - id: generate-nf-service
+    file: tasks/generate-nf-service.md
+  - id: generate-nf-ui
+    file: tasks/generate-nf-ui.md
+  - id: generate-nf-webhooks
+    file: tasks/generate-nf-webhooks.md
+  - id: map-erp-fields
+    file: tasks/map-erp-fields.md
+
+  # ERP Integration (1)
+  - id: setup-erp-integration
+    file: tasks/setup-erp-integration.md
+
+  # Rejection Handling (1)
+  - id: handle-rejection
+    file: tasks/handle-rejection.md
+
+  # Recipient & Monitoring (3)
+  - id: manifest-recipient
+    file: tasks/manifest-recipient.md
+  - id: monitor-certificates
+    file: tasks/monitor-certificates.md
+  - id: monitor-deadlines
+    file: tasks/monitor-deadlines.md
+
+  # SPED (2)
+  - id: prepare-sped-fiscal
+    file: tasks/prepare-sped-fiscal.md
+  - id: validate-obligations
+    file: tasks/validate-obligations.md
+
+# ── Workflows ──────────────────────────────────────────────────────
+workflows:
+  - id: emit-complete
+    file: workflows/wf-emit-complete.yaml
+    description: >
+      Pipeline completo: classificar produto → calcular tributos →
+      gerar XML → assinar → transmitir → tratar resposta
+    agents: [fiscal-classifier, tax-calculator, nf-emitter, sefaz-integrator]
+
+  - id: audit-monthly
+    file: workflows/wf-audit-monthly.yaml
+    description: >
+      Auditoria fiscal completa: validar escrituração → cruzar SPED →
+      verificar malha fina → gerar relatório de correções
+    agents: [compliance-auditor, tax-calculator, regime-analyst]
+
+  - id: erp-integration
+    file: workflows/wf-erp-integration.yaml
+    description: >
+      Integração NF em sistema existente: análise → design → geração
+      de artefatos → conexão com provider → testes
+    agents: [integration-architect, schema-generator, sefaz-integrator]
+
+  - id: regime-migration
+    file: workflows/wf-regime-migration.yaml
+    description: >
+      Migração de regime tributário: análise atual → simulação →
+      impacto nos documentos → plano de transição
+    agents: [regime-analyst, tax-calculator, nf-monitor, compliance-auditor]
+
+# ── Templates ──────────────────────────────────────────────────────
+templates:
+  - id: nf-xml-tmpl
+    file: templates/nf-xml-tmpl.xml
+    description: Template XML NF-e v4.00 com campos obrigatórios e opcionais
+
+  - id: nf-module-tmpl
+    file: templates/nf-module-tmpl.ts
+    description: Template de módulo NF para integração com ERPs
+
+  - id: nf-report-tmpl
+    file: templates/nf-report-tmpl.md
+    description: Relatório de auditoria/operações NF com achados e correções
+
+  - id: integration-design-tmpl
+    file: templates/integration-design-tmpl.md
+    description: Template de design de integração NF com sistemas externos
+
+  - id: migration-tmpl
+    file: templates/migration-tmpl.sql
+    description: Template SQL para migração de dados fiscais
+
+# ── Checklists ─────────────────────────────────────────────────────
+checklists:
+  - id: emission-quality
+    file: checklists/emission-quality.md
+    description: Validações de qualidade para emissão de NF
+
+  - id: compliance-audit
+    file: checklists/compliance-audit.md
+    description: Gate de qualidade para auditoria de compliance fiscal
+
+  - id: integration-readiness
+    file: checklists/integration-readiness.md
+    description: Checklist de prontidão para integração NF em produção
+
+# ── Data Files ─────────────────────────────────────────────────────
+data:
+  - id: cfop-table
+    file: data/cfop-table.yaml
+    description: Tabela CFOP completa com descrições e uso correto
+
+  - id: erp-integration-patterns
+    file: data/erp-integration-patterns.yaml
+    description: Padrões de integração NF com ERPs e sistemas externos
+
+  - id: ncm-tax-rates
+    file: data/ncm-tax-rates.yaml
+    description: Alíquotas tributárias por NCM com regras de aplicação
+
+  - id: nf-kb
+    file: data/nf-kb.md
+    description: Knowledge base de Notas Fiscais brasileiras
+
+  - id: regime-rules
+    file: data/regime-rules.yaml
+    description: Regras de regimes tributários (Simples, Lucro Presumido, Real)
+
+  - id: rejection-codes
+    file: data/rejection-codes.yaml
+    description: 600+ códigos de rejeição SEFAZ com diagnóstico e correção
+
+  - id: sped-obligations
+    file: data/sped-obligations.yaml
+    description: Obrigações SPED Fiscal e Contribuições com prazos e registros
+
+  - id: state-rules
+    file: data/state-rules.yaml
+    description: Regras fiscais por UF (alíquotas, DIFAL, substituição tributária)
+
+# ── Dependencies ───────────────────────────────────────────────────
+dependencies:
+  apis:
+    - name: Focus NFe API
+      url: https://focusnfe.com.br
+      purpose: Emissão e consulta de NF-e, NFS-e, NFC-e, CT-e, MDF-e
+      required: true
+
+    - name: BrasilAPI
+      url: https://brasilapi.com.br
+      purpose: Consulta CNPJ, CEP, IBGE, feriados
+      required: false
+
+    - name: SEFAZ Web Services
+      url: https://www.nfe.fazenda.gov.br
+      purpose: Transmissão direta (sem intermediário)
+      required: false
+
+  libraries:
+    - name: nfelib
+      package: nfelib
+      purpose: Geração e parsing de XML NF-e conforme schemas oficiais
+      language: python
+
+    - name: node-nfe
+      package: node-nfe
+      purpose: Client Node.js para web services NF-e
+      language: javascript
+
+  certificates:
+    - name: Certificado Digital A1
+      format: PFX/P12
+      purpose: Assinatura digital de documentos fiscais
+      required: true
+      note: Validade 1 ano, emitido por AC credenciada ICP-Brasil
+
+# ── Settings ───────────────────────────────────────────────────────
+settings:
+  defaultEnvironment: homologacao
+  environments:
+    - homologacao
+    - producao
+  xmlVersion: "4.00"
+  defaultUF: SP
+  contingencyModes:
+    - SVC-AN
+    - SVC-RS
+    - EPEC
+  spedLayout: "018"

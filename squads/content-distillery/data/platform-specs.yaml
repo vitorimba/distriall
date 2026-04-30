@@ -1,0 +1,122 @@
+# Platform Specifications
+#
+# Purpose: Reference specs for each content platform supported by the
+# content-distillery squad. Used by the content-atomizer and production-ops
+# agents to ensure produced content meets platform requirements.
+#
+# Usage: Agents check these specs when producing content atoms to validate
+# length, format, and best practices per platform.
+#
+# Maintained by: production-ops / content-atomizer agents
+# Last updated: TODO — fill on first real update
+
+platforms:
+
+  linkedin:
+    display_name: "LinkedIn"
+    content_types:
+      - name: "text_post"
+        max_length: 3000  # characters
+        ideal_length: "800-1500"  # characters
+        format_notes: "TODO — formatting guidelines (line breaks, emojis, etc.)"
+      - name: "article"
+        max_length: 125000  # characters
+        ideal_length: "1000-2500"  # words
+        format_notes: "TODO"
+      - name: "carousel"
+        max_slides: 20  # TODO — verify current limit
+        ideal_slides: "6-10"
+        slide_format: "TODO — PDF specs (dimensions, font sizes)"
+      - name: "newsletter"
+        max_length: "TODO"
+        format_notes: "TODO"
+    best_practices:
+      - "TODO — hook optimization guidelines"
+      - "TODO — posting frequency"
+      - "TODO — hashtag strategy"
+      - "TODO — engagement tactics"
+    algorithm_notes: "TODO — current algorithm preferences"
+
+  twitter:
+    display_name: "Twitter / X"
+    content_types:
+      - name: "tweet"
+        max_length: 280  # characters (free), 25000 (premium)
+        ideal_length: "200-260"
+        format_notes: "TODO"
+      - name: "thread"
+        max_tweets: "TODO — practical limit"
+        ideal_tweets: "5-10"
+        format_notes: "TODO — thread hook and closer guidelines"
+      - name: "long_form"
+        max_length: 25000  # X Premium
+        format_notes: "TODO"
+    best_practices:
+      - "TODO — hook patterns"
+      - "TODO — thread structure"
+      - "TODO — engagement optimization"
+    algorithm_notes: "TODO"
+
+  instagram:
+    display_name: "Instagram"
+    content_types:
+      - name: "carousel"
+        max_slides: 20  # TODO — verify current limit
+        ideal_slides: "7-10"
+        dimensions: "1080x1350"  # portrait recommended
+        format_notes: "TODO"
+      - name: "reel"
+        max_duration: 90  # seconds — TODO verify
+        ideal_duration: "30-60"
+        format_notes: "TODO"
+      - name: "story"
+        max_duration: 60  # seconds per story
+        dimensions: "1080x1920"
+        format_notes: "TODO"
+      - name: "caption"
+        max_length: 2200  # characters
+        ideal_length: "150-500"
+        format_notes: "TODO"
+    best_practices:
+      - "TODO — visual guidelines"
+      - "TODO — hashtag strategy"
+      - "TODO — posting cadence"
+    algorithm_notes: "TODO"
+
+  youtube:
+    display_name: "YouTube"
+    content_types:
+      - name: "long_form"
+        ideal_duration: "8-15"  # minutes
+        format_notes: "TODO"
+      - name: "short"
+        max_duration: 60  # seconds
+        ideal_duration: "30-45"
+        dimensions: "1080x1920"
+        format_notes: "TODO"
+      - name: "community_post"
+        max_length: "TODO"
+        format_notes: "TODO"
+    best_practices:
+      - "TODO — thumbnail specs and guidelines"
+      - "TODO — title optimization"
+      - "TODO — description and tags"
+      - "TODO — retention strategies"
+    algorithm_notes: "TODO"
+
+  newsletter:
+    display_name: "Newsletter (Email)"
+    content_types:
+      - name: "full_edition"
+        ideal_length: "800-2000"  # words
+        format_notes: "TODO — structure guidelines"
+      - name: "snippet"
+        ideal_length: "100-300"  # words
+        format_notes: "TODO — teaser format"
+    best_practices:
+      - "TODO — subject line optimization"
+      - "TODO — send frequency"
+      - "TODO — CTA placement"
+    algorithm_notes: "N/A — email delivery depends on sender reputation"
+    platforms_supported:
+      - "TODO — e.g., Substack, ConvertKit, Beehiiv"

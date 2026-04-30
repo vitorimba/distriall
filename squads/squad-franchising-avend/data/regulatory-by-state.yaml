@@ -1,0 +1,620 @@
+# Regulatory Requirements by State — Vending Machines / Autoatendimento
+# Squad: squad-franchising-avend (Avend Franquias)
+# Última atualização: 2026-03-13
+# Cobertura: 11 estados prioritários + base nacional
+
+metadata:
+  source: "ANVISA, Secretarias Estaduais de Saúde, legislação estadual"
+  disclaimer: >
+    Requisitos regulatórios mudam frequentemente. Este documento é
+    referência inicial. SEMPRE consultar legislação vigente e
+    profissional local (advogado + contador) antes de operar.
+    Última verificação: março 2026.
+  escala_dificuldade: "1 (fácil) a 5 (muito difícil)"
+
+# ============================================================
+# BASE NACIONAL — Aplicável a TODOS os estados
+# ============================================================
+base_nacional:
+  anvisa:
+    rdc_216_2004:
+      descricao: "Boas Práticas para Serviços de Alimentação"
+      obrigatorio: true
+      aplicacao_vending: >
+        Aplica-se a estabelecimentos que manipulam, preparam,
+        armazenam, transportam, expõem à venda ou entregam
+        alimentos ao consumidor. Vending machines se enquadram
+        como ponto de venda de alimentos.
+      requisitos:
+        - "Manual de Boas Práticas (MBP)"
+        - "Procedimentos Operacionais Padronizados (POP)"
+        - "Controle de temperatura (se alimentos refrigerados)"
+        - "Higienização periódica dos equipamentos"
+        - "Controle de pragas no entorno"
+        - "Rastreabilidade de produtos"
+
+    rdc_275_2002:
+      descricao: "POP e Lista de Verificação de BPF"
+      obrigatorio: true
+      aplicacao_vending: "Check-list de conformidade"
+
+    rotulagem:
+      rdc_429_2020: "Rotulagem nutricional"
+      rdc_727_2022: "Rotulagem de alimentos"
+      aplicacao: >
+        Produtos vendidos nas máquinas devem ter rotulagem conforme
+        legislação. Responsabilidade primária do fabricante, mas
+        franqueado deve verificar conformidade.
+
+  tributario_federal:
+    simples_nacional:
+      descricao: "Regime simplificado para ME e EPP"
+      limite_faturamento_anual: 4800000
+      anexo: "I — Comércio"
+      aliquota_inicial: 4.0  # %
+      aliquota_maxima: 19.0  # %
+      nota: "Franqueados Avend tipicamente nas faixas iniciais"
+
+    mei:
+      descricao: "Microempreendedor Individual"
+      limite_faturamento_anual: 81000
+      aplicavel: false
+      motivo: >
+        MEI permite apenas 1 funcionário e limite de R$ 81k/ano.
+        Pode ser insuficiente para operação de vending com
+        múltiplas máquinas. Avaliar caso a caso.
+
+  trabalhista:
+    nota: >
+      Franqueado é empresário independente, não funcionário.
+      Se contratar auxiliares, seguir CLT normalmente.
+      Relação franqueador-franqueado NÃO é trabalhista (Lei 13.966/2019).
+
+# ============================================================
+# ESTADOS — Detalhamento Individual
+# ============================================================
+estados:
+
+  # ----------------------------------------------------------
+  SP:
+    nome: "São Paulo"
+    capital: "São Paulo"
+    dificuldade: 3
+    prioridade_avend: 1
+    populacao_milhoes: 46.6
+    pib_per_capita: 56000
+
+    vigilancia_sanitaria:
+      orgao: "CVS — Centro de Vigilância Sanitária"
+      legislacao_principal: "Portaria CVS 5/2013"
+      particularidades:
+        - "Mais restritiva que ANVISA nacional em alguns pontos"
+        - "Exige responsável técnico para manipulação de alimentos"
+        - "Cadastro no sistema SIVISA obrigatório"
+        - "Inspeção pode ser sem aviso prévio"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "30-60 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 200-500"
+      nota: >
+        SP é referência nacional. Conformidade em SP geralmente
+        garante conformidade em outros estados.
+
+    icms:
+      aliquota_interna: 18
+      substituicao_tributaria: "Verificar por NCM do produto"
+      beneficios:
+        - "Redução de base de cálculo para alimentos básicos"
+      nota: "DIFAL aplica para compras interestaduais"
+
+    alvara_funcionamento:
+      municipal: true
+      processo: "Via Poupatempo Empreendedor em muitos municípios"
+      prazo: "15-45 dias (varia por município)"
+      bombeiros: "AVCB necessário se ponto fixo"
+
+    facilidades:
+      - "Maior mercado consumidor do Brasil"
+      - "Infraestrutura completa de fornecedores"
+      - "Mão de obra técnica disponível"
+      - "Processo digital avançado"
+
+    desafios:
+      - "Regulação mais exigente"
+      - "Concorrência alta"
+      - "Custo operacional elevado"
+      - "Trânsito impacta logística de reposição"
+
+  # ----------------------------------------------------------
+  RJ:
+    nome: "Rio de Janeiro"
+    capital: "Rio de Janeiro"
+    dificuldade: 3
+    prioridade_avend: 3
+    populacao_milhoes: 17.5
+    pib_per_capita: 46000
+
+    vigilancia_sanitaria:
+      orgao: "SUVISA/RJ — Superintendência de Vigilância Sanitária"
+      legislacao_principal: "Resolução SES nº 1.411/2019"
+      particularidades:
+        - "Atenção especial a requisitos municipais do Rio (SUBVISA)"
+        - "Niterói e municípios da Baixada têm exigências próprias"
+        - "Cadastro estadual e municipal podem ser separados"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "30-90 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 200-600"
+
+    icms:
+      aliquota_interna: 20
+      fecp: 2  # Fundo de Combate à Pobreza (adicional)
+      aliquota_efetiva: 22
+      nota: "Uma das alíquotas mais altas do país"
+
+    alvara_funcionamento:
+      municipal: true
+      processo: "Varia muito por município"
+      prazo: "30-90 dias"
+      nota: "Cidade do Rio tem sistema digital, interior pode ser lento"
+
+    facilidades:
+      - "Grande mercado consumidor"
+      - "Turismo gera demanda em pontos estratégicos"
+      - "Infraestrutura de fornecedores"
+
+    desafios:
+      - "ICMS alto (20% + FECP)"
+      - "Segurança em algumas regiões"
+      - "Burocracia municipal variável"
+      - "Logística complexa (geografia)"
+
+  # ----------------------------------------------------------
+  MG:
+    nome: "Minas Gerais"
+    capital: "Belo Horizonte"
+    dificuldade: 2
+    prioridade_avend: 2
+    populacao_milhoes: 21.4
+    pib_per_capita: 36000
+
+    vigilancia_sanitaria:
+      orgao: "SES/MG — Secretaria de Estado de Saúde"
+      legislacao_principal: "Resolução SES/MG nº 6.362/2018"
+      particularidades:
+        - "Alinhada com ANVISA nacional"
+        - "Menos exigente que SP"
+        - "BH tem sistema próprio (SMSA)"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "15-45 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 150-400"
+
+    icms:
+      aliquota_interna: 18
+      beneficios:
+        - "Regime especial para micro e pequenas empresas"
+      nota: "Alinhado com média nacional"
+
+    alvara_funcionamento:
+      municipal: true
+      prazo: "15-30 dias (BH tem sistema digital)"
+
+    facilidades:
+      - "Terceiro maior mercado do Brasil"
+      - "Custo operacional menor que SP/RJ"
+      - "Boa infraestrutura logística"
+      - "Cultura empreendedora forte"
+
+    desafios:
+      - "Interior tem logística mais difícil"
+      - "Fornecedores concentrados em BH"
+
+  # ----------------------------------------------------------
+  PR:
+    nome: "Paraná"
+    capital: "Curitiba"
+    dificuldade: 2
+    prioridade_avend: 4
+    populacao_milhoes: 11.6
+    pib_per_capita: 47000
+
+    vigilancia_sanitaria:
+      orgao: "SESA/PR — Secretaria de Estado da Saúde"
+      legislacao_principal: "Resolução SESA nº 748/2014"
+      particularidades:
+        - "Processo digital avançado"
+        - "Fiscalização organizada e previsível"
+        - "Curitiba tem sistema próprio eficiente"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "15-30 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 150-350"
+
+    icms:
+      aliquota_interna: 19
+      nota: "Ligeiramente acima da média nacional"
+
+    alvara_funcionamento:
+      municipal: true
+      prazo: "10-25 dias (Curitiba digitalizada)"
+
+    facilidades:
+      - "Alta renda per capita"
+      - "Processos organizados e previsíveis"
+      - "Bom nível educacional (franqueados qualificados)"
+      - "Infraestrutura logística forte"
+
+    desafios:
+      - "Mercado menor que SP/RJ/MG"
+      - "Clima frio reduz venda de bebidas geladas no inverno"
+
+  # ----------------------------------------------------------
+  SC:
+    nome: "Santa Catarina"
+    capital: "Florianópolis"
+    dificuldade: 2
+    prioridade_avend: 5
+    populacao_milhoes: 7.6
+    pib_per_capita: 52000
+
+    vigilancia_sanitaria:
+      orgao: "DIVE/SC — Diretoria de Vigilância Epidemiológica"
+      legislacao_principal: "Portaria SES nº 348/2019"
+      particularidades:
+        - "Fiscalização rigorosa mas previsível"
+        - "Foco em qualidade, não em burocracia"
+        - "Balneários têm fiscalização sazonal intensificada"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "15-30 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 150-350"
+
+    icms:
+      aliquota_interna: 17
+      nota: "Uma das menores do país"
+
+    alvara_funcionamento:
+      municipal: true
+      prazo: "10-30 dias"
+
+    facilidades:
+      - "PIB per capita alto"
+      - "Indicadores sociais excelentes"
+      - "Mercado receptivo a inovação"
+      - "ICMS baixo"
+
+    desafios:
+      - "Mercado menor (7.6M habitantes)"
+      - "Logística para litoral vs. interior"
+      - "Sazonalidade em cidades turísticas"
+
+  # ----------------------------------------------------------
+  RS:
+    nome: "Rio Grande do Sul"
+    capital: "Porto Alegre"
+    dificuldade: 3
+    prioridade_avend: 6
+    populacao_milhoes: 11.5
+    pib_per_capita: 46000
+
+    vigilancia_sanitaria:
+      orgao: "CEVS/RS — Centro Estadual de Vigilância em Saúde"
+      legislacao_principal: "Portaria SES/RS nº 542/2014"
+      particularidades:
+        - "Exigências adicionais em equipamentos de refrigeração"
+        - "Atenção a requisitos de rastreabilidade"
+        - "POA tem regulamentação própria detalhada"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "20-45 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 150-400"
+
+    icms:
+      aliquota_interna: 17
+      nota: "Alíquota base baixa, mas verificar ST por produto"
+
+    alvara_funcionamento:
+      municipal: true
+      prazo: "15-45 dias"
+
+    facilidades:
+      - "Mercado maduro e organizado"
+      - "Cultura de consumo forte"
+      - "Infraestrutura boa nas cidades maiores"
+
+    desafios:
+      - "Regulação mais detalhista em equipamentos"
+      - "Logística para interior pode ser cara"
+      - "Clima extremo impacta sazonalidade"
+      - "Eventos climáticos recentes (enchentes 2024)"
+
+  # ----------------------------------------------------------
+  BA:
+    nome: "Bahia"
+    capital: "Salvador"
+    dificuldade: 3
+    prioridade_avend: 9
+    populacao_milhoes: 14.9
+    pib_per_capita: 23000
+
+    vigilancia_sanitaria:
+      orgao: "DIVISA/BA — Diretoria de Vigilância Sanitária"
+      legislacao_principal: "Portaria SES/BA nº 2.170/2019"
+      particularidades:
+        - "Processo mais lento que Sul/Sudeste"
+        - "Fiscalização pode ter prazos imprevisíveis"
+        - "Salvador tem sistema próprio (SMS)"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "30-90 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 150-400"
+
+    icms:
+      aliquota_interna: 20.5
+      fecop: 2  # Incluso no 20.5%
+      nota: "Alíquota alta para alimentos processados"
+
+    alvara_funcionamento:
+      municipal: true
+      prazo: "30-60 dias"
+
+    facilidades:
+      - "Maior mercado do Nordeste"
+      - "Hubs urbanos fortes (Salvador, Feira de Santana)"
+      - "Turismo gera demanda"
+      - "Mercado menos competitivo em vending"
+
+    desafios:
+      - "PIB per capita menor"
+      - "ICMS alto"
+      - "Burocracia mais lenta"
+      - "Logística para interior desafiadora"
+
+  # ----------------------------------------------------------
+  PE:
+    nome: "Pernambuco"
+    capital: "Recife"
+    dificuldade: 3
+    prioridade_avend: 10
+    populacao_milhoes: 9.7
+    pib_per_capita: 24000
+
+    vigilancia_sanitaria:
+      orgao: "APEVISA — Agência Pernambucana de Vigilância Sanitária"
+      legislacao_principal: "Portaria SES/PE nº 390/2018"
+      particularidades:
+        - "Digitalização em progresso"
+        - "Recife tem sistema próprio municipal"
+        - "Atenção a exigências de conservação (calor)"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "30-90 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 150-350"
+
+    icms:
+      aliquota_interna: 20.5
+      fecop: 2  # Incluso
+      nota: "Similar à Bahia"
+
+    alvara_funcionamento:
+      municipal: true
+      prazo: "30-60 dias"
+
+    facilidades:
+      - "Hub econômico do Nordeste"
+      - "Porto de Suape (logística)"
+      - "Mercado corporativo crescente"
+
+    desafios:
+      - "PIB per capita menor"
+      - "ICMS alto"
+      - "Calor extremo exige atenção em refrigeração"
+
+  # ----------------------------------------------------------
+  CE:
+    nome: "Ceará"
+    capital: "Fortaleza"
+    dificuldade: 2
+    prioridade_avend: "avaliando"
+    populacao_milhoes: 9.2
+    pib_per_capita: 20000
+
+    vigilancia_sanitaria:
+      orgao: "NUVIS/CE — Núcleo de Vigilância Sanitária"
+      legislacao_principal: "Legislação alinhada com ANVISA"
+      particularidades:
+        - "Processo relativamente simples"
+        - "Fortaleza tem sistema municipal funcional"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "20-45 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 100-300"
+
+    icms:
+      aliquota_interna: 20
+      fecop: 2  # Adicional
+      aliquota_efetiva: 22
+      nota: "Alíquota efetiva entre as mais altas"
+
+    alvara_funcionamento:
+      municipal: true
+      prazo: "15-45 dias"
+
+    facilidades:
+      - "Processo regulatório relativamente simples"
+      - "Turismo forte (demanda em hotéis, aeroporto)"
+      - "Custo operacional baixo"
+
+    desafios:
+      - "ICMS alto (20% + FECOP)"
+      - "Logística para interior cara"
+      - "PIB per capita baixo"
+
+  # ----------------------------------------------------------
+  DF:
+    nome: "Distrito Federal"
+    capital: "Brasília"
+    dificuldade: 4
+    prioridade_avend: 7
+    populacao_milhoes: 3.1
+    pib_per_capita: 90000
+
+    vigilancia_sanitaria:
+      orgao: "DIVISA/DF — Diretoria de Vigilância Sanitária"
+      legislacao_principal: "Regulamentação própria do DF"
+      particularidades:
+        - "Regulamentação própria, diferente dos estados"
+        - "Muito específica e detalhada"
+        - "GDF tem exigências adicionais"
+        - "Classificação sanitária por tipo de atividade"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "30-60 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 200-500"
+      nota: >
+        DF não é estado, tem regulamentação própria que combina
+        competências estaduais e municipais. Mais complexo.
+
+    icms:
+      aliquota_interna: 18
+      nota: "Alíquota moderada"
+
+    alvara_funcionamento:
+      processo: "Via sistema do GDF (Governo do Distrito Federal)"
+      prazo: "20-45 dias"
+      nota: "Administrações regionais podem ter variações"
+
+    facilidades:
+      - "PIB per capita mais alto do Brasil"
+      - "Mercado corporativo enorme (governo + empresas)"
+      - "Poder aquisitivo elevado"
+      - "Mercado concentrado (fácil logística)"
+
+    desafios:
+      - "Regulamentação muito específica"
+      - "Burocracia do GDF"
+      - "Licitações para espaços públicos"
+      - "Mercado limitado (3.1M habitantes)"
+
+  # ----------------------------------------------------------
+  GO:
+    nome: "Goiás"
+    capital: "Goiânia"
+    dificuldade: 2
+    prioridade_avend: 8
+    populacao_milhoes: 7.2
+    pib_per_capita: 38000
+
+    vigilancia_sanitaria:
+      orgao: "SES/GO — Secretaria de Estado da Saúde"
+      legislacao_principal: "Alinhada com ANVISA nacional"
+      particularidades:
+        - "Processo simples e alinhado com ANVISA"
+        - "Goiânia tem processo digital"
+        - "Menor burocracia que a maioria"
+      alvara_sanitario:
+        obrigatorio: true
+        prazo_emissao: "15-30 dias"
+        renovacao: "anual"
+        custo_estimado: "R$ 100-300"
+
+    icms:
+      aliquota_interna: 17
+      nota: "Uma das menores alíquotas — vantagem competitiva"
+
+    alvara_funcionamento:
+      municipal: true
+      prazo: "10-30 dias"
+      nota: "Goiânia tem processo ágil"
+
+    facilidades:
+      - "Regulação simples"
+      - "ICMS baixo"
+      - "Crescimento econômico acelerado"
+      - "Custo operacional competitivo"
+      - "Baixa competição em vending"
+      - "Proximidade com DF (sinergia)"
+
+    desafios:
+      - "Mercado menor"
+      - "Menos fornecedores locais"
+
+# ============================================================
+# RANKING DE DIFICULDADE REGULATÓRIA
+# ============================================================
+ranking_dificuldade:
+  descricao: "1 = mais fácil, 5 = mais difícil"
+  ranking:
+    - estado: GO
+      dificuldade: 2
+      justificativa: "Processo simples, ICMS baixo, pouca burocracia"
+    - estado: MG
+      dificuldade: 2
+      justificativa: "Alinhado com ANVISA, processo razoável"
+    - estado: PR
+      dificuldade: 2
+      justificativa: "Digital, organizado, previsível"
+    - estado: SC
+      dificuldade: 2
+      justificativa: "Rigoroso mas previsível e justo"
+    - estado: CE
+      dificuldade: 2
+      justificativa: "Relativamente simples"
+    - estado: SP
+      dificuldade: 3
+      justificativa: "Exigente, mas processos claros e digitais"
+    - estado: RJ
+      dificuldade: 3
+      justificativa: "Variação municipal alta, ICMS elevado"
+    - estado: RS
+      dificuldade: 3
+      justificativa: "Detalhista em equipamentos"
+    - estado: BA
+      dificuldade: 3
+      justificativa: "Processo mais lento, ICMS alto"
+    - estado: PE
+      dificuldade: 3
+      justificativa: "Digitalizando, mas ainda burocrático"
+    - estado: DF
+      dificuldade: 4
+      justificativa: "Regulamentação própria muito específica"
+
+# ============================================================
+# RECOMENDAÇÃO ESTRATÉGICA POR CLUSTER
+# ============================================================
+clusters_recomendados:
+  cluster_1_prioritario:
+    estados: [SP, MG]
+    justificativa: "Maiores mercados, infraestrutura completa"
+    ordem_sugerida: "SP primeiro (validação), MG segundo (escala)"
+
+  cluster_2_sul:
+    estados: [PR, SC]
+    justificativa: "Alta renda, regulação previsível, ICMS moderado"
+    ordem_sugerida: "PR primeiro (maior mercado), SC segundo"
+
+  cluster_3_centro:
+    estados: [DF, GO]
+    justificativa: "DF alta renda + GO custo baixo = sinergia"
+    ordem_sugerida: "GO primeiro (fácil), DF segundo (complexo)"
+
+  cluster_4_nordeste:
+    estados: [BA, PE, CE]
+    justificativa: "Mercado grande, baixa competição, ICMS desafiante"
+    ordem_sugerida: "BA primeiro (maior), PE ou CE segundo"
+
+  cluster_5_acompanhar:
+    estados: [RJ, RS]
+    justificativa: "Mercados importantes mas desafios específicos"
+    nota: "RJ — ICMS alto + segurança. RS — logística + clima"

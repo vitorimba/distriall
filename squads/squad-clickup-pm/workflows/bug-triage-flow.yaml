@@ -1,0 +1,33 @@
+name: bug-triage-flow
+description: "Fluxo de triagem, priorização e resolução de bugs"
+version: 1.0.0
+trigger: manual
+command: "*bug-triage"
+
+phases:
+  - name: "1. Report"
+    agent: task-architect
+    task: criar-bug.md
+    description: "Criar bug report estruturado"
+    output: "Bug com steps to reproduce, expected/actual behavior"
+
+  - name: "2. Triage"
+    agent: sprint-planner
+    task: priorizar-moscow.md
+    description: "Classificar severity e prioridade"
+    dependencies: ["1. Report"]
+    output: "Bug priorizado (Critical/High/Medium/Low)"
+
+  - name: "3. Assign"
+    agent: sprint-planner
+    task: capacidade.md
+    description: "Atribuir a dev com capacidade disponível"
+    dependencies: ["2. Triage"]
+    output: "Bug assignado com due date"
+
+  - name: "4. Track"
+    agent: status-reporter
+    task: blockers.md
+    description: "Monitorar progresso e escalar se necessário"
+    dependencies: ["3. Assign"]
+    output: "Status atualizado, escalação se aging > SLA"

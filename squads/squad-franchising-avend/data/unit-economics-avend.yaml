@@ -1,0 +1,387 @@
+# Unit Economics — Avend Franquias (Modelo Calibrado)
+# Squad: squad-franchising-avend
+# Founder: Guilherme Alvares
+# Modelo: Vending machines (snacks, bebidas, café)
+# Investimento base: R$ 50.000
+# Última atualização: 2026-03-13
+
+metadata:
+  empresa: "Avend Franquias"
+  segmento: "Vending machines / Autoatendimento"
+  mercado: "Brasil"
+  moeda: "BRL"
+  estagio: "Early-growth"
+  disclaimer: >
+    Modelo financeiro de referência. Resultados reais podem variar conforme
+    localização, tipo de ponto, mix de produtos e gestão do franqueado.
+    Revisar trimestralmente com dados reais da rede.
+
+# ============================================================
+# INVESTIMENTO INICIAL — BREAKDOWN
+# ============================================================
+investimento:
+  total: 50000
+  composicao:
+    taxa_franquia:
+      valor: 15000
+      percentual: 30
+      descricao: "Direito de uso da marca, treinamento, suporte inicial"
+      condicao_pagamento: "À vista ou 3x sem juros"
+    equipamentos:
+      valor: 22000
+      percentual: 44
+      descricao: "2-3 máquinas de vending (snacks + bebidas)"
+      detalhamento:
+        maquina_snacks:
+          valor: 9000
+          quantidade: 1
+        maquina_bebidas:
+          valor: 8000
+          quantidade: 1
+        maquina_cafe_ou_combo:
+          valor: 5000
+          quantidade: 1
+          nota: "Opcional — pode ser 3ª máquina snacks/bebidas"
+      condicao_pagamento: "À vista ou 12x com taxa"
+    capital_giro:
+      valor: 8000
+      percentual: 16
+      descricao: "Estoque inicial, primeiros meses de operação"
+      detalhamento:
+        estoque_inicial: 5000
+        reserva_operacional: 3000
+    marketing_inicial:
+      valor: 3000
+      percentual: 6
+      descricao: "Material de divulgação, adesivos, ativação nos pontos"
+    instalacao_e_configuracao:
+      valor: 2000
+      percentual: 4
+      descricao: "Instalação de máquinas, sistema de pagamento, telemetria"
+
+# ============================================================
+# MODELO DE RECEITA
+# ============================================================
+receita:
+  por_maquina:
+    snacks:
+      transacoes_dia_media: 30
+      ticket_medio: 5.50
+      receita_diaria: 165.00
+      receita_mensal: 4950.00  # 30 dias
+      sazonalidade:
+        meses_fortes: [3, 4, 5, 8, 9, 10, 11]  # março-maio, agosto-novembro
+        meses_fracos: [1, 2, 7, 12]  # janeiro, fevereiro, julho, dezembro
+        variacao_forte: 1.15  # +15%
+        variacao_fraco: 0.80  # -20%
+
+    bebidas:
+      transacoes_dia_media: 35
+      ticket_medio: 4.50
+      receita_diaria: 157.50
+      receita_mensal: 4725.00
+      sazonalidade:
+        meses_fortes: [10, 11, 12, 1, 2, 3]  # outubro-março (calor)
+        meses_fracos: [5, 6, 7, 8]  # maio-agosto (frio)
+        variacao_forte: 1.25  # +25%
+        variacao_fraco: 0.75  # -25%
+
+    cafe:
+      transacoes_dia_media: 25
+      ticket_medio: 3.50
+      receita_diaria: 87.50
+      receita_mensal: 2625.00
+      sazonalidade:
+        meses_fortes: [5, 6, 7, 8]  # maio-agosto (frio)
+        meses_fracos: [11, 12, 1, 2]  # novembro-fevereiro (calor)
+        variacao_forte: 1.20
+        variacao_fraco: 0.85
+
+  por_tipo_de_ponto:
+    corporativo:
+      descricao: "Empresas com 100+ funcionários"
+      receita_mensal_media: 5500
+      variabilidade: "baixa"
+      sazonalidade: "Cai em férias coletivas (dez-jan)"
+    shopping:
+      descricao: "Shoppings centers, áreas de alimentação"
+      receita_mensal_media: 4800
+      variabilidade: "media"
+      sazonalidade: "Picos em datas comerciais"
+    educacao:
+      descricao: "Universidades, escolas técnicas"
+      receita_mensal_media: 4200
+      variabilidade: "alta"
+      sazonalidade: "Cai fortemente em férias (jan, jul)"
+    saude:
+      descricao: "Hospitais, clínicas, laboratórios"
+      receita_mensal_media: 3800
+      variabilidade: "baixa"
+      sazonalidade: "Estável — funciona 24/7"
+    transporte:
+      descricao: "Rodoviárias, metrô, aeroportos"
+      receita_mensal_media: 6000
+      variabilidade: "media"
+      sazonalidade: "Picos em feriados e férias"
+
+  receita_mensal_unitaria:
+    composicao: "2-3 máquinas por unidade franqueada"
+    pessimista: 8000
+    realista: 12000
+    otimista: 16000
+
+# ============================================================
+# ESTRUTURA DE CUSTOS
+# ============================================================
+custos:
+  variaveis:
+    cogs:
+      descricao: "Custo dos produtos vendidos"
+      percentual_receita: 40
+      detalhamento:
+        snacks: 38  # margem bruta 62%
+        bebidas: 42  # margem bruta 58%
+        cafe: 35  # margem bruta 65%
+      nota: "Fornecedores homologados garantem preço"
+
+    royalties:
+      descricao: "Royalty mensal para franqueadora"
+      percentual_receita: 5
+      base_calculo: "faturamento bruto"
+      minimo_mensal: 0  # sem mínimo na fase early-growth
+      nota: "Multi-unidade pode ter desconto (ver playbook)"
+
+    fundo_marketing:
+      descricao: "Contribuição ao fundo de marketing da rede"
+      percentual_receita: 2
+      base_calculo: "faturamento bruto"
+
+    impostos:
+      descricao: "Simples Nacional (faixa inicial)"
+      percentual_receita: 6
+      regime: "Simples Nacional"
+      faixa: "Anexo I — Comércio"
+      nota: "Alíquota efetiva varia conforme faturamento acumulado 12 meses"
+
+    taxa_pagamento_digital:
+      descricao: "Taxa de cartão/PIX (operadora de pagamento)"
+      percentual_receita: 2.5
+      detalhamento:
+        cartao_credito: 3.5
+        cartao_debito: 2.0
+        pix: 0.5
+        dinheiro: 0
+      mix_estimado:
+        cartao: 40
+        pix: 45
+        dinheiro: 15
+
+  fixos_mensais:
+    manutencao:
+      valor: 500
+      descricao: "Manutenção preventiva e corretiva"
+      detalhamento:
+        preventiva: 200  # Mensal
+        corretiva_media: 300  # Média mensal (varia)
+    reposicao_logistica:
+      valor: 400
+      descricao: "Combustível, transporte para reposição"
+    telefonia_internet:
+      valor: 100
+      descricao: "Chip de dados para telemetria das máquinas"
+    seguro:
+      valor: 150
+      descricao: "Seguro dos equipamentos"
+    contador:
+      valor: 300
+      descricao: "Serviço contábil mensal"
+    diversos:
+      valor: 200
+      descricao: "Limpeza, material, imprevistos"
+
+  total_fixo_mensal: 1650
+
+# ============================================================
+# DRE — DEMONSTRAÇÃO POR CENÁRIO
+# ============================================================
+dre:
+  pessimista:
+    receita_bruta: 8000
+    deducoes:
+      cogs: -3200  # 40%
+      royalties: -400  # 5%
+      fundo_marketing: -160  # 2%
+      impostos: -480  # 6%
+      taxa_pagamento: -200  # 2.5%
+    receita_liquida: 3560
+    custos_fixos: -1650
+    lucro_operacional: 1910
+    margem_operacional_pct: 23.9
+    lucro_mensal: 1910
+
+  realista:
+    receita_bruta: 12000
+    deducoes:
+      cogs: -4800  # 40%
+      royalties: -600  # 5%
+      fundo_marketing: -240  # 2%
+      impostos: -720  # 6%
+      taxa_pagamento: -300  # 2.5%
+    receita_liquida: 5340
+    custos_fixos: -1650
+    lucro_operacional: 3690
+    margem_operacional_pct: 30.8
+    lucro_mensal: 3690
+
+  otimista:
+    receita_bruta: 16000
+    deducoes:
+      cogs: -6400  # 40%
+      royalties: -800  # 5%
+      fundo_marketing: -320  # 2%
+      impostos: -960  # 6%
+      taxa_pagamento: -400  # 2.5%
+    receita_liquida: 7120
+    custos_fixos: -1650
+    lucro_operacional: 5470
+    margem_operacional_pct: 34.2
+    lucro_mensal: 5470
+
+# ============================================================
+# BREAK-EVEN ANALYSIS
+# ============================================================
+break_even:
+  investimento_total: 50000
+
+  pessimista:
+    lucro_mensal: 1910
+    meses_break_even: 27
+    nota: "Acima de 24 meses — risco moderado"
+
+  realista:
+    lucro_mensal: 3690
+    meses_break_even: 14
+    nota: "Dentro do benchmark ABF (12-18 meses)"
+
+  otimista:
+    lucro_mensal: 5470
+    meses_break_even: 10
+    nota: "Retorno rápido — atrativo para investidor"
+
+  ponto_equilibrio_mensal:
+    descricao: "Faturamento mínimo para cobrir custos fixos + variáveis"
+    formula: "Custos fixos / (1 - % custos variáveis)"
+    custos_fixos: 1650
+    margem_contribuicao_pct: 44.5  # 100% - 55.5% (COGS + royalty + mkt + imposto + taxa)
+    faturamento_minimo: 3708
+    nota: "Faturar R$ 3.708/mês para não ter prejuízo operacional"
+
+# ============================================================
+# ROI PROJECTIONS
+# ============================================================
+roi:
+  pessimista:
+    investimento: 50000
+    lucro_anual: 22920  # 1.910 x 12
+    roi_anual_pct: 45.8
+    payback_meses: 27
+    valor_presente_liquido_5anos: 64600  # TMA 12% a.a.
+    tir_anual_pct: 38
+
+  realista:
+    investimento: 50000
+    lucro_anual: 44280  # 3.690 x 12
+    roi_anual_pct: 88.6
+    payback_meses: 14
+    valor_presente_liquido_5anos: 109500  # TMA 12% a.a.
+    tir_anual_pct: 78
+
+  otimista:
+    investimento: 50000
+    lucro_anual: 65640  # 5.470 x 12
+    roi_anual_pct: 131.3
+    payback_meses: 10
+    valor_presente_liquido_5anos: 186200  # TMA 12% a.a.
+    tir_anual_pct: 118
+
+# ============================================================
+# ESCALABILIDADE — MULTI-UNIDADE
+# ============================================================
+escalabilidade:
+  nota: >
+    Economia de escala vem de: compras consolidadas (COGS menor),
+    royalty reduzido, custos fixos diluídos, logística otimizada.
+
+  unidade_1:
+    investimento_total: 50000
+    investimento_incremental: 50000
+    receita_mensal: 12000
+    custos_fixos_mensais: 1650
+    lucro_mensal: 3690
+    margem_operacional_pct: 30.8
+    break_even_meses: 14
+
+  unidades_3:
+    investimento_total: 130000  # Desconto multi-unidade
+    investimento_incremental: 80000  # 2ª e 3ª unidade
+    receita_mensal: 36000
+    custos_fixos_mensais: 3800  # Economia de escala (~23% menor por unidade)
+    cogs_pct: 38  # Poder de compra maior
+    royalty_pct: 4.5  # Desconto multi-unidade
+    lucro_mensal: 12200
+    margem_operacional_pct: 33.9
+    break_even_meses: 11
+
+  unidades_5:
+    investimento_total: 200000  # Desconto significativo
+    investimento_incremental: 70000  # 4ª e 5ª unidade
+    receita_mensal: 60000
+    custos_fixos_mensais: 5500  # Economia de escala forte
+    cogs_pct: 36  # Poder de compra consolidado
+    royalty_pct: 4.5
+    lucro_mensal: 23400
+    margem_operacional_pct: 39.0
+    break_even_meses: 9
+
+  unidades_10:
+    investimento_total: 370000
+    investimento_incremental: 170000
+    receita_mensal: 120000
+    custos_fixos_mensais: 9000
+    cogs_pct: 35
+    royalty_pct: 4.0
+    lucro_mensal: 52800
+    margem_operacional_pct: 44.0
+    break_even_meses: 8
+    nota: "Master operador — estrutura de gestão necessária"
+
+# ============================================================
+# PREMISSAS E SENSIBILIDADE
+# ============================================================
+premissas:
+  ocupacao_maquinas: 90  # % do tempo ativas
+  dias_operacao_mes: 30
+  mix_pagamento:
+    pix: 45
+    cartao: 40
+    dinheiro: 15
+  perda_produto_pct: 3  # Vencimento, dano
+  crescimento_receita_anual_pct: 5  # Orgânico
+  inflacao_custos_anual_pct: 4
+
+sensibilidade:
+  - variavel: "COGS (+5pp)"
+    impacto_lucro_mensal: -600
+    novo_break_even_meses: 18
+  - variavel: "Receita (-20%)"
+    impacto_lucro_mensal: -1290
+    novo_break_even_meses: 21
+  - variavel: "Custos fixos (+30%)"
+    impacto_lucro_mensal: -495
+    novo_break_even_meses: 16
+  - variavel: "Ticket médio (+10%)"
+    impacto_lucro_mensal: +534
+    novo_break_even_meses: 12
+  - variavel: "Transações/dia (+20%)"
+    impacto_lucro_mensal: +1068
+    novo_break_even_meses: 11

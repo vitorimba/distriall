@@ -1,0 +1,2737 @@
+metadata:
+  scan_date: '2026-04-14T10:59:20.357214'
+  squads_path: from .aiox/sync-config.yaml → template_path/squads
+  total_squads: 35
+squads:
+  aiox-sop:
+    name: aiox-sop
+    path: squads/aiox-sop/
+    has_config: true
+    config:
+      name: aiox-sop
+      version: 1.0.0
+      short_title: ''
+      description: Elite SOP creation, extraction, analysis, grading and AI-optimization
+        squad. Creates world-class SOPs for humans and AI agents based on Deming,
+        Gawande, Juran, Toyota, ISO 9001, FDA/GMP, and Six Sigma methodologies.
+      slashPrefix: ''
+    counts:
+      agents: 6
+      tasks: 22
+      workflows: 5
+      templates: 15
+      checklists: 6
+      data_files: 14
+    agent_names:
+    - sop-auditor
+    - sop-analyst
+    - sop-creator
+    - sop-chief
+    - sop-ml-architect
+    - sop-extractor
+    has_readme: true
+    has_changelog: true
+    total_components: 68
+    executor_data:
+      executor_capable_agents:
+      - id: sop-chief
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: sop-analyst
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: sop-creator
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: sop-ml-architect
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: sop-extractor
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: sop-auditor
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      executor_reviewers: []
+      aggregated_work_contexts:
+      - general
+  brand:
+    name: brand
+    path: squads/brand/
+    has_config: true
+    config:
+      name: brand
+      version: 1.1.0
+      short_title: ''
+      description: SNP (Igor) + E/F/F (Ana) com 11 especialistas globais para fundamentos,
+        posicionamento e ativação
+      slashPrefix: ''
+    counts:
+      agents: 16
+      tasks: 22
+      workflows: 9
+      templates: 4
+      checklists: 2
+      data_files: 4
+    agent_names:
+    - brand-strategist
+    - miller-sticky-brand
+    - sharp-brand-science
+    - ries-positioning
+    - heyward-dtc-brand
+    - storybrand-narrator
+    - keller-brand-equity
+    - yohn-brand-culture
+    - domain-scout
+    - aaker-brand-identity
+    - wheeler-brand-design
+    - nano-banana-generator
+    - archetype-consultant
+    - naming-strategist
+    - neumeier-differentiation
+    - brand-chief
+    has_readme: true
+    has_changelog: true
+    total_components: 57
+    executor_data:
+      executor_capable_agents:
+      - id: naming-strategist
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: brand-strategist
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: domain-scout
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: keller-brand-equity
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: aaker-brand-identity
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: sharp-brand-science
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: neumeier-differentiation
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: ries-positioning
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: storybrand-narrator
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: archetype-consultant
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: wheeler-brand-design
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: yohn-brand-culture
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: heyward-dtc-brand
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: miller-sticky-brand
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      executor_reviewers: []
+      aggregated_work_contexts:
+      - general
+  claude-code-mastery:
+    name: claude-code-mastery
+    path: squads/claude-code-mastery/
+    has_config: true
+    config:
+      name: claude-code-mastery
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 8
+      tasks: 31
+      workflows: 3
+      templates: 12
+      checklists: 7
+      data_files: 13
+    agent_names:
+    - mcp-integrator
+    - hooks-architect
+    - skill-craftsman
+    - swarm-orchestrator
+    - config-engineer
+    - claude-mastery-chief
+    - project-integrator
+    - roadmap-sentinel
+    has_readme: true
+    has_changelog: true
+    total_components: 74
+    executor_data:
+      executor_capable_agents:
+      - id: hooks-architect
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - hooks
+        - automação
+        - lifecycle
+        - validation
+        - damage-control
+        core_replaces: '@dev'
+        can_review:
+        - hooks
+        - automação
+      - id: mcp-integrator
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - mcp
+        - tool-discovery
+        - integration
+        - context-budget
+        - transport
+        core_replaces: '@dev'
+        can_review:
+        - mcp
+        - integration
+      - id: swarm-orchestrator
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - agent-teams
+        - subagents
+        - worktrees
+        - coordination
+        - sessions
+        core_replaces: '@architect'
+        can_review:
+        - orchestration
+        - swarm
+      - id: config-engineer
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - settings
+        - permissions
+        - CLAUDE.md
+        - rules
+        - personas
+        - config
+        core_replaces: '@dev'
+        can_review:
+        - configuration
+        - permissions
+      - id: skill-craftsman
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - skills
+        - commands
+        - plugins
+        - context-engineering
+        - marketplace
+        core_replaces: '@dev'
+        can_review:
+        - skills
+        - commands
+        - plugins
+      - id: project-integrator
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - project-integration
+        - brownfield
+        - monorepo
+        - ci-cd
+        - setup
+        core_replaces: '@devops'
+        can_review:
+        - integration
+        - setup
+      - id: roadmap-sentinel
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - roadmap
+        - changelog
+        - feature-adoption
+        - release-notes
+        - ecosystem
+        core_replaces: '@analyst'
+        can_review:
+        - roadmap
+        - updates
+        - changelog
+      executor_reviewers:
+      - id: mastery-steward
+        can_review:
+        - configuração
+        - hooks
+        - mcp
+        - roadmap
+        - integração
+      - id: mastery-reviewer
+        can_review:
+        - setup
+        - quality-gates
+        - artifacts
+        - update-knowledge
+      - id: claude-mastery-chief
+        can_review:
+        - claude-code
+        - orchestration
+        - audit
+      aggregated_work_contexts:
+      - CLAUDE.md
+      - agent-teams
+      - automação
+      - brownfield
+      - changelog
+      - ci-cd
+      - commands
+      - config
+      - context-budget
+      - context-engineering
+      - coordination
+      - damage-control
+      - ecosystem
+      - feature-adoption
+      - hooks
+      - integration
+      - lifecycle
+      - marketplace
+      - mcp
+      - monorepo
+      - permissions
+      - personas
+      - plugins
+      - project-integration
+      - release-notes
+      - roadmap
+      - rules
+      - sessions
+      - settings
+      - setup
+      - skills
+      - subagents
+      - tool-discovery
+      - transport
+      - validation
+      - worktrees
+  content-distillery:
+    name: content-distillery
+    path: squads/content-distillery/
+    has_config: true
+    config:
+      name: content-distillery
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 9
+      tasks: 12
+      workflows: 3
+      templates: 4
+      checklists: 2
+      data_files: 5
+    agent_names:
+    - model-identifier
+    - idea-multiplier
+    - production-ops
+    - knowledge-architect
+    - youtube-strategist
+    - ecosystem-designer
+    - distillery-chief
+    - content-atomizer
+    - tacit-extractor
+    has_readme: true
+    has_changelog: false
+    total_components: 35
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  copy:
+    name: copy
+    path: squads/copy/
+    has_config: true
+    config:
+      name: copy
+      version: 4.0.0
+      short_title: Copy - Elite Copywriting Squad
+      description: Time de copywriters lendários organizado por tiers para criar peças
+        de alta conversão.
+      slashPrefix: copy
+    counts:
+      agents: 27
+      tasks: 71
+      workflows: 18
+      templates: 30
+      checklists: 33
+      data_files: 28
+    agent_names:
+    - gary-bencivenga
+    - alex-hormozi
+    - launch-owner
+    - andre-chaperon
+    - john-carlton
+    - david-deutsch
+    - clayton-makepeace
+    - david-ogilvy
+    - claude-hopkins
+    - todd-brown
+    - jim-rutz
+    - stefan-georgi
+    - gary-halbert
+    - frank-kern
+    - copy-chief
+    - joe-sugarman
+    - dan-koe
+    - ben-settle
+    - eugene-schwartz
+    - russell-brunson
+    - dan-kennedy
+    - copy-ops-worker
+    - parris-lampropoulos
+    - jeff-walker
+    - jon-benson
+    - robert-collier
+    - ry-schwartz
+    has_readme: true
+    has_changelog: false
+    total_components: 207
+    executor_data:
+      executor_capable_agents:
+      - id: copy-ops-worker
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - package assembly
+        - deliverable normalization
+        - handoff manifest
+        - output packaging
+        - ops handoff
+        - file normalization
+        core_replaces: null
+        can_review:
+        - delivery-completeness
+        - handoff-integrity
+      - id: gary-halbert
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - sales letters
+        - headlines
+        - storytelling visceral
+        - emotional copy
+        - direct mail
+        - cartas de vendas
+        core_replaces: '@dev'
+        can_review:
+        - sales-letter-quality
+        - headline-power
+      - id: gary-bencivenga
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - bullets
+        - fascinations
+        - long-form copy
+        - control beating
+        - hipnotic bullets
+        - proof stack
+        core_replaces: '@dev'
+        can_review:
+        - bullet-quality
+        - fascination-power
+      - id: david-ogilvy
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - branding copy
+        - premium copy
+        - research-based
+        - elegant writing
+        - brand advertising
+        - long headlines
+        core_replaces: '@dev'
+        can_review:
+        - brand-copy
+        - premium-quality
+      - id: dan-kennedy
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - direct response
+        - urgência
+        - escassez
+        - 3Ms
+        - PAS
+        - ultimate sales letter
+        - NO B.S.
+        core_replaces: '@dev'
+        can_review:
+        - direct-response-quality
+        - urgency-scarcity
+      - id: todd-brown
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - big ideas
+        - unique mechanisms
+        - E5 method
+        - diferenciação
+        - mercados saturados
+        - marketing differentiation
+        core_replaces: '@dev'
+        can_review:
+        - big-idea-quality
+        - mechanism-uniqueness
+      - id: jon-benson
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - VSL scripts
+        - video sales letter
+        - Sellerator method
+        - video copy
+        - slide VSL
+        - conversion video
+        core_replaces: '@dev'
+        can_review:
+        - VSL-quality
+        - video-copy
+      - id: jeff-walker
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - PLF
+        - product launch formula
+        - PLC sequences
+        - mental triggers
+        - launch copy
+        - seed launch
+        core_replaces: '@dev'
+        can_review:
+        - launch-sequence
+        - PLF-compliance
+      - id: alex-hormozi
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - offer creation
+        - grand slam offers
+        - value equation
+        - pricing
+        - value stack
+        - irresistible offers
+        core_replaces: '@dev'
+        can_review:
+        - offer-strength
+        - pricing-strategy
+        - value-equation
+      - id: clayton-makepeace
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - visceral copy
+        - emotional amplification
+        - health market
+        - copy visceral
+        - amplificação emocional
+        - supplement copy
+        core_replaces: '@dev'
+        can_review:
+        - emotional-copy
+        - health-copy
+      - id: parris-lampropoulos
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - fascinations
+        - bullets 700-to-100
+        - long-form
+        - control copy
+        - Boardroom controls
+        - financial copy
+        core_replaces: '@dev'
+        can_review:
+        - bullet-density
+        - fascination-quality
+      - id: john-carlton
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - simple writing system
+        - conversational copy
+        - sales copy
+        - copy simplificada
+        - persuasive writing
+        core_replaces: '@dev'
+        can_review:
+        - copy-simplicity
+        - conversational-tone
+      - id: jim-rutz
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - magalogs
+        - direct mail
+        - magazine-format copy
+        - high-volume mail
+        - editorial style
+        - long-form direct
+        core_replaces: '@dev'
+        can_review:
+        - magalog-quality
+        - direct-mail-format
+      - id: david-deutsch
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - direct mail
+        - sales letters
+        - control copy
+        - cartas de vendas
+        - mail campaigns
+        - response copy
+        core_replaces: '@dev'
+        can_review:
+        - direct-mail-quality
+        - control-performance
+      - id: frank-kern
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - intent-based branding
+        - mass control
+        - behavioral dynamic response
+        - results in advance
+        - brand marketing
+        core_replaces: '@dev'
+        can_review:
+        - intent-branding
+        - mass-control
+      - id: stefan-georgi
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - RMBC method
+        - research mechanism brief copy
+        - copy sistematizada
+        - mecanismos
+        - systematic copy
+        core_replaces: '@dev'
+        can_review:
+        - RMBC-compliance
+        - mechanism-quality
+      - id: russell-brunson
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - funnels
+        - book launches
+        - free + shipping
+        - value ladders
+        - funnel hacking
+        - ClickFunnels
+        core_replaces: '@dev'
+        can_review:
+        - funnel-copy
+        - launch-copy
+      - id: dan-koe
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - digital writing
+        - one-person business
+        - content systems
+        - newsletter
+        - social writing
+        - creator economy
+        core_replaces: '@dev'
+        can_review:
+        - digital-writing
+        - content-systems
+      - id: andre-chaperon
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - soap opera sequences
+        - email storytelling
+        - autoresponder
+        - story-driven email
+        - narrative email
+        core_replaces: '@dev'
+        can_review:
+        - email-sequence
+        - story-email
+      - id: ben-settle
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - daily email
+        - infotainment
+        - personality-driven
+        - email diário
+        - provocative marketing
+        core_replaces: '@dev'
+        can_review:
+        - daily-email-quality
+        - infotainment
+      - id: ry-schwartz
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - email copywriting
+        - email sequences
+        - automation copy
+        - drip campaigns
+        - conversion emails
+        core_replaces: '@dev'
+        can_review:
+        - email-copy
+        - sequence-quality
+      executor_reviewers:
+      - id: copy-chief
+        can_review:
+        - copy-quality
+        - workflow-routing
+        - tier-compliance
+      - id: launch-owner
+        can_review:
+        - launch-readiness
+        - offer-truth
+        - risk-control
+        - checkpoint-approval
+      - id: claude-hopkins
+        can_review:
+        - copy-testing
+        - scientific-method
+      - id: eugene-schwartz
+        can_review:
+        - awareness-diagnosis
+        - market-sophistication
+      - id: joe-sugarman
+        can_review:
+        - trigger-compliance
+        - persuasion-checklist
+      - id: robert-collier
+        can_review:
+        - prospect-alignment
+        - mental-conversation
+      aggregated_work_contexts:
+      - 3Ms
+      - Boardroom controls
+      - ClickFunnels
+      - E5 method
+      - NO B.S.
+      - PAS
+      - PLC sequences
+      - PLF
+      - RMBC method
+      - Sellerator method
+      - VSL scripts
+      - amplificação emocional
+      - automation copy
+      - autoresponder
+      - behavioral dynamic response
+      - big ideas
+      - book launches
+      - brand advertising
+      - brand marketing
+      - branding copy
+      - bullets
+      - bullets 700-to-100
+      - cartas de vendas
+      - content systems
+      - control beating
+      - control copy
+      - conversational copy
+      - conversion emails
+      - conversion video
+      - copy simplificada
+      - copy sistematizada
+      - copy visceral
+      - creator economy
+      - daily email
+      - deliverable normalization
+      - diferenciação
+      - digital writing
+      - direct mail
+      - direct response
+      - drip campaigns
+      - editorial style
+      - elegant writing
+      - email copywriting
+      - email diário
+      - email sequences
+      - email storytelling
+      - emotional amplification
+      - emotional copy
+      - escassez
+      - fascinations
+      - file normalization
+      - financial copy
+      - free + shipping
+      - funnel hacking
+      - funnels
+      - grand slam offers
+      - handoff manifest
+      - headlines
+      - health market
+      - high-volume mail
+      - hipnotic bullets
+      - infotainment
+      - intent-based branding
+      - irresistible offers
+      - launch copy
+      - long headlines
+      - long-form
+      - long-form copy
+      - long-form direct
+      - magalogs
+      - magazine-format copy
+      - mail campaigns
+      - marketing differentiation
+      - mass control
+      - mecanismos
+      - mental triggers
+      - mercados saturados
+      - narrative email
+      - newsletter
+      - offer creation
+      - one-person business
+      - ops handoff
+      - output packaging
+      - package assembly
+      - personality-driven
+      - persuasive writing
+      - premium copy
+      - pricing
+      - product launch formula
+      - proof stack
+      - provocative marketing
+      - research mechanism brief copy
+      - research-based
+      - response copy
+      - results in advance
+      - sales copy
+      - sales letters
+      - seed launch
+      - simple writing system
+      - slide VSL
+      - soap opera sequences
+      - social writing
+      - story-driven email
+      - storytelling visceral
+      - supplement copy
+      - systematic copy
+      - ultimate sales letter
+      - unique mechanisms
+      - urgência
+      - value equation
+      - value ladders
+      - value stack
+      - video copy
+      - video sales letter
+      - visceral copy
+  data:
+    name: data
+    path: squads/data/
+    has_config: true
+    config:
+      name: data
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 7
+      tasks: 13
+      workflows: 7
+      templates: 10
+      checklists: 7
+      data_files: 1
+    agent_names:
+    - avinash-kaushik
+    - nick-mehta
+    - wes-kao
+    - data-chief
+    - peter-fader
+    - david-spinks
+    - sean-ellis
+    has_readme: true
+    has_changelog: false
+    total_components: 45
+    executor_data:
+      executor_capable_agents:
+      - id: data-chief
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: peter-fader
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: sean-ellis
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: nick-mehta
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: david-spinks
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: wes-kao
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      - id: avinash-kaushik
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      executor_reviewers: []
+      aggregated_work_contexts:
+      - general
+  db-sage:
+    name: db-sage
+    path: squads/db-sage/
+    has_config: true
+    config:
+      name: db-sage
+      version: 1.2.0
+      short_title: ''
+      description: Expert database agent for PostgreSQL and Supabase - schema design,
+        migrations, RLS policies, performance tuning
+      slashPrefix: db-sage
+    counts:
+      agents: 1
+      tasks: 25
+      workflows: 7
+      templates: 5
+      checklists: 7
+      data_files: 6
+    agent_names:
+    - db-sage
+    has_readme: true
+    has_changelog: false
+    total_components: 51
+    executor_data:
+      executor_capable_agents:
+      - id: db-sage
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - general
+        core_replaces: null
+        can_review: []
+      executor_reviewers: []
+      aggregated_work_contexts:
+      - general
+  design:
+    name: design
+    path: squads/design/
+    has_config: true
+    config:
+      name: design
+      version: 2.1.0
+      short_title: ''
+      description: Squad focado exclusivamente em Design System. Especializado em
+        tokens, componentes, acessibilidade, registry,
+      slashPrefix: DS
+    counts:
+      agents: 8
+      tasks: 89
+      workflows: 11
+      templates: 14
+      checklists: 14
+      data_files: 30
+    agent_names:
+    - dave-malouf
+    - design-chief
+    - ds-foundations-lead
+    - brad-frost
+    - ds-token-architect
+    - nano-banana-generator
+    - dan-mall
+    - storybook-expert
+    has_readme: true
+    has_changelog: false
+    total_components: 166
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  etl-ops:
+    name: etl-ops
+    path: squads/etl-ops/
+    has_config: true
+    config:
+      name: etl-ops
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 3
+      tasks: 8
+      workflows: 2
+      templates: 1
+      checklists: 1
+      data_files: 7
+    agent_names:
+    - etl-chief
+    - etl-transformer
+    - etl-extractor
+    has_readme: true
+    has_changelog: false
+    total_components: 22
+    executor_data:
+      executor_capable_agents:
+      - id: etl-extractor
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - data extraction
+        - CLI execution
+        - source fetching
+        - file operations
+        - batch processing
+        core_replaces: '@data-engineer'
+        can_review: []
+      - id: etl-transformer
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - data transformation
+        - cleaning
+        - enrichment
+        - format conversion
+        - schema mapping
+        core_replaces: '@data-engineer'
+        can_review: []
+      executor_reviewers:
+      - id: etl-chief
+        can_review:
+        - etl-pipeline
+        - data-quality
+        - checkpoint-compliance
+      aggregated_work_contexts:
+      - CLI execution
+      - batch processing
+      - cleaning
+      - data extraction
+      - data transformation
+      - enrichment
+      - file operations
+      - format conversion
+      - schema mapping
+      - source fetching
+  hormozi:
+    name: hormozi
+    path: squads/hormozi/
+    has_config: true
+    config:
+      name: hormozi
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 16
+      tasks: 57
+      workflows: 9
+      templates: 7
+      checklists: 45
+      data_files: 8
+    agent_names:
+    - hormozi-copy
+    - hormozi-launch
+    - hormozi-closer
+    - hormozi-advisor
+    - hormozi-ads
+    - hormozi-hooks
+    - hormozi-workshop
+    - hormozi-audit
+    - hormozi-scale
+    - hormozi-models
+    - hormozi-pricing
+    - hormozi-retention
+    - hormozi-leads
+    - hormozi-chief
+    - hormozi-offers
+    - hormozi-content
+    has_readme: true
+    has_changelog: false
+    total_components: 142
+    executor_data:
+      executor_capable_agents:
+      - id: hormozi-offers
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - grand slam offer
+        - value equation
+        - offer engineering
+        - dream outcome
+        - perceived likelihood
+        - offer creation
+        core_replaces: '@dev'
+        can_review:
+        - offer-structure
+        - value-equation
+      - id: hormozi-leads
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - core four
+        - lead magnets
+        - lead generation
+        - content strategy
+        - warm outreach
+        - cold outreach
+        core_replaces: '@dev'
+        can_review:
+        - lead-strategy
+        - lead-magnet-quality
+      - id: hormozi-models
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - money models
+        - upsells
+        - downsells
+        - continuity
+        - revenue structure
+        - unit economics
+        core_replaces: '@dev'
+        can_review:
+        - revenue-model
+        - pricing-structure
+      - id: hormozi-hooks
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - hook creation
+        - 121 formulas
+        - first 5 seconds
+        - attention capture
+        - scroll-stopping
+        - hook frameworks
+        core_replaces: '@dev'
+        can_review:
+        - hook-quality
+        - attention-capture
+      - id: hormozi-ads
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - GOATed ads
+        - ad scripts
+        - ad angles
+        - creative strategy
+        - paid media copy
+        - video ads
+        core_replaces: '@dev'
+        can_review:
+        - ad-script-quality
+        - creative-angles
+      - id: hormozi-pricing
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - pricing strategy
+        - price anchoring
+        - price raises
+        - value-based pricing
+        - offer pricing
+        - margin optimization
+        core_replaces: '@dev'
+        can_review:
+        - pricing-strategy
+        - price-positioning
+      - id: hormozi-copy
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - sales copy
+        - landing pages
+        - VSL scripts
+        - conversion copy
+        - direct response
+        - sales pages
+        core_replaces: '@dev'
+        can_review:
+        - copy-quality
+        - conversion-copy
+      - id: hormozi-launch
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - launch sequences
+        - launch timelines
+        - launch strategy
+        - pre-launch
+        - launch day
+        - post-launch
+        core_replaces: '@dev'
+        can_review:
+        - launch-sequence
+        - launch-timeline
+      - id: hormozi-retention
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - LTV optimization
+        - retention strategy
+        - lead nurture
+        - continuity programs
+        - churn reduction
+        - lifetime value
+        core_replaces: '@dev'
+        can_review:
+        - retention-strategy
+        - LTV-metrics
+      - id: hormozi-audit
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - offer audit
+        - LP diagnostics
+        - antipattern detection
+        - proof stack
+        - conversion audit
+        - offer validation
+        core_replaces: '@analyst'
+        can_review:
+        - offer-quality
+        - landing-page-audit
+      - id: hormozi-closer
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - sales scripts
+        - objection handling
+        - fechamento
+        - closing techniques
+        - sales conversation
+        - rebuttals
+        core_replaces: '@dev'
+        can_review:
+        - sales-script-quality
+        - objection-handling
+      - id: hormozi-scale
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - scaling strategy
+        - 9-stage roadmap
+        - growth scaling
+        - business scaling
+        - operational leverage
+        core_replaces: '@dev'
+        can_review:
+        - scaling-readiness
+        - growth-strategy
+      - id: hormozi-workshop
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - workshop design
+        - framework creation
+        - group facilitation
+        - workshop structure
+        - interactive sessions
+        core_replaces: '@dev'
+        can_review:
+        - workshop-quality
+        - framework-design
+      - id: hormozi-content
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - content strategy
+        - content creation
+        - free content
+        - content pillars
+        - distribution strategy
+        - conteúdo gratuito
+        core_replaces: '@dev'
+        can_review:
+        - content-strategy
+        - content-quality
+      executor_reviewers:
+      - id: hormozi-chief
+        can_review:
+        - offer-quality
+        - methodology-fidelity
+        - business-strategy
+      - id: hormozi-advisor
+        can_review:
+        - strategic-alignment
+        - methodology-fidelity
+      aggregated_work_contexts:
+      - 121 formulas
+      - 9-stage roadmap
+      - GOATed ads
+      - LP diagnostics
+      - LTV optimization
+      - VSL scripts
+      - ad angles
+      - ad scripts
+      - antipattern detection
+      - attention capture
+      - business scaling
+      - churn reduction
+      - closing techniques
+      - cold outreach
+      - content creation
+      - content pillars
+      - content strategy
+      - conteúdo gratuito
+      - continuity
+      - continuity programs
+      - conversion audit
+      - conversion copy
+      - core four
+      - creative strategy
+      - direct response
+      - distribution strategy
+      - downsells
+      - dream outcome
+      - fechamento
+      - first 5 seconds
+      - framework creation
+      - free content
+      - grand slam offer
+      - group facilitation
+      - growth scaling
+      - hook creation
+      - hook frameworks
+      - interactive sessions
+      - landing pages
+      - launch day
+      - launch sequences
+      - launch strategy
+      - launch timelines
+      - lead generation
+      - lead magnets
+      - lead nurture
+      - lifetime value
+      - margin optimization
+      - money models
+      - objection handling
+      - offer audit
+      - offer creation
+      - offer engineering
+      - offer pricing
+      - offer validation
+      - operational leverage
+      - paid media copy
+      - perceived likelihood
+      - post-launch
+      - pre-launch
+      - price anchoring
+      - price raises
+      - pricing strategy
+      - proof stack
+      - rebuttals
+      - retention strategy
+      - revenue structure
+      - sales conversation
+      - sales copy
+      - sales pages
+      - sales scripts
+      - scaling strategy
+      - scroll-stopping
+      - unit economics
+      - upsells
+      - value equation
+      - value-based pricing
+      - video ads
+      - warm outreach
+      - workshop design
+      - workshop structure
+  marketing-opes:
+    name: marketing-opes
+    path: squads/marketing-opes/
+    has_config: true
+    config:
+      name: marketing-opes
+      version: 1.1.0
+      short_title: OPES
+      description: 'Board estratégico pessoal (3 conselheiros + 1 agente chefe) +
+
+        braço de marketing completo (6 agentes) com publicação automática.
+
+
+        Board: Conselheiros (pensam) → Agente Chefe (decide + executa)
+
+        Marketing: CMO → Ideação (IG/LI/YT) → Produção → Designer → Distribuição →
+        Publicação
+
+
+        Pipeline end-to-end: da ideia ao post publicado no IG + LinkedIn via API.
+
+        '
+      slashPrefix: ''
+    counts:
+      agents: 12
+      tasks: 14
+      workflows: 4
+      templates: 3
+      checklists: 1
+      data_files: 5
+    agent_names:
+    - marketing-ideation
+    - marketing-designer
+    - marketing-distribution
+    - marketing-production
+    - marketing-brand
+    - marketing-cmo
+    - carousel-designer
+    - marketing-ideation-ig
+    - board-orchestrator
+    - marketing-ideation-li
+    - marketing-metrics
+    - marketing-ideation-yt
+    has_readme: true
+    has_changelog: true
+    total_components: 39
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  n8n-ai-workflows:
+    name: n8n-ai-workflows
+    path: squads/n8n-ai-workflows/
+    has_config: true
+    config:
+      name: n8n-ai-workflows
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 7
+      tasks: 6
+      workflows: 0
+      templates: 3
+      checklists: 1
+      data_files: 3
+    agent_names:
+    - max-tkacz
+    - leon-van-zyl
+    - jan-oberhauser
+    - cole-medin
+    - n8n-chief
+    - nate-herk
+    - pawel-cislo
+    has_readme: true
+    has_changelog: false
+    total_components: 20
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  pricing-mktplace:
+    name: pricing-mktplace
+    path: squads/pricing-mktplace/
+    has_config: true
+    config:
+      name: pricing-mktplace
+      version: 1.0.0
+      short_title: ''
+      description: 'Squad especializado em regras de precificação de todos os marketplaces
+        brasileiros. Cada agente domina 100% da estrutura de custos do seu marketplace:
+        comissões por categoria, taxas fixas, frete, fulfillment, ads e programas
+        especiais. Atualizado em tempo real via *atualizar-regras. Dados base: 07/04/2026.
+
+        '
+      slashPrefix: pricing
+    counts:
+      agents: 15
+      tasks: 0
+      workflows: 0
+      templates: 0
+      checklists: 0
+      data_files: 1
+    agent_names:
+    - ml-pricing
+    - shopee-pricing
+    - netshoes-pricing
+    - pricing-updater
+    - magalu-pricing
+    - americanas-pricing
+    - olist-pricing
+    - shein-pricing
+    - casasbahia-pricing
+    - pricing-chief
+    - tiktokshop-pricing
+    - meta-pricing
+    - mirakl-pricing
+    - amazon-pricing
+    - verticais-pricing
+    has_readme: true
+    has_changelog: false
+    total_components: 16
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  prompt-engineering:
+    name: prompt-engineering
+    path: squads/prompt-engineering/
+    has_config: true
+    config:
+      name: prompt-engineering
+      version: 1.0.0
+      short_title: Prompt Engineering
+      description: 'Squad de System Prompts e Prompt Engineering para Agentes de IA.
+        Orchestrator: @prompt-chief (triage, routing, criacao de system prompts).
+        Tier 0: @elvis-saravia (taxonomy de tecnicas), @sander-schulhoff (pesquisa
+        sistematica). Tier 1: @lilian-weng (arquitetura de agentes), @amanda-askell
+        (character design), @simon-willison (agentic patterns). Tier 2: @james-phoenix
+        (Five Principles), @sheila-teo (CO-STAR), @chip-huyen (AI engineering).'
+      slashPrefix: promptEng
+    counts:
+      agents: 9
+      tasks: 4
+      workflows: 1
+      templates: 2
+      checklists: 1
+      data_files: 0
+    agent_names:
+    - chip-huyen
+    - sheila-teo
+    - sander-schulhoff
+    - elvis-saravia
+    - simon-willison
+    - amanda-askell
+    - lilian-weng
+    - james-phoenix
+    - prompt-chief
+    has_readme: true
+    has_changelog: false
+    total_components: 17
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  spy:
+    name: spy
+    path: squads/spy/
+    has_config: true
+    config:
+      name: spy
+      version: 3.0.0
+      short_title: ''
+      description: 'Competitive intelligence: universal benchmarking (codebase, LLM,
+        product, company, technology) + content analysis (YouTube/Instagram)'
+      slashPrefix: ''
+    counts:
+      agents: 3
+      tasks: 42
+      workflows: 1
+      templates: 15
+      checklists: 2
+      data_files: 11
+    agent_names:
+    - research-head
+    - bench-analyst
+    - spy
+    has_readme: true
+    has_changelog: false
+    total_components: 74
+    executor_data:
+      executor_capable_agents:
+      - id: research-head
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - deep-research
+        - data-analysis
+        - strategic-insights
+        - competitive-benchmarking
+        - content-analysis
+        core_replaces: '@analyst'
+        can_review:
+        - research-quality
+        - data-validation
+      - id: bench-analyst
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - codebase-benchmarking
+        - llm-benchmarking
+        - product-comparison
+        - company-analysis
+        - technology-evaluation
+        core_replaces: '@analyst'
+        can_review:
+        - benchmark-quality
+        - competitive-benchmark
+      executor_reviewers:
+      - id: spy
+        can_review:
+        - competitive-intelligence
+        - market-analysis
+      aggregated_work_contexts:
+      - codebase-benchmarking
+      - company-analysis
+      - competitive-benchmarking
+      - content-analysis
+      - data-analysis
+      - deep-research
+      - llm-benchmarking
+      - product-comparison
+      - strategic-insights
+      - technology-evaluation
+  squad-banking-api:
+    name: squad-banking-api
+    path: squads/squad-banking-api/
+    has_config: true
+    config:
+      name: squad-banking-api
+      version: 1.0.0
+      short_title: Banking API Integration
+      description: "Squad especializado em integracao com APIs bancarias brasileiras — autenticacao, extracao de dados, normalizacao e troubleshooting. Cobre Banco Inter, Sicoob, Stone e XP Investimentos."
+      slashPrefix: banking
+    counts:
+      agents: 8
+      tasks: 0
+      workflows: 0
+      templates: 0
+      checklists: 2
+      data_files: 1
+    agent_names:
+    - banking-chief
+    - auth-architect
+    - inter-specialist
+    - sicoob-specialist
+    - stone-specialist
+    - xp-specialist
+    - data-normalizer
+    - integration-debugger
+    has_readme: false
+    has_changelog: false
+    total_components: 11
+    domain: fintech
+    keywords:
+    - banking-api
+    - open-finance
+    - open-banking
+    - banco-inter
+    - sicoob
+    - stone
+    - xp-investimentos
+    - oauth2
+    - mtls
+    - pix
+    - boleto
+    - extrato
+    - fapi
+    highlights:
+    - "8 agents cobrindo 4 bancos BR (Inter, Sicoob, Stone, XP)"
+    - "Auth architect com passo-a-passo OAuth2/mTLS/FAPI por banco"
+    - "Data normalizer com schema TypeScript unificado (centavos)"
+    - "Integration debugger com tabela cross-bank de erros"
+    example_use: "Quero puxar o extrato do Banco Inter e normalizar com dados do Sicoob"
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-clickup-pm:
+    name: squad-clickup-pm
+    path: squads/squad-clickup-pm/
+    has_config: false
+    config:
+      name: squad-clickup-pm
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 6
+      tasks: 21
+      workflows: 3
+      templates: 12
+      checklists: 0
+      data_files: 3
+    agent_names:
+    - task-architect
+    - sprint-planner
+    - status-reporter
+    - meeting-master
+    - workflow-builder
+    - clickup-chief
+    has_readme: false
+    has_changelog: true
+    total_components: 45
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-creator:
+    name: squad-creator
+    path: squads/squad-creator/
+    has_config: true
+    config:
+      name: squad-creator
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 1
+      tasks: 139
+      workflows: 24
+      templates: 32
+      checklists: 17
+      data_files: 24
+    agent_names:
+    - squad-chief
+    has_readme: true
+    has_changelog: true
+    total_components: 237
+    executor_data:
+      executor_capable_agents:
+      - id: squad-chief
+        story_role: executor
+        fw_type: Agent
+        work_contexts: []
+        core_replaces: null
+        can_review: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-creator-pro:
+    name: squad-creator-pro
+    path: squads/squad-creator-pro/
+    has_config: true
+    config:
+      name: squad-creator-pro
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 6
+      tasks: 221
+      workflows: 55
+      templates: 23
+      checklists: 17
+      data_files: 36
+    agent_names:
+    - pedro-valerio
+    - oalanicolas
+    - ecosystem-analyst
+    - squad-chief
+    - heuristic-ops
+    - thiago_finch
+    has_readme: true
+    has_changelog: true
+    total_components: 358
+    executor_data:
+      executor_capable_agents:
+      - id: squad-operator
+        story_role: executor
+        fw_type: Agent
+        work_contexts: []
+        core_replaces: null
+        can_review: []
+      - id: squad-chief
+        story_role: executor
+        fw_type: Agent
+        work_contexts: []
+        core_replaces: null
+        can_review: []
+      - id: oalanicolas
+        story_role: executor
+        fw_type: Agent
+        work_contexts: []
+        core_replaces: null
+        can_review: []
+      - id: pedro-valerio
+        story_role: executor
+        fw_type: Agent
+        work_contexts: []
+        core_replaces: null
+        can_review: []
+      - id: thiago_finch
+        story_role: executor
+        fw_type: Agent
+        work_contexts: []
+        core_replaces: null
+        can_review: []
+      - id: deterministic-runtime
+        story_role: executor
+        fw_type: Agent
+        work_contexts: []
+        core_replaces: null
+        can_review: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-fastsystem:
+    name: squad-fastsystem
+    path: squads/squad-fastsystem/
+    has_config: true
+    config:
+      name: squad-fastsystem
+      version: 1.0.0
+      short_title: ''
+      description: 'Squad especializado em performance de sistemas, otimização de
+        velocidade, análise de gargalos, caching, resiliência e escalabilidade. Cobre
+        todo o stack: frontend, backend, database, infraestrutura e deployment.
+
+        '
+      slashPrefix: squad-fastsystem
+    counts:
+      agents: 11
+      tasks: 12
+      workflows: 4
+      templates: 6
+      checklists: 5
+      data_files: 5
+    agent_names:
+    - fastsystem-chief
+    - resilience-engineer
+    - delivery-accelerator
+    - database-optimizer
+    - web-performance-engineer
+    - observability-engineer
+    - caching-specialist
+    - system-architect
+    - microservices-optimizer
+    - scalability-designer
+    - system-profiler
+    has_readme: true
+    has_changelog: true
+    total_components: 43
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-fitcoach-pro:
+    name: squad-fitcoach-pro
+    path: squads/squad-fitcoach-pro/
+    has_config: true
+    config:
+      name: fitcoach
+      version: 1.0.0
+      short_title: FitCoach Squad
+      description: 'Squad completo para plataforma de coaching fitness com conselheiros
+        elite de bodybuilding e business, automação, gamificação e e-commerce. Orquestrador:
+        @fitcoach-chief (triage, routing, coordenação entre tiers). Tier 0: Intake
+        e diagnóstico do cliente/negócio. Tier 1 Bodybuilding: 6 elite minds (Israetel,
+        Rambod, Norton, Bompa, Glass, Jansen). Tier 2 Business: 4 elite minds (Hormozi,
+        Cooper, Yu-kai Chou, Nir Eyal). Tier 3 Platform: 6 agents operacionais para
+        building e automação. Tools: 5 ferramentas especializadas para geração, cálculo
+        e tracking.'
+      slashPrefix: FitCoach
+    counts:
+      agents: 21
+      tasks: 16
+      workflows: 8
+      templates: 9
+      checklists: 5
+      data_files: 5
+    agent_names:
+    - gym-scaler
+    - content-repurposer
+    - automation-engineer
+    - gamification-designer
+    - biomechanics-coach
+    - business-diagnostician
+    - gym-operator
+    - intake-analyst
+    - fitcoach-chief
+    - hypertrophy-scientist
+    - training-builder
+    - prep-master
+    - periodization-architect
+    - elite-coach
+    - nutrition-scientist
+    - progress-tracker
+    - injury-manager
+    - retention-engineer
+    - diet-builder
+    - mindset-coach
+    - ecommerce-manager
+    has_readme: true
+    has_changelog: true
+    total_components: 64
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-franchising-avend:
+    name: squad-franchising-avend
+    path: squads/squad-franchising-avend/
+    has_config: true
+    config:
+      name: franchising-avend
+      version: 1.0.0-pro
+      short_title: Franchising Avend Squad
+      description: 'Squad completo para gestao da maior rede de franquias de vending
+        machines do Brasil — Avend Franquias. 13 agentes especializados em formatacao,
+        expansao, operacao e compliance de franquias. Fundador: Guilherme Alvares.
+        184 maquinas, 90 contratos de franquia, ~R$20M faturamento. Associada ABF.
+        Modelo de microfranquia de vending machines.'
+      slashPrefix: Avend
+    counts:
+      agents: 13
+      tasks: 14
+      workflows: 5
+      templates: 8
+      checklists: 4
+      data_files: 8
+    agent_names:
+    - franchise-growth
+    - franchise-assessor
+    - franchise-legal
+    - franchise-financial
+    - franchise-master-br
+    - franchise-lifecycle
+    - franchise-field-ops
+    - franchise-architect
+    - franchise-relationship
+    - franchising-chief
+    - franchise-operations
+    - franchise-documentation
+    - franchise-training
+    has_readme: true
+    has_changelog: true
+    total_components: 52
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-gamification:
+    name: squad-gamification
+    path: squads/squad-gamification/
+    has_config: true
+    config:
+      name: squad-gamification
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 9
+      tasks: 12
+      workflows: 4
+      templates: 6
+      checklists: 5
+      data_files: 5
+    agent_names:
+    - emotion-designer
+    - behavior-architect
+    - gamification-chief
+    - enterprise-strategist
+    - learning-designer
+    - experience-designer
+    - player-profiler
+    - engagement-engineer
+    - motivation-analyst
+    has_readme: true
+    has_changelog: true
+    total_components: 41
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-intake:
+    name: squad-intake
+    path: squads/squad-intake/
+    has_config: true
+    config:
+      name: squad-intake
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 7
+      tasks: 6
+      workflows: 1
+      templates: 2
+      checklists: 2
+      data_files: 1
+    agent_names:
+    - blair-enns
+    - indi-young
+    - alan-weiss
+    - erika-hall
+    - donna-weber
+    - intake-chief
+    - rob-fitzpatrick
+    has_readme: false
+    has_changelog: false
+    total_components: 19
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-nf:
+    name: squad-nf
+    path: squads/squad-nf/
+    has_config: false
+    config:
+      name: squad-nf
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 11
+      tasks: 38
+      workflows: 4
+      templates: 2
+      checklists: 3
+      data_files: 8
+    agent_names:
+    - regime-analyst
+    - sefaz-integrator
+    - integration-architect
+    - nf-emitter
+    - nf-chief
+    - fiscal-classifier
+    - nf-monitor
+    - compliance-auditor
+    - rejection-resolver
+    - schema-generator
+    - tax-calculator
+    has_readme: true
+    has_changelog: false
+    total_components: 66
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-pm:
+    name: squad-pm
+    path: squads/squad-pm/
+    has_config: true
+    config:
+      name: squad-pm
+      version: 1.0.0
+      short_title: Squad PM
+      description: 'Squad completo de Project Management + Product Requirements. Orchestrator:
+        @pm-chief (Atlax) — intake, routing, PRD, epic execution. Tier 0: @discovery-lead
+        (Maia) + @market-analyst (Scout) — discovery e estratégia. Tier 1: @requirements-engineer
+        (Sofia) + @schedule-planner (Tempo) + @risk-strategist (Risco). Tier 2: @integration-architect
+        (Iris) + @prioritization-engine (Sage). Tier 3: @stakeholder-liaison (Stella)
+        + @cost-estimator (Dinero). Tools: @prd-validator + @okr-tracker + @pm-auditor.
+        6 Worker scripts Python ($0), 3 workflows, 8 templates, 5 data files. Herda
+        inteligência completa do @pm AIOX (Morgan). Score: 10/10 quality dimensions.'
+      slashPrefix: pm
+    counts:
+      agents: 13
+      tasks: 17
+      workflows: 3
+      templates: 8
+      checklists: 4
+      data_files: 5
+    agent_names:
+    - okr-tracker
+    - integration-architect
+    - prioritization-engine
+    - pm-chief
+    - pm-auditor
+    - prd-validator
+    - requirements-engineer
+    - discovery-lead
+    - market-analyst
+    - cost-estimator
+    - stakeholder-liaison
+    - risk-strategist
+    - schedule-planner
+    has_readme: false
+    has_changelog: false
+    total_components: 50
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-pmbok:
+    name: squad-pmbok
+    path: squads/squad-pmbok/
+    has_config: false
+    config:
+      name: squad-pmbok
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 11
+      tasks: 11
+      workflows: 1
+      templates: 0
+      checklists: 1
+      data_files: 1
+    agent_names:
+    - schedule-manager
+    - quality-manager
+    - scope-manager
+    - risk-manager
+    - pm-chief
+    - stakeholder-manager
+    - integration-manager
+    - resource-manager
+    - cost-manager
+    - procurement-manager
+    - communications-manager
+    has_readme: true
+    has_changelog: false
+    total_components: 25
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-responsive:
+    name: squad-responsive
+    path: squads/squad-responsive/
+    has_config: true
+    config:
+      name: squad-responsive
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 7
+      tasks: 6
+      workflows: 1
+      templates: 5
+      checklists: 3
+      data_files: 1
+    agent_names:
+    - css-layout-engineer
+    - responsive-media-specialist
+    - responsive-chief
+    - fluid-design-tokenizer
+    - mobile-first-architect
+    - cross-device-qa
+    - responsive-auditor
+    has_readme: true
+    has_changelog: true
+    total_components: 23
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-sales-main:
+    name: squad-sales-main
+    path: squads/squad-sales-main/
+    has_config: true
+    config:
+      name: squad-sales-main
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 9
+      tasks: 9
+      workflows: 0
+      templates: 0
+      checklists: 2
+      data_files: 0
+    agent_names:
+    - chris-voss
+    - aaron-ross
+    - challenger-sale
+    - neil-rackham
+    - chet-holmes
+    - keenan
+    - jeb-blount
+    - sales-chief
+    - david-sandler
+    has_readme: true
+    has_changelog: true
+    total_components: 20
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-security:
+    name: squad-security
+    path: squads/squad-security/
+    has_config: true
+    config:
+      name: squad-security
+      version: 1.0.0
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 14
+      tasks: 10
+      workflows: 3
+      templates: 3
+      checklists: 5
+      data_files: 1
+    agent_names:
+    - corey-ball
+    - ron-ross
+    - john-kindervag
+    - ann-cavoukian
+    - jim-manico
+    - andrew-van-der-stock
+    - dafydd-stuttard
+    - liz-rice
+    - adam-shostack
+    - robert-m-lee
+    - ed-skoudis
+    - blake-strom
+    - jason-haddix
+    - security-chief
+    has_readme: true
+    has_changelog: false
+    total_components: 36
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-speechtherapy:
+    name: squad-speechtherapy
+    path: squads/squad-speechtherapy/
+    has_config: true
+    config:
+      name: speechtherapy
+      version: 1.0.0
+      short_title: ''
+      description: 'Squad de fonoterapia com 7 agentes especializados: 1 orchestrador
+        + 6 baseados em
+
+        elite minds reais da ciencia vocal e fonoaudiologia. Cobre avaliacao vocal,
+        exercicios
+
+        funcionais (VFE), terapia de voz ressonante (LMRVT), SOVT, terapia conversacional
+        (CTT),
+
+        terapia manual laringea, e higiene vocal. Projetado para reabilitacao de nodulos
+        vocais
+
+        com protocolo de 12 semanas.
+
+        '
+      slashPrefix: ''
+    counts:
+      agents: 7
+      tasks: 10
+      workflows: 1
+      templates: 6
+      checklists: 2
+      data_files: 1
+    agent_names:
+    - katherine-verdolini
+    - mara-behlau
+    - jacob-lieberman
+    - speechtherapy-chief
+    - joseph-stemple
+    - ingo-titze
+    - jackie-gartner-schmidt
+    has_readme: true
+    has_changelog: true
+    total_components: 27
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  squad-supabase:
+    name: squad-supabase
+    path: squads/squad-supabase/
+    has_config: true
+    config:
+      name: squad-supabase
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 7
+      tasks: 8
+      workflows: 3
+      templates: 6
+      checklists: 4
+      data_files: 5
+    agent_names:
+    - optimizer
+    - analyst
+    - guardian
+    - supabase-chief
+    - automator
+    - migrator
+    - diagnostician
+    has_readme: true
+    has_changelog: false
+    total_components: 33
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  storytelling:
+    name: storytelling
+    path: squads/storytelling/
+    has_config: true
+    config:
+      name: storytelling
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 13
+      tasks: 13
+      workflows: 1
+      templates: 1
+      checklists: 1
+      data_files: 1
+    agent_names:
+    - kindra-hall
+    - keith-johnstone
+    - matthew-dicks
+    - park-howell
+    - marshall-ganz
+    - blake-snyder
+    - nancy-duarte
+    - joseph-campbell
+    - shawn-coyne
+    - donald-miller
+    - story-chief
+    - dan-harmon
+    - oren-klaff
+    has_readme: true
+    has_changelog: true
+    total_components: 30
+    executor_data:
+      executor_capable_agents:
+      - id: joseph-campbell
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - hero's journey
+        - monomyth
+        - narrative archetype
+        - storytelling framework
+        - mythological structure
+        core_replaces: null
+        can_review:
+        - narrative-structure
+        - story-archetype
+      - id: shawn-coyne
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - story grid
+        - genre analysis
+        - narrative diagnosis
+        - story structure
+        - editorial analysis
+        core_replaces: null
+        can_review:
+        - genre-classification
+        - story-structure
+      - id: donald-miller
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - StoryBrand
+        - SB7
+        - business narrative
+        - brand messaging
+        - customer journey
+        - hero positioning
+        core_replaces: null
+        can_review:
+        - brand-narrative
+        - messaging
+        - storybrand
+      - id: nancy-duarte
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - presentation storytelling
+        - sparkline
+        - resonate
+        - pitch narrative
+        - slide structure
+        - visual narrative
+        core_replaces: null
+        can_review:
+        - presentation-narrative
+        - pitch-storytelling
+      - id: dan-harmon
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - story circle
+        - 8 beats
+        - TV writing
+        - episodic narrative
+        - character arc
+        - circular structure
+        core_replaces: null
+        can_review:
+        - story-circle
+        - episodic-structure
+      - id: blake-snyder
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - save the cat
+        - 15 beats
+        - screenwriting
+        - beat sheet
+        - script structure
+        - movie narrative
+        core_replaces: null
+        can_review:
+        - beat-sheet
+        - script-structure
+      - id: oren-klaff
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - pitch storytelling
+        - STRONG method
+        - neurofinance
+        - frame control
+        - pitch persuasion
+        core_replaces: null
+        can_review:
+        - pitch-narrative
+        - persuasion
+      - id: kindra-hall
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - strategic storytelling
+        - business stories
+        - stories that stick
+        - brand story
+        - customer story
+        core_replaces: null
+        can_review:
+        - business-storytelling
+        - brand-story
+      - id: matthew-dicks
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - personal storytelling
+        - storyworthy
+        - moth
+        - 5-second moment
+        - vulnerability
+        - authentic narrative
+        core_replaces: null
+        can_review:
+        - personal-narrative
+        - authenticity
+      - id: marshall-ganz
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - public narrative
+        - leadership storytelling
+        - story of self
+        - social movement
+        - collective narrative
+        core_replaces: null
+        can_review:
+        - public-narrative
+        - leadership-storytelling
+      - id: park-howell
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - brand storytelling
+        - ABT framework
+        - business of story
+        - narrative branding
+        - and-but-therefore
+        core_replaces: null
+        can_review:
+        - brand-storytelling
+        - ABT-framework
+      - id: keith-johnstone
+        story_role: executor
+        fw_type: Agent
+        work_contexts:
+        - improvisational storytelling
+        - impro
+        - status theory
+        - spontaneous narrative
+        - theatrical improvisation
+        core_replaces: null
+        can_review:
+        - improvisation
+        - status-dynamics
+      executor_reviewers: []
+      aggregated_work_contexts:
+      - 15 beats
+      - 5-second moment
+      - 8 beats
+      - ABT framework
+      - SB7
+      - STRONG method
+      - StoryBrand
+      - TV writing
+      - and-but-therefore
+      - authentic narrative
+      - beat sheet
+      - brand messaging
+      - brand story
+      - brand storytelling
+      - business narrative
+      - business of story
+      - business stories
+      - character arc
+      - circular structure
+      - collective narrative
+      - customer journey
+      - customer story
+      - editorial analysis
+      - episodic narrative
+      - frame control
+      - genre analysis
+      - hero positioning
+      - hero's journey
+      - impro
+      - improvisational storytelling
+      - leadership storytelling
+      - monomyth
+      - moth
+      - movie narrative
+      - mythological structure
+      - narrative archetype
+      - narrative branding
+      - narrative diagnosis
+      - neurofinance
+      - personal storytelling
+      - pitch narrative
+      - pitch persuasion
+      - pitch storytelling
+      - presentation storytelling
+      - public narrative
+      - resonate
+      - save the cat
+      - screenwriting
+      - script structure
+      - slide structure
+      - social movement
+      - sparkline
+      - spontaneous narrative
+      - status theory
+      - stories that stick
+      - story circle
+      - story grid
+      - story of self
+      - story structure
+      - storytelling framework
+      - storyworthy
+      - strategic storytelling
+      - theatrical improvisation
+      - visual narrative
+      - vulnerability
+  vimeo:
+    name: vimeo
+    path: squads/vimeo/
+    has_config: true
+    config:
+      name: vimeo
+      version: 1.0.0
+      short_title: ''
+      description: 'Squad pipeline para download batch de videos do Vimeo (terceiros)
+        com transcricao automatica. Suporta playlists, channels, showcases. Stack:
+        yt-dlp + Whisper + ffmpeg.
+
+        '
+      slashPrefix: vimeo
+    counts:
+      agents: 5
+      tasks: 10
+      workflows: 2
+      templates: 3
+      checklists: 1
+      data_files: 1
+    agent_names:
+    - crawler
+    - downloader
+    - vimeo-chief
+    - librarian
+    - transcriber
+    has_readme: true
+    has_changelog: false
+    total_components: 22
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+  webapp-defender:
+    name: webapp-defender
+    path: squads/webapp-defender/
+    has_config: false
+    config:
+      name: webapp-defender
+      version: unknown
+      short_title: ''
+      description: ''
+      slashPrefix: ''
+    counts:
+      agents: 22
+      tasks: 38
+      workflows: 4
+      templates: 1
+      checklists: 5
+      data_files: 1
+    agent_names:
+    - rls-guardian
+    - owasp-a10-ssrf-detective
+    - owasp-a05-misconfig-hunter
+    - owasp-a03-injection-scanner
+    - header-analyzer
+    - code-guardian
+    - owasp-a02-crypto-auditor
+    - sentinel
+    - compliance-advisor
+    - owasp-a08-integrity-checker
+    - policy-validator
+    - owasp-a09-log-auditor
+    - owasp-a06-dependency-tracker
+    - owasp-a04-design-reviewer
+    - config-sentinel
+    - watchdog
+    - owasp-a07-identity-auditor
+    - owasp-a01-access-warden
+    - schema-reviewer
+    - fix-generator
+    - shield
+    - auth-inspector
+    has_readme: true
+    has_changelog: true
+    total_components: 71
+    executor_data:
+      executor_capable_agents: []
+      executor_reviewers: []
+      aggregated_work_contexts: []
+summary:
+  total_agents: 348
+  total_tasks: 1027
+  total_workflows: 207
+  total_templates: 258
+  total_checklists: 217
+  total_data_files: 249
+

@@ -1,0 +1,198 @@
+# ============================================================================
+# Heuristics — Squad FastSystem
+# ============================================================================
+# Heuristicas consolidadas de todas as minds do squad
+# ============================================================================
+
+version: 1.0.0
+
+heuristics:
+  # ============================================================================
+  # Brendan Gregg — Systems Performance
+  # ============================================================================
+  - id: BG_USE_001
+    mind: brendan_gregg
+    name: "USE Method First"
+    description: "Para cada recurso, verifique Utilization, Saturation e Errors nessa ordem"
+    domain: system-profiling
+    applies_when: "Diagnostico de qualquer problema de performance de sistema"
+    action: "Aplicar USE method para CPU, Memory, Disk e Network antes de qualquer profiling"
+
+  - id: BG_USE_002
+    mind: brendan_gregg
+    name: "Flame Graph Analysis"
+    description: "Use flame graphs para identificar hot paths antes de otimizar codigo"
+    domain: cpu-profiling
+    applies_when: "CPU e o bottleneck identificado"
+    action: "Gerar flame graph com perf + stackcollapse + flamegraph.pl"
+
+  # ============================================================================
+  # Charity Majors — Observability
+  # ============================================================================
+  - id: CM_OBS_001
+    mind: charity_majors
+    name: "Observability Over Monitoring"
+    description: "Instrumente para explorar, nao apenas para alertar"
+    domain: observability
+    applies_when: "Configurando instrumentacao de sistema"
+    action: "Use high-cardinality data e structured events, nao apenas metricas agregadas"
+
+  - id: CM_OBS_002
+    mind: charity_majors
+    name: "Debug in Production"
+    description: "O sistema deve ser debuggavel em producao sem reproduzir localmente"
+    domain: observability
+    applies_when: "Investigando problemas em producao"
+    action: "Use distributed tracing e event correlation para investigar sem reproduzir"
+
+  # ============================================================================
+  # Addy Osmani — Web Performance
+  # ============================================================================
+  - id: AO_WP_001
+    mind: addy_osmani
+    name: "Critical Rendering Path First"
+    description: "Otimize o critical rendering path eliminando render-blocking resources"
+    domain: frontend-performance
+    applies_when: "LCP ou FCP acima do target"
+    action: "Inline critical CSS, defer non-critical JS/CSS, preload LCP resources"
+
+  - id: AO_WP_002
+    mind: addy_osmani
+    name: "Image Optimization Priority"
+    description: "Imagens sao o maior payload da web — otimize formato, tamanho e carregamento"
+    domain: frontend-performance
+    applies_when: "Page weight > 1MB ou imagens dominam o payload"
+    action: "WebP/AVIF com fallback, lazy loading, srcset, compressao adequada"
+
+  # ============================================================================
+  # Steve Souders — Web Performance Rules
+  # ============================================================================
+  - id: SS_WP_001
+    mind: steve_souders
+    name: "Cache at Closest Layer"
+    description: "Cache no nivel mais proximo do usuario que a consistencia permitir"
+    domain: caching
+    applies_when: "Desenhando estrategia de caching"
+    action: "Priorize: browser > CDN > API gateway > app cache > DB cache"
+
+  - id: SS_WP_002
+    mind: steve_souders
+    name: "Immutable Cache for Hashed Assets"
+    description: "Assets com hash no filename devem ter Cache-Control: immutable"
+    domain: caching
+    applies_when: "Configurando HTTP caching headers"
+    action: "Cache-Control: public, max-age=31536000, immutable para assets hasheados"
+
+  # ============================================================================
+  # Markus Winand — SQL Performance
+  # ============================================================================
+  - id: MW_SQL_001
+    mind: markus_winand
+    name: "EXPLAIN Before Index"
+    description: "Analise o execution plan ANTES de adicionar qualquer indice"
+    domain: database
+    applies_when: "Query lenta identificada"
+    action: "EXPLAIN (ANALYZE, BUFFERS) antes de criar indice"
+
+  - id: MW_SQL_002
+    mind: markus_winand
+    name: "Composite Index Design"
+    description: "Um indice composto bem projetado substitui multiplos indices simples"
+    domain: database
+    applies_when: "Queries com multiplas condicoes WHERE"
+    action: "Ordenar colunas: equality first, range last, ORDER BY in between"
+
+  # ============================================================================
+  # Martin Kleppmann — Distributed Systems
+  # ============================================================================
+  - id: MK_DS_001
+    mind: martin_kleppmann
+    name: "Consistency vs Availability"
+    description: "Escolha explicitamente entre consistencia e disponibilidade para cada operacao"
+    domain: distributed-systems
+    applies_when: "Desenhando sistema distribuido ou escolhendo cache strategy"
+    action: "Documente trade-off: AP para reads tolerantes, CP para writes criticos"
+
+  - id: MK_DS_002
+    mind: martin_kleppmann
+    name: "Partition Strategy"
+    description: "Escolha estrategia de particionamento baseada no padrao de acesso"
+    domain: distributed-systems
+    applies_when: "Database ou cache precisa de sharding"
+    action: "Range partition para queries de range, hash partition para distribuicao uniforme"
+
+  # ============================================================================
+  # Michael Nygard — Resilience
+  # ============================================================================
+  - id: MN_RE_001
+    mind: michael_nygard
+    name: "Integration Points Are Failure Points"
+    description: "Todo ponto de integracao e um ponto de falha — cada um precisa de timeout, retry e fallback"
+    domain: resilience
+    applies_when: "Qualquer chamada a servico externo ou dependencia"
+    action: "Implementar timeout explicito + retry com backoff + fallback para cada integracao"
+
+  - id: MN_RE_002
+    mind: michael_nygard
+    name: "Explicit Timeouts Everywhere"
+    description: "Timeouts devem ser explicitamente configurados em TODO ponto de integracao"
+    domain: resilience
+    applies_when: "Qualquer operacao de I/O ou chamada remota"
+    action: "Definir connect timeout e read timeout explicitamente, nunca usar default"
+
+  # ============================================================================
+  # Alex Xu — System Design
+  # ============================================================================
+  - id: AX_SD_001
+    mind: alex_xu
+    name: "Decompose Latency"
+    description: "Decomponha a latencia em camadas antes de otimizar"
+    domain: api-performance
+    applies_when: "API com latencia acima do budget"
+    action: "Medir latencia por hop: middleware → auth → business logic → DB → serialization"
+
+  - id: AX_SD_002
+    mind: alex_xu
+    name: "Return Only What Client Needs"
+    description: "Retorne apenas o que o client precisa — field selection e pagination sao obrigatorios"
+    domain: api-performance
+    applies_when: "Desenhando ou otimizando API endpoints"
+    action: "Implementar sparse fieldsets e cursor-based pagination em todas as listas"
+
+  # ============================================================================
+  # Chris Richardson — Microservices
+  # ============================================================================
+  - id: CR_MS_001
+    mind: chris_richardson
+    name: "Database Per Service"
+    description: "Cada microservico deve ter seu proprio banco de dados"
+    domain: microservices
+    applies_when: "Desenhando ou avaliando arquitetura de microservicos"
+    action: "Verificar que servicos nao compartilham tabelas; usar eventos para sincronizacao"
+
+  - id: CR_MS_002
+    mind: chris_richardson
+    name: "Saga Pattern for Distributed Transactions"
+    description: "Use sagas ao inves de transacoes distribuidas"
+    domain: microservices
+    applies_when: "Operacao que precisa atualizar multiplos servicos"
+    action: "Implementar choreography ou orchestration saga com compensacao"
+
+  # ============================================================================
+  # Nicole Forsgren — DORA
+  # ============================================================================
+  - id: NF_DO_001
+    mind: nicole_forsgren
+    name: "Measure DORA First"
+    description: "Meca DORA metrics antes de otimizar — sao o gold standard de performance de entrega"
+    domain: devops
+    applies_when: "Avaliando ou otimizando pipeline de entrega"
+    action: "Coletar: deployment frequency, lead time, MTTR, change failure rate"
+
+  - id: NF_DO_002
+    mind: nicole_forsgren
+    name: "Fast Feedback Enables High Performance"
+    description: "Testes rapidos com feedback imediato habilitam deployment frequency alto"
+    domain: devops
+    applies_when: "Pipeline CI/CD lento"
+    action: "Paralelizar testes, cachear dependencias, rodar affected tests only"

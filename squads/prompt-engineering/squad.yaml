@@ -1,0 +1,68 @@
+metadata:
+  score: 0.0  # Pending validation
+  name: prompt-engineering
+  display_name: "Prompt Engineering Squad"
+  version: "1.0.0"
+  domain: prompt-engineering
+  created_at: "2026-03-31"
+  last_updated: "2026-03-31"
+  status: active
+  author: "Squad Architect"
+  license: MIT
+
+description: |
+  Squad especializado em System Prompts e Prompt Engineering para Agentes de IA.
+  Foco: criar prompts poderosos para agentes de atendimento, vendas, suporte e operacoes.
+  Baseado em 8 elite minds com frameworks documentados e replicaveis.
+
+objectives:
+  - Criar system prompts de alta qualidade para agentes de IA
+  - Selecionar a tecnica de prompting ideal para cada tipo de agente
+  - Projetar personas e character design para agentes conversacionais
+  - Estruturar prompts com frameworks replicaveis (CO-STAR, Five Principles)
+  - Garantir seguranca e robustez dos prompts (prompt injection, guardrails)
+  - Avaliar e iterar prompts com metricas objetivas
+
+key_capabilities:
+  - System prompt architecture for AI agents
+  - Technique selection per agent type (sales, support, service)
+  - Character and persona design
+  - Prompt framework application (CO-STAR, RACE, Five Principles)
+  - Agent behavior engineering (guardrails, escalation, tone)
+  - Prompt security (injection prevention, safety)
+  - Evaluation and iterative improvement
+  - Context engineering for long-horizon agents
+
+entry_agent: prompt-chief
+
+tier_system:
+  orchestrator:
+    name: "Orchestration"
+    purpose: "Routing, triage and coordination"
+    agents:
+      - prompt-chief
+  tier_0_diagnosis:
+    name: "Diagnosis & Technique Selection"
+    purpose: "Analyze requirements and select optimal prompting techniques"
+    agents:
+      - elvis-saravia
+      - sander-schulhoff
+  tier_1_masters:
+    name: "Architecture & Design Masters"
+    purpose: "Agent architecture, character design, agentic patterns"
+    agents:
+      - lilian-weng
+      - amanda-askell
+      - simon-willison
+  tier_2_systematizers:
+    name: "Framework Systematizers"
+    purpose: "Apply structured frameworks to prompt creation"
+    agents:
+      - james-phoenix
+      - sheila-teo
+      - chip-huyen
+
+settings:
+  activation:
+    show_greeting: true
+    show_quick_commands: true

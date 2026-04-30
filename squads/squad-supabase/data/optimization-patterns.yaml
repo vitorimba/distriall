@@ -1,0 +1,126 @@
+optimization_patterns:
+  version: "1.0.0"
+  description: "Padrões de otimização para Supabase/PostgreSQL"
+
+  # ═══════════════════════════════════════════
+  # INDEX PATTERNS
+  # ═══════════════════════════════════════════
+  index_patterns:
+    - id: IDX-001
+      name: "Foreign Key Index"
+      when: "FK column without index"
+      severity: high
+      sql: "CREATE INDEX CONCURRENTLY idx_{table}_{column} ON {table} ({column});"
+      rationale: "FK columns are used in JOINs and CASCADE operations"
+
+    - id: IDX-002
+      name: "Composite Index (Leading Column)"
+      when: "WHERE a = X AND b = Y queries"
+      severity: medium
+      sql: "CREATE INDEX CONCURRENTLY idx_{table}_{col_a}_{col_b} ON {table} ({col_a}, {col_b});"
+      rationale: "Most selective column first, supports both combined and leading-column queries"
+
+    - id: IDX-003
+      name: "Partial Index"
+      when: "Queries filter on a common condition (e.g., WHERE active = true)"
+      severity: medium
+      sql: "CREATE INDEX CONCURRENTLY idx_{table}_active ON {table} ({column}) WHERE active = true;"
+      rationale: "Smaller index, faster scans for the common case"
+
+    - id: IDX-004
+      name: "Covering Index"
+      when: "Query needs only indexed columns (avoid table lookup)"
+      severity: low
+      sql: "CREATE INDEX CONCURRENTLY idx_{table}_covering ON {table} ({filter_col}) INCLUDE ({select_cols});"
+      rationale: "Index-only scan eliminates heap access"
+
+    - id: IDX-005
+      name: "RLS Policy Column Index"
+      when: "Column used in RLS USING clause without index"
+      severity: high
+      sql: "CREATE INDEX CONCURRENTLY idx_{table}_{rls_col} ON {table} ({rls_col});"
+      rationale: "RLS policies execute per-row; index prevents full table scan"
+
+  # ═══════════════════════════════════════════
+  # QUERY PATTERNS
+  # ═══════════════════════════════════════════
+  query_patterns:
+    - id: QRY-001
+      name: "Keyset Pagination"
+      anti_pattern: "SELECT * FROM t ORDER BY id LIMIT 20 OFFSET 1000"
+      fix: "SELECT * FROM t WHERE id > $last_id ORDER BY id LIMIT 20"
+      improvement: "O(n) → O(1)"
+
+    - id: QRY-002
+      name: "SELECT Specific Columns"
+      anti_pattern: "SELECT * FROM large_table"
+      fix: "SELECT col1, col2, col3 FROM large_table"
+      improvement: "Reduces I/O, enables index-only scans"
+
+    - id: QRY-003
+      name: "EXISTS vs IN for Subqueries"
+      anti_pattern: "WHERE id IN (SELECT id FROM other_table WHERE ...)"
+      fix: "WHERE EXISTS (SELECT 1 FROM other_table WHERE other_table.id = main.id AND ...)"
+      improvement: "Short-circuits on first match"
+
+    - id: QRY-004
+      name: "Batch Operations"
+      anti_pattern: "Multiple individual INSERT/UPDATE statements"
+      fix: "Single INSERT ... VALUES (...), (...), (...) or UPDATE ... FROM (VALUES ...)"
+      improvement: "Reduces round trips and transaction overhead"
+
+    - id: QRY-005
+      name: "CTE vs Subquery"
+      anti_pattern: "Deeply nested subqueries"
+      fix: "WITH cte AS (...) SELECT ... FROM cte"
+      improvement: "Readability + potential optimization fence removal (PG 12+)"
+
+  # ═══════════════════════════════════════════
+  # RLS PERFORMANCE PATTERNS
+  # ═══════════════════════════════════════════
+  rls_patterns:
+    - id: RLS-001
+      name: "LEAKPROOF Function in Policy"
+      anti_pattern: "Non-LEAKPROOF function in USING clause"
+      fix: "Mark function as LEAKPROOF or rewrite without function"
+      impact: "Prevents index usage, causes sequential scan"
+
+    - id: RLS-002
+      name: "Simple auth.uid() Check"
+      best_practice: "USING (auth.uid() = user_id)"
+      anti_pattern: "USING (user_id IN (SELECT ... FROM ... WHERE ...))"
+      impact: "Simple equality enables direct index lookup"
+
+    - id: RLS-003
+      name: "Cached Tenant Context"
+      best_practice: "SET app.current_tenant = 'tenant_id' per session"
+      anti_pattern: "Subquery to lookup tenant per-row"
+      impact: "Session variable is O(1), subquery is O(n)"
+
+  # ═══════════════════════════════════════════
+  # MAINTENANCE PATTERNS
+  # ═══════════════════════════════════════════
+  maintenance_patterns:
+    - id: MNT-001
+      name: "Scheduled VACUUM"
+      when: "Dead tuples > 20% of live tuples"
+      sql: "VACUUM (VERBOSE, ANALYZE) {table};"
+      schedule: "Daily or after bulk operations"
+
+    - id: MNT-002
+      name: "Statistics Update"
+      when: "After bulk data changes"
+      sql: "ANALYZE {table};"
+      rationale: "Stale statistics lead to bad query plans"
+
+    - id: MNT-003
+      name: "Index Rebuild"
+      when: "Index bloat > 30%"
+      sql: "REINDEX INDEX CONCURRENTLY idx_name;"
+      rationale: "Reclaims space, improves scan performance"
+
+    - id: MNT-004
+      name: "Unused Index Cleanup"
+      when: "idx_scan = 0 for 30+ days"
+      sql: "DROP INDEX CONCURRENTLY idx_name;"
+      rationale: "Unused indexes waste space and slow writes"

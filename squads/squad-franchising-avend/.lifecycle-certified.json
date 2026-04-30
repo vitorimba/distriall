@@ -1,0 +1,19 @@
+{
+  "certified": true,
+  "squad_name": "squad-franchising-avend",
+  "squad_type": "pro",
+  "score": 8.5,
+  "verdict": "PASS",
+  "date": "2026-04-13",
+  "workflow": "lifecycle-squad",
+  "mode": "full",
+  "pre_upgrade_score": 5.9,
+  "post_upgrade_score": 8.5,
+  "upgrades_applied": [
+    "config.yaml tier_structure — reconciled all 13 agent IDs with actual files",
+    "config.yaml tasks — reconciled all 14 task file paths with actual files",
+    "config.yaml workflows — registered 2 orphaned workflows",
+    "config.yaml entry_agent — fixed to franchising-chief",
+    "slash commands — created 13 commands with heading fix"
+  ]
+}

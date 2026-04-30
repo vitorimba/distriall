@@ -1,0 +1,137 @@
+name: squad-clickup-pm
+version: 2.0.0
+type: squad
+short-title: ClickUp PM — Gestão de Projetos Inteligente
+description: |
+  Squad de Project Management integrado com ClickUp.
+  Planeja sprints, estrutura tasks, tracked progresso,
+  automatiza workflows e facilita cerimônias ágeis.
+  Transforma caos em execução organizada.
+
+author: Felipe Oliveira
+license: MIT
+entry_agent: clickup-chief
+slashPrefix: clickup-pm
+category: project-management
+tags: [pm, clickup, scrum, agile, sprint, kanban]
+
+aiox:
+  type: squad
+  minVersion: "2.1.0"
+  migratedAt: "2026-04-09"
+  migratedFrom: "1.0.0"
+
+settings:
+  pm_philosophy:
+    rule_1: "Story-driven — toda task nasce de uma story"
+    rule_2: "Visibilidade total — status sempre atualizado"
+    rule_3: "Timeboxed — toda sprint tem escopo fechado"
+    rule_4: "Blocker-first — resolve impedimentos antes de criar tasks novas"
+    rule_5: "Métricas guiam decisões — velocity, burndown, cycle time"
+
+  clickup_config:
+    hierarchy:
+      - "Workspace → Space → Folder → List → Task → Subtask → Checklist"
+    statuses:
+      - "To Do"
+      - "In Progress"
+      - "In Review"
+      - "QA"
+      - "Done"
+    custom_fields:
+      - "Story Points"
+      - "Sprint"
+      - "Epic"
+      - "Priority (Urgente/Alta/Media/Baixa)"
+      - "Assignee"
+      - "Due Date"
+    automations:
+      - "Task movida pra In Review → notifica reviewer"
+      - "Task movida pra Done → atualiza burndown"
+      - "Subtask completa → verifica parent progress"
+
+  methodology:
+    framework: "Scrum adaptado"
+    sprint_length: "2 semanas (padrão)"
+    ceremonies:
+      - "Daily Standup (15min)"
+      - "Sprint Planning (1h)"
+      - "Sprint Review (30min)"
+      - "Retrospective (30min)"
+      - "Backlog Refinement (1h)"
+
+config:
+  extends: extend
+  coding-standards: config/coding-standards.md
+  tech-stack: config/tech-stack.md
+
+components:
+  agents:
+    - clickup-chief
+    - sprint-planner
+    - task-architect
+    - status-reporter
+    - workflow-builder
+    - meeting-master
+  tasks:
+    # Sprint Planner
+    - planejar-sprint.md
+    - backlog.md
+    - priorizar-moscow.md
+    - capacidade.md
+    - refinar.md
+    # Task Architect
+    - criar-task.md
+    - criar-bug.md
+    - criar-feature.md
+    - quebrar.md
+    # Meeting Master
+    - daily.md
+    - planning.md
+    - review.md
+    - retro.md
+    # Status Reporter
+    - dashboard.md
+    - burndown.md
+    - report-sprint.md
+    - blockers.md
+    - velocity.md
+    # Workflow Builder
+    - automacao.md
+    - workflow.md
+    - integrar.md
+  workflows:
+    - sprint-cycle.yaml
+    - ceremony-flow.yaml
+    - bug-triage-flow.yaml
+  templates:
+    - feature-task.md
+    - bug-task.md
+    - spike-task.md
+    - daily-standup.md
+    - sprint-planning.md
+    - sprint-review.md
+    - retrospective.md
+    - weekly-report.md
+    - dashboard.md
+    - dev-workflow.yaml
+    - bug-triage.yaml
+    - sprint-lifecycle.yaml
+
+agents:
+  - clickup-chief
+  - sprint-planner
+  - task-architect
+  - status-reporter
+  - workflow-builder
+  - meeting-master
+
+workspace_integration:
+  level: none
+
+metadata:
+  agents: 6
+  tasks: 21
+  workflows: 3
+  templates: 12
+  methodology_dna: ["Scrum", "Kanban", "Shape Up", "GTD"]

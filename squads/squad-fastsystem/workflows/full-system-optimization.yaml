@@ -1,0 +1,247 @@
+# ============================================================================
+# Workflow: Full System Optimization
+# ============================================================================
+# End-to-end optimization pipeline — 8 phases
+# ============================================================================
+
+name: full-system-optimization
+version: 1.0.0
+description: >
+  Pipeline completo de otimizacao do sistema. Cobre todas as camadas:
+  infraestrutura, database, backend, frontend, caching e resiliencia.
+  Usado quando o objetivo e otimizar o sistema como um todo.
+
+trigger: "Otimizacao completa do sistema planejada"
+estimated_duration: "2-5 dias"
+max_iterations: 2
+
+# ============================================================================
+# Phases
+# ============================================================================
+phases:
+  - id: phase-1-baseline
+    name: "Baseline Capture"
+    description: "Estabelecer baseline completo de performance"
+    agent: system-profiler
+    task: system-diagnostic
+    duration: "2-4 hours"
+    inputs:
+      - system_access
+      - current_architecture
+    outputs:
+      - baseline_report
+      - metrics_snapshot
+    checkpoint:
+      name: "Baseline Established"
+      criteria:
+        - "USE method completo"
+        - "Metricas p50/p95/p99 documentadas"
+        - "Web Vitals coletados"
+      decision: "continue"
+
+  - id: phase-2-observability
+    name: "Observability Setup"
+    description: "Garantir instrumentacao completa para medir impacto"
+    agent: observability-engineer
+    duration: "2-4 hours"
+    inputs:
+      - baseline_report
+      - current_instrumentation
+    outputs:
+      - instrumentation_plan
+      - dashboards_configured
+    checkpoint:
+      name: "Observability Ready"
+      criteria:
+        - "Distributed tracing ativo"
+        - "Dashboards de performance prontos"
+        - "Alertas configurados"
+      decision: "continue"
+
+  - id: phase-3-database
+    name: "Database Optimization"
+    description: "Otimizar queries, indices e schema"
+    agent: database-optimizer
+    tasks:
+      - query-optimization
+      - database-indexing
+    duration: "4-8 hours"
+    inputs:
+      - baseline_report
+      - slow_query_log
+    outputs:
+      - optimized_queries
+      - new_indexes
+      - db_metrics_improvement
+    checkpoint:
+      name: "Database Optimized"
+      criteria:
+        - "Top 10 queries otimizadas"
+        - "Indices nao utilizados removidos"
+        - "Melhoria >= 30% em query time"
+      decision: "continue | iterate"
+
+  - id: phase-4-backend
+    name: "Backend Optimization"
+    description: "Otimizar API latency, serialization e N+1"
+    agent: api-performance
+    task: api-latency-reduction
+    duration: "4-8 hours"
+    inputs:
+      - baseline_report
+      - db_metrics_improvement
+    outputs:
+      - optimized_endpoints
+      - api_metrics_improvement
+    checkpoint:
+      name: "Backend Optimized"
+      criteria:
+        - "N+1 queries eliminadas"
+        - "p95 < 500ms para hot paths"
+        - "Pagination em todas as listas"
+      decision: "continue | iterate"
+
+  - id: phase-5-caching
+    name: "Caching Layer"
+    description: "Implementar estrategia de caching multi-camada"
+    agent: caching-specialist
+    task: caching-strategy
+    duration: "3-6 hours"
+    inputs:
+      - api_metrics_improvement
+      - access_patterns
+    outputs:
+      - caching_strategy_doc
+      - cache_configured
+    checkpoint:
+      name: "Caching Implemented"
+      criteria:
+        - "Cache hit rate > 85%"
+        - "Invalidacao testada"
+        - "HTTP caching headers configurados"
+      decision: "continue | iterate"
+
+  - id: phase-6-frontend
+    name: "Frontend Optimization"
+    description: "Otimizar Web Vitals, bundles e rendering"
+    agent: frontend-performance
+    task: frontend-audit
+    duration: "4-8 hours"
+    inputs:
+      - baseline_report
+      - cache_configured
+    outputs:
+      - frontend_optimizations
+      - web_vitals_improvement
+    checkpoint:
+      name: "Frontend Optimized"
+      criteria:
+        - "LCP < 2.5s"
+        - "CLS < 0.1"
+        - "Bundle < 250KB gzipped"
+        - "Lighthouse >= 90"
+      decision: "continue | iterate"
+
+  - id: phase-7-resilience
+    name: "Resilience Hardening"
+    description: "Implementar padroes de resiliencia"
+    agent: resilience-engineer
+    task: resilience-audit
+    duration: "3-5 hours"
+    inputs:
+      - optimized_system
+      - dependency_map
+    outputs:
+      - resilience_improvements
+      - circuit_breakers_configured
+    checkpoint:
+      name: "Resilience Verified"
+      criteria:
+        - "Circuit breakers em dependencias criticas"
+        - "Timeouts explicitos em todos os pontos"
+        - "Graceful degradation testado"
+      decision: "continue"
+
+  - id: phase-8-validation
+    name: "Full Validation"
+    description: "Load test final e validacao completa"
+    agent: load-tester
+    task: load-testing
+    duration: "4-8 hours"
+    inputs:
+      - optimized_system
+      - performance_budgets
+    outputs:
+      - load_test_results
+      - final_comparison
+      - optimization_report
+    checkpoint:
+      name: "Optimization Complete"
+      criteria:
+        - "p95 dentro do budget sob carga"
+        - "Error rate < 1% sob carga"
+        - "Sistema se recupera apos stress"
+        - "Melhoria total >= 50% vs baseline"
+      decision: "complete | iterate_from_phase_3"
+
+# ============================================================================
+# Veto Conditions
+# ============================================================================
+veto_conditions:
+  - id: FSO-V-001
+    condition: "Otimizacao sem baseline capturado"
+    severity: BLOCK
+    phase: any
+
+  - id: FSO-V-002
+    condition: "Fase concluida sem metricas de melhoria"
+    severity: BLOCK
+    phase: any
+
+  - id: FSO-V-003
+    condition: "Deploy de otimizacao sem load test"
+    severity: BLOCK
+    phase: phase-8-validation
+
+  - id: FSO-V-004
+    condition: "Regressao em qualquer metrica nao justificada"
+    severity: BLOCK
+    phase: phase-8-validation
+
+# ============================================================================
+# Quality Gates
+# ============================================================================
+quality_gates:
+  baseline_captured:
+    criteria: "Metricas completas antes de qualquer mudanca"
+    blocking: true
+
+  per_phase_improvement:
+    criteria: "Cada fase com melhoria documentada"
+    blocking: true
+
+  final_validation:
+    criteria: "Load test + regression check passando"
+    blocking: true
+
+  total_improvement:
+    criteria: "Melhoria total >= 50% vs baseline"
+    blocking: false
+
+# ============================================================================
+# Agents Involved
+# ============================================================================
+agents_involved:
+  required:
+    - performance-lead
+    - system-profiler
+    - observability-engineer
+    - database-optimizer
+    - api-performance
+    - caching-specialist
+    - frontend-performance
+    - resilience-engineer
+    - load-tester
+  optional:
+    - devops-performance
+    - distributed-systems

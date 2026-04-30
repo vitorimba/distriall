@@ -1,0 +1,306 @@
+# Franchise Fee Benchmarks — Por Segmento
+# Squad: squad-franchising-avend (Avend Franquias)
+# Source: ABF, portais de franquia, pesquisa setorial
+# Última atualização: 2026-03-13
+
+metadata:
+  source: "ABF, Guia de Franquias, pesquisa setorial"
+  currency: "BRL"
+  reference_year: 2025
+  disclaimer: >
+    Valores representam faixas de mercado para franquias brasileiras.
+    Dados compilados de fontes públicas e relatórios setoriais.
+    Confirmar com pesquisa atualizada antes de decisões estratégicas.
+
+# ============================================================
+# TAXA DE FRANQUIA — Por Segmento
+# ============================================================
+taxa_franquia:
+  descricao: >
+    Valor pago ao franqueador para obter o direito de uso da marca,
+    treinamento inicial, manuais e suporte de implantação.
+    Pago uma vez na assinatura do contrato.
+
+  por_segmento:
+    vending_autoatendimento:
+      min: 8000
+      max: 35000
+      media: 18000
+      mediana: 15000
+      avend: 15000
+      posicionamento: "Abaixo da média — estratégia de acessibilidade"
+      exemplos:
+        - marca: "Referência A"
+          valor: 12000
+        - marca: "Referência B"
+          valor: 25000
+        - marca: "Referência C"
+          valor: 8000
+
+    food_service:
+      min: 15000
+      max: 120000
+      media: 45000
+      mediana: 40000
+      exemplos:
+        - marca: "Fast food nacional"
+          faixa: "30000-50000"
+        - marca: "Açaí/smoothie"
+          faixa: "25000-40000"
+        - marca: "Restaurante casual"
+          faixa: "50000-120000"
+
+    servicos:
+      min: 8000
+      max: 60000
+      media: 25000
+      mediana: 20000
+      exemplos:
+        - marca: "Limpeza"
+          faixa: "10000-25000"
+        - marca: "TI/Tecnologia"
+          faixa: "20000-50000"
+        - marca: "Consultoria"
+          faixa: "15000-40000"
+
+    educacao:
+      min: 15000
+      max: 80000
+      media: 35000
+      mediana: 30000
+      exemplos:
+        - marca: "Idiomas grande"
+          faixa: "40000-80000"
+        - marca: "Curso profissionalizante"
+          faixa: "15000-30000"
+        - marca: "Reforço escolar"
+          faixa: "20000-45000"
+
+    saude_beleza:
+      min: 15000
+      max: 100000
+      media: 40000
+      mediana: 35000
+      exemplos:
+        - marca: "Estética"
+          faixa: "20000-50000"
+        - marca: "Odontologia"
+          faixa: "40000-100000"
+        - marca: "Barbearia"
+          faixa: "15000-35000"
+
+# ============================================================
+# ROYALTY — Por Segmento
+# ============================================================
+royalty:
+  descricao: >
+    Pagamento mensal recorrente ao franqueador, geralmente calculado
+    como percentual do faturamento bruto. Remunera o uso contínuo
+    da marca e suporte operacional.
+
+  modelos_cobranca:
+    - tipo: "Percentual do faturamento"
+      prevalencia: "85% das franquias"
+    - tipo: "Valor fixo mensal"
+      prevalencia: "10% das franquias"
+    - tipo: "Híbrido (maior entre fixo e %)"
+      prevalencia: "5% das franquias"
+
+  por_segmento:
+    vending_autoatendimento:
+      min_pct: 3.0
+      max_pct: 8.0
+      media_pct: 5.0
+      mediana_pct: 5.0
+      avend_pct: 5.0
+      posicionamento: "Na média do segmento"
+      fixo_alternativo:
+        min: 300
+        max: 800
+
+    food_service:
+      min_pct: 4.0
+      max_pct: 12.0
+      media_pct: 6.0
+      mediana_pct: 5.5
+      fixo_alternativo:
+        min: 1000
+        max: 5000
+
+    servicos:
+      min_pct: 5.0
+      max_pct: 15.0
+      media_pct: 8.0
+      mediana_pct: 7.0
+      nota: "Serviços tendem a ter royalties mais altos (mais intangível)"
+
+    educacao:
+      min_pct: 8.0
+      max_pct: 15.0
+      media_pct: 12.0
+      mediana_pct: 12.0
+      nota: "Educação tem os royalties mais altos do mercado"
+
+    saude_beleza:
+      min_pct: 5.0
+      max_pct: 12.0
+      media_pct: 7.0
+      mediana_pct: 6.5
+
+# ============================================================
+# FUNDO DE MARKETING — Por Segmento
+# ============================================================
+fundo_marketing:
+  descricao: >
+    Contribuição mensal para fundo coletivo de marketing da rede.
+    Usado para campanhas nacionais, material institucional e
+    ações de marca. Também percentual do faturamento bruto.
+
+  por_segmento:
+    vending_autoatendimento:
+      min_pct: 1.0
+      max_pct: 3.0
+      media_pct: 2.0
+      avend_pct: 2.0
+      posicionamento: "Na média"
+      nota: "Marketing em vending é mais B2B (pontos) do que B2C"
+
+    food_service:
+      min_pct: 2.0
+      max_pct: 5.0
+      media_pct: 3.0
+      nota: "Alto investimento em marketing B2C"
+
+    servicos:
+      min_pct: 1.0
+      max_pct: 4.0
+      media_pct: 2.0
+
+    educacao:
+      min_pct: 2.0
+      max_pct: 5.0
+      media_pct: 3.0
+      nota: "Campanhas de matrícula sazonais"
+
+    saude_beleza:
+      min_pct: 2.0
+      max_pct: 4.0
+      media_pct: 2.5
+
+# ============================================================
+# TABELA COMPARATIVA COMPLETA
+# ============================================================
+comparativo_completo:
+  headers:
+    - segmento
+    - taxa_franquia_media
+    - royalty_medio_pct
+    - fundo_mkt_medio_pct
+    - custo_total_taxas_sobre_fat_pct
+    - investimento_total_medio
+
+  data:
+    - segmento: "Vending/Autoatendimento"
+      taxa_franquia_media: 18000
+      royalty_medio_pct: 5.0
+      fundo_mkt_medio_pct: 2.0
+      custo_total_taxas_sobre_fat_pct: 7.0
+      investimento_total_medio: 55000
+
+    - segmento: "Food Service"
+      taxa_franquia_media: 45000
+      royalty_medio_pct: 6.0
+      fundo_mkt_medio_pct: 3.0
+      custo_total_taxas_sobre_fat_pct: 9.0
+      investimento_total_medio: 180000
+
+    - segmento: "Serviços"
+      taxa_franquia_media: 25000
+      royalty_medio_pct: 8.0
+      fundo_mkt_medio_pct: 2.0
+      custo_total_taxas_sobre_fat_pct: 10.0
+      investimento_total_medio: 60000
+
+    - segmento: "Educação"
+      taxa_franquia_media: 35000
+      royalty_medio_pct: 12.0
+      fundo_mkt_medio_pct: 3.0
+      custo_total_taxas_sobre_fat_pct: 15.0
+      investimento_total_medio: 120000
+
+    - segmento: "Saúde/Beleza"
+      taxa_franquia_media: 40000
+      royalty_medio_pct: 7.0
+      fundo_mkt_medio_pct: 2.5
+      custo_total_taxas_sobre_fat_pct: 9.5
+      investimento_total_medio: 150000
+
+# ============================================================
+# POSICIONAMENTO AVEND vs. MERCADO
+# ============================================================
+posicionamento_avend:
+  taxa_franquia:
+    valor: 15000
+    vs_segmento: "17% abaixo da média de vending"
+    vs_mercado_geral: "54% abaixo da média geral de franquias"
+    estrategia: >
+      Preço acessível para atrair empreendedores de primeira viagem
+      e investidores que buscam renda extra. Compensado pelo volume
+      de franqueados e royalties recorrentes.
+
+  royalty:
+    percentual: 5.0
+    vs_segmento: "Na média de vending"
+    vs_mercado_geral: "33% abaixo da média geral (7.5%)"
+    estrategia: >
+      Royalty competitivo que não pressiona a margem do franqueado.
+      Modelo de receita da franqueadora baseado em volume da rede,
+      não em royalty alto individual.
+
+  fundo_marketing:
+    percentual: 2.0
+    vs_segmento: "Na média"
+    vs_mercado_geral: "20% abaixo da média geral (2.5%)"
+    estrategia: >
+      Marketing em vending é mais B2B (prospecção de pontos) do que
+      B2C (publicidade massiva). Fundo focado em material institucional,
+      presença digital e feiras do setor.
+
+  custo_total_sobre_faturamento:
+    percentual: 7.0
+    comparativo: >
+      Avend cobra 7% sobre faturamento (royalty + marketing).
+      Isso é 22% menor que food service (9%), 30% menor que
+      serviços (10%) e 53% menor que educação (15%).
+      Posicionamento muito competitivo.
+
+# ============================================================
+# TENDÊNCIAS DE MERCADO
+# ============================================================
+tendencias:
+  taxa_franquia:
+    direcao: "estavel"
+    nota: >
+      Taxas de franquia no segmento de vending tendem a se manter
+      estáveis. Diferenciação vem por tecnologia e suporte, não preço.
+
+  royalty:
+    direcao: "leve_queda"
+    nota: >
+      Tendência de leve redução em royalties conforme o segmento
+      de vending amadurece e a competição aumenta. Modelos de
+      royalty fixo ganham espaço em micro-franquias.
+
+  fundo_marketing:
+    direcao: "estavel"
+    nota: >
+      Fundos de marketing tendem a se manter. Redes mais maduras
+      podem aumentar para 3% para financiar campanhas digitais.
+
+  micro_franquias:
+    descricao: >
+      Micro-franquias (investimento até R$ 135k conforme ABF) são o
+      segmento de maior crescimento. Avend se encaixa nessa categoria
+      com R$ 50k de investimento total, posicionando-se no terço
+      inferior de investimento.
+    crescimento_anual_pct: 22

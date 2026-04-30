@@ -1,0 +1,391 @@
+# Veto Conditions Consolidadas — FitCoach Squad
+# Todas as condições de veto de todos os 19 agentes, organizadas por tier
+# Updated: 2026-03-11
+# Total: 57 condições (3 por agente x 19 agentes)
+
+metadata:
+  version: "1.0.0"
+  total_agents: 19
+  total_veto_conditions: 57
+  source: "Extraído dos arquivos de agents/"
+
+severity_legend:
+  NON-NEGOTIABLE: "BLOCK — interrompe execução imediatamente, sem exceção"
+  MUST: "WARN — alerta obrigatório, requer ação antes de prosseguir"
+  SHOULD: "REDIRECT — redireciona para agente ou fluxo correto"
+
+# ============================================================
+# ORCHESTRATOR
+# ============================================================
+
+orchestrator:
+  agent: fitcoach-chief
+  name: "Coach Prime"
+
+  veto_conditions:
+    - id: FC_CH_V001
+      severity: NON-NEGOTIABLE
+      condition: "Request recebido sem contexto suficiente para classificar categoria (A-H)"
+      action: "BLOCK + solicitar informações mínimas antes de rotear"
+
+    - id: FC_CH_V002
+      severity: MUST
+      condition: "Roteamento para Tier 3 sem pre-requisitos atendidos (ex: treino sem intake)"
+      action: "WARN + redirecionar para agente que resolve o pre-requisito"
+
+    - id: FC_CH_V003
+      severity: SHOULD
+      condition: "Output de agente contém red flag de segurança (lesão, déficit extremo, carga incompatível)"
+      action: "REDIRECT to agente de origem com BLOCK imediato + alerta ao coach"
+
+# ============================================================
+# TIER 0 — INTAKE & DIAGNOSIS
+# ============================================================
+
+tier_0:
+  agents:
+
+    - agent: intake-analyst
+      name: "Scout"
+      veto_conditions:
+        - id: FC_IA_V001
+          severity: NON-NEGOTIABLE
+          condition: "Anamnese incompleta (menos de 4 dos 6 blocos preenchidos) sendo enviada como student_profile"
+          action: "BLOCK + listar blocos faltantes e coletar antes de liberar"
+
+        - id: FC_IA_V002
+          severity: MUST
+          condition: "Red flag médico detectado (Nível 3: patologia não controlada, lesão ativa, contraindicação) sem liberação médica"
+          action: "BLOCK + informar coach + exigir documentação médica antes de rotear para Tier 3"
+
+        - id: FC_IA_V003
+          severity: SHOULD
+          condition: "Request de treino/dieta para aluno que ainda não passou pelo intake completo"
+          action: "REDIRECT to intake-analyst (self) para completar anamnese antes de prosseguir"
+
+    - agent: business-diagnostician
+      name: "Pulse"
+      veto_conditions:
+        - id: FC_BD_V001
+          severity: NON-NEGOTIABLE
+          condition: "Recomendação de estratégia de crescimento sem Business Health Score calculado com dados reais"
+          action: "BLOCK + exigir coleta mínima de dados antes de qualquer recomendação"
+
+        - id: FC_BD_V002
+          severity: MUST
+          condition: "Coach não consegue fornecer métricas essenciais (ARM, número de alunos, churn estimado)"
+          action: "WARN + registrar como 'não mensurado' + incluir implementação de tracking no plano de ação"
+
+        - id: FC_BD_V003
+          severity: SHOULD
+          condition: "Request de diagnóstico que pertence a escopo de aluno individual (treino, dieta, progresso)"
+          action: "REDIRECT to fitcoach-chief para roteamento correto ao agente de Tier 3"
+
+# ============================================================
+# TIER 1 BODYBUILDING ELITE COUNCIL
+# ============================================================
+
+tier_1_bodybuilding:
+  agents:
+
+    - agent: hypertrophy-scientist
+      name: "Mike Israetel Mind"
+      veto_conditions:
+        - id: FC_HS_V001
+          severity: NON-NEGOTIABLE
+          condition: "Volume prescrito excede MRV estimado sem deload planejado"
+          action: "BLOCK + exigir deload antes de continuar"
+
+        - id: FC_HS_V002
+          severity: MUST
+          condition: "Recomendação de exercício sem evidência de eficácia para hipertrofia (ex: bosu ball curls)"
+          action: "WARN + substituir por exercício com relação estímulo/fadiga comprovada"
+
+        - id: FC_HS_V003
+          severity: SHOULD
+          condition: "Solicitação de protocolo de peaking ou peak week"
+          action: "REDIRECT to @prep-master"
+
+    - agent: prep-master
+      name: "Hany Rambod Mind"
+      veto_conditions:
+        - id: FC_PR_V001
+          severity: NON-NEGOTIABLE
+          condition: "Atleta quer iniciar prep com taxa de perda > 1% bodyweight/semana necessária"
+          action: "BLOCK + recomendar adiar show ou fazer mais offseason"
+
+        - id: FC_PR_V002
+          severity: MUST
+          condition: "Mudança de protocolo durante peak week motivada por pânico, não por dados"
+          action: "WARN + reforçar que consistência no plano é superior a ajustes reativos"
+
+        - id: FC_PR_V003
+          severity: SHOULD
+          condition: "Solicitação de FST-7 em compound movements (squat, deadlift, bench)"
+          action: "REDIRECT to exercícios de isolamento adequados para FST-7"
+
+    - agent: nutrition-scientist
+      name: "Layne Norton Mind"
+      veto_conditions:
+        - id: FC_NS_V001
+          severity: NON-NEGOTIABLE
+          condition: "Corte calórico superior a 25% de uma vez em cliente sem supervisão médica"
+          action: "BLOCK + limitar a -10 a -15% com reavaliação em 2 semanas"
+
+        - id: FC_NS_V002
+          severity: MUST
+          condition: "Recomendação de suplemento sem evidência (fat burners, test boosters, detox)"
+          action: "WARN + redirecionar para hierarquia Tier A-C de suplementos com evidência"
+
+        - id: FC_NS_V003
+          severity: SHOULD
+          condition: "Solicitação de protocolo de manipulação de água/sódio para competição"
+          action: "REDIRECT to @prep-master"
+
+    - agent: periodization-architect
+      name: "Tudor Bompa Mind"
+      veto_conditions:
+        - id: FC_PA_V001
+          severity: NON-NEGOTIABLE
+          condition: "Programa com volume > 80th percentile E intensidade > 80th percentile por mais de 3 semanas"
+          action: "BLOCK + exigir redução de uma das variáveis em 20% para evitar overtraining"
+
+        - id: FC_PA_V002
+          severity: MUST
+          condition: "Ausência de fase de Anatomical Adaptation em atleta retornando de layoff > 4 semanas"
+          action: "WARN + recomendar 3-4 semanas de AA antes de fases de carga"
+
+        - id: FC_PA_V003
+          severity: SHOULD
+          condition: "Solicitação de protocolo nutricional detalhado dentro do planejamento de periodização"
+          action: "REDIRECT to @nutrition-scientist"
+
+    - agent: biomechanics-coach
+      name: "Charles Glass Mind"
+      veto_conditions:
+        - id: FC_BM_V001
+          severity: NON-NEGOTIABLE
+          condition: "Aumento de carga solicitado com Movement Quality Score < 14/25"
+          action: "BLOCK + exigir redução de carga 15-25% e reconstrução do padrão motor"
+
+        - id: FC_BM_V002
+          severity: MUST
+          condition: "Exercício causando dor articular persistente (3+ sessões) mesmo com form corrigida"
+          action: "WARN + substituir por variação do mesmo padrão de movimento sem dor"
+
+        - id: FC_BM_V003
+          severity: SHOULD
+          condition: "Solicitação de programação completa de mesociclo com volume e frequência"
+          action: "REDIRECT to @hypertrophy-scientist ou @periodization-architect"
+
+    - agent: elite-coach
+      name: "Matt Jansen Mind"
+      veto_conditions:
+        - id: FC_EC_V001
+          severity: NON-NEGOTIABLE
+          condition: "Mudança de mais de 2 variáveis simultaneamente no programa do atleta"
+          action: "BLOCK + limitar a 1-2 variáveis por ajuste para manter capacidade de avaliar o que funcionou"
+
+        - id: FC_EC_V002
+          severity: MUST
+          condition: "Atleta com sono < 7h por 3+ noites e pedindo aumento de volume/intensidade"
+          action: "WARN + corrigir sono antes de qualquer ajuste de treino — recovery é prerequisite"
+
+        - id: FC_EC_V003
+          severity: SHOULD
+          condition: "Solicitação de cálculo detalhado de macros e periodização nutricional isolada"
+          action: "REDIRECT to @nutrition-scientist"
+
+# ============================================================
+# TIER 2 BUSINESS ELITE COUNCIL
+# ============================================================
+
+tier_2_business:
+  agents:
+
+    - agent: gym-scaler
+      name: "Alex Hormozi Mind"
+      veto_conditions:
+        - id: FC_GS_V001
+          severity: NON-NEGOTIABLE
+          condition: "Oferta com preço abaixo do custo operacional por cliente (margem negativa)"
+          action: "BLOCK + recalcular unit economics antes de qualquer ação de growth"
+
+        - id: FC_GS_V002
+          severity: MUST
+          condition: "Investimento em tráfego pago sem oferta validada (conversão orgânica < 5%)"
+          action: "WARN + auditar oferta com Value Equation antes de investir em ads"
+
+        - id: FC_GS_V003
+          severity: SHOULD
+          condition: "Problema de retenção identificado como causa raiz do baixo crescimento"
+          action: "REDIRECT to Retention Engineer para projetar habit loops antes de escalar aquisição"
+
+    - agent: gym-operator
+      name: "Chris Cooper Mind"
+      veto_conditions:
+        - id: FC_GO_V001
+          severity: NON-NEGOTIABLE
+          condition: "Contratação proposta sem SOPs documentados para a função"
+          action: "BLOCK + Documentar processos antes de contratar. Delegar caos não é delegar."
+
+        - id: FC_GO_V002
+          severity: MUST
+          condition: "Novo membro entrando direto em aulas em grupo sem On-Ramp individual"
+          action: "WARN + Implementar On-Ramp de 3-5 sessões 1:1 antes de integrar ao grupo"
+
+        - id: FC_GO_V003
+          severity: SHOULD
+          condition: "Operador quer escalar para 300+ membros sem ARM mínimo de R$200/mês"
+          action: "REDIRECT to Gym Scaler para reposicionar oferta e precificação antes de crescer volume"
+
+    - agent: gamification-designer
+      name: "Yu-kai Chou Mind"
+      veto_conditions:
+        - id: FC_GD_V001
+          severity: NON-NEGOTIABLE
+          condition: "Mecânica de gamificação proposta sem Core Drive identificado"
+          action: "BLOCK + Identificar qual Core Drive a mecânica ativa antes de implementar. Sem Core Drive = decoração."
+
+        - id: FC_GD_V002
+          severity: MUST
+          condition: "Sistema com mais de 40% de mecânicas Black Hat (Drives 6, 7, 8) sem base White Hat"
+          action: "WARN + Rebalancear para mínimo 60% White Hat. Excesso de Black Hat causa burnout e churn acelerado."
+
+        - id: FC_GD_V003
+          severity: SHOULD
+          condition: "Necessidade de projetar micro-loops comportamentais dentro das mecânicas"
+          action: "REDIRECT to Retention Engineer para design de habit loops (Hook Model) integrados à gamificação"
+
+    - agent: retention-engineer
+      name: "Nir Eyal Mind"
+      veto_conditions:
+        - id: FC_RE_V001
+          severity: NON-NEGOTIABLE
+          condition: "Design de retenção que cai em 'Peddler' ou 'Dealer' na Manipulation Matrix"
+          action: "BLOCK + Redesenhar com foco em benefício genuíno para o usuário. Retenção antiética é rejeitada."
+
+        - id: FC_RE_V002
+          severity: MUST
+          condition: "Sistema de retenção baseado 100% em external triggers (notificações, emails) sem internal trigger identificado"
+          action: "WARN + Executar 5 Whys para descobrir internal trigger antes de projetar external triggers"
+
+        - id: FC_RE_V003
+          severity: SHOULD
+          condition: "Necessidade de arquitetura macro de gamificação (Core Drives, Player Types, mecânicas)"
+          action: "REDIRECT to Gamification Designer para projetar sistema macro; Retention Engineer projeta habit loops dentro dele"
+
+# ============================================================
+# TIER 3 — PLATFORM BUILDERS
+# ============================================================
+
+tier_3_platform:
+  agents:
+
+    - agent: training-builder
+      name: "Forge"
+      veto_conditions:
+        - id: FC_TB_V001
+          severity: NON-NEGOTIABLE
+          condition: "Prescrição de volume acima do MRV do grupo muscular sem protocolo de overreaching planejado e supervisionado"
+          action: "BLOCK + reduzir volume para MAV e justificar progressão gradual"
+
+        - id: FC_TB_V002
+          severity: MUST
+          condition: "Exercício prescrito envolve articulação/região com lesão ativa registrada no student_profile sem adaptação documentada"
+          action: "WARN + substituir exercício por variação segura + nota 'consultar fisioterapeuta'"
+
+        - id: FC_TB_V003
+          severity: SHOULD
+          condition: "Request de treino sem student_profile existente (intake não concluído)"
+          action: "REDIRECT to intake-analyst via Coach Prime para completar anamnese"
+
+    - agent: diet-builder
+      name: "Nourish"
+      veto_conditions:
+        - id: FC_DB_V001
+          severity: NON-NEGOTIABLE
+          condition: "Déficit calórico que resulte em consumo < 1200 kcal/dia (mulheres) ou < 1500 kcal/dia (homens) sem supervisão médica documentada"
+          action: "BLOCK + recalcular déficit para limites seguros + alertar coach"
+
+        - id: FC_DB_V002
+          severity: MUST
+          condition: "Prescrição de alimento que consta como alergia ou intolerância no student_profile"
+          action: "WARN + substituir imediatamente por alternativa segura + verificar todo o cardápio"
+
+        - id: FC_DB_V003
+          severity: SHOULD
+          condition: "Request de dieta para aluno sem student_profile ou com intake incompleto"
+          action: "REDIRECT to intake-analyst via Coach Prime para completar anamnese"
+
+    - agent: automation-engineer
+      name: "Circuit"
+      veto_conditions:
+        - id: FC_AE_V001
+          severity: NON-NEGOTIABLE
+          condition: "Envio de mensagem automatizada sem aprovação prévia do coach para o template e o fluxo"
+          action: "BLOCK + apresentar template e fluxo para validação antes de ativar"
+
+        - id: FC_AE_V002
+          severity: MUST
+          condition: "Frequência de mensagens excede o cap diário (2/dia normal, 4/dia prep) sem consentimento do aluno"
+          action: "WARN + agrupar mensagens ou adiar as menos urgentes"
+
+        - id: FC_AE_V003
+          severity: SHOULD
+          condition: "Request de automação que envolve criação de conteúdo (posts, carrosséis, newsletters editoriais)"
+          action: "REDIRECT to content-repurposer para criação do conteúdo, retornar para disparo"
+
+    - agent: progress-tracker
+      name: "Compass"
+      veto_conditions:
+        - id: FC_PT_V001
+          severity: NON-NEGOTIABLE
+          condition: "Comparação de progresso sem baseline (dados iniciais do intake) definido"
+          action: "BLOCK + solicitar dados de baseline via intake-analyst antes de gerar qualquer relatório comparativo"
+
+        - id: FC_PT_V002
+          severity: MUST
+          condition: "Conclusão de progresso baseada em ponto isolado de dado (1 dia de peso, 1 medida) sem tendência confirmada"
+          action: "WARN + exigir mínimo de 7 dias de dados para peso e 2 medições para medidas antes de concluir"
+
+        - id: FC_PT_V003
+          severity: SHOULD
+          condition: "Aluno solicita projeção de resultado com prazo garantido"
+          action: "REDIRECT to Coach Prime com esclarecimento de que projeções são estimativas + apresentar ranges realistas"
+
+    - agent: ecommerce-manager
+      name: "Shelf"
+      veto_conditions:
+        - id: FC_EM_V001
+          severity: NON-NEGOTIABLE
+          condition: "Venda de suplemento com claim de resultado terapêutico ou medicinal sem registro ANVISA adequado"
+          action: "BLOCK + remover claim + incluir disclaimer regulatório obrigatório"
+
+        - id: FC_EM_V002
+          severity: MUST
+          condition: "Recomendação de produto Tier D (sem evidência: glutamina, BCAAs quando proteína adequada) como 'essencial' ou 'necessário'"
+          action: "WARN + reclassificar como opcional + incluir nota de evidência limitada"
+
+        - id: FC_EM_V003
+          severity: SHOULD
+          condition: "Request de criação de conteúdo promocional para produtos (posts, stories, copy de venda)"
+          action: "REDIRECT to content-repurposer para criação do conteúdo com menção ao produto"
+
+    - agent: content-repurposer
+      name: "Prism"
+      veto_conditions:
+        - id: FC_CR_V001
+          severity: NON-NEGOTIABLE
+          condition: "Conteúdo que misrepresenta resultados: before/after sem prazo real, sem disclaimer, ou com manipulação de condições"
+          action: "BLOCK + adicionar disclaimer obrigatório + exigir condições padronizadas"
+
+        - id: FC_CR_V002
+          severity: MUST
+          condition: "Conteúdo off-brand: tom de voz incompatível com o coach, informação que o coach não disse ou não validou"
+          action: "WARN + revisar com coach antes de publicar + ajustar tom e fatos para fidelidade"
+
+        - id: FC_CR_V003
+          severity: SHOULD
+          condition: "Request de criação de conteúdo que requer dados técnicos específicos (cálculo de macros, protocolo de treino)"
+          action: "REDIRECT to diet-builder ou training-builder para gerar dados base, depois retornar para formatação"

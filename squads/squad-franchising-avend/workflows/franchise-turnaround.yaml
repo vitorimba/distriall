@@ -1,0 +1,1071 @@
+# Franchise Turnaround Workflow — Avend Franquias
+# Workflow de turnaround para franqueados com performance abaixo do esperado
+# 4 fases: Diagnostic, Intervention Plan, Execution & Monitoring, Decision
+# Updated: 2026-03-13
+
+id: franchise-turnaround
+name: "Franchise Turnaround — Recuperacao de Franqueados Underperforming"
+version: "1.0.0"
+squad: franchising-avend
+description: >-
+  Workflow estruturado para identificar, diagnosticar e recuperar franqueados
+  com performance abaixo do esperado na rede Avend. Combina analise operacional,
+  financeira e relacional para criar um plano de intervencao personalizado,
+  com acompanhamento rigoroso e gates de decisao em 30/60/90 dias.
+  O objetivo primario e sempre a recuperacao — encerramento e ultima opcao.
+
+trigger: "*turnaround"
+execution_mode: sequential
+estimated_duration: "90-120 dias"
+total_phases: 4
+
+# ============================================================================
+# CONTEXT — Por que Turnaround e Critico
+# ============================================================================
+
+context: >-
+  Franqueados underperforming representam risco multiplicador para a rede:
+  impactam NPS coletivo, geram custo de suporte desproporcional, podem
+  contaminar outros franqueados com insatisfacao, e em casos extremos levam
+  a litigios. Na Avend, com modelo de microfranquia de ~R$50k, o perfil de
+  risco e diferente de franquias maiores — o franqueado pode simplesmente
+  abandonar a operacao se nao perceber retorno. O turnaround precisa ser
+  rapido, pratico e focado em resultados tangiveis dentro de 30 dias.
+
+  Estatisticas tipicas do setor:
+  - 60-70% dos franqueados underperforming podem ser recuperados com
+    intervencao estruturada nos primeiros 90 dias
+  - Custo de recuperar um franqueado: ~R$2k-R$5k (tempo de equipe + suporte)
+  - Custo de perder um franqueado: ~R$15k-R$30k (reposicao, maquinas, reputacao)
+  - Principal causa de underperformance em vending: localizacao ruim (40%),
+    abastecimento irregular (25%), mix de produtos inadequado (20%), outros (15%)
+
+# ============================================================================
+# PREREQUISITES
+# ============================================================================
+
+prerequisites:
+  - "Franqueado identificado como underperforming por pelo menos 30 dias consecutivos"
+  - "Dados de telemetria/vendas dos ultimos 90 dias disponiveis"
+  - "Historico de interacoes e suporte com o franqueado registrado"
+  - "Contrato de franquia vigente e em dia"
+  - "Nenhum processo judicial ativo entre franqueador e franqueado"
+  - "Franqueado notificado sobre inicio do processo de turnaround"
+
+# ============================================================================
+# TRIGGER CONDITIONS — Quando iniciar turnaround
+# ============================================================================
+
+trigger_conditions:
+  automatic:
+    - condition: "Faturamento por maquina abaixo de R$2k/mes por 2 meses consecutivos"
+      severity: high
+      action: "Iniciar turnaround automaticamente"
+    - condition: "Uptime medio abaixo de 80% por 30 dias"
+      severity: high
+      action: "Iniciar turnaround automaticamente"
+    - condition: "Inadimplencia de royalties por 2+ meses"
+      severity: critical
+      action: "Iniciar turnaround com flag financeiro"
+    - condition: "NPS individual abaixo de 5 (de 10)"
+      severity: medium
+      action: "Avaliar para turnaround"
+
+  manual:
+    - condition: "Solicitacao do proprio franqueado pedindo ajuda"
+      action: "Iniciar turnaround em modo colaborativo"
+    - condition: "Relatorio de visita de campo com alertas criticos"
+      action: "Iniciar turnaround com dados da visita"
+    - condition: "Identificacao pelo relationship-manager em check-in"
+      action: "Avaliar para turnaround"
+
+# ============================================================================
+# E-FACTOR ASSESSMENT — Engajamento do Franqueado
+# ============================================================================
+
+e_factor:
+  description: >-
+    O E-Factor (Engagement Factor) mede o nivel de engajamento e disposicao
+    do franqueado para colaborar no processo de recuperacao. E o maior preditor
+    de sucesso do turnaround. Baseado em Greg Nathan (Franchise Relationships).
+  dimensions:
+    - id: ef_communication
+      name: "Comunicacao"
+      weight: 25
+      description: "Franqueado responde mensagens, atende ligacoes, participa de reunioes"
+      scoring:
+        1: "Ignora comunicacoes, nao responde ha mais de 2 semanas"
+        3: "Responde eventualmente, com atraso significativo"
+        5: "Responde em 24-48h, participativo"
+        7: "Proativo na comunicacao, busca contato"
+        10: "Comunicacao excelente, transparente, colaborativo"
+    - id: ef_compliance
+      name: "Compliance Operacional"
+      weight: 25
+      description: "Franqueado segue padroes, SOPs, politicas da rede"
+      scoring:
+        1: "Descumpre sistematicamente, resiste a padronizacao"
+        3: "Cumpre parcialmente, varios desvios"
+        5: "Cumpre maioria dos padroes, desvios menores"
+        7: "Alto nivel de compliance, desvios raros"
+        10: "Compliance exemplar, referencia para rede"
+    - id: ef_investment
+      name: "Disposicao para Investir"
+      weight: 25
+      description: "Franqueado investe tempo, energia e recursos na operacao"
+      scoring:
+        1: "Zero investimento adicional, abandonou operacao na pratica"
+        3: "Investimento minimo, apenas reativo"
+        5: "Investe quando ve necessidade clara"
+        7: "Investe proativamente, busca melhorias"
+        10: "Alto investimento, trata como prioridade"
+    - id: ef_attitude
+      name: "Atitude e Mentalidade"
+      weight: 25
+      description: "Franqueado demonstra mentalidade de crescimento vs vitimizacao"
+      scoring:
+        1: "Culpa exclusivamente a franqueadora, vitimizacao total"
+        3: "Predominantemente negativo, pouca autocritica"
+        5: "Equilibrado, reconhece responsabilidade compartilhada"
+        7: "Predominantemente positivo, busca solucoes"
+        10: "Mentalidade de dono, assume responsabilidade total"
+
+  classification:
+    - range: "8-10"
+      label: "HIGHLY ENGAGED"
+      prognosis: "Excelente — recuperacao provavel em 30-60 dias"
+      approach: "Colaborativo, foco em solucoes tecnicas"
+    - range: "5-7"
+      label: "MODERATELY ENGAGED"
+      prognosis: "Bom — recuperacao provavel em 60-90 dias com acompanhamento proximo"
+      approach: "Estruturado, check-ins semanais, metas claras"
+    - range: "3-4"
+      label: "LOW ENGAGEMENT"
+      prognosis: "Reservado — recuperacao possivel mas requer intervencao intensiva"
+      approach: "Diretivo, reuniao presencial, ultimato construtivo"
+    - range: "1-2"
+      label: "DISENGAGED"
+      prognosis: "Critico — considerar transicao ou encerramento"
+      approach: "Conversa franca sobre futuro, opcoes de saida digna"
+
+# ============================================================================
+# PHASE 1: DIAGNOSTIC — Diagnostico Completo
+# ============================================================================
+
+phases:
+  - id: phase_1_diagnostic
+    name: "Diagnostic — Diagnostico Completo do Franqueado"
+    description: >-
+      Coleta exaustiva de dados operacionais, financeiros e relacionais para
+      identificar as causas-raiz da underperformance. Combinacao de dados
+      quantitativos (telemetria, financeiro) e qualitativos (entrevista,
+      observacao de campo).
+    duration: "5-10 dias"
+    agents:
+      - franchise-field-ops
+      - franchise-relationship
+
+    steps:
+      # --- Step 1.1: Coleta de Dados Operacionais ---
+      - id: step_1_1
+        name: "Coleta de Dados Operacionais e Telemetria"
+        agent: franchise-field-ops
+        execution_mode: agent
+        description: >-
+          Extrair todos os dados quantitativos disponiveis sobre a operacao
+          do franqueado: vendas, uptime, abastecimento, manutencao, etc.
+        inputs:
+          - "Sistema de telemetria — dados dos ultimos 90 dias"
+          - "Relatorios de vendas por maquina/dia"
+          - "Historico de manutencao e chamados tecnicos"
+          - "Registro de abastecimento (frequencia, horarios, produtos)"
+          - "Dados de pagamento de royalties e taxas"
+        outputs:
+          - "turnaround-data-operacional-{franchisee_id}.md"
+        kpis_to_collect:
+          vendas:
+            - metric: "Faturamento mensal total"
+              unit: "R$"
+              red_flag: "< R$2k por maquina"
+            - metric: "Faturamento por maquina/dia"
+              unit: "R$"
+              red_flag: "< R$80/dia"
+            - metric: "Ticket medio"
+              unit: "R$"
+              red_flag: "< R$4"
+            - metric: "Transacoes por maquina/dia"
+              unit: "unidades"
+              red_flag: "< 10"
+            - metric: "Taxa de conversao por localizacao"
+              unit: "%"
+              red_flag: "Queda > 30% vs benchmark"
+          operacional:
+            - metric: "Uptime medio por maquina"
+              unit: "%"
+              red_flag: "< 85%"
+            - metric: "Tempo medio entre falhas (MTBF)"
+              unit: "dias"
+              red_flag: "< 15 dias"
+            - metric: "Tempo medio de reparo (MTTR)"
+              unit: "horas"
+              red_flag: "> 48h"
+            - metric: "Frequencia de abastecimento"
+              unit: "dias"
+              red_flag: "> 5 dias"
+            - metric: "Ruptura de estoque (% tempo sem produto)"
+              unit: "%"
+              red_flag: "> 15%"
+          financeiro:
+            - metric: "Margem bruta"
+              unit: "%"
+              red_flag: "< 40%"
+            - metric: "Inadimplencia de royalties"
+              unit: "meses"
+              red_flag: "> 1 mes"
+            - metric: "Custo de manutencao/maquina"
+              unit: "R$/mes"
+              red_flag: "> R$200"
+        checks:
+          - "Dados de pelo menos 90 dias coletados"
+          - "Todas as maquinas do franqueado mapeadas"
+          - "Gaps de dados identificados e documentados"
+          - "Benchmarks da rede calculados para comparacao"
+
+      # --- Step 1.2: Entrevista com Franqueado ---
+      - id: step_1_2
+        name: "Entrevista Estruturada com Franqueado"
+        agent: franchise-relationship
+        execution_mode: hybrid
+        description: >-
+          Entrevista aprofundada com o franqueado para entender sua perspectiva,
+          desafios, frustraçoes e disposicao para mudanca. Fundamental para
+          calcular o E-Factor e definir abordagem do turnaround.
+        inputs:
+          - "turnaround-data-operacional-{franchisee_id}.md (de step_1_1)"
+          - "Historico de interacoes (CRM, emails, WhatsApp)"
+          - "Roteiro de entrevista de turnaround"
+          - "Pesquisa NPS mais recente do franqueado"
+        outputs:
+          - "turnaround-entrevista-{franchisee_id}.md"
+          - "e-factor-assessment-{franchisee_id}.md"
+        interview_topics:
+          - topic: "Percepcao do negocio"
+            questions:
+              - "Como voce avalia a performance da sua operacao hoje?"
+              - "Quais sao os 3 maiores desafios que voce enfrenta?"
+              - "O que mudou desde o inicio da operacao?"
+              - "A operacao atende suas expectativas iniciais?"
+          - topic: "Operacao do dia-a-dia"
+            questions:
+              - "Descreva sua rotina semanal com as maquinas"
+              - "Com que frequencia voce abastece? Como decide o mix?"
+              - "Como voce lida com manutencao e problemas tecnicos?"
+              - "Voce usa os relatorios de telemetria? Como?"
+          - topic: "Relacionamento com a franqueadora"
+            questions:
+              - "Como voce avalia o suporte da Avend? (1-10)"
+              - "Voce se sente ouvido quando reporta problemas?"
+              - "Os treinamentos sao uteis? O que falta?"
+              - "Voce participa das reunioes da rede?"
+          - topic: "Perspectiva futura"
+            questions:
+              - "Voce pretende continuar como franqueado Avend?"
+              - "Voce consideraria investir em mais maquinas?"
+              - "O que precisaria mudar para voce estar satisfeito?"
+              - "Em uma escala de 1-10, qual seu comprometimento com o turnaround?"
+        checks:
+          - "Entrevista realizada (presencial ou video, nunca apenas texto)"
+          - "E-Factor calculado e classificado"
+          - "Principais queixas e demandas documentadas"
+          - "Franqueado informado sobre processo de turnaround"
+          - "Confidencialidade e tom respeitoso mantidos"
+        veto_if:
+          - "Franqueado recusa entrevista apos 2 tentativas"
+          - "Franqueado declara intencao de acionar judicialmente"
+          - "Franqueado nao localizado ou sem contato ha 30+ dias"
+
+      # --- Step 1.3: Visita de Campo ---
+      - id: step_1_3
+        name: "Visita de Campo — Inspecao das Maquinas"
+        agent: franchise-field-ops
+        execution_mode: hybrid
+        description: >-
+          Visita presencial a todas as maquinas do franqueado para inspecionar
+          condicoes fisicas, localizacao, visibilidade, limpeza, abastecimento
+          e funcionamento.
+        inputs:
+          - "Lista de maquinas e enderecos do franqueado"
+          - "Checklist de visita de campo"
+          - "Fotos anteriores (se disponiveis)"
+        outputs:
+          - "turnaround-visita-campo-{franchisee_id}.md"
+          - "fotos-inspecao-{franchisee_id}/ (diretorio)"
+        inspection_checklist:
+          localizacao:
+            - "Fluxo de pessoas no ponto — alto/medio/baixo"
+            - "Visibilidade da maquina — facil de encontrar?"
+            - "Acessibilidade — horario de funcionamento do local"
+            - "Concorrencia direta — outras maquinas/opcoes de venda proximo?"
+            - "Perfil do publico — compativel com produtos oferecidos?"
+            - "Contrato com ponto — vigente, valor, renovacao?"
+          maquina:
+            - "Estado de conservacao — nota 1-10"
+            - "Limpeza — interna e externa"
+            - "Adesivagem — atual, sem desgaste, padroes da marca"
+            - "Temperatura — calibrada corretamente"
+            - "Sistema de pagamento — funcionando (dinheiro, cartao, PIX)"
+            - "Iluminacao — LED funcionando"
+            - "Display — sem erros, responsivo"
+          abastecimento:
+            - "Nivel de estoque atual — % capacidade"
+            - "Validade dos produtos — verificar FIFO"
+            - "Mix de produtos — adequado ao ponto?"
+            - "Historico de ruptura — gaps visiveis?"
+            - "Organizacao interna — produtos bem dispostos?"
+          manutencao:
+            - "Chamados abertos — quantos, ha quanto tempo"
+            - "Pecas visivelmente danificadas"
+            - "Funcionamento geral — teste de compra"
+            - "Conectividade — telemetria online?"
+        checks:
+          - "100% das maquinas visitadas"
+          - "Fotos tiradas de cada maquina (frente, lado, interior)"
+          - "Checklist preenchido para cada maquina"
+          - "Conversa com responsavel do ponto (quando possivel)"
+          - "Relatorio de campo consolidado"
+
+      # --- Step 1.4: Root Cause Analysis ---
+      - id: step_1_4
+        name: "Root Cause Analysis — Analise de Causa-Raiz"
+        agent: franchise-field-ops
+        execution_mode: agent
+        description: >-
+          Consolidar todos os dados coletados (telemetria, entrevista, visita
+          de campo) em uma analise de causa-raiz estruturada usando framework
+          5 Whys + Ishikawa adaptado para vending.
+        inputs:
+          - "turnaround-data-operacional-{franchisee_id}.md"
+          - "turnaround-entrevista-{franchisee_id}.md"
+          - "e-factor-assessment-{franchisee_id}.md"
+          - "turnaround-visita-campo-{franchisee_id}.md"
+          - "Benchmarks da rede (franqueados top 25%)"
+        outputs:
+          - "turnaround-root-cause-{franchisee_id}.md"
+        analysis_framework:
+          ishikawa_categories:
+            - category: "Localizacao"
+              typical_causes:
+                - "Ponto com fluxo insuficiente"
+                - "Mudanca no perfil do local (obra, fechamento)"
+                - "Concorrencia instalada proximamente"
+                - "Horario de acesso incompativel"
+            - category: "Operacao"
+              typical_causes:
+                - "Abastecimento irregular ou insuficiente"
+                - "Mix de produtos inadequado para o publico"
+                - "Falta de FIFO (produtos vencidos)"
+                - "Limpeza/apresentacao deficiente"
+            - category: "Manutencao"
+              typical_causes:
+                - "Tempo de reparo excessivo"
+                - "Maquina com defeitos recorrentes"
+                - "Sistema de pagamento com falhas"
+                - "Conectividade instavel"
+            - category: "Financeiro"
+              typical_causes:
+                - "Margem comprimida por custos altos"
+                - "Preco de venda inadequado"
+                - "Custo de deslocamento elevado"
+                - "Capital de giro insuficiente"
+            - category: "Franqueado"
+              typical_causes:
+                - "Dedicacao insuficiente (renda complementar)"
+                - "Falta de habilidade operacional"
+                - "Desalinhamento de expectativas"
+                - "Problemas pessoais impactando operacao"
+            - category: "Suporte Franqueadora"
+              typical_causes:
+                - "Treinamento insuficiente"
+                - "Suporte tecnico lento"
+                - "Comunicacao deficiente"
+                - "Falta de ferramentas de gestao"
+        checks:
+          - "Pelo menos 1 causa-raiz identificada por categoria relevante"
+          - "5 Whys aplicado para as top 3 causas"
+          - "Causas priorizadas por impacto x facilidade de resolucao"
+          - "E-Factor considerado na analise"
+          - "Comparacao com benchmarks da rede incluida"
+        veto_if:
+          - "Dados insuficientes para analise (menos de 30 dias)"
+          - "Franqueado nao colaborou com entrevista ou visita"
+
+    # --- Phase 1 Checkpoint ---
+    checkpoint:
+      name: "Diagnostic Checkpoint"
+      decision_maker: franchise-chief
+      criteria:
+        - "Root cause analysis completa e validada"
+        - "E-Factor classificado e documentado"
+        - "Dados quantitativos e qualitativos convergem"
+        - "Causas-raiz priorizadas"
+      decisions:
+        proceed: "Causas-raiz identificadas, E-Factor >= 3 — prosseguir para intervencao"
+        escalate: "E-Factor <= 2 — escalar para avaliacao de encerramento"
+        defer: "Dados insuficientes — coletar mais dados por 15 dias"
+      veto_conditions:
+        - "E-Factor = 1 (DISENGAGED) e historico de conflitos graves"
+        - "Franqueado em processo judicial contra a franqueadora"
+        - "Evidencia de fraude ou desvio de conduta grave"
+      handoff:
+        from: "franchise-field-ops + franchise-relationship"
+        to: "franchise-financial + franchise-operations"
+        artifacts:
+          - "turnaround-root-cause-{franchisee_id}.md"
+          - "e-factor-assessment-{franchisee_id}.md"
+          - "turnaround-visita-campo-{franchisee_id}.md"
+        context: >-
+          Fase de diagnostico concluida. Causas-raiz identificadas e priorizadas.
+          E-Factor avaliado. Proximo passo: elaborar plano de intervencao
+          personalizado baseado nos achados.
+
+  # ============================================================================
+  # PHASE 2: INTERVENTION PLAN — Plano de Intervencao
+  # ============================================================================
+
+  - id: phase_2_intervention
+    name: "Intervention Plan — Plano de Intervencao Personalizado"
+    description: >-
+      Elaborar plano de acao personalizado para o franqueado baseado nas
+      causas-raiz identificadas. Incluir metas claras, timeline, recursos
+      necessarios, responsabilidades e criterios de sucesso.
+    duration: "3-5 dias"
+    agents:
+      - franchise-financial
+      - franchise-operations
+
+    steps:
+      # --- Step 2.1: Restructuring Financeiro ---
+      - id: step_2_1
+        name: "Analise de Restructuring Financeiro"
+        agent: franchise-financial
+        execution_mode: agent
+        description: >-
+          Avaliar se o franqueado precisa de reestruturacao financeira:
+          renegociacao de royalties, desconto temporario, parcelamento de
+          debitos, ajuste de preco de venda, otimizacao de custos.
+        inputs:
+          - "turnaround-root-cause-{franchisee_id}.md"
+          - "Dados financeiros do franqueado (DRE simplificada)"
+          - "Contrato de franquia vigente"
+          - "Politica de renegociacao da Avend"
+        outputs:
+          - "turnaround-plan-financeiro-{franchisee_id}.md"
+        financial_interventions:
+          royalties:
+            - type: "Desconto temporario"
+              description: "Reducao de 20-50% do royalty por 60-90 dias"
+              eligibility: "Franqueado em dia ate 60 dias atras, E-Factor >= 5"
+              approval: "franchise-chief"
+            - type: "Carencia de royalty"
+              description: "Suspensao total por 30-60 dias"
+              eligibility: "Caso critico, E-Factor >= 7, compromisso formal"
+              approval: "franchise-chief + franchise-strategist"
+            - type: "Parcelamento de debito"
+              description: "Parcelar debitos acumulados em 3-6x"
+              eligibility: "Debito ate 3 meses, franqueado comprometido"
+              approval: "franchise-financial"
+          custos:
+            - type: "Otimizacao de mix de produtos"
+              description: "Ajustar mix para produtos de maior margem"
+              impact: "Aumento de 5-15pp na margem bruta"
+            - type: "Reducao de custo logistico"
+              description: "Otimizar rota de abastecimento, agrupar visitas"
+              impact: "Reducao de 10-30% no custo de deslocamento"
+            - type: "Renegociacao com ponto"
+              description: "Renegociar aluguel/comissao com responsavel do local"
+              impact: "Variavel — R$100-R$500/mes"
+          receita:
+            - type: "Ajuste de preco de venda"
+              description: "Revisar precos vs concorrencia e elasticidade"
+              impact: "Aumento de 5-20% no ticket medio"
+            - type: "Inclusao de novos produtos"
+              description: "Adicionar produtos de maior valor (snacks premium)"
+              impact: "Aumento de 10-25% no faturamento"
+            - type: "Relocacao de maquina"
+              description: "Mover para ponto de maior fluxo"
+              impact: "Potencial aumento de 30-100% no faturamento"
+        checks:
+          - "Analise financeira detalhada do franqueado"
+          - "Todas as opcoes de intervencao financeira avaliadas"
+          - "Impacto projetado de cada medida calculado"
+          - "Aprovacoes necessarias identificadas"
+          - "Termos de renegociacao redigidos (se aplicavel)"
+
+      # --- Step 2.2: Operational Fixes ---
+      - id: step_2_2
+        name: "Plano de Correcoes Operacionais"
+        agent: franchise-operations
+        execution_mode: agent
+        description: >-
+          Definir correcoes operacionais especificas para cada causa-raiz
+          identificada. Foco em acoes praticas, de rapida implementacao e
+          impacto mensuravel.
+        inputs:
+          - "turnaround-root-cause-{franchisee_id}.md"
+          - "turnaround-visita-campo-{franchisee_id}.md"
+          - "SOPs e manuais operacionais vigentes"
+          - "Dados de franqueados top performers para benchmark"
+        outputs:
+          - "turnaround-plan-operacional-{franchisee_id}.md"
+        operational_fixes:
+          localizacao:
+            - fix: "Relocacao de maquina"
+              timeline: "15-30 dias"
+              responsavel: "Franqueado + suporte Avend"
+              custo: "R$300-R$1k (transporte + instalacao)"
+              criterio_sucesso: "Nova localizacao com fluxo >= 500 pessoas/dia"
+            - fix: "Negociacao de visibilidade no ponto"
+              timeline: "5-10 dias"
+              responsavel: "Franqueado"
+              custo: "R$0-R$200"
+              criterio_sucesso: "Maquina em posicao de destaque visivel"
+          operacao:
+            - fix: "Retreinamento em abastecimento e FIFO"
+              timeline: "3-5 dias"
+              responsavel: "training-developer"
+              custo: "R$0 (treinamento incluso)"
+              criterio_sucesso: "Abastecimento regular, zero produtos vencidos"
+            - fix: "Otimizacao de mix por dados de telemetria"
+              timeline: "7-14 dias"
+              responsavel: "network-analyst + franqueado"
+              custo: "R$0"
+              criterio_sucesso: "Mix alinhado com demanda do ponto"
+            - fix: "Implementacao de rota otimizada"
+              timeline: "5-7 dias"
+              responsavel: "operations-designer"
+              custo: "R$0"
+              criterio_sucesso: "Reducao de 20%+ no tempo de rota"
+          manutencao:
+            - fix: "Manutencao preventiva completa"
+              timeline: "1-3 dias"
+              responsavel: "tech-systems + tecnico"
+              custo: "R$200-R$800"
+              criterio_sucesso: "100% maquinas operacionais, MTBF > 30 dias"
+            - fix: "Substituicao de maquina defeituosa"
+              timeline: "7-15 dias"
+              responsavel: "tech-systems"
+              custo: "R$3k-R$8k (dependendo do modelo)"
+              criterio_sucesso: "Nova maquina instalada e funcional"
+            - fix: "Atualizacao de sistema de pagamento"
+              timeline: "1-5 dias"
+              responsavel: "tech-systems"
+              custo: "R$100-R$500"
+              criterio_sucesso: "PIX, cartao e dinheiro operacionais"
+          franqueado:
+            - fix: "Programa de mentoria com top performer"
+              timeline: "30 dias (ongoing)"
+              responsavel: "relationship-manager"
+              custo: "R$0 (incentivo ao mentor)"
+              criterio_sucesso: "Franqueado demonstra melhoria em KPIs"
+            - fix: "Retreinamento completo (bootcamp)"
+              timeline: "2-3 dias"
+              responsavel: "training-developer"
+              custo: "R$0 (incluso no suporte)"
+              criterio_sucesso: "Avaliacao pos-treinamento >= 7/10"
+        checks:
+          - "Cada causa-raiz tem pelo menos 1 fix associado"
+          - "Timeline realista para cada fix"
+          - "Custos estimados e aprovados"
+          - "Responsaveis definidos para cada acao"
+          - "Criterios de sucesso mensuráveis para cada fix"
+
+      # --- Step 2.3: Timeline e Milestones ---
+      - id: step_2_3
+        name: "Consolidacao — Timeline e Milestones 30/60/90"
+        agent: franchise-operations
+        execution_mode: agent
+        description: >-
+          Consolidar plano financeiro e operacional em um unico documento
+          com timeline 30/60/90 dias, milestones claros, responsabilidades
+          e criterios de gate para cada checkpoint.
+        inputs:
+          - "turnaround-plan-financeiro-{franchisee_id}.md"
+          - "turnaround-plan-operacional-{franchisee_id}.md"
+          - "e-factor-assessment-{franchisee_id}.md"
+        outputs:
+          - "turnaround-plan-consolidado-{franchisee_id}.md"
+          - "turnaround-milestones-{franchisee_id}.md"
+        milestones:
+          day_30:
+            name: "Gate 30 — Quick Wins"
+            expected_improvements:
+              - "Faturamento: +15-25% vs baseline"
+              - "Uptime: > 90%"
+              - "Abastecimento: regularizado"
+              - "Royalties: em dia ou renegociados"
+            gate_criteria:
+              pass: "70%+ dos quick wins implementados"
+              warning: "50-70% implementados"
+              fail: "< 50% implementados"
+          day_60:
+            name: "Gate 60 — Estabilizacao"
+            expected_improvements:
+              - "Faturamento: +30-50% vs baseline"
+              - "Uptime: > 93%"
+              - "NPS franqueado: melhoria de 2+ pontos"
+              - "Custos otimizados conforme plano"
+            gate_criteria:
+              pass: "KPIs em trajetoria ascendente consistente"
+              warning: "KPIs estaveis, sem piora mas sem melhoria clara"
+              fail: "KPIs em queda ou sem melhoria apos 60 dias"
+          day_90:
+            name: "Gate 90 — Sustentabilidade"
+            expected_improvements:
+              - "Faturamento: >= benchmark da rede (P50)"
+              - "Uptime: > 95%"
+              - "E-Factor: melhoria de 2+ pontos vs avaliacao inicial"
+              - "Franqueado autossuficiente (sem suporte intensivo)"
+            gate_criteria:
+              pass: "Franqueado dentro de parametros normais da rede"
+              warning: "Franqueado melhorou mas ainda abaixo do P25"
+              fail: "Franqueado nao melhorou significativamente"
+        checks:
+          - "Plano consolidado com todas as acoes priorizadas"
+          - "Milestones 30/60/90 definidos com criterios claros"
+          - "Recursos necessarios alocados"
+          - "Franqueado alinhado e comprometido com o plano"
+          - "Documento assinado por ambas as partes"
+
+    # --- Phase 2 Checkpoint ---
+    checkpoint:
+      name: "Intervention Plan Checkpoint"
+      decision_maker: franchise-chief
+      criteria:
+        - "Plano consolidado aprovado"
+        - "Recursos financeiros disponíveis"
+        - "Franqueado formalmente comprometido"
+        - "Milestones realistas e mensuráveis"
+      decisions:
+        proceed: "Plano aprovado por franchise-chief — iniciar execucao"
+        revise: "Plano precisa de ajustes — revisar em 3 dias"
+        abort: "Caso inviavel — escalar para decisao de encerramento"
+      veto_conditions:
+        - "Custo total de intervencao > R$10k sem ROI claro em 90 dias"
+        - "Franqueado recusa assinar compromisso de turnaround"
+        - "E-Factor <= 2 confirmado apos segunda avaliacao"
+      handoff:
+        from: "franchise-financial + franchise-operations"
+        to: "franchise-field-ops"
+        artifacts:
+          - "turnaround-plan-consolidado-{franchisee_id}.md"
+          - "turnaround-milestones-{franchisee_id}.md"
+        context: >-
+          Plano de intervencao aprovado. Acoes priorizadas, timeline definido,
+          milestones 30/60/90 estabelecidos. Proximo passo: execucao com
+          acompanhamento semanal.
+
+  # ============================================================================
+  # PHASE 3: EXECUTION & MONITORING — Execucao e Acompanhamento
+  # ============================================================================
+
+  - id: phase_3_execution
+    name: "Execution & Monitoring — Execucao com Acompanhamento Semanal"
+    description: >-
+      Implementacao do plano de turnaround com acompanhamento semanal
+      rigoroso. Check-ins semanais com franqueado, tracking de KPIs,
+      ajustes de rota quando necessario, e gates de decisao em 30/60/90 dias.
+    duration: "90 dias"
+    agents:
+      - franchise-field-ops
+
+    steps:
+      # --- Step 3.1: Kickoff com Franqueado ---
+      - id: step_3_1
+        name: "Kickoff — Reuniao de Inicio do Turnaround"
+        agent: franchise-field-ops
+        execution_mode: hybrid
+        description: >-
+          Reuniao presencial ou video com franqueado para apresentar o plano,
+          alinhar expectativas, definir canais de comunicacao e confirmar
+          compromisso mutuo.
+        inputs:
+          - "turnaround-plan-consolidado-{franchisee_id}.md"
+          - "turnaround-milestones-{franchisee_id}.md"
+        outputs:
+          - "turnaround-kickoff-ata-{franchisee_id}.md"
+        agenda:
+          - "Apresentacao dos achados do diagnostico (transparencia)"
+          - "Apresentacao do plano de acao e timeline"
+          - "Alinhamento de responsabilidades (franqueado vs franqueadora)"
+          - "Definicao de canais e frequencia de comunicacao"
+          - "Assinatura do compromisso de turnaround"
+          - "Perguntas e preocupacoes do franqueado"
+        checks:
+          - "Reuniao realizada com registro (ata ou gravacao)"
+          - "Franqueado entendeu o plano e concordou"
+          - "Compromisso assinado (digital ou fisico)"
+          - "Canais de comunicacao definidos (WhatsApp grupo, etc)"
+          - "Primeira acao do plano agendada"
+
+      # --- Step 3.2: Weekly Check-ins ---
+      - id: step_3_2
+        name: "Weekly Check-ins — Acompanhamento Semanal"
+        agent: franchise-field-ops
+        execution_mode: hybrid
+        repeat: weekly
+        duration: "12 semanas"
+        description: >-
+          Check-in semanal com franqueado para acompanhar execucao do plano,
+          revisar KPIs, identificar bloqueios e ajustar rota quando necessario.
+        inputs:
+          - "turnaround-plan-consolidado-{franchisee_id}.md"
+          - "Dados de telemetria da semana"
+          - "Relatorio do franqueado (formulario semanal)"
+          - "Check-in anterior (para comparacao)"
+        outputs:
+          - "turnaround-checkin-semana-{week_number}-{franchisee_id}.md"
+        checkin_template:
+          kpis_semanais:
+            - "Faturamento da semana vs meta"
+            - "Uptime medio das maquinas"
+            - "Numero de abastecimentos realizados"
+            - "Chamados tecnicos abertos/fechados"
+            - "Status de pagamento de royalties"
+          perguntas_ao_franqueado:
+            - "O que funcionou bem esta semana?"
+            - "Quais dificuldades voce enfrentou?"
+            - "Precisa de algum suporte adicional?"
+            - "Como esta se sentindo em relacao ao turnaround?"
+          acoes_da_semana:
+            - "Acoes planejadas que foram concluidas"
+            - "Acoes planejadas que nao foram concluidas (motivo)"
+            - "Novas acoes identificadas"
+            - "Ajustes de rota necessarios"
+        checks:
+          - "Check-in realizado (call de 15-30min)"
+          - "KPIs atualizados no tracker"
+          - "Acoes da semana registradas"
+          - "Proximo check-in agendado"
+
+      # --- Step 3.3: KPI Tracking Dashboard ---
+      - id: step_3_3
+        name: "KPI Tracking — Dashboard de Acompanhamento"
+        agent: franchise-field-ops
+        execution_mode: agent
+        repeat: weekly
+        description: >-
+          Manter dashboard atualizado com evolucao dos KPIs do franqueado
+          vs baseline vs metas do turnaround vs benchmarks da rede.
+        inputs:
+          - "Dados de telemetria atualizados"
+          - "turnaround-milestones-{franchisee_id}.md"
+          - "Benchmarks da rede (P25, P50, P75)"
+        outputs:
+          - "turnaround-dashboard-{franchisee_id}.md"
+        tracking_metrics:
+          - metric: "Faturamento semanal"
+            baseline: "Valor pre-turnaround"
+            target_30d: "+15-25%"
+            target_60d: "+30-50%"
+            target_90d: ">=P50 da rede"
+          - metric: "Uptime"
+            baseline: "Valor pre-turnaround"
+            target_30d: ">90%"
+            target_60d: ">93%"
+            target_90d: ">95%"
+          - metric: "Transacoes/dia/maquina"
+            baseline: "Valor pre-turnaround"
+            target_30d: ">12"
+            target_60d: ">18"
+            target_90d: ">22"
+          - metric: "Frequencia abastecimento"
+            baseline: "Valor pre-turnaround"
+            target_30d: "a cada 4 dias"
+            target_60d: "a cada 3 dias"
+            target_90d: "otimizado por dados"
+          - metric: "E-Factor"
+            baseline: "Avaliacao inicial"
+            target_30d: "+1 ponto"
+            target_60d: "+2 pontos"
+            target_90d: ">=6"
+
+      # --- Step 3.4: Gate 30 Dias ---
+      - id: step_3_4
+        name: "Gate 30 Dias — Avaliacao de Quick Wins"
+        agent: franchise-field-ops
+        execution_mode: hybrid
+        description: >-
+          Primeira avaliacao formal. Verificar se quick wins foram
+          implementados e se ha sinais de melhoria. Decisao: continuar,
+          intensificar ou escalar.
+        inputs:
+          - "turnaround-dashboard-{franchisee_id}.md (30 dias de dados)"
+          - "turnaround-milestones-{franchisee_id}.md"
+          - "4 relatorios de check-in semanal"
+        outputs:
+          - "turnaround-gate30-{franchisee_id}.md"
+        decision_matrix:
+          pass:
+            criteria: "70%+ dos quick wins implementados, KPIs melhorando"
+            action: "Continuar plano conforme timeline 60/90"
+          warning:
+            criteria: "50-70% implementados, melhoria parcial"
+            action: "Intensificar acompanhamento, ajustar acoes"
+          fail:
+            criteria: "< 50% implementados, sem melhoria"
+            action: "Reuniao de escalacao com franchise-chief"
+
+      # --- Step 3.5: Gate 60 Dias ---
+      - id: step_3_5
+        name: "Gate 60 Dias — Avaliacao de Estabilizacao"
+        agent: franchise-field-ops
+        execution_mode: hybrid
+        description: >-
+          Segunda avaliacao formal. Verificar estabilizacao da operacao,
+          tendencias de KPIs e engajamento do franqueado.
+        inputs:
+          - "turnaround-dashboard-{franchisee_id}.md (60 dias de dados)"
+          - "turnaround-gate30-{franchisee_id}.md"
+          - "8 relatorios de check-in semanal"
+        outputs:
+          - "turnaround-gate60-{franchisee_id}.md"
+        decision_matrix:
+          pass:
+            criteria: "KPIs em trajetoria ascendente consistente por 4+ semanas"
+            action: "Continuar com acompanhamento reduzido (quinzenal)"
+          warning:
+            criteria: "KPIs estaveis, sem piora mas sem melhoria clara"
+            action: "Revisar plano, considerar acoes adicionais"
+          fail:
+            criteria: "KPIs em queda ou sem melhoria apos 60 dias"
+            action: "Escalar para franchise-chief para decisao"
+
+      # --- Step 3.6: Gate 90 Dias ---
+      - id: step_3_6
+        name: "Gate 90 Dias — Avaliacao de Sustentabilidade"
+        agent: franchise-field-ops
+        execution_mode: hybrid
+        description: >-
+          Avaliacao final do turnaround. Decisao sobre o futuro do
+          franqueado na rede.
+        inputs:
+          - "turnaround-dashboard-{franchisee_id}.md (90 dias de dados)"
+          - "turnaround-gate30-{franchisee_id}.md"
+          - "turnaround-gate60-{franchisee_id}.md"
+          - "12 relatorios de check-in semanal"
+          - "e-factor-assessment-{franchisee_id}.md (reavaliacao)"
+        outputs:
+          - "turnaround-gate90-{franchisee_id}.md"
+          - "turnaround-final-report-{franchisee_id}.md"
+        decision_matrix:
+          recovered:
+            criteria: "KPIs >= P50 da rede, E-Factor >= 6, sustentavel"
+            action: "Retorno ao monitoramento normal da rede"
+          improving:
+            criteria: "KPIs em melhoria mas ainda abaixo P50, E-Factor >= 5"
+            action: "Extensao do turnaround por mais 30 dias (maximo)"
+          failed:
+            criteria: "KPIs sem melhoria significativa apos 90 dias"
+            action: "Escalar para franchise-chief — avaliacao de encerramento"
+
+    # --- Phase 3 Checkpoint ---
+    checkpoint:
+      name: "Execution Checkpoint"
+      decision_maker: franchise-field-ops
+      criteria:
+        - "Gates 30/60/90 executados conforme planejado"
+        - "KPIs tracked semanalmente"
+        - "Check-ins realizados sem interrupcao"
+        - "Franqueado manteve engajamento minimo"
+      decisions:
+        recovered: "Gate 90 PASS — transicionar para monitoramento normal"
+        extending: "Gate 90 IMPROVING — extensao de 30 dias"
+        escalate: "Gate 90 FAIL — escalar para franchise-chief"
+      handoff:
+        from: "franchise-field-ops"
+        to: "franchise-chief"
+        artifacts:
+          - "turnaround-final-report-{franchisee_id}.md"
+          - "turnaround-gate90-{franchisee_id}.md"
+          - "turnaround-dashboard-{franchisee_id}.md"
+        context: >-
+          Fase de execucao concluida. 90 dias de acompanhamento com gates
+          em 30/60/90. Relatorio final preparado com recomendacao.
+
+  # ============================================================================
+  # PHASE 4: DECISION — Decisao Final
+  # ============================================================================
+
+  - id: phase_4_decision
+    name: "Decision — Decisao Final sobre o Franqueado"
+    description: >-
+      Decisao final do franchise-chief sobre o futuro do franqueado na rede.
+      Baseada em dados objetivos do turnaround, E-Factor, e alinhamento
+      estrategico com a rede.
+    duration: "3-5 dias"
+    agents:
+      - franchise-chief
+
+    steps:
+      # --- Step 4.1: Review Consolidado ---
+      - id: step_4_1
+        name: "Review Consolidado — Analise Final"
+        agent: franchise-chief
+        execution_mode: agent
+        description: >-
+          Revisar todos os artefatos do turnaround, dados de evolucao,
+          relatorios de gate e E-Factor para tomar decisao informada.
+        inputs:
+          - "turnaround-final-report-{franchisee_id}.md"
+          - "turnaround-gate90-{franchisee_id}.md"
+          - "turnaround-dashboard-{franchisee_id}.md"
+          - "e-factor-assessment-{franchisee_id}.md (reavaliacao 90d)"
+          - "Contrato de franquia vigente"
+          - "Impacto na rede (NPS, reputacao, outros franqueados)"
+        outputs:
+          - "turnaround-decision-{franchisee_id}.md"
+        decision_options:
+          - id: "RECOVERED"
+            label: "Recuperacao Confirmada"
+            criteria:
+              - "KPIs >= P50 da rede por 4+ semanas consecutivas"
+              - "E-Factor >= 6"
+              - "Royalties em dia"
+              - "Franqueado autossuficiente"
+            action: "Retorno ao monitoramento normal (network-health-review)"
+            follow_up:
+              - "Check-in mensal por 3 meses adicionais"
+              - "Reconhecimento na rede (caso de sucesso)"
+              - "Documentar lições aprendidas"
+          - id: "PARTIAL_RECOVERY"
+            label: "Recuperacao Parcial"
+            criteria:
+              - "KPIs melhoraram mas ainda abaixo P25"
+              - "E-Factor >= 5"
+              - "Franqueado comprometido mas com limitacoes"
+            action: "Extensao monitorada de 30-60 dias com metas especificas"
+            follow_up:
+              - "Novo plano simplificado para gap restante"
+              - "Check-in semanal mantido"
+              - "Deadline firme para atingir parametros minimos"
+          - id: "FAILED_RECOVERY"
+            label: "Recuperacao Nao Alcancada"
+            criteria:
+              - "KPIs sem melhoria significativa apos 90 dias"
+              - "E-Factor < 4"
+              - "Perspectiva de melhoria baixa"
+            action: "Iniciar processo de transicao/encerramento"
+            follow_up:
+              - "Avaliacao juridica do contrato (franchise-legal)"
+              - "Negociacao de saída digna (rescisao amigavel preferivel)"
+              - "Plano de transicao de maquinas e pontos"
+              - "Comunicacao para rede (se necessario)"
+          - id: "STRATEGIC_EXIT"
+            label: "Saida Estrategica"
+            criteria:
+              - "Franqueado solicita saida voluntaria"
+              - "Ou: regiao nao justifica presenca na rede"
+              - "Ou: conflitos irreconciliaveis"
+            action: "Facilitar saida ordenada com minimo impacto"
+            follow_up:
+              - "Buyback de maquinas (se previsto em contrato)"
+              - "Transicao de pontos para outro franqueado ou operacao propria"
+              - "Documentacao legal de encerramento"
+              - "Feedback de saida (exit interview)"
+
+      # --- Step 4.2: Comunicacao da Decisao ---
+      - id: step_4_2
+        name: "Comunicacao da Decisao ao Franqueado"
+        agent: franchise-chief
+        execution_mode: hybrid
+        description: >-
+          Comunicar a decisao ao franqueado de forma clara, respeitosa e
+          documentada. Garantir alinhamento e proximos passos definidos.
+        inputs:
+          - "turnaround-decision-{franchisee_id}.md"
+        outputs:
+          - "turnaround-comunicacao-{franchisee_id}.md"
+        communication_guidelines:
+          tone: "Respeitoso, transparente, baseado em fatos"
+          format: "Reuniao presencial ou video (nunca por escrito apenas)"
+          timing: "Maximo 5 dias uteis apos decisao"
+          documentation: "Ata assinada por ambas as partes"
+        checks:
+          - "Decisao comunicada ao franqueado pessoalmente"
+          - "Proximos passos claros para ambas as partes"
+          - "Documentacao assinada"
+          - "Timeline de follow-up definido"
+
+      # --- Step 4.3: Lessons Learned ---
+      - id: step_4_3
+        name: "Lessons Learned — Licoes Aprendidas"
+        agent: franchise-chief
+        execution_mode: agent
+        description: >-
+          Documentar licoes aprendidas do turnaround para melhorar processos
+          futuros e prevenir casos similares na rede.
+        inputs:
+          - "Todos os artefatos do turnaround"
+        outputs:
+          - "turnaround-lessons-learned-{franchisee_id}.md"
+        lessons_template:
+          - "Causas-raiz mais comuns identificadas"
+          - "Intervencoes que funcionaram vs que nao funcionaram"
+          - "Sinais de alerta precoce para prevencao"
+          - "Melhorias sugeridas no processo de turnaround"
+          - "Melhorias sugeridas no processo de screening"
+          - "Impacto na rede (positivo e negativo)"
+        checks:
+          - "Lessons learned documentadas e compartilhadas com equipe"
+          - "Recomendacoes para prevencao incorporadas aos processos"
+          - "Caso anonimizado adicionado ao knowledge base da rede"
+
+    # --- Phase 4 Final Checkpoint ---
+    checkpoint:
+      name: "Final Decision Checkpoint"
+      decision_maker: franchise-chief
+      criteria:
+        - "Decisao tomada com base em dados objetivos"
+        - "Franqueado comunicado e alinhado"
+        - "Proximos passos definidos e com responsaveis"
+        - "Lessons learned documentadas"
+      decisions:
+        close_recovered: "Turnaround bem-sucedido — caso encerrado"
+        close_partial: "Recuperacao parcial — monitoramento extendido"
+        close_exit: "Encerramento — processo de transicao iniciado"
+      veto_conditions:
+        - "Decisao de encerramento sem esgotamento do processo de 90 dias"
+        - "Encerramento sem avaliacao juridica do contrato"
+        - "Comunicacao de encerramento feita apenas por escrito"
+
+# ============================================================================
+# GLOBAL VETO CONDITIONS
+# ============================================================================
+
+global_veto_conditions:
+  - "Turnaround nao pode ser iniciado para franqueados com menos de 90 dias de operacao"
+  - "Turnaround nao pode ser iniciado durante processo judicial ativo"
+  - "Decisao de encerramento requer aprovacao de franchise-chief + franchise-strategist"
+  - "Maximo de 2 turnarounds para o mesmo franqueado em 12 meses"
+  - "Dados de diagnostico devem ter no minimo 30 dias de historico"
+
+# ============================================================================
+# METRICS DE SUCESSO DO PROGRAMA
+# ============================================================================
+
+program_metrics:
+  success_rate:
+    target: ">=65%"
+    description: "Percentual de franqueados que atingem status RECOVERED"
+  time_to_recovery:
+    target: "<=75 dias (media)"
+    description: "Tempo medio ate atingir parametros normais da rede"
+  prevention_rate:
+    target: "+10% ao ano"
+    description: "Reducao de novos casos por melhorias no screening/onboarding"
+  cost_per_turnaround:
+    target: "<=R$5k"
+    description: "Custo medio total do processo de turnaround"
+  net_promoter_impact:
+    target: "NPS do franqueado recuperado >= 7"
+    description: "NPS pos-turnaround do franqueado recuperado"

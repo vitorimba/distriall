@@ -1,0 +1,608 @@
+workflow:
+  id: wf-sync-template
+  name: "Sync AIOX Template to Projects"
+  version: "1.0.0"
+  type: distribution
+  orchestrator: "@squad-chief"
+  icon: "\U0001F504"
+  command: "*sync-template [--projects all|{name,name}] [--layers all|{L1,L2,...}] [--dry-run] [--force]"
+
+  purpose: |
+    Distribuir atualizações do AIOX (template master) para todos os projetos filhos.
+    O AIOX é a fonte de verdade para: framework engine, rules, hooks, commands, squads.
+    Cada projeto recebe um upgrade com merge inteligente (não sobrescreve configs locais).
+
+  description: |
+    Workflow de 7 fases para sincronizar o template AIOX com projetos.
+    Paths são lidos de .aiox/sync-config.yaml (local per machine).
+    Suporta dry-run, seleção de projetos e seleção de camadas.
+
+  metadata:
+    elicit: true
+    confirmation_required: true
+    estimated_duration: "10-30 min"
+    template_path: "from .aiox/sync-config.yaml → template_path"
+    projects_base: "from .aiox/sync-config.yaml → projects_base"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           INPUTS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  config_file: ".aiox/sync-config.yaml"
+  config_resolution: |
+    All path inputs are resolved in this priority order:
+    1. CLI flag (--template, --projects-base) — highest priority
+    2. .aiox/sync-config.yaml (local per machine) — normal usage
+    3. Default values below — fallback
+    First-time setup: cp .aiox/sync-config.template.yaml .aiox/sync-config.yaml && edit paths
+
+  inputs:
+    - field: template_path
+      type: string
+      required: false
+      default: "from .aiox/sync-config.yaml → template_path"
+      description: "Path do AIOX template (fonte de verdade). Read from sync-config.yaml."
+
+    - field: projects_base
+      type: string
+      required: false
+      default: "from .aiox/sync-config.yaml → projects_base"
+      description: "Pasta base dos projetos. Read from sync-config.yaml."
+
+    - field: projects
+      type: string
+      required: false
+      default: "all"
+      description: "Quais projetos sincronizar. 'all' ou lista separada por vírgula"
+
+    - field: layers
+      type: string
+      required: false
+      default: "all"
+      enum: [all, L1, L2, L3, L4, L5, L6, L7]
+      description: |
+        Quais camadas sincronizar:
+        L1 = .aiox-core/ (framework engine)
+        L2 = .claude/rules/ (regras compartilhadas)
+        L3 = .claude/hooks/ (hooks compartilhados)
+        L4 = .claude/commands/ (slash commands dos squads)
+        L5 = .claude/CLAUDE.md (instruções — MERGE)
+        L6 = .claude/settings.json (configurações — MERGE)
+        L7 = squads/ (todos os squads)
+
+    - field: dry_run
+      type: boolean
+      required: false
+      default: false
+      description: "Se true, apenas mostra o que seria feito sem executar"
+
+    - field: force
+      type: boolean
+      required: false
+      default: false
+      description: "Se true, pula confirmações (cuidado)"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           STATE MACHINE
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  state_machine:
+    states:
+      - init
+      - preflight
+      - inventory_template
+      - scan_projects
+      - compute_diff
+      - confirm_plan
+      - execute_sync
+      - validate_sync
+      - rollback
+      - report
+      - complete
+      - failed
+    transitions:
+      - {trigger: start, source: init, dest: preflight}
+      - {trigger: preflight_go, source: preflight, dest: inventory_template}
+      - {trigger: preflight_block, source: preflight, dest: failed}
+      - {trigger: inventory_complete, source: inventory_template, dest: scan_projects}
+      - {trigger: scan_complete, source: scan_projects, dest: compute_diff}
+      - {trigger: diff_complete, source: compute_diff, dest: confirm_plan}
+      - {trigger: plan_approved, source: confirm_plan, dest: execute_sync}
+      - {trigger: plan_rejected, source: confirm_plan, dest: complete}
+      - {trigger: sync_complete, source: execute_sync, dest: validate_sync}
+      - {trigger: validation_all_pass, source: validate_sync, dest: report}
+      - {trigger: validation_has_fail, source: validate_sync, dest: rollback}
+      - {trigger: rollback_complete, source: rollback, dest: report}
+      - {trigger: report_complete, source: report, dest: complete}
+      - {trigger: fail, source: "*", dest: failed}
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           LAYERS DEFINITION
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  layers:
+    L1:
+      name: "Framework Engine"
+      source: ".aiox-core/"
+      strategy: overwrite
+      description: "Core do AIOX — CLI, scripts, schemas, templates"
+      excludes:
+        - "node_modules/"
+        - ".aiox-core/data/*.local.*"
+
+    L2:
+      name: "Claude Rules"
+      source: ".claude/rules/"
+      strategy: overwrite
+      description: "Regras compartilhadas do Claude Code"
+
+    L3:
+      name: "Claude Hooks"
+      source: ".claude/hooks/"
+      strategy: overwrite
+      description: "Hooks do Claude Code (precompact, synapse)"
+
+    L4:
+      name: "Claude Commands"
+      source: ".claude/commands/"
+      strategy: overwrite
+      description: "Slash commands de todos os squads"
+
+    L5:
+      name: "CLAUDE.md"
+      source: ".claude/CLAUDE.md"
+      strategy: merge
+      description: "Instruções do projeto — merge template sections com project sections"
+      merge_rules: |
+        O CLAUDE.md tem seções do template (framework) e seções do projeto.
+        - Seções do template: sobrescrever com versão mais recente
+        - Seções do projeto (project-specific): preservar intactas
+        - Se projeto não tem CLAUDE.md: copiar template inteiro
+        IDENTIFICADOR: seções com "# Project-Specific" são do projeto, resto é template
+
+    L6:
+      name: "Settings"
+      source: ".claude/settings.json"
+      strategy: merge
+      description: "Configurações — merge sem perder permissions e env do projeto"
+      merge_rules: |
+        settings.json tem campos compartilhados (deny rules, allow patterns) e locais.
+        - allowedTools: UNION (template + projeto)
+        - denyTools: template sobrescreve
+        - env: projeto preservado
+        - hooks: template sobrescreve
+        NÃO sincronizar: settings.local.json (sempre local)
+
+    L7:
+      name: "Squads"
+      source: "squads/"
+      strategy: overwrite_per_squad_preserve_local
+      description: |
+        Cada squad DO TEMPLATE é copiado inteiro (overwrite).
+        Squads que existem APENAS no projeto (não no template) são PRESERVADOS.
+        Arquivos LOCAIS dentro de um squad do template são PRESERVADOS.
+      merge_rules: |
+        - Squad novo (no template, não no projeto): COPY inteiro
+        - Squad do template existe no projeto: OVERWRITE template files, PRESERVE local-only files
+        - Squad local-only (no projeto, não no template): PRESERVE (não deletar)
+        - Detecção de local: arquivo existe no projeto mas NÃO no template
+      excludes:
+        - "squads/index.js"
+        - "squads/README.md"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           NEVER SYNC (SACRED)
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  never_sync:
+    - path: ".claude/settings.local.json"
+      reason: "Secrets e configurações locais do projeto"
+    - path: ".env"
+      reason: "Variáveis de ambiente do projeto"
+    - path: ".env.*"
+      reason: "Variáveis de ambiente do projeto"
+    - path: "docs/stories/"
+      reason: "Stories são do projeto, não do template"
+    - path: "packages/"
+      reason: "Código fonte do projeto"
+    - path: "src/"
+      reason: "Código fonte do projeto"
+    - path: "node_modules/"
+      reason: "Dependências — gerenciadas por package manager"
+    - path: ".git/"
+      reason: "Histórico git do projeto"
+    - path: "*.crt"
+      reason: "Certificados"
+    - path: "*.key"
+      reason: "Chaves privadas"
+    - path: "*.pfx"
+      reason: "Certificados"
+    - path: ".aiox/handoffs/"
+      reason: "Runtime — específico da sessão"
+    - path: ".pipeline-state.yaml"
+      reason: "Runtime — específico do pipeline"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           SEQUENCE
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  sequence:
+
+    # ─── FASE 0: Pre-Flight ─────────────────────────────────────────────────────
+
+    - step: preflight
+      id: preflight
+      phase: 0
+      phase_name: "Pre-Flight"
+      agent: "@squad-chief"
+      task_ref: sync-template-preflight.md
+      inputs:
+        template_path: "{template_path}"
+        projects_base: "{projects_base}"
+      outputs:
+        - preflight_result
+      duration_estimate: "1 min"
+      checkpoint:
+        criteria: "Template é AIOX, projetos existem, permissões OK"
+        blocking: true
+      veto_conditions:
+        - id: PF_001
+          check: "Template não é AIOX (.aiox-core/ não existe)"
+          action: BLOCK
+        - id: PF_002
+          check: "projects_base não existe"
+          action: BLOCK
+        - id: PF_003
+          check: "Zero projetos encontrados"
+          action: BLOCK
+      notes: |
+        PRIMEIRO PASSO — nada executa sem pre-flight PASS.
+        Verifica: template válido, projetos existem, permissões OK,
+        uncommitted changes, CLAUDE.md markers.
+
+        DEPENDÊNCIA: *sync-prepare (wf-sync-prepare-allprojects.yaml)
+        Se projetos não têm markers ou local-registry:
+        → Executar wf-sync-prepare-allprojects AUTOMATICAMENTE
+        → Ou WARN: "Rode *sync-prepare primeiro"
+
+        CHECKS ADICIONAIS (post-prepare):
+        - [ ] Projetos têm CLAUDE.md com markers TEMPLATE + PROJECT?
+        - [ ] Projetos têm .aiox/local-registry.yaml?
+        - [ ] Zero uncommitted em .claude/ (projetos com git)?
+        Se algum falha → oferecer rodar *sync-prepare inline.
+
+    # ─── FASE 1: Inventory Template ─────────────────────────────────────────────
+
+    - step: inventory_template
+      id: inventory_template
+      phase: 1
+      phase_name: "Inventory Template"
+      agent: "@squad-chief"
+      task_ref: sync-template-inventory.md
+      inputs:
+        template_path: "{template_path}"
+        layers: "{layers}"
+      outputs:
+        - template_manifest
+      duration_estimate: "2 min"
+      checkpoint:
+        criteria: "Manifest gerado com contagem por camada"
+        blocking: true
+      notes: |
+        Mapear TUDO que existe no template AIOX:
+        - Contar arquivos por camada (L1-L7)
+        - Listar squads e versões
+        - Calcular hash/timestamp de cada camada
+        - Gerar template_manifest.yaml
+
+    # ─── FASE 2: Scan Projects ──────────────────────────────────────────────────
+
+    - step: scan_projects
+      id: scan_projects
+      phase: 2
+      phase_name: "Scan Projects"
+      agent: "@squad-chief"
+      task_ref: sync-template-scan.md
+      inputs:
+        projects_base: "{projects_base}"
+        projects: "{projects}"
+      outputs:
+        - projects_manifest
+      duration_estimate: "2 min"
+      checkpoint:
+        criteria: "Todos os projetos mapeados com status por camada"
+        blocking: true
+      notes: |
+        Para cada projeto em projects_base (exceto aiox):
+        - Verificar quais camadas existem (.aiox-core, .claude, squads)
+        - Contar squads instalados e versões
+        - Identificar configs locais que precisam de merge
+        - Classificar: up-to-date / outdated / missing / never-installed
+        - Gerar projects_manifest.yaml
+
+    # ─── FASE 3: Compute Diff ───────────────────────────────────────────────────
+
+    - step: compute_diff
+      id: compute_diff
+      phase: 3
+      phase_name: "Compute Diff"
+      agent: "@squad-chief"
+      task_ref: sync-template-diff.md
+      inputs:
+        template_manifest: "{template_manifest}"
+        projects_manifest: "{projects_manifest}"
+        layers: "{layers}"
+      outputs:
+        - sync_plan
+      duration_estimate: "3 min"
+      checkpoint:
+        criteria: "Diff calculado por projeto × camada com ações definidas"
+        blocking: true
+      notes: |
+        Para cada projeto × camada:
+        - Comparar template vs projeto
+        - Determinar ação: COPY (novo) / UPDATE (existente, template mais novo) / MERGE / SKIP (up-to-date)
+        - Para L5 (CLAUDE.md) e L6 (settings.json): detectar seções locais para preservar
+        - Para L7 (squads): listar squads novos, atualizados, inalterados
+        - Gerar sync_plan.yaml com todas as ações
+
+    # ─── FASE 4: Confirm Plan ───────────────────────────────────────────────────
+
+    - step: confirm_plan
+      id: confirm_plan
+      phase: 4
+      phase_name: "Confirm Plan"
+      agent: "@squad-chief"
+      task_ref: sync-template-confirm.md
+      elicit: true
+      inputs:
+        sync_plan: "{sync_plan}"
+        dry_run: "{dry_run}"
+        force: "{force}"
+      outputs:
+        - approved_plan
+      duration_estimate: "2 min"
+      notes: |
+        Mostrar ao usuário o plano completo:
+
+        ┌─────────────── SYNC PLAN ───────────────┐
+        │ Project      │ L1  │ L2 │ L3 │ ... │ L7 │
+        │──────────────│─────│────│────│─────│────│
+        │ avend        │ UPD │ UPD│ UPD│ ... │+3  │
+        │ galox        │ UPD │ OK │ OK │ ... │+5  │
+        │ church       │ NEW │ NEW│ NEW│ ... │+36 │
+        └─────────────────────────────────────────┘
+
+        Legenda: NEW=instalar, UPD=atualizar, OK=up-to-date, +N=squads novos, MRG=merge
+
+        Perguntar:
+        1. Aprovar plano completo
+        2. Selecionar projetos específicos
+        3. Selecionar camadas específicas
+        4. Cancelar
+
+        Se dry_run=true: apenas mostrar plano, não executar.
+        Se force=true: pular confirmação (mas MOSTRAR o plano antes).
+
+    # ─── FASE 5: Execute Sync ───────────────────────────────────────────────────
+
+    - step: execute_sync
+      id: execute_sync
+      phase: 5
+      phase_name: "Execute Sync"
+      agent: "@squad-chief"
+      task_ref: sync-template-execute.md
+      inputs:
+        approved_plan: "{approved_plan}"
+        template_path: "{template_path}"
+      outputs:
+        - sync_result
+      duration_estimate: "5-15 min"
+      checkpoint:
+        criteria: "Todas as ações executadas sem erro"
+        blocking: true
+      notes: |
+        Para cada projeto no plano aprovado, na ordem das camadas:
+
+        L1 (.aiox-core/):
+          rsync -av --delete {template}/.aiox-core/ {project}/.aiox-core/
+          EXCLUIR: node_modules/, *.local.*
+
+        L2 (.claude/rules/):
+          rsync -av {template}/.claude/rules/ {project}/.claude/rules/
+
+        L3 (.claude/hooks/):
+          rsync -av {template}/.claude/hooks/ {project}/.claude/hooks/
+
+        L4 (.claude/commands/):
+          rsync -av --delete {template}/.claude/commands/ {project}/.claude/commands/
+
+        L5 (.claude/CLAUDE.md):
+          Se projeto não tem: cp direto
+          Se projeto tem: MERGE (preservar seções project-specific)
+
+        L6 (.claude/settings.json):
+          Se projeto não tem: cp direto
+          Se projeto tem: MERGE (union allowedTools, preserve env)
+
+        L7 (squads/):
+          Para cada squad no template:
+            Se projeto não tem: cp -r inteiro
+            Se projeto tem: rm -rf + cp -r (overwrite completo do squad)
+          NÃO remover squads que existem no projeto mas não no template
+
+        OBRIGAÇÕES:
+        - [ ] Backup antes de qualquer overwrite (cp → .backup-{date}/)
+        - [ ] Log de cada ação em sync-log.yaml
+        - [ ] NEVER touch never_sync paths
+        - [ ] Tratar erros sem parar (log + continue)
+
+    # ─── FASE 6: Validate ───────────────────────────────────────────────────────
+
+    - step: validate_sync
+      id: validate_sync
+      phase: 6
+      phase_name: "Validate Sync"
+      agent: "@squad-chief"
+      task_ref: sync-template-validate.md
+      inputs:
+        sync_result: "{sync_result}"
+        template_manifest: "{template_manifest}"
+      outputs:
+        - validation_result
+      duration_estimate: "3 min"
+      checkpoint:
+        criteria: "Todos os projetos sincronizados corretamente"
+        blocking: false
+      notes: |
+        Para cada projeto sincronizado:
+
+        CHECKLIST DE VALIDAÇÃO:
+        - [ ] .aiox-core/ existe e tem mesma estrutura que template
+        - [ ] .claude/rules/ contém todos os .md do template
+        - [ ] .claude/hooks/ contém todos os scripts
+        - [ ] .claude/commands/ contém todos os squad dirs
+        - [ ] .claude/CLAUDE.md existe
+        - [ ] .claude/settings.json é JSON válido
+        - [ ] squads/ contém os squads do plano
+        - [ ] settings.local.json NÃO foi alterado
+        - [ ] .env NÃO foi alterado
+        - [ ] node_modules/ NÃO foi alterado
+        - [ ] docs/stories/ NÃO foi alterado
+
+        RESULTADO: PASS / PARTIAL (com lista do que falhou) / FAIL
+
+    # ─── FASE 7: Rollback (CONDICIONAL) ─────────────────────────────────────────
+
+    - step: rollback
+      id: rollback
+      phase: 7
+      phase_name: "Rollback (if needed)"
+      agent: "@squad-chief"
+      task_ref: sync-template-rollback.md
+      skip_condition: "validation_result has zero FAIL"
+      inputs:
+        validation_result: "{validation_result}"
+      outputs:
+        - rollback_result
+      duration_estimate: "2-5 min"
+      notes: |
+        CONDICIONAL — só executa se validation tem projetos FAIL.
+
+        Para cada projeto FAIL:
+        1. Restaurar .aiox-core/ e .claude/ do backup
+        2. NÃO remover squads (são aditivos)
+        3. Verificar que settings.local.json está intacto
+
+        VETO: Tentativa de remover squads no rollback → BLOCK
+
+    # ─── FASE 8: Report ────────────────────────────────────────────────────────
+
+    - step: report
+      id: report
+      phase: 8
+      phase_name: "Report"
+      agent: "@squad-chief"
+      task_ref: sync-template-report.md
+      inputs:
+        sync_result: "{sync_result}"
+        validation_result: "{validation_result}"
+      outputs:
+        - sync_report
+      duration_estimate: "1 min"
+      notes: |
+        Gerar relatório consolidado:
+
+        ════════════════════════════════════════════
+        SYNC TEMPLATE REPORT
+        ════════════════════════════════════════════
+        Template: aiox (v{version})
+        Date: {date}
+        Projects synced: {N}/{total}
+        Layers synced: {layers}
+
+        Per-project results:
+        ┌────────────────┬────────┬─────────────┐
+        │ Project        │ Status │ Details      │
+        │────────────────│────────│─────────────│
+        │ avend          │ ✅ OK  │ 7/7 layers   │
+        │ galox          │ ✅ OK  │ 7/7 layers   │
+        │ church         │ ✅ NEW │ First install │
+        │ meetmind       │ ⚠️ PART│ 6/7 (no L7)  │
+        └────────────────┴────────┴─────────────┘
+
+        Squads distributed: {N}
+        Files copied: {N}
+        Merges performed: {N}
+        Backups created: {N}
+        Errors: {N}
+        ════════════════════════════════════════════
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           QUALITY GATES
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  quality_gates:
+    - id: QG-SYNC-000
+      phase: preflight
+      type: automated
+      severity: blocking
+      description: "Template é AIOX, projetos existem, permissões OK"
+
+    - id: QG-SYNC-001
+      phase: inventory_template
+      type: automated
+      severity: blocking
+      description: "Template manifest gerado com pelo menos L1 + L7"
+
+    - id: QG-SYNC-002
+      phase: confirm_plan
+      type: human
+      severity: blocking
+      description: "Usuário aprovou o plano de sync"
+
+    - id: QG-SYNC-003
+      phase: execute_sync
+      type: automated
+      severity: blocking
+      description: "Backup criado antes de overwrite, never_sync intacto, settings.local.json intocado"
+
+    - id: QG-SYNC-004
+      phase: validate_sync
+      type: automated
+      severity: advisory
+      description: "Validação pós-sync — todos projetos OK. Se FAIL → trigger rollback"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           VETO CONDITIONS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  veto_conditions:
+    - id: SYNC_VC_001
+      condition: "Template path não existe ou não é AIOX"
+      action: BLOCK
+
+    - id: SYNC_VC_002
+      condition: "Tentativa de sincronizar settings.local.json ou .env"
+      action: BLOCK
+
+    - id: SYNC_VC_003
+      condition: "Tentativa de sincronizar sem confirmação (e force=false)"
+      action: BLOCK
+
+    - id: SYNC_VC_004
+      condition: "Projeto destino tem mudanças não commitadas em .claude/"
+      action: WARN + pedir confirmação
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           OUTPUTS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  outputs:
+    - name: sync_report
+      path: "outputs/sync-reports/sync-{date}.md"
+      description: "Relatório consolidado do sync"
+
+    - name: sync_log
+      path: ".aiox/sync-log/{date}.yaml"
+      description: "Log detalhado de cada ação executada"

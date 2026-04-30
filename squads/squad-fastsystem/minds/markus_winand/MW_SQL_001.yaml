@@ -1,0 +1,18 @@
+id: MW_SQL_001
+name: "EXPLAIN Before Index"
+mind: markus_winand
+source: "SQL Performance Explained (2012)"
+domain: database
+description: >
+  Analise o execution plan ANTES de adicionar qualquer indice.
+  Entender como o banco executa a query e pre-requisito para
+  escolher o indice correto.
+applies_when:
+  - "Query lenta identificada"
+  - "Antes de criar qualquer indice"
+action: >
+  Executar EXPLAIN (ANALYZE, BUFFERS) antes de criar indice.
+  Analisar: tipo de scan, join strategy, sort method, rows
+  estimadas vs reais.
+severity: foundational
+confidence: 0.95

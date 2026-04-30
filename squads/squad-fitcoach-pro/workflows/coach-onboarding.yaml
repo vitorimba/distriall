@@ -1,0 +1,1442 @@
+workflow:
+  id: "FC-WF-004"
+  name: "Coach Onboarding"
+  version: "1.0.0"
+  squad: "fitcoach"
+  type: "coach-lifecycle"
+  pattern_prefix: "FC"
+  updated_at: "2026-03-11"
+  description: >-
+    Onboarding completo de um novo coach/personal trainer na plataforma FitCoach.
+    Transforma um negocio de coaching presencial/improvisado em uma operacao
+    digital estruturada com automacoes, gamificacao, e-commerce e conteudo.
+    Baseado nos frameworks de Alex Hormozi ($100M Offers), Chris Cooper
+    (Two-Brain Business), Nir Eyal (Hooked) e Yu-kai Chou (Octalysis).
+  trigger: "Coach assinou contrato com a plataforma FitCoach e completou formulario de pre-cadastro"
+
+  metadata:
+    elicit: true
+    confirmation_required: true
+    estimated_duration: "2-4 semanas (14-28 dias)"
+    total_phases: 8
+    tasks_involved: 14
+    recurring_phases: [8]
+    target_persona: "Personal trainer / coach fitness"
+    example_coach: "Carlos Salvador Jr"
+
+  entry_conditions:
+    - "Coach assinou contrato com a plataforma FitCoach"
+    - "Coach possui pelo menos 5 alunos ativos"
+    - "Coach tem presenca digital minima (Instagram ativo)"
+    - "Coach completou formulario de pre-cadastro"
+    - "Reuniao kick-off agendada com fitcoach-chief"
+
+  exit_conditions:
+    - "Coach completou 8 fases com aprovacao em todos os checkpoints"
+    - "Pelo menos 80% dos alunos migrados para a plataforma"
+    - "Primeiras automacoes ativas e funcionando"
+    - "E-commerce configurado e primeiro produto listado"
+    - "Report de resultados vs baseline entregue"
+
+  agents_involved:
+    - agent: "fitcoach-chief"
+      role: "Orquestrador principal e configuracao da plataforma"
+    - agent: "business-diagnostician"
+      role: "Diagnostico de negocio e analise de gaps"
+    - agent: "gym-scaler"
+      role: "Design de ofertas com Value Equation (Hormozi)"
+    - agent: "gym-operator"
+      role: "Operacoes e SOPs do negocio"
+    - agent: "automation-engineer"
+      role: "WhatsApp, email e automacoes"
+    - agent: "gamification-designer"
+      role: "Sistema de pontos, niveis e desafios"
+    - agent: "ecommerce-manager"
+      role: "Loja, produtos e pagamentos"
+    - agent: "content-repurposer"
+      role: "Reaproveitamento de conteudo existente"
+    - agent: "retention-engineer"
+      role: "Hook Model e estrategias de retencao"
+
+  estimated_effort:
+    fitcoach_chief: "Presente em todas as fases (orquestrador)"
+    business_diagnostician: "~40h (Phase 1)"
+    gym_scaler: "~24h (Phase 2)"
+    automation_engineer: "~32h (Phases 3, 5)"
+    gamification_designer: "~20h (Phase 6)"
+    retention_engineer: "~16h (Phase 6)"
+    ecommerce_manager: "~24h (Phase 7)"
+    gym_operator: "~20h (Phase 8)"
+    content_repurposer: "~12h (Phases 2, 8)"
+    total: "~188h distributed among agents"
+
+  phases:
+    # =====================================================
+    # PHASE 1: Business Assessment (Dias 1-2)
+    # =====================================================
+    - id: "phase-1"
+      name: "Business Assessment"
+      agent: "business-diagnostician"
+      checkpoint_id: "FC-CP-ONBOARD-001"
+      duration: "2 dias (1 dia coleta + 1 dia analise)"
+      timeline: "Dias 1-2"
+      task: "business-diagnostic.md"
+      objectives:
+        - "Entender o modelo de negocio atual em todas as dimensoes"
+        - "Mapear a base de alunos existente com dados quantitativos e qualitativos"
+        - "Identificar os gaps operacionais criticos"
+        - "Definir metas de crescimento realistas e mensuraveis (SMART)"
+        - "Estabelecer o baseline financeiro para calculo de ROI"
+      inputs:
+        - name: "Nome completo do coach"
+          type: "text"
+          required: true
+          source: "Formulario pre-cadastro"
+        - name: "Nome da marca/empresa"
+          type: "text"
+          required: true
+          source: "Formulario pre-cadastro"
+        - name: "Instagram e outras redes"
+          type: "urls"
+          required: true
+          source: "Formulario pre-cadastro"
+        - name: "Numero de alunos ativos"
+          type: "number"
+          required: true
+          source: "Coach informa"
+        - name: "Lista de alunos (nome + contato + valor)"
+          type: "spreadsheet"
+          required: true
+          source: "Coach exporta"
+        - name: "MRR atual"
+          type: "currency"
+          required: true
+          source: "Coach informa"
+        - name: "Horas trabalhadas por semana"
+          type: "number"
+          required: true
+          source: "Coach estima"
+        - name: "Ferramentas em uso"
+          type: "list"
+          required: true
+          source: "Coach lista"
+        - name: "Objetivo de crescimento"
+          type: "text"
+          required: true
+          source: "Reuniao kick-off"
+        - name: "Historico de churn"
+          type: "percentage"
+          required: false
+          source: "Coach informa"
+      steps:
+        - id: "1.1"
+          name: "Reuniao de Kick-Off"
+          duration: "90 minutos"
+          executors: ["fitcoach-chief", "business-diagnostician"]
+          agenda:
+            - "Apresentacao da plataforma e do processo de onboarding (15 min)"
+            - "Historia do coach: como chegou ate aqui, por que quer escalar (20 min)"
+            - "Walkthrough do negocio atual: o que oferece, para quem, como (30 min)"
+            - "Dores e frustracoes: o que mais consome tempo e energia (15 min)"
+            - "Visao de futuro: onde quer estar em 6 meses, 1 ano, 3 anos (10 min)"
+        - id: "1.2"
+          name: "Inventario de Receitas"
+          description: >-
+            Mapear todas as fontes de receita: mensalidades presenciais, online,
+            programas com prazo, assessoria nutricional, venda de suplementos,
+            conteudo (cursos, e-books, mentorias), eventos.
+            Calcular: ticket medio, LTV atual, MRR.
+        - id: "1.3"
+          name: "Mapeamento da Base de Alunos"
+          description: >-
+            Para cada aluno: nome, contato, objetivo, tempo de relacionamento,
+            valor pago, frequencia de treino, canal preferido, NPS informal,
+            historico de pagamento. Calcular Pareto (20% que geram 80% receita).
+        - id: "1.4"
+          name: "Auditoria de Ferramentas Atuais"
+          description: >-
+            Inventariar todas as ferramentas: para que usa, frequencia, custo/mes,
+            substituivel pela plataforma? Identificar quais substituir, integrar ou manter.
+        - id: "1.5"
+          name: "Identificacao das TOP 3 Dores Operacionais"
+          description: >-
+            Para cada dor: descricao detalhada, tempo gasto/semana, impacto financeiro,
+            solucao atual (se houver), como a plataforma resolve.
+        - id: "1.6"
+          name: "Analise de Capacidade"
+          description: >-
+            Calcular: capacidade atual vs desejada, gargalo principal,
+            distribuicao do tempo de trabalho por atividade.
+            Ferramenta: Time Audit de 1 semana.
+        - id: "1.7"
+          name: "Definicao de Metas SMART"
+          description: >-
+            Definir metas em 6 dimensoes (numero de alunos, MRR, horas/semana,
+            NPS, churn rate, ticket medio) para 30 dias, 90 dias e 1 ano.
+        - id: "1.8"
+          name: "Verificacao de Pre-Requisitos Tecnicos"
+          checklist:
+            - "Smartphone com WhatsApp Business"
+            - "E-mail profissional"
+            - "Acesso a internet estavel"
+            - "Conta bancaria PJ ou CPF para recebimentos"
+            - "CNPJ ativo (se aplicavel)"
+            - "Dispositivo para gravacao de videos"
+      outputs:
+        - name: "business-diagnostic-report.md"
+          format: "Markdown"
+          owner: "business-diagnostician"
+        - name: "current-state-analysis.md"
+          format: "Markdown"
+          owner: "business-diagnostician"
+        - name: "growth-roadmap-draft.md"
+          format: "Markdown"
+          owner: "fitcoach-chief"
+        - name: "client-database-raw.csv"
+          format: "CSV"
+          owner: "business-diagnostician"
+        - name: "operational-pain-map.md"
+          format: "Markdown"
+          owner: "business-diagnostician"
+        - name: "smart-goals.md"
+          format: "Markdown"
+          owner: "fitcoach-chief"
+      checkpoint:
+        id: "FC-CP-ONBOARD-001"
+        name: "Assessment Complete Gate"
+        type: "blocking"
+        approvers: ["fitcoach-chief", "business-diagnostician"]
+        decision: "GO | NO-GO | CONDITIONAL GO"
+        criteria:
+          - "Diagnostico completo preenchido com todos os campos"
+          - "Dores operacionais documentadas e quantificadas (pelo menos 3)"
+          - "Metas SMART definidas e aprovadas pelo coach"
+          - "Lista de alunos recebida e estruturada"
+          - "Baseline financeiro calculado (MRR, ticket medio, LTV)"
+          - "Capacidade atual vs desejada documentada"
+          - "Pre-requisitos tecnicos verificados"
+          - "Coach assinou termo de comprometimento com o processo"
+          - "Roadmap de crescimento aprovado pelo coach"
+          - "Nenhuma Veto Condition ativa"
+        veto_conditions:
+          - id: "VETO-001"
+            name: "Base minima de alunos"
+            condition: "Coach possui menos de 5 alunos ativos"
+            action: "Apresentar versao simplificada (Tier Starter), agendar revisao em 60 dias"
+          - id: "VETO-002"
+            name: "Presenca digital minima"
+            condition: "Instagram com menos de 100 seguidores E nenhuma outra presenca digital"
+            action: "Incluir Fase 0 de Branding Digital (duracao adicional: 1 semana)"
+          - id: "VETO-003"
+            name: "Comprometimento do coach"
+            condition: "Coach nao completou Time Audit nem forneceu lista de alunos"
+            action: "Nao avancar para Fase 2 — diagnostico incompleto compromete tudo"
+          - id: "VETO-004"
+            name: "Situacao financeira critica"
+            condition: "MRR inferior ao custo da plataforma"
+            action: "Renegociar condicoes ou aguardar crescimento minimo"
+      next: "phase-2"
+
+    # =====================================================
+    # PHASE 2: Offer Design (Dias 3-5)
+    # =====================================================
+    - id: "phase-2"
+      name: "Offer Design"
+      agent: "gym-scaler"
+      checkpoint_id: "FC-CP-ONBOARD-002"
+      duration: "3 dias"
+      timeline: "Dias 3-5"
+      task: "offer-design.md"
+      framework: "Alex Hormozi — $100M Offers, Value Equation"
+      objectives:
+        - "Redesenhar ofertas usando a Value Equation de Hormozi"
+        - "Criar stack de valor com bonuses e diferenciais claros"
+        - "Definir pricing em 3 tiers (Basico, Premium, VIP)"
+        - "Criar garantia de resultado (risk-reversal)"
+        - "Calcular LTV projetado por tier e revenue mix target"
+      inputs:
+        - "business-diagnostic-report.md (Phase 1)"
+        - "current-state-analysis.md (Phase 1)"
+        - "Precificacao atual de todos os servicos"
+        - "Depoimentos de alunos (screenshots)"
+        - "Certificacoes e formacoes do coach"
+        - "Provas sociais disponiveis"
+        - "Margem operacional aceitavel"
+      steps:
+        - id: "2.1"
+          name: "Workshop Value Equation"
+          duration: "3 horas com o coach"
+          description: >-
+            Aplicar Value Equation de Hormozi nos 4 eixos:
+            Dream Outcome, Perceived Likelihood, Time Delay, Effort & Sacrifice.
+            Para cada eixo: o que o coach ja tem e o que pode melhorar.
+        - id: "2.2"
+          name: "Inventario de Entregaveis Atuais"
+          description: >-
+            Listar TUDO que o coach entrega hoje. Quantificar o valor de cada
+            entregavel separadamente.
+        - id: "2.3"
+          name: "Criacao do Offer Stack"
+          description: >-
+            Estruturar entregaveis em stack de valor irrecusavel:
+            Core Offer + Bonuses. Calcular valor percebido total vs preco real.
+        - id: "2.4"
+          name: "Definicao dos 3 Tiers de Pricing"
+          tiers:
+            - name: "Basico (Self-Guided)"
+              price_target: "R$97-197/mes"
+              includes: "Acesso a plataforma, treinos pre-programados, suporte FAQ"
+              objective: "Capturar leads, upsell futuro"
+            - name: "Premium (Acompanhamento Ativo)"
+              price_target: "R$397-697/mes"
+              includes: "Treinos 100% personalizados, dieta, check-in semanal, suporte mensagem"
+              objective: "Core do negocio, maior volume"
+            - name: "VIP (Acesso Total)"
+              price_target: "R$1.197-1.997/mes"
+              includes: "Tudo do Premium + WhatsApp direto, coaching quinzenal 1:1, revisao 24h"
+              objective: "Poucos alunos, alta margem, testimonials de elite"
+        - id: "2.5"
+          name: "Naming Persuasivo dos Planos"
+          description: >-
+            Evitar nomes genericos. Criar nomes que remetem ao resultado
+            (ex: 'Startup Fit', 'Transformacao Real', 'Elite Body').
+        - id: "2.6"
+          name: "Design da Garantia (Risk-Reversal)"
+          options:
+            - "Garantia de Satisfacao 7 dias"
+            - "Garantia de Resultado 30 dias"
+            - "Garantia de Experiencia (resposta em X horas)"
+            - "Garantia Bold Hormozi-style (resultado ou nao paga)"
+          rules:
+            - "Deve ser especifica"
+            - "Deve ser matematicamente sustentavel"
+            - "Deve ter condicoes claras"
+        - id: "2.7"
+          name: "Calculo de LTV Projetado"
+          description: "Para cada tier: retencao media esperada, receita total, CAC estimado, LTV/CAC ratio."
+        - id: "2.8"
+          name: "Construcao do Revenue Mix Target"
+          description: "Distribuicao ideal de alunos por tier para atingir meta de MRR."
+      outputs:
+        - name: "offer-stack.md"
+          description: "Cada plano com todos os entregaveis e valores"
+        - name: "pricing-strategy.md"
+          description: "Justificativa de precos e projecoes"
+        - name: "guarantee-terms.md"
+          description: "Garantia detalhada com condicoes"
+        - name: "sales-page-copy-draft.md"
+          description: "Rascunho do texto de vendas para cada plano"
+        - name: "ltv-calculator.xlsx"
+          description: "Projecoes de receita por tier"
+        - name: "revenue-mix-target.md"
+          description: "Distribuicao ideal de alunos por tier"
+      checkpoint:
+        id: "FC-CP-ONBOARD-002"
+        name: "Offer Design Complete Gate"
+        type: "blocking"
+        approvers: ["gym-scaler", "fitcoach-chief"]
+        criteria:
+          - "3 tiers de pricing definidos e documentados"
+          - "Offer stack completo para cada tier (core + bonuses)"
+          - "Garantia definida com condicoes claras"
+          - "Naming dos planos criado e aprovado pelo coach"
+          - "LTV projetado calculado para cada tier"
+          - "Revenue mix target alinhado com metas da Fase 1"
+          - "Copy de vendas rascunhado para pelo menos o tier Premium"
+          - "Coach aprovou a nova estrutura de precos"
+          - "Nenhuma Veto Condition ativa"
+        veto_conditions:
+          - id: "VETO-005"
+            name: "Precificacao abaixo do custo"
+            condition: "Tier Basico precificado abaixo dos custos operacionais"
+            action: "Recalcular antes de avancar"
+          - id: "VETO-006"
+            name: "Ausencia de garantia"
+            condition: "Nenhuma garantia definida"
+            action: "Definir pelo menos garantia de satisfacao 7 dias"
+          - id: "VETO-007"
+            name: "Excesso de tiers"
+            condition: "Coach insiste em mais de 5 opcoes de plano"
+            action: "Bloquear — maximo absoluto: 3 tiers"
+          - id: "VETO-008"
+            name: "LTV/CAC abaixo de 3x"
+            condition: "Projecoes mostram LTV/CAC < 3x em qualquer tier"
+            action: "Revisar preco ou estrategia de reducao de churn"
+      next: "phase-3"
+
+    # =====================================================
+    # PHASE 3: Client Migration (Dias 5-7)
+    # =====================================================
+    - id: "phase-3"
+      name: "Client Migration"
+      agents: ["fitcoach-chief", "automation-engineer"]
+      checkpoint_id: "FC-CP-ONBOARD-003"
+      duration: "3 dias"
+      timeline: "Dias 5-7"
+      tasks: ["client-migration.md", "communication-templates.md"]
+      objectives:
+        - "Migrar 100% dos alunos ativos para a plataforma"
+        - "Preservar historico de treinos, dietas e progresso"
+        - "Comunicar a transicao de forma positiva"
+        - "Manter ou aumentar engajamento durante a transicao"
+        - "Identificar e tratar casos de resistencia individualmente"
+      inputs:
+        - "client-database-raw.csv (Phase 1)"
+        - "offer-stack.md (Phase 2)"
+        - "Historico de treinos e avaliacoes por aluno"
+        - "Fotos de progresso (com permissao)"
+        - "Dados de anamnese existentes"
+      steps:
+        - id: "3.1"
+          name: "Segmentacao da Base para Migracao"
+          segments:
+            grupo_a:
+              name: "Evangelistas (TOP 20%)"
+              strategy: "Migrar PRIMEIRO, usar como beta testers"
+              communication: "Convidar para programa exclusivo de pioneiros"
+              benefit: "1 mes de desconto ou upgrade temporario"
+            grupo_b:
+              name: "Ativos Satisfeitos (60%)"
+              strategy: "Migrar na sequencia do Grupo A"
+              communication: "E-mail + WhatsApp com beneficios da mudanca"
+            grupo_c:
+              name: "Em Risco (20%)"
+              strategy: "Migrar por ultimo, com atencao especial"
+              communication: "Chamada 1:1 com o coach antes da migracao"
+              objective: "Usar migracao como oportunidade de reengajamento"
+        - id: "3.2"
+          name: "Criacao dos Templates de Comunicacao"
+          description: "Para cada canal (WhatsApp, email), criar templates personalizaveis de anuncio e follow-up."
+        - id: "3.3"
+          name: "Mapeamento de Dados por Aluno"
+          description: >-
+            Coletar e estruturar para cada aluno: dados pessoais, objetivo, restricoes,
+            historico de treinos (4 semanas), historico de dieta, avaliacoes, preferencias.
+            Formato: JSON por aluno para importacao em lote.
+        - id: "3.4"
+          name: "Configuracao de Perfis na Plataforma"
+          description: "Criar usuarios, associar a planos, upload de fotos, preencher anamnese, vincular treinos."
+        - id: "3.5"
+          name: "Importacao de Dados Historicos"
+          priority:
+            - "Avaliacao fisica mais recente (obrigatorio)"
+            - "Treino atual (obrigatorio)"
+            - "Dieta atual (obrigatorio)"
+            - "Ultimas 4 avaliacoes anteriores (se disponivel)"
+            - "Fotos de progresso (com permissao explicita)"
+            - "Historico completo de treinos (opcional)"
+        - id: "3.6"
+          name: "Envio de Mensagens de Boas-Vindas"
+          description: "Enviar link de acesso via WhatsApp, email de boas-vindas com tutorial. Verificar acesso em 24h."
+        - id: "3.7"
+          name: "Calls de Transicao com Top 20%"
+          description: "Video call 30min: mostrar plataforma ao vivo, coletar feedback, pedir indicacao."
+        - id: "3.8"
+          name: "Periodo de Suporte Intensivo (7 dias)"
+          description: >-
+            Coach em horario estendido, automation-engineer responde erros em <2h,
+            checklist diario de alunos sem acesso, daily standup de 15 min.
+      outputs:
+        - name: "migration-plan.md"
+          description: "Cronograma e responsaveis por aluno"
+        - name: "communication-templates/"
+          description: "WhatsApp, email, scripts de ligacao"
+        - name: "client-database-structured.csv"
+          description: "Pronta para importacao"
+        - name: "client-profiles/*.json"
+          description: "Um por aluno, para importacao em lote"
+        - name: "migration-report.md"
+          description: "Status por aluno, taxa de sucesso"
+        - name: "migration-feedback.md"
+          description: "Respostas dos alunos Grupo A"
+      checkpoint:
+        id: "FC-CP-ONBOARD-003"
+        name: "Migration Complete Gate"
+        type: "blocking"
+        approvers: ["fitcoach-chief", "automation-engineer"]
+        criteria:
+          - "100% dos alunos com perfil criado na plataforma"
+          - "Pelo menos 80% dos alunos acessaram a plataforma ao menos uma vez"
+          - "Todos os alunos tem treino atual carregado na plataforma"
+          - "Templates de comunicacao aprovados pelo coach"
+          - "Taxa de cancelamento durante migracao menor que 10%"
+          - "Calls com Top 20% realizadas"
+          - "Relatorio de migracao produzido"
+          - "Suporte intensivo de 7 dias concluido"
+          - "Compliance LGPD verificada para dados sensiveis"
+        veto_conditions:
+          - id: "VETO-009"
+            name: "Perda excessiva na migracao"
+            condition: "Mais de 10% dos alunos cancelaram durante a migracao"
+            action: "Pausar, analisar causa raiz, corrigir"
+          - id: "VETO-010"
+            name: "Dados historicos criticos incompletos"
+            condition: "Coach nao tem nenhum registro de treinos anteriores"
+            action: "Completar anamnese digital com cada aluno antes de migrar"
+          - id: "VETO-011"
+            name: "Consentimento LGPD ausente"
+            condition: "Fotos e dados sensiveis sem consentimento explicito"
+            action: "Coletar compliance LGPD antes de importar"
+      next: "phase-4"
+
+    # =====================================================
+    # PHASE 4: Platform Setup (Dias 7-10)
+    # =====================================================
+    - id: "phase-4"
+      name: "Platform Setup"
+      agent: "fitcoach-chief"
+      checkpoint_id: "FC-CP-ONBOARD-004"
+      duration: "4 dias"
+      timeline: "Dias 7-10"
+      tasks: ["platform-config.md", "exercise-library-setup.md", "branding-setup.md"]
+      objectives:
+        - "Personalizar plataforma com branding do coach"
+        - "Construir biblioteca de exercicios com videos proprios"
+        - "Criar templates de treino por objetivo e frequencia"
+        - "Criar templates de dieta por perfil nutricional"
+        - "Configurar formulario de anamnese completo"
+        - "Setup de dashboard de metricas e KPIs"
+        - "Testar fluxo completo como aluno-teste"
+      inputs:
+        - "Logo e materiais de branding"
+        - "Videos de exercicios gravados"
+        - "Lista de exercicios mais usados"
+        - "Modelos de treino existentes"
+        - "Modelos de dieta existentes"
+        - "business-diagnostic-report.md"
+      steps:
+        - id: "4.1"
+          name: "Setup de Branding"
+          description: >-
+            Coletar logo, paleta de cores, tipografia, tom de voz, foto profissional.
+            Aplicar na plataforma: header, emails, notificacoes, pagina de onboarding.
+        - id: "4.2"
+          name: "Construcao da Biblioteca de Exercicios"
+          description: >-
+            Para cada exercicio: nome, grupo muscular, nivel, equipamento, video (30-90s),
+            instrucoes (3-5 pontos), erros comuns, variacoes.
+            Prioridade: Top 20 exercicios mais prescritos.
+          video_specs:
+            format: "MP4 horizontal (16:9) ou vertical (9:16)"
+            quality: "1080p minimo"
+            duration: "30-90 segundos"
+        - id: "4.3"
+          name: "Criacao de Templates de Treino"
+          by_objective: ["Emagrecimento", "Hipertrofia", "Condicionamento", "Manutencao", "Reabilitacao", "Competicao"]
+          by_frequency: ["2x/semana", "3x/semana", "4x/semana", "5-6x/semana"]
+          by_equipment: ["Academia completa", "Academia basica", "Casa sem equipamento", "Casa com equipamento basico"]
+        - id: "4.4"
+          name: "Criacao de Templates de Dieta/Nutricao"
+          profiles: ["Deficit calorico", "Superavit hipertrofia", "Manutencao TDEE", "Low-carb/Keto", "Vegetariano/Vegano", "Intolerante lactose/gluten"]
+        - id: "4.5"
+          name: "Configuracao da Anamnese Digital"
+          blocks:
+            - "Bloco 1: Dados Pessoais"
+            - "Bloco 2: Historico de Saude"
+            - "Bloco 3: Experiencia Fitness"
+            - "Bloco 4: Objetivos"
+            - "Bloco 5: Logistica"
+        - id: "4.6"
+          name: "Setup do Dashboard de Metricas"
+          visualizations:
+            - "Alunos ativos vs total cadastrado"
+            - "Taxa de engajamento (7 dias)"
+            - "Check-ins completados na semana"
+            - "Alunos em risco de churn"
+            - "MRR atual vs meta"
+            - "Alunos por tier"
+            - "Aniversarios da semana"
+            - "Renovacoes vencendo em 30 dias"
+        - id: "4.7"
+          name: "Teste de Fluxo Completo"
+          description: "Criar aluno-teste e simular toda a jornada (10 steps)."
+          test_steps:
+            - "Cadastro e acesso inicial"
+            - "Preenchimento da anamnese"
+            - "Recebimento do primeiro treino"
+            - "Check-in de treino"
+            - "Envio de foto de progresso"
+            - "Comunicacao via plataforma"
+            - "Visualizacao de metricas pessoais"
+            - "Acesso a biblioteca de exercicios"
+            - "Notificacao de lembrete de treino"
+            - "Renovacao simulada de plano"
+      outputs:
+        - name: "platform-setup-report.md"
+          description: "Status de todos os itens configurados"
+        - name: "qa-test-report.md"
+          description: "Bugs e melhorias identificadas"
+      checkpoint:
+        id: "FC-CP-ONBOARD-004"
+        name: "Platform Setup Complete Gate"
+        type: "blocking"
+        approvers: ["fitcoach-chief"]
+        criteria:
+          - "Branding configurado na plataforma (logo, cores, foto)"
+          - "Pelo menos 20 exercicios com video na biblioteca"
+          - "Pelo menos 6 templates de treino criados"
+          - "Anamnese configurada com todos os 5 blocos"
+          - "Dashboard de metricas configurado e funcionando"
+          - "Teste de fluxo completo executado sem bugs criticos"
+          - "Coach aprovou a aparencia e navegacao da plataforma"
+          - "Alunos existentes tem treinos e dietas ativos"
+        veto_conditions:
+          - id: "VETO-012"
+            name: "Biblioteca de exercicios vazia"
+            condition: "Coach nao gravou nenhum video proprio"
+            action: "Configurar com videos de placeholder, agendar sessao de gravacao"
+          - id: "VETO-013"
+            name: "Branding incompleto"
+            condition: "Coach nao tem logo definida"
+            action: "Usar foto profissional + nome como identidade temporaria"
+          - id: "VETO-014"
+            name: "Bugs criticos no teste de fluxo"
+            condition: "Erros que impedem acao critica do aluno"
+            action: "Corrigir antes de avancar para Fase 5"
+      next: "phase-5"
+
+    # =====================================================
+    # PHASE 5: Automation Config (Dias 10-12)
+    # =====================================================
+    - id: "phase-5"
+      name: "Automation Config"
+      agent: "automation-engineer"
+      checkpoint_id: "FC-CP-ONBOARD-005"
+      duration: "3 dias"
+      timeline: "Dias 10-12"
+      tasks: ["setup-whatsapp-automation.md", "setup-email-marketing.md"]
+      objectives:
+        - "Integrar API do WhatsApp Business com a plataforma"
+        - "Criar fluxos de mensagens automaticas para todos os eventos"
+        - "Configurar triggers de check-in semanal"
+        - "Setup de email marketing segmentado"
+        - "Automacao de lembretes de treino e dieta"
+        - "Configurar alertas proativos para o coach"
+      inputs:
+        - "Numero WhatsApp Business do coach"
+        - "Acesso ao Meta Business Manager"
+        - "Top 10 FAQs dos alunos"
+        - "Horarios de treino por aluno"
+        - "Datas de aniversario dos alunos"
+      steps:
+        - id: "5.1"
+          name: "Integracao WhatsApp Business API"
+          prerequisites:
+            - "Numero dedicado para o negocio"
+            - "Meta Business Manager configurado"
+            - "Numero verificado na API"
+          setup:
+            - "Webhook de recebimento de mensagens"
+            - "Templates de mensagem aprovados pela Meta (24-48h)"
+            - "Fluxos de resposta automatica"
+            - "Horario de atendimento automatico"
+        - id: "5.2"
+          name: "Criacao dos 10 Fluxos de Automacao Principais"
+          flows:
+            - name: "Boas-Vindas ao Novo Aluno"
+              trigger: "Aluno completa cadastro e anamnese"
+              delay: "imediato"
+            - name: "Lembrete de Treino"
+              trigger: "Dia de treino do aluno"
+              delay: "2h antes do horario preferido"
+            - name: "Confirmacao de Treino Realizado"
+              trigger: "Aluno marca check-in"
+              action: "Atribuir pontos de gamificacao"
+            - name: "Alerta de Treino Perdido"
+              trigger: "Dia de treino passou sem check-in"
+              delay: "2h apos horario usual"
+            - name: "Inatividade (2 dias)"
+              trigger: "Aluno nao acessa por 2 dias"
+              action: "Marcar como 'atencao' no dashboard"
+            - name: "Inatividade Critica (5 dias)"
+              trigger: "Aluno nao acessa por 5 dias"
+              action: "ALERTA para o coach"
+            - name: "Check-in Semanal"
+              trigger: "Domingo, 18h (configuravel)"
+            - name: "Renovacao Proxima (15 dias)"
+              trigger: "15 dias antes do vencimento"
+            - name: "Aniversario do Aluno"
+              trigger: "Data de aniversario"
+              action: "Bonus de pontos ou desconto"
+            - name: "Conquista Desbloqueada"
+              trigger: "Aluno alcanca milestone"
+        - id: "5.3"
+          name: "Configuracao de Email Marketing"
+          drip_campaign:
+            - email: 1
+              when: "Imediato"
+              subject: "Bem-vindo!"
+              objective: "Confirmacao e acesso"
+            - email: 2
+              when: "Dia 2"
+              subject: "Seu plano de 30 dias comeca aqui"
+              objective: "Orientacao inicial"
+            - email: 3
+              when: "Dia 5"
+              subject: "Como usar a plataforma (tutorial)"
+              objective: "Educacao do usuario"
+            - email: 4
+              when: "Dia 10"
+              subject: "Seus primeiros 10 dias de resultado"
+              objective: "Engajamento"
+            - email: 5
+              when: "Dia 21"
+              subject: "Ja imaginou onde estara em 90 dias?"
+              objective: "Retencao"
+            - email: 6
+              when: "Dia 30"
+              subject: "1 mes de jornada — hora de avaliar!"
+              objective: "Feedback + renovacao"
+        - id: "5.4"
+          name: "Automacao de Envio de Treinos e Dietas"
+          description: "Notificacao push + WhatsApp + email para novos treinos. Dieta semanal no domingo a noite."
+        - id: "5.5"
+          name: "Configuracao de Alertas para o Coach"
+          alerts:
+            - "Aluno inativo ha 2 dias (WhatsApp)"
+            - "Aluno inativo ha 5 dias (WhatsApp + email — URGENTE)"
+            - "Aluno solicitou suporte"
+            - "Plano vencendo em 3 dias sem renovacao"
+            - "Novo aluno cadastrado"
+            - "Pagamento nao processado"
+            - "Aluno completou 10 treinos consecutivos (oportunidade de upgrade)"
+            - "Aluno atingiu meta de peso (oportunidade de upsell)"
+        - id: "5.6"
+          name: "Configuracao de Respostas Automaticas para FAQs"
+          description: "Top 10 perguntas frequentes com respostas automaticas e escalada para o coach se necessario."
+      outputs:
+        - name: "automation-map.md"
+          description: "Todos os fluxos e triggers documentados"
+        - name: "whatsapp-templates/"
+          description: "Templates submetidos e aprovados pela Meta"
+        - name: "faq-responses.md"
+          description: "Respostas automaticas documentadas"
+        - name: "automation-test-report.md"
+          description: "Cada fluxo testado e validado"
+      checkpoint:
+        id: "FC-CP-ONBOARD-005"
+        name: "Automation Complete Gate"
+        type: "blocking"
+        approvers: ["automation-engineer", "fitcoach-chief"]
+        criteria:
+          - "WhatsApp Business API integrado e funcionando"
+          - "Pelo menos 10 fluxos de automacao configurados"
+          - "Fluxo de check-in automatico funcionando end-to-end"
+          - "Alertas de inatividade testados e funcionando"
+          - "Email marketing configurado com sequencia de boas-vindas"
+          - "Todos os fluxos testados com aluno-teste"
+          - "Coach recebeu treinamento de como monitorar automacoes"
+          - "FAQ automatico configurado com pelo menos 5 respostas"
+        veto_conditions:
+          - id: "VETO-015"
+            name: "API WhatsApp nao aprovada"
+            condition: "Meta nao aprovou templates em 5 dias uteis"
+            action: "Usar solucao alternativa (Telegram bot ou SMS) temporariamente"
+          - id: "VETO-016"
+            name: "Automacoes nao testadas"
+            condition: "Automacao entrando em producao sem teste"
+            action: "Bloquear ativacao ate todos os fluxos serem validados"
+      next: "phase-6"
+
+    # =====================================================
+    # PHASE 6: Gamification Setup (Dias 12-14)
+    # =====================================================
+    - id: "phase-6"
+      name: "Gamification Setup"
+      agents: ["gamification-designer", "retention-engineer"]
+      checkpoint_id: "FC-CP-ONBOARD-006"
+      duration: "3 dias"
+      timeline: "Dias 12-14"
+      tasks: ["setup-gamification.md", "hook-model-config.md"]
+      frameworks: ["Yu-kai Chou — Octalysis Framework", "Nir Eyal — Hooked (Hook Model)"]
+      objectives:
+        - "Implementar sistema de pontos com logica de progressao"
+        - "Criar niveis de evolucao (do iniciante ao atleta elite)"
+        - "Configurar desafios mensais motivadores"
+        - "Setup de rankings e leaderboards (com privacidade)"
+        - "Criar sistema de badges e conquistas"
+        - "Integrar com Hook Model para criar habitos"
+      inputs:
+        - "Identidade visual do coach (Phase 4)"
+        - "Nome e tom de voz da marca (Phase 4)"
+        - "Lista de comportamentos desejados dos alunos"
+        - "Orcamento para premios do desafio mensal"
+      steps:
+        - id: "6.1"
+          name: "Design do Sistema de Pontos"
+          core_drive: "Accomplishment"
+          point_actions:
+            - action: "Completar treino e fazer check-in"
+              points: 100
+              max_frequency: "1x/dia"
+            - action: "Completar sequencia de 7 dias"
+              points: 500
+              max_frequency: "1x/semana"
+            - action: "Completar sequencia de 30 dias"
+              points: 2500
+              max_frequency: "1x/mes"
+            - action: "Preencher check-in semanal"
+              points: 50
+              max_frequency: "1x/semana"
+            - action: "Registrar avaliacao de peso"
+              points: 75
+              max_frequency: "1x/semana"
+            - action: "Fazer upload de foto de progresso"
+              points: 150
+              max_frequency: "1x/semana"
+            - action: "Completar anamnese"
+              points: 200
+              max_frequency: "1x"
+            - action: "Responder pesquisa NPS"
+              points: 100
+              max_frequency: "1x/trimestre"
+            - action: "Indicar um amigo (que assina)"
+              points: 1000
+              max_frequency: "Ilimitado"
+            - action: "Completar desafio mensal"
+              points: 1500
+              max_frequency: "1x/mes"
+            - action: "Primeiro treino da semana"
+              points: 25
+              max_frequency: "1x/semana"
+        - id: "6.2"
+          name: "Criacao dos Niveis de Progressao"
+          description: >-
+            8 niveis com nomenclatura personalizada por coach.
+            Para cada nivel: nome, descricao, pontos, badge visual, beneficio real.
+          example_levels:
+            - level: 1
+              range: "0 - 999 pts"
+              example_name: "Recruta / Iniciante"
+            - level: 2
+              range: "1.000 - 2.999 pts"
+              example_name: "Soldado / Consistente"
+            - level: 3
+              range: "3.000 - 6.999 pts"
+              example_name: "Cabo / Dedicado"
+            - level: 4
+              range: "7.000 - 14.999 pts"
+              example_name: "Sargento / Comprometido"
+            - level: 5
+              range: "15.000 - 29.999 pts"
+              example_name: "Tenente / Transformado"
+            - level: 6
+              range: "30.000 - 59.999 pts"
+              example_name: "Capitao / Inspiracao"
+            - level: 7
+              range: "60.000 - 99.999 pts"
+              example_name: "Coronel / Exemplo"
+            - level: 8
+              range: "100.000+ pts"
+              example_name: "General / Lenda"
+        - id: "6.3"
+          name: "Configuracao do Sistema de Badges"
+          categories:
+            frequency: ["Primeiro Treino", "7 Seguidos", "Maratonista", "Iron Will"]
+            result: ["Primeiros 5kg", "Primeiro Centimetro", "Metamorfose"]
+            engagement: ["Aluno Nota 10", "Deu o Feedback", "Comunidade"]
+            coach_exclusive: "Personalizar com metodologia do coach"
+        - id: "6.4"
+          name: "Configuracao de Rankings e Leaderboards"
+          types:
+            - "Ranking Geral (all-time)"
+            - "Ranking do Mes (reset mensal)"
+            - "Ranking de Consistencia (streaks)"
+            - "Ranking do Desafio (por desafio)"
+          privacy:
+            - "Opcao de apelido ou iniciais"
+            - "Opcao de opt-out completo"
+            - "Coach ve todos os dados"
+        - id: "6.5"
+          name: "Design do Primeiro Desafio Mensal"
+          example:
+            name: "30 Dias de Transformacao"
+            objective: "Completar 20 treinos + todos os check-ins + avaliacao inicio e fim"
+            rewards:
+              completers: "Badge + 1.500 pts"
+              top_3: "Premio fisico ou desconto exclusivo"
+              social: "Coach faz post dedicado no Instagram"
+        - id: "6.6"
+          name: "Implementacao do Hook Model"
+          hook_cycle:
+            trigger:
+              external: "Notificacao push, WhatsApp, email"
+              internal: "Habito formado com o tempo"
+            action: "Tornar acoes simples (check-in 1 toque, <3 taps para treino)"
+            variable_reward: "Pontos variaveis, badges surpresa, ranking que muda"
+            investment: "Historico, pontos, nivel, streak — custo de saida crescente"
+        - id: "6.7"
+          name: "Calibracao de Dificuldade (Flow State)"
+          progression:
+            level_1_to_2: "1-2 semanas (rapido, para enganchar)"
+            level_2_to_3: "3-4 semanas (consolidando habito)"
+            level_3_plus: "Progressivamente mais lento"
+            first_badge: "Dentro da primeira semana"
+            first_challenge: "Dentro do primeiro mes"
+      outputs:
+        - name: "gamification-spec.md"
+          description: "Logica completa de pontos e niveis"
+        - name: "badges-catalog.md"
+          description: "Todos os badges com criterios"
+        - name: "first-challenge.md"
+          description: "Desafio mensal pronto para lancar"
+        - name: "hook-model-config.md"
+          description: "Triggers, actions e rewards configurados"
+        - name: "gamification-test-report.md"
+          description: "Validacao de funcionamento"
+      checkpoint:
+        id: "FC-CP-ONBOARD-006"
+        name: "Gamification Complete Gate"
+        type: "blocking"
+        approvers: ["gamification-designer", "retention-engineer"]
+        criteria:
+          - "Sistema de pontos configurado com pelo menos 8 tipos de acoes"
+          - "Pelo menos 6 niveis de progressao com nomes personalizados"
+          - "Pelo menos 10 badges criados com criterios claros"
+          - "Primeiro desafio mensal configurado e pronto"
+          - "Rankings configurados com opcao de privacidade"
+          - "Hook Model implementado (triggers externos funcionando)"
+          - "Sistema testado com aluno-teste"
+          - "Coach treinado em como usar gamificacao"
+        veto_conditions:
+          - id: "VETO-017"
+            name: "Pontos sem recompensas reais"
+            condition: "Nenhuma recompensa tangivel configurada"
+            action: "Configurar pelo menos 3 recompensas concretas"
+          - id: "VETO-018"
+            name: "Ranking sem opcao de privacidade"
+            condition: "Nomes completos expostos sem consentimento"
+            action: "Implementar opcao de apelido/opt-out"
+      next: "phase-7"
+
+    # =====================================================
+    # PHASE 7: E-commerce Setup (Dias 14-17)
+    # =====================================================
+    - id: "phase-7"
+      name: "E-commerce Setup"
+      agent: "ecommerce-manager"
+      checkpoint_id: "FC-CP-ONBOARD-007"
+      duration: "4 dias"
+      timeline: "Dias 14-17"
+      tasks: ["ecommerce-setup.md", "product-catalog.md", "payment-config.md"]
+      objectives:
+        - "Configurar loja integrada na plataforma"
+        - "Catalogar e listar primeiros produtos (fisicos e digitais)"
+        - "Integrar gateways de pagamento"
+        - "Configurar logistica para produtos fisicos"
+        - "Configurar sistema de comissionamento"
+        - "Criar primeira campanha de lancamento da loja"
+      inputs:
+        - "Lista de produtos que o coach quer vender"
+        - "Fotos dos produtos"
+        - "Precificacao desejada"
+        - "CNPJ e dados bancarios PJ"
+        - "Politica de reembolso"
+      steps:
+        - id: "7.1"
+          name: "Definicao do Mix de Produtos"
+          categories:
+            digital:
+              items: ["Programas de treino PDF/video", "E-books de nutricao", "Planilhas de dieta", "Workshops gravados", "Mentorias em grupo", "Consultorias avulsas"]
+              margin: "Alta (sem logistica)"
+            supplements:
+              items: ["Proteinas", "Creatina/glutamina/BCAAs", "Pre-treinos", "Vitaminas", "Barras de proteina"]
+              margin: "Media (logistica)"
+              note: "Verificar revenda autorizada e CNPJ"
+            branded:
+              items: ["Camisetas/vestuario", "Garrafinhas/coqueteleiras", "Acessorios de treino", "Bones/moletons"]
+              margin: "Variavel"
+              note: "Producao por demanda ou estoque?"
+            services:
+              items: ["Avaliacao fisica avulsa", "Revisao treino/dieta externo", "Plano para viagem", "Treino para evento especial"]
+              margin: "Alta (sem estoque)"
+        - id: "7.2"
+          name: "Cadastro dos Primeiros Produtos"
+          per_product: ["Nome comercial", "Descricao (beneficios)", "Preco + preco 'de'", "Fotos (min 3)", "Estoque/acesso", "Categoria e tags", "Produtos relacionados"]
+          rule: "Comecar com 5-10 produtos de alta demanda"
+        - id: "7.3"
+          name: "Configuracao de Gateways de Pagamento"
+          methods: ["Cartao credito (ate 12x)", "Cartao debito", "PIX (imediato)", "Boleto bancario"]
+          gateway: "Mercado Pago, PagSeguro, ou Stripe"
+          setup: ["Taxa de antecipacao", "Prazo de recebimento", "Politica de reembolso", "Nota fiscal automatica"]
+        - id: "7.4"
+          name: "Configuracao de Logistica (Produtos Fisicos)"
+          setup: ["Local de armazenagem", "Tabela de fretes", "Limite para frete gratis", "Prazo de envio", "Rastreamento automatico"]
+        - id: "7.5"
+          name: "Sistema de Comissionamento (Affiliates)"
+          setup: ["Links de indicacao personalizados", "Comissao 5-15%", "Painel de afiliados", "Materiais de divulgacao"]
+        - id: "7.6"
+          name: "Configuracao de Upsell e Cross-sell"
+          triggers:
+            - "Sugestao apos check-in de treino"
+            - "Produto relacionado na pagina de cada item"
+            - "Bundle com desconto"
+            - "Email automatico apos 2 semanas sem compra"
+        - id: "7.7"
+          name: "Primeira Campanha de Lancamento"
+          description: >-
+            Data de lancamento (coincidir com Full Launch Fase 8).
+            Oferta especial de inauguracao, comunicacao multicanal,
+            meta de vendas para primeira semana.
+      outputs:
+        - name: "product-catalog.md"
+          description: "Todos os produtos com descricao e preco"
+        - name: "payment-config.md"
+          description: "Gateways, taxas e prazos"
+        - name: "logistics-plan.md"
+          description: "Processo de envio de produtos fisicos"
+        - name: "store-launch-plan.md"
+          description: "Campanha de inauguracao"
+        - name: "ecommerce-setup-report.md"
+          description: "Status de todos os itens configurados"
+      checkpoint:
+        id: "FC-CP-ONBOARD-007"
+        name: "E-commerce Complete Gate"
+        type: "blocking"
+        approvers: ["ecommerce-manager", "fitcoach-chief"]
+        criteria:
+          - "Loja configurada e acessivel na plataforma"
+          - "Pelo menos 5 produtos listados e com fotos"
+          - "Gateway de pagamento configurado e testado"
+          - "PIX e cartao de credito funcionando"
+          - "Politica de reembolso publicada"
+          - "Upsell de pelo menos 1 produto configurado"
+          - "Plano de lancamento da loja criado"
+          - "Coach treinado em como gerenciar pedidos"
+        veto_conditions:
+          - id: "VETO-019"
+            name: "Gateway de pagamento sem teste"
+            condition: "Nenhuma transacao de teste completa"
+            action: "Executar teste com R$1,00 antes de avancar"
+          - id: "VETO-020"
+            name: "Produto fisico sem logistica definida"
+            condition: "Produto fisico listado sem processo de envio"
+            action: "Definir logistica antes de listar"
+      next: "phase-8"
+
+    # =====================================================
+    # PHASE 8: Launch & Monitoring (Dias 17-21+)
+    # =====================================================
+    - id: "phase-8"
+      name: "Launch & Monitoring"
+      agents: ["fitcoach-chief", "gym-operator"]
+      checkpoint_id: "FC-CP-ONBOARD-008"
+      duration: "5 dias + monitoramento continuo por 30 dias"
+      timeline: "Dias 17-21 (launch) + Dias 21-51 (monitoring)"
+      tasks: ["soft-launch.md", "full-launch.md", "monitoring-setup.md"]
+      objectives:
+        - "Executar soft launch com 5-10 alunos beta"
+        - "Coletar feedback estruturado e ajustar"
+        - "Planejar e executar full launch com comunicacao impactante"
+        - "Monitorar metricas por 30 dias"
+        - "Entregar relatorio de resultados vs baseline"
+      inputs:
+        - "Todos os outputs das fases 1-7"
+        - "Lista de alunos beta"
+        - "Video de apresentacao da plataforma"
+        - "Ofertas de lancamento definidas"
+      steps:
+        - id: "8.1"
+          name: "Selecao dos Beta Testers"
+          criteria:
+            - "Representatividade: incluir 1 de cada tier"
+            - "Diversidade: tecnologicos e menos tecnologicos"
+            - "Confianca: alunos que dao feedback honesto"
+            - "Comprometimento: confirmaram disponibilidade de 48h"
+        - id: "8.2"
+          name: "Briefing com Beta Testers"
+          format: "Reuniao 30 min (video call ou presencial)"
+          beta_checklist:
+            - "Fazer login e completar perfil"
+            - "Acessar e executar o primeiro treino"
+            - "Fazer check-in na plataforma"
+            - "Verificar treino correto e atualizado"
+            - "Responder check-in semanal"
+            - "Acessar loja e navegar produtos"
+            - "Testar notificacoes de lembrete"
+            - "Testar chat com o coach"
+            - "Avaliar experiencia geral (NPS)"
+        - id: "8.3"
+          name: "Monitoramento do Soft Launch (5 dias)"
+          protocol:
+            - "Daily standup de 15 min para revisar feedback"
+            - "fitcoach-chief monitora dashboard em tempo real"
+            - "Bug critico: corrigido em menos de 4 horas"
+            - "UX confuso: documentado e priorizado"
+            - "NPS coletado no dia 5"
+        - id: "8.4"
+          name: "Ajustes Pos-Beta"
+          description: "Listar ajustes, priorizar por impacto vs esforco, executar criticos antes do full launch."
+        - id: "8.5"
+          name: "Preparacao do Full Launch"
+          materials:
+            - "Video do coach apresentando a plataforma (1-2 min)"
+            - "Screenshots de depoimentos dos betas"
+            - "Tutorial de como se cadastrar (2-3 min)"
+            - "FAQ de lancamento (5 duvidas)"
+          teasers:
+            - "Redes sociais do coach ('Novidade vem ai!')"
+            - "Email de lancamento para todos os alunos"
+            - "WhatsApp broadcast"
+            - "Instagram Stories e Feed post"
+            - "Oferta especial de lancamento"
+        - id: "8.6"
+          name: "Execucao do Full Launch (Dia D)"
+          recommended: "Terca ou quarta-feira, entre 10h e 12h"
+          timeline:
+            "09:00": "fitcoach-chief confere plataforma 100% funcional"
+            "10:00": "WhatsApp broadcast para todos os alunos"
+            "10:05": "E-mail de lancamento disparado"
+            "10:30": "Coach posta no Instagram Stories e Feed"
+            "11:00": "Coach faz Instagram Live 20 min"
+            "14:00": "WhatsApp follow-up para alunos que nao acessaram"
+        - id: "8.7"
+          name: "Monitoramento de KPIs (7 dias)"
+          kpis:
+            - metric: "Alunos que acessaram"
+              target_d1: "30%"
+              target_d3: "60%"
+              target_d7: "80%"
+            - metric: "Check-ins completados"
+              target_d1: "20%"
+              target_d3: "40%"
+              target_d7: "60%"
+            - metric: "Mensagens via plataforma"
+              target_d1: "10+"
+              target_d3: "30+"
+              target_d7: "50+"
+            - metric: "Vendas na loja"
+              target_d1: "1+"
+              target_d3: "3+"
+              target_d7: "5+"
+            - metric: "Cancelamentos/reclamacoes"
+              target_d1: "0"
+              target_d3: "<2"
+              target_d7: "<3"
+            - metric: "NPS"
+              target_d7: ">30"
+        - id: "8.8"
+          name: "Monitoramento Continuo (30 dias)"
+          weekly_reports:
+            week_1: "Foco em adocao (quantos acessaram, bugs, UX)"
+            week_2: "Foco em engajamento (check-ins, streaks, pontos)"
+            week_3: "Foco em retencao (quem em risco de churn)"
+            week_4: "Foco em resultados (NPS, renovacoes, upsell)"
+        - id: "8.9"
+          name: "Relatorio Final de Onboarding"
+          sections:
+            - "Resultados vs Baseline (Fase 1)"
+            - "O que funcionou (Top 3 decisoes positivas)"
+            - "O que ajustar (Top 3 melhorias)"
+            - "Proximos passos (Roadmap 3 meses)"
+      success_metrics:
+        - metric: "Alunos na plataforma"
+          baseline: "0%"
+          target_d7: "80%"
+          target_d30: "95%"
+          target_d90: "100%"
+        - metric: "Engagement rate semanal"
+          baseline: "0%"
+          target_d7: "55%"
+          target_d30: "70%"
+          target_d90: "75%"
+        - metric: "Check-in completion rate"
+          baseline: "0%"
+          target_d7: "40%"
+          target_d30: "60%"
+          target_d90: "70%"
+        - metric: "Churn rate mensal"
+          baseline: "baseline"
+          target_d7: "<8%"
+          target_d30: "<5%"
+          target_d90: "<3%"
+        - metric: "NPS"
+          baseline: "baseline"
+          target_d7: ">30"
+          target_d30: ">45"
+          target_d90: ">60"
+        - metric: "Ticket medio"
+          baseline: "R$ X"
+          target_d7: "+5%"
+          target_d30: "+15%"
+          target_d90: "+25%"
+        - metric: "MRR"
+          baseline: "R$ X"
+          target_d7: "+5%"
+          target_d30: "+20%"
+          target_d90: "+50%"
+        - metric: "Horas/semana do coach"
+          baseline: "X horas"
+          target_d7: "-10%"
+          target_d30: "-25%"
+          target_d90: "-40%"
+        - metric: "Vendas e-commerce"
+          baseline: "R$0"
+          target_d7: "R$500+"
+          target_d30: "R$2.000+"
+          target_d90: "R$5.000+"
+        - metric: "Pontuacao media gamificacao"
+          baseline: "0"
+          target_d7: "300+"
+          target_d30: "800+"
+          target_d90: "2.000+"
+      outputs:
+        - name: "beta-test-report.md"
+          description: "Feedback dos betas e ajustes feitos"
+        - name: "full-launch-plan.md"
+          description: "Cronograma detalhado do dia D"
+        - name: "metrics-report-d7.md"
+          description: "KPIs da primeira semana"
+        - name: "metrics-report-d30.md"
+          description: "KPIs do primeiro mes"
+        - name: "onboarding-results-report.md"
+          description: "Resultados vs baseline + proximos passos"
+      checkpoint:
+        id: "FC-CP-ONBOARD-008"
+        name: "Launch & Monitoring Complete Gate"
+        type: "blocking"
+        approvers: ["fitcoach-chief", "gym-operator"]
+        criteria:
+          - "Soft launch executado com pelo menos 5 beta testers"
+          - "NPS do beta >= 20"
+          - "Ajustes criticos implementados apos o beta"
+          - "Full launch executado conforme plano"
+          - "Pelo menos 80% dos alunos acessaram em 7 dias"
+          - "Relatorio de metricas dia 7 produzido"
+          - "Relatorio de metricas dia 30 produzido"
+          - "Relatorio final de onboarding entregue ao coach"
+          - "Coach apto a operar a plataforma independentemente"
+          - "Proximo trimestre planejado (roadmap)"
+        veto_conditions:
+          - id: "VETO-021"
+            name: "Beta NPS abaixo de 20"
+            condition: "NPS dos beta testers inferior a 20"
+            action: "Nao lancar — investigar, corrigir, segundo ciclo de beta"
+          - id: "VETO-022"
+            name: "Taxa de acesso D3 abaixo de 30%"
+            condition: "Menos de 30% dos alunos acessaram ate dia 3"
+            action: "Protocolo de suporte intensivo — coach liga para cada aluno"
+
+  # =====================================================
+  # VETO CONDITIONS CONSOLIDADAS
+  # =====================================================
+  veto_conditions_summary:
+    - id: "VETO-001"
+      phase: 1
+      condition: "Menos de 5 alunos ativos"
+      action: "Versao simplificada (Tier Starter)"
+    - id: "VETO-002"
+      phase: 1
+      condition: "Instagram < 100 seguidores"
+      action: "Incluir Fase 0 de Branding"
+    - id: "VETO-003"
+      phase: 1
+      condition: "Diagnostico incompleto"
+      action: "Nao avancar para Fase 2"
+    - id: "VETO-004"
+      phase: 1
+      condition: "MRR < custo da plataforma"
+      action: "Renegociar ou aguardar crescimento"
+    - id: "VETO-005"
+      phase: 2
+      condition: "Preco abaixo do custo operacional"
+      action: "Recalcular pricing"
+    - id: "VETO-006"
+      phase: 2
+      condition: "Sem garantia definida"
+      action: "Obrigatorio ter risk-reversal"
+    - id: "VETO-007"
+      phase: 2
+      condition: "Mais de 3 tiers"
+      action: "Simplificar para maximo 3"
+    - id: "VETO-008"
+      phase: 2
+      condition: "LTV/CAC < 3x"
+      action: "Revisar estrategia"
+    - id: "VETO-009"
+      phase: 3
+      condition: "Perda > 10% de alunos"
+      action: "Pausar e investigar"
+    - id: "VETO-010"
+      phase: 3
+      condition: "Sem historico de treinos"
+      action: "Completar anamnese primeiro"
+    - id: "VETO-011"
+      phase: 3
+      condition: "Sem consentimento LGPD"
+      action: "Coletar permissao explicita"
+    - id: "VETO-012"
+      phase: 4
+      condition: "Biblioteca de exercicios vazia"
+      action: "Usar genericos + agendar gravacao"
+    - id: "VETO-013"
+      phase: 4
+      condition: "Sem branding"
+      action: "Usar foto profissional temporaria"
+    - id: "VETO-014"
+      phase: 4
+      condition: "Bugs criticos nos testes"
+      action: "Corrigir antes de avancar"
+    - id: "VETO-015"
+      phase: 5
+      condition: "API WhatsApp nao aprovada"
+      action: "Usar alternativa temporaria"
+    - id: "VETO-016"
+      phase: 5
+      condition: "Automacoes nao testadas"
+      action: "Bloquear ativacao"
+    - id: "VETO-017"
+      phase: 6
+      condition: "Pontos sem recompensas reais"
+      action: "Minimo 3 recompensas concretas"
+    - id: "VETO-018"
+      phase: 6
+      condition: "Ranking sem privacidade"
+      action: "Implementar opt-out antes de ativar"
+    - id: "VETO-019"
+      phase: 7
+      condition: "Pagamento sem teste"
+      action: "Executar transacao de R$1"
+    - id: "VETO-020"
+      phase: 7
+      condition: "Produto fisico sem logistica"
+      action: "Definir processo antes de listar"
+    - id: "VETO-021"
+      phase: 8
+      condition: "Beta NPS < 20"
+      action: "Segundo ciclo de beta"
+    - id: "VETO-022"
+      phase: 8
+      condition: "Adocao D3 < 30%"
+      action: "Suporte intensivo coach para alunos"
+
+  # =====================================================
+  # QUALITY GATES
+  # =====================================================
+  quality_gates:
+    - id: "QG-001"
+      name: "Assessment to Offer Design"
+      transition: "phase-1 -> phase-2"
+      criteria:
+        - "Diagnostico completo + metas aprovados"
+    - id: "QG-002"
+      name: "Offer Design to Migration"
+      transition: "phase-2 -> phase-3"
+      criteria:
+        - "3 tiers + garantia definidos"
+    - id: "QG-003"
+      name: "Migration to Platform Setup"
+      transition: "phase-3 -> phase-4"
+      criteria:
+        - "80% alunos migrados"
+    - id: "QG-004"
+      name: "Platform Setup to Automation"
+      transition: "phase-4 -> phase-5"
+      criteria:
+        - "Plataforma configurada e testada"
+    - id: "QG-005"
+      name: "Automation to Gamification"
+      transition: "phase-5 -> phase-6"
+      criteria:
+        - "10 fluxos ativos e testados"
+    - id: "QG-006"
+      name: "Gamification to E-commerce"
+      transition: "phase-6 -> phase-7"
+      criteria:
+        - "Sistema de pontos + primeiro desafio"
+    - id: "QG-007"
+      name: "E-commerce to Launch"
+      transition: "phase-7 -> phase-8"
+      criteria:
+        - "Loja com 5+ produtos, pagamento OK"
+    - id: "QG-008"
+      name: "Launch Complete"
+      transition: "phase-8 -> monitoring"
+      criteria:
+        - "80% adocao + relatorio entregue"
+
+  # =====================================================
+  # TIMELINE
+  # =====================================================
+  timeline:
+    week_1:
+      - "Dia 1-2: [FASE 1] Business Assessment"
+      - "Dia 3-5: [FASE 2] Offer Design"
+      - "Dia 5-7: [FASE 3] Client Migration (inicio)"
+    week_2:
+      - "Dia 7-10: [FASE 4] Platform Setup"
+      - "Dia 10-12: [FASE 5] Automation Config"
+      - "Dia 12-14: [FASE 6] Gamification Setup"
+    week_3:
+      - "Dia 14-17: [FASE 7] E-commerce Setup"
+      - "Dia 17: [SOFT LAUNCH] Beta Testers"
+      - "Dia 17-19: Ajustes pos-beta"
+      - "Dia 21: [FULL LAUNCH] Todos os alunos"
+    week_4_plus:
+      - "Dia 21-28: Monitoramento intensivo (semana 1 pos-launch)"
+      - "Dia 28-51: Monitoramento regular (semanas 2-4)"
+      - "Dia 51: Relatorio final de onboarding"
+
+  # =====================================================
+  # HANDOFF TEMPLATE
+  # =====================================================
+  handoff_template:
+    from_agent: "{agent_atual}"
+    to_agent: "{proximo_agent}"
+    story_context:
+      coach_name: "{nome do coach}"
+      onboarding_id: "FC-WF-004-{data}"
+      current_phase: "{fase atual}"
+      next_phase: "{proxima fase}"
+    completed_outputs:
+      - "{output 1 gerado}"
+    key_decisions:
+      - "{decisao importante tomada}"
+    open_items:
+      - "{item pendente para o proximo agent}"
+    blockers: []
+    next_action: "{primeira acao do proximo agent}"
+
+  # =====================================================
+  # ESCALATION
+  # =====================================================
+  escalation:
+    on_failure: "Return to previous phase with specific fix list, re-evaluate veto conditions"
+    on_timeout: "fitcoach-chief escalates to coach for manual intervention"
+    on_veto: "Address veto condition before proceeding — no phase skip allowed"
+
+  # =====================================================
+  # SOURCE REFERENCES
+  # =====================================================
+  source_references:
+    - source: "Alex Hormozi - $100M Offers"
+      chapters: "Value Equation, Offer Stacking, Risk Reversal (Guarantees)"
+      applied_in: "Phase 2 — Offer Design"
+    - source: "Chris Cooper - Two-Brain Business"
+      chapters: "Gym Owner Onboarding, Client Avatar, Revenue per Member"
+      applied_in: "Phase 1 — Business Assessment, Phase 3 — Client Migration"
+    - source: "Nir Eyal - Hooked"
+      chapters: "Hook Model (Trigger, Action, Variable Reward, Investment)"
+      applied_in: "Phase 6 — Gamification Setup"
+    - source: "Yu-kai Chou - Actionable Gamification"
+      chapters: "Octalysis Framework, 8 Core Drives"
+      applied_in: "Phase 6 — Gamification Setup"
+    - source: "Mihaly Csikszentmihalyi - Flow"
+      chapters: "Flow State, desafio vs habilidade"
+      applied_in: "Phase 6 — Calibracao de dificuldade"
+    - source: "Dan Kennedy - No B.S. Guide to Maximum Referrals"
+      chapters: "Client retention systems, referral programs"
+      applied_in: "Phase 8 — Referral program e retencao"
+    - source: "LGPD (Lei 13.709/2018)"
+      articles: "7 (bases legais), 11 (dados sensiveis), 18 (direitos do titular)"
+      applied_in: "Phase 3 — Consentimento de migracao"
+
+  tags:
+    - "onboarding"
+    - "coach-lifecycle"
+    - "business-setup"
+    - "automation"
+    - "gamification"
+    - "ecommerce"
+    - "hormozi"
+    - "cooper"

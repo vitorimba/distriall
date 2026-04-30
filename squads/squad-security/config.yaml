@@ -1,0 +1,149 @@
+name: squad-security
+version: "1.0.0"
+domain: cybersecurity
+purpose: "Comprehensive security squad for systems, websites, and applications — covering AppSec, PenTesting, Compliance, Incident Response, Zero Trust, API Security, Container Security, and Privacy"
+target_user: "Developers, vibe coders, CTOs, security teams, and anyone building or maintaining digital products"
+
+entry_agent: security-chief
+slash_prefix: security
+
+tier_structure:
+  tier_0_diagnosis:
+    - adam-shostack        # Threat Modeling (STRIDE)
+    - andrew-van-der-stock # Security Verification (ASVS)
+  tier_1_core:
+    - jim-manico           # Secure Coding
+    - dafydd-stuttard      # Web Pen Testing
+    - blake-strom          # Threat Detection (ATT&CK)
+    - corey-ball           # API Security
+    - ron-ross             # Compliance/Governance (NIST)
+  tier_2_specialists:
+    - ed-skoudis           # Network Pen Testing
+    - robert-m-lee         # Incident Response / DFIR
+    - jason-haddix         # Bug Bounty / Recon
+    - liz-rice             # Container/Cloud-Native Security
+    - john-kindervag       # Zero Trust Architecture
+    - ann-cavoukian        # Privacy by Design / LGPD
+  orchestrator:
+    - security-chief       # Coordinates all agents
+
+agents:
+  security-chief:
+    file: agents/security-chief.md
+    tier: orchestrator
+    role: "Squad orchestrator — routes requests, coordinates specialists"
+  adam-shostack:
+    file: agents/adam-shostack.md
+    tier: 0
+    role: "Threat Modeling specialist (STRIDE, 4 Questions Framework)"
+    mind: minds/adam_shostack/
+  andrew-van-der-stock:
+    file: agents/andrew-van-der-stock.md
+    tier: 0
+    role: "Security Verification specialist (OWASP ASVS, Top 10)"
+    mind: minds/andrew_van_der_stock/
+  jim-manico:
+    file: agents/jim-manico.md
+    tier: 1
+    role: "Secure Coding specialist (OWASP Proactive Controls, Cheat Sheets)"
+    mind: minds/jim_manico/
+  dafydd-stuttard:
+    file: agents/dafydd-stuttard.md
+    tier: 1
+    role: "Web Application Pen Testing specialist (Burp Suite methodology)"
+    mind: minds/dafydd_stuttard/
+  blake-strom:
+    file: agents/blake-strom.md
+    tier: 1
+    role: "Threat Detection & Intelligence (MITRE ATT&CK)"
+    mind: minds/blake_strom/
+  corey-ball:
+    file: agents/corey-ball.md
+    tier: 1
+    role: "API Security specialist (Hacking APIs methodology)"
+    mind: minds/corey_ball/
+  ron-ross:
+    file: agents/ron-ross.md
+    tier: 1
+    role: "Compliance & Governance (NIST RMF, SP 800-53)"
+    mind: minds/ron_ross/
+  ed-skoudis:
+    file: agents/ed-skoudis.md
+    tier: 2
+    role: "Network/Infrastructure Pen Testing (SANS methodology)"
+    mind: minds/ed_skoudis/
+  robert-m-lee:
+    file: agents/robert-m-lee.md
+    tier: 2
+    role: "Incident Response & DFIR (Sliding Scale, Intelligence-Driven IR)"
+    mind: minds/robert_m_lee/
+  jason-haddix:
+    file: agents/jason-haddix.md
+    tier: 2
+    role: "Bug Bounty & Offensive Recon (Bug Hunter's Methodology)"
+    mind: minds/jason_haddix/
+  liz-rice:
+    file: agents/liz-rice.md
+    tier: 2
+    role: "Container & Cloud-Native Security (5-layer model)"
+    mind: minds/liz_rice/
+  john-kindervag:
+    file: agents/john-kindervag.md
+    tier: 2
+    role: "Zero Trust Architecture (5-step model)"
+    mind: minds/john_kindervag/
+  ann-cavoukian:
+    file: agents/ann-cavoukian.md
+    tier: 2
+    role: "Privacy by Design (7 Foundational Principles, LGPD/GDPR)"
+    mind: minds/ann_cavoukian/
+
+use_cases:
+  - "Auditar seguranca de aplicacoes web/mobile/API"
+  - "Pen testing completo (web, network, API, cloud)"
+  - "Avaliar compliance LGPD/GDPR"
+  - "Threat modeling antes de desenvolver"
+  - "Proteger apps feitas com vibe coding (Lovable, Supabase)"
+  - "Incident response quando algo acontece"
+  - "Configurar Zero Trust architecture"
+  - "Proteger containers e infraestrutura cloud-native"
+  - "Bug bounty e offensive reconnaissance"
+  - "Implementar RLS, RBAC, autenticacao + autorizacao"
+
+sources:
+  video:
+    title: "Seguranca e IA — Bruno Nardon (G4)"
+    url: "https://www.youtube.com/watch?v=z5MfqDuamVE"
+    key_topics:
+      - "RLS (Row Level Security) no Supabase"
+      - "Autenticacao vs Autorizacao (RBAC)"
+      - "LGPD compliance"
+      - "Guard rails para vibe coders"
+      - "Building blocks seguros"
+      - "Guardiao — ferramenta de monitoramento"
+      - "Cloudflare / DDoS protection"
+      - "Observabilidade"
+  comment:
+    content: "Scanners de CVE nao pegam business logic flaws (Clickjacking, JWT bypass, Token Hijacking, SSRF). Precisa de SAST, DAST e pen testing periodico."
+
+keywords:
+  - security
+  - cybersecurity
+  - pentesting
+  - appsec
+  - owasp
+  - compliance
+  - lgpd
+  - gdpr
+  - zero-trust
+  - incident-response
+  - threat-modeling
+  - api-security
+  - container-security
+  - rls
+  - rbac
+  - authentication
+  - authorization
+  - vulnerability
+  - devsecops
+  - privacy

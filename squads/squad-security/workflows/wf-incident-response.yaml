@@ -1,0 +1,226 @@
+name: Incident Response
+description: Structured incident response workflow following NIST SP 800-61 and SANS methodology
+version: "1.0.0"
+trigger: manual
+mode: interactive
+elicit: true
+priority: critical
+
+context: >
+  Workflow ativado quando um incidente de seguranca e detectado ou reportado.
+  Tempo e critico — cada fase tem SLAs definidos conforme severidade.
+  Preservar evidencias e prioridade em todas as fases.
+
+severity_slas:
+  P1_critical:
+    triage: "15 minutes"
+    containment: "1 hour"
+    eradication: "4 hours"
+    recovery: "8 hours"
+    notification_anpd: "72 hours"
+  P2_high:
+    triage: "30 minutes"
+    containment: "4 hours"
+    eradication: "24 hours"
+    recovery: "48 hours"
+  P3_medium:
+    triage: "2 hours"
+    containment: "24 hours"
+    eradication: "72 hours"
+    recovery: "1 week"
+  P4_low:
+    triage: "24 hours"
+    containment: "1 week"
+    eradication: "2 weeks"
+    recovery: "1 month"
+
+phases:
+  1-triage:
+    name: Triage & Classification
+    executor: robert-m-lee
+    task: tasks/incident-response.md#phase-1
+    sla: "See severity_slas.*.triage"
+    description: >
+      Classificar o incidente por severidade e tipo.
+      Ativar time de resposta. Abrir canal de comunicacao.
+      Designar incident commander. Iniciar timeline.
+    inputs:
+      - incident_description
+      - affected_systems
+      - detection_source
+      - initial_evidence
+    outputs:
+      - severity_classification
+      - incident_type
+      - incident_commander
+      - communication_channel
+      - initial_timeline
+    checkpoint: "Incidente classificado, time ativado, timeline iniciada"
+    critical_action: >
+      Se P1: notificar C-level em 15 minutos.
+      Se dados pessoais potencialmente expostos: alertar DPO.
+    next: 2-threat-intel
+
+  2-threat-intel:
+    name: Threat Intelligence Gathering
+    executor: blake-strom
+    task: tasks/incident-response.md#phase-2
+    description: >
+      Coletar IOCs (Indicators of Compromise).
+      Mapear TTPs no MITRE ATT&CK.
+      Identificar grupo de ameaca se possivel.
+      Prever proximos movimentos do atacante.
+    inputs:
+      - severity_classification
+      - initial_evidence
+      - affected_systems
+    outputs:
+      - iocs_list
+      - mitre_attack_mapping
+      - threat_actor_assessment
+      - predicted_next_moves
+    checkpoint: "IOCs coletados e TTPs mapeados"
+    next: 3-containment
+
+  3-containment:
+    name: Containment
+    executor:
+      - robert-m-lee
+      - ed-skoudis
+    task: tasks/incident-response.md#phase-3
+    sla: "See severity_slas.*.containment"
+    description: >
+      Short-term: isolar sistemas, bloquear IPs, revogar credenciais.
+      Preservar evidencias ANTES de qualquer mudanca.
+      Long-term: patches, regras de deteccao, segmentacao.
+    inputs:
+      - iocs_list
+      - affected_systems
+      - mitre_attack_mapping
+    outputs:
+      - containment_actions_taken
+      - evidence_preserved
+      - systems_isolated
+      - credentials_revoked
+    checkpoint: "Atacante contido, evidencias preservadas"
+    critical_rule: >
+      NUNCA destruir evidencias antes de preservar.
+      NUNCA desligar sistemas sem capturar memoria primeiro.
+      Ordem: preservar → isolar → bloquear → notificar.
+    next: 4-eradication
+
+  4-eradication:
+    name: Eradication
+    executor:
+      - dafydd-stuttard
+      - jim-manico
+    task: tasks/incident-response.md#phase-4
+    description: >
+      Identificar e fechar vetor de entrada.
+      Remover malware/backdoors. Aplicar patches.
+      Corrigir vulnerabilidades exploradas.
+      Validar que a erradicacao foi completa.
+    inputs:
+      - containment_actions_taken
+      - iocs_list
+      - root_cause_analysis
+    outputs:
+      - root_cause_identified
+      - vulnerabilities_patched
+      - malware_removed
+      - eradication_validation
+    checkpoint: "Causa raiz removida e validada"
+    next: 5-recovery
+
+  5-recovery:
+    name: Recovery & Hardening
+    executor: john-kindervag
+    task: tasks/incident-response.md#phase-5
+    sla: "See severity_slas.*.recovery"
+    description: >
+      Restaurar sistemas a partir de backups verificados.
+      Re-habilitar servicos gradualmente.
+      Monitorar intensivamente por 72h.
+      Aplicar principios Zero Trust nas areas afetadas.
+    inputs:
+      - eradication_validation
+      - affected_systems
+      - backup_status
+    outputs:
+      - systems_restored
+      - services_status
+      - monitoring_enhanced
+      - zt_controls_added
+    checkpoint: "Sistemas restaurados com monitoramento ativo"
+    next: 6-lessons-learned
+
+  6-lessons-learned:
+    name: Lessons Learned & Reporting
+    executor:
+      - robert-m-lee
+      - security-chief
+    task: tasks/incident-response.md#phase-6
+    description: >
+      Post-mortem completo. Documentar timeline.
+      Analisar MTTD e MTTR. Atualizar playbooks.
+      Notificar reguladores se necessario (LGPD: 72h ANPD).
+      Notificar titulares se dados pessoais comprometidos.
+    inputs:
+      - complete_incident_timeline
+      - all_phase_outputs
+      - regulatory_requirements
+    outputs:
+      - incident_report
+      - post_mortem_document
+      - updated_playbooks
+      - regulatory_notifications
+      - improvement_actions
+    checkpoint: "Post-mortem documentado, notificacoes enviadas"
+    template: templates/incident-report-tmpl.md
+
+quality_gates:
+  - name: "Evidence Preservation"
+    phase: before-3
+    criteria: "Evidencias digitais preservadas antes de qualquer acao de contencao"
+    blocking: true
+
+  - name: "Eradication Validation"
+    phase: after-4
+    criteria: "IOCs nao mais detectados, scan completo limpo"
+    blocking: true
+
+  - name: "Recovery Monitoring"
+    phase: after-5
+    criteria: "72h de monitoramento sem re-infeccao"
+    blocking: false
+
+escalation_triggers:
+  - condition: "containment_failed"
+    action: "Escalar para CSIRT externo ou law enforcement"
+  - condition: "personal_data_breached"
+    action: "Notificar DPO imediatamente. ANPD em ate 72h. Titulares em prazo razoavel."
+  - condition: "ransomware_detected"
+    action: "NAO pagar resgate sem autorizacao executiva. Isolar tudo. Chamar forense."
+  - condition: "active_attacker_persistent"
+    action: "Considerar takedown completo e rebuild from scratch"
+
+communication_plan:
+  P1:
+    immediate: ["CISO", "CTO", "CEO", "DPO", "Legal"]
+    hourly: ["Incident response team", "Affected teams"]
+    daily: ["All staff (se necessario)"]
+  P2:
+    immediate: ["CISO", "CTO", "DPO"]
+    daily: ["Incident response team"]
+  P3:
+    daily: ["Security team lead"]
+  P4:
+    weekly: ["Security team"]
+
+estimated_duration:
+  P1: "24-72 hours active response + 30 days follow-up"
+  P2: "3-7 days active + 14 days follow-up"
+  P3: "1-2 weeks"
+  P4: "2-4 weeks"
+
+output_template: templates/incident-report-tmpl.md

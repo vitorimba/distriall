@@ -1,0 +1,336 @@
+##############################################################################
+# Gamification Anti-Patterns Catalog
+# Squad: squad-gamification
+# Reference for anti-pattern detection and remediation
+##############################################################################
+
+anti_patterns:
+
+  ##########################################################################
+  # Design Anti-Patterns
+  ##########################################################################
+  - id: AP-001
+    name: "Pointsification"
+    severity: high
+    category: design
+    description: >
+      Adding points, badges, and leaderboards (PBL) to a product without
+      meaningful game design. The PBL triad becomes decoration rather than
+      a system that drives behavior.
+    symptoms:
+      - "Points accumulate but have no use"
+      - "Badges are given for trivial actions"
+      - "Removing gamification has zero impact on user behavior"
+      - "Users cannot explain why points matter"
+    root_cause: "Treating gamification as a layer to apply, not a system to design"
+    remediation:
+      - "Connect points to meaningful rewards or progression"
+      - "Ensure badges represent genuine accomplishments"
+      - "Design complete systems (Hook model, progression) not just elements"
+    reference: "Margaret Robertson (2010) coined the term; widely cited by Ian Bogost"
+
+  - id: AP-002
+    name: "Reward Saturation"
+    severity: medium
+    category: design
+    description: >
+      Users receive so many rewards that each individual reward loses its
+      perceived value. The dopamine response diminishes.
+    symptoms:
+      - "Users ignore reward notifications"
+      - "Badge count exceeds what can be meaningfully displayed"
+      - "Users describe rewards as annoying"
+      - "Engagement doesn't increase despite more rewards"
+    root_cause: "Quantity over quality in reward design"
+    remediation:
+      - "Reduce reward frequency, increase quality"
+      - "Implement rarity tiers (common through legendary)"
+      - "Create meaningful categories with limited badges per category"
+      - "Sunset obsolete rewards"
+
+  - id: AP-003
+    name: "Dead-End Progression"
+    severity: medium
+    category: design
+    description: >
+      Progression system that ends abruptly without endgame content,
+      leaving max-level users with nothing to pursue.
+    symptoms:
+      - "Users hit max level and churn"
+      - "No activity designed for experienced users"
+      - "Long-time users become disengaged"
+    root_cause: "Only designing for acquisition and scaffolding, not endgame"
+    remediation:
+      - "Add prestige/reset systems"
+      - "Create mastery tracks and specializations"
+      - "Introduce mentoring/teaching mechanics"
+      - "Add seasonal content with fresh challenges"
+
+  - id: AP-004
+    name: "One-Size-Fits-All"
+    severity: medium
+    category: design
+    description: >
+      Same mechanics applied to all users regardless of motivation type,
+      skill level, or preference.
+    symptoms:
+      - "Some user segments highly engaged, others completely disengaged"
+      - "Negative feedback from specific demographics"
+      - "Mechanics only resonate with Player/Achiever types"
+    root_cause: "No player profiling or segmentation in design phase"
+    remediation:
+      - "Profile users with HEXAD framework"
+      - "Offer mechanic customization (choose your experience)"
+      - "Implement adaptive gamification based on behavior signals"
+
+  - id: AP-005
+    name: "Grinding Without Purpose"
+    severity: medium
+    category: design
+    description: >
+      Repetitive actions required for progress without narrative, variety,
+      or meaningful context. Users feel like they're doing chores.
+    symptoms:
+      - "Users describe the experience as tedious"
+      - "High automation or macro usage to skip grinding"
+      - "Session quality decreases while quantity remains"
+    root_cause: "Insufficient content variety; progression tied to volume not quality"
+    remediation:
+      - "Add narrative context to repetitive actions"
+      - "Introduce variety (different challenge types for same XP)"
+      - "Reward quality over quantity"
+      - "Create meaningful milestones within the grind"
+
+  ##########################################################################
+  # Motivation Anti-Patterns
+  ##########################################################################
+  - id: AP-010
+    name: "Overjustification Effect"
+    severity: high
+    category: motivation
+    description: >
+      External rewards undermine pre-existing intrinsic motivation.
+      Activities that were once enjoyable become chores done only for points.
+    symptoms:
+      - "Users only engage when rewards are available"
+      - "Quality of contributions drops after reward introduction"
+      - "Users ask 'what do I get?' for every action"
+      - "Removing rewards causes immediate disengagement"
+    root_cause: "Controlling extrinsic rewards on already intrinsically motivated behaviors"
+    remediation:
+      - "Use informational rewards (feedback) instead of controlling rewards (contingent)"
+      - "Focus extrinsic mechanics on behaviors lacking intrinsic motivation"
+      - "Transition from extrinsic to intrinsic over time"
+      - "Use unexpected rewards instead of expected ones"
+    reference: "Deci, Koestner & Ryan (1999) meta-analysis"
+
+  - id: AP-011
+    name: "Black Hat Dominance"
+    severity: high
+    category: motivation
+    description: >
+      System relies primarily on urgency, scarcity, and loss avoidance
+      (Octalysis Black Hat) without sustainable White Hat motivation.
+    symptoms:
+      - "Users feel stressed or anxious about the product"
+      - "High short-term engagement but poor long-term retention"
+      - "Users describe feeling 'forced' or 'pressured'"
+      - "Negative sentiment in reviews about manipulation"
+    root_cause: "Over-reliance on CD6 (Scarcity), CD7 (Unpredictability), CD8 (Loss)"
+    remediation:
+      - "Add White Hat mechanics: meaning (CD1), achievement (CD2), creativity (CD3)"
+      - "Target White Hat/Black Hat ratio of 1.5-2.5"
+      - "Replace loss mechanics with gain mechanics where possible"
+      - "Add opt-out for pressure mechanics"
+
+  - id: AP-012
+    name: "Extrinsic Dependency"
+    severity: medium
+    category: motivation
+    description: >
+      Entire motivation system built on extrinsic rewards with no path
+      to intrinsic motivation. Users are rented, not invested.
+    symptoms:
+      - "Engagement directly correlates with reward spend"
+      - "Reducing rewards immediately reduces engagement"
+      - "No community or social bonds formed"
+      - "Users show no loyalty or attachment"
+    root_cause: "Only Left Brain mechanics (CD2, CD4, CD6) with no Right Brain (CD3, CD5, CD7)"
+    remediation:
+      - "Introduce autonomy mechanics (customization, choice)"
+      - "Build social features (teams, mentoring, sharing)"
+      - "Add meaning and narrative (purpose beyond points)"
+
+  ##########################################################################
+  # Social Anti-Patterns
+  ##########################################################################
+  - id: AP-020
+    name: "Leaderboard Toxicity"
+    severity: high
+    category: social
+    description: >
+      Global leaderboards that permanently demoralize 90%+ of users who
+      can never reach the top, while the top 1% dominates.
+    symptoms:
+      - "Bottom 90% of users never engage with leaderboard"
+      - "Negative feedback about being 'at the bottom'"
+      - "Sandbagging or account manipulation to rank higher"
+      - "Only power users find leaderboard motivating"
+    root_cause: "Global absolute ranking without segmentation or relative positioning"
+    remediation:
+      - "Use relative leaderboards (show ±5 positions)"
+      - "Use percentile framing ('You're in the top 30%')"
+      - "Create cohort-based boards (similar skill/time)"
+      - "Add multi-dimensional boards (everyone can be #1 at something)"
+      - "Make leaderboard opt-in"
+
+  - id: AP-021
+    name: "Forced Social"
+    severity: medium
+    category: social
+    description: >
+      Social mechanics required for core functionality, alienating
+      introverted users or those who prefer solo experiences.
+    symptoms:
+      - "Users create fake accounts to bypass social requirements"
+      - "Complaints about mandatory team/group features"
+      - "Drop-off at social requirement gates"
+    root_cause: "Assuming all users are Socialisers; no solo alternatives"
+    remediation:
+      - "Make all social features optional"
+      - "Provide solo paths to all achievements"
+      - "Allow anonymous participation in social features"
+
+  - id: AP-022
+    name: "Social Shaming"
+    severity: critical
+    category: social
+    description: >
+      Publicly exposing failure, low performance, or non-participation
+      in ways that cause embarrassment.
+    symptoms:
+      - "Users feel embarrassed by visible low scores"
+      - "Public failure displays cause anxiety"
+      - "Users avoid participation to avoid exposure"
+    root_cause: "Using shame as a motivator; poor UX for negative states"
+    remediation:
+      - "Default to private scores; public is opt-in"
+      - "Frame negatives positively ('Room to grow' not 'Failed')"
+      - "Never display 'worst performers'"
+      - "Allow users to hide their participation"
+
+  ##########################################################################
+  # Ethical Anti-Patterns
+  ##########################################################################
+  - id: AP-030
+    name: "Artificial FOMO"
+    severity: high
+    category: ethical
+    description: >
+      Creating fake urgency or scarcity to pressure decisions.
+      Manufactured fear of missing out.
+    symptoms:
+      - "'Limited time!' on permanently available content"
+      - "'Only 2 left!' on unlimited digital goods"
+      - "Countdown timers that reset"
+      - "Exclusive events that recur identically"
+    root_cause: "Using deception to drive engagement"
+    remediation:
+      - "If scarcity is real, communicate honestly"
+      - "If content is permanent, don't fake urgency"
+      - "Use positive framing ('Available now!') not loss framing"
+
+  - id: AP-031
+    name: "Streak Anxiety"
+    severity: medium
+    category: ethical
+    description: >
+      Streak mechanics that cause genuine anxiety about breaking streaks,
+      leading users to engage unhealthily to maintain them.
+    symptoms:
+      - "Users log in during vacation/illness just to maintain streak"
+      - "Extreme distress when streak breaks"
+      - "Users describe streak as obligation, not motivation"
+      - "Support tickets about lost streaks"
+    root_cause: "Heavy loss aversion without safety nets"
+    remediation:
+      - "Add streak freeze option (1-3 per month)"
+      - "Implement grace periods (12-24 hours)"
+      - "Cap streak rewards (diminishing returns after 30 days)"
+      - "Frame streak break gently ('Welcome back!' not 'You lost your streak!')"
+    reference: "Duolingo's 2023 streak freeze feature addresses this pattern"
+
+  - id: AP-032
+    name: "Surveillance Gamification"
+    severity: critical
+    category: ethical
+    description: >
+      Using gamification as a disguise for workplace surveillance.
+      Tracking granular employee behavior under the guise of engagement.
+    symptoms:
+      - "Employee monitoring disguised as 'productivity points'"
+      - "Keystroke/mouse tracking tied to gamification scores"
+      - "Manager dashboards showing real-time employee activity"
+      - "Employee discomfort and resistance"
+    root_cause: "Management using gamification for control, not engagement"
+    remediation:
+      - "Track outcomes, not activity"
+      - "Ensure transparency about what is tracked"
+      - "Give employees access to their own data"
+      - "Separate gamification from performance reviews"
+
+  - id: AP-033
+    name: "Dark Nudges"
+    severity: critical
+    category: ethical
+    description: >
+      Using behavioral science techniques to manipulate users into
+      actions against their own interest.
+    symptoms:
+      - "Users spend more money than intended"
+      - "Users spend more time than intended"
+      - "Default settings favor the platform, not the user"
+      - "Opt-out is deliberately difficult"
+    root_cause: "Prioritizing platform metrics over user wellbeing"
+    remediation:
+      - "Default to user-beneficial settings"
+      - "Make opt-out as easy as opt-in"
+      - "Add time/spending awareness features"
+      - "Regular ethical review of all nudges"
+
+  - id: AP-034
+    name: "Gambling Mechanics"
+    severity: critical
+    category: ethical
+    description: >
+      Paid loot boxes, gacha mechanics, or random paid rewards that
+      exploit gambling psychology.
+    symptoms:
+      - "Users spend disproportionate money on random rewards"
+      - "Rare item pursuit dominates engagement"
+      - "Under-18 users exposed to gambling mechanics"
+      - "Regulatory attention or complaints"
+    root_cause: "Monetization through variable ratio reinforcement on paid items"
+    remediation:
+      - "Disclose all probabilities"
+      - "Never use paid random rewards for minors"
+      - "Provide direct purchase alternative for all items"
+      - "Set spending limits and warnings"
+    reference: "Belgium, Netherlands ban loot boxes; many countries considering regulation"
+
+##############################################################################
+# Quick Severity Reference
+##############################################################################
+severity_guide:
+  critical:
+    description: "Immediate harm to users; legal/regulatory risk"
+    action: "Must fix before any deployment"
+    examples: [AP-022, AP-032, AP-033, AP-034]
+  high:
+    description: "Significant negative impact on user experience or motivation"
+    action: "Must have remediation plan before deployment"
+    examples: [AP-001, AP-010, AP-011, AP-020, AP-030]
+  medium:
+    description: "Noticeable negative impact; degrades experience over time"
+    action: "Should fix within next iteration cycle"
+    examples: [AP-002, AP-003, AP-004, AP-005, AP-012, AP-021, AP-031]

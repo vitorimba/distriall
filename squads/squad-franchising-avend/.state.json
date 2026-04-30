@@ -1,0 +1,31 @@
+{
+  "squad": "franchising-avend",
+  "version": "1.0.0-pro",
+  "created_at": "2026-03-13",
+  "updated_at": "2026-03-13",
+  "status": "active",
+  "tested": false,
+  "active_agent": null,
+  "active_workflow": null,
+  "active_task": null,
+  "session": {
+    "started_at": null,
+    "agent_switches": 0,
+    "tasks_completed": 0,
+    "workflows_completed": 0
+  },
+  "network": {
+    "total_franqueados": 90,
+    "total_maquinas": 184,
+    "last_health_review": null,
+    "health_score": null
+  },
+  "metrics": {
+    "agents_activated": 0,
+    "tasks_executed": 0,
+    "workflows_executed": 0,
+    "quality_gates_passed": 0,
+    "quality_gates_blocked": 0,
+    "veto_conditions_triggered": 0
+  }
+}

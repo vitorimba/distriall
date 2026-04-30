@@ -1,0 +1,39 @@
+{
+  "name": "@aiox/squad-gamification",
+  "version": "1.0.0",
+  "description": "Gamification Squad — 9 specialized agents for gamifying systems, apps, and enterprises using Octalysis, B=MAP, Game Thinking, Hooked Model, HEXAD, 6D Framework, Gamification of Learning, and 4 Keys to Fun",
+  "private": true,
+  "keywords": [
+    "gamification",
+    "octalysis",
+    "engagement",
+    "motivation",
+    "game-thinking",
+    "hooked-model",
+    "hexad",
+    "behavior-design",
+    "player-experience",
+    "enterprise-gamification"
+  ],
+  "author": "Synkra AIOX",
+  "license": "UNLICENSED",
+  "aiox": {
+    "type": "squad",
+    "squad_id": "squad-gamification",
+    "domain": "gamification",
+    "agents": 9,
+    "tasks": 12,
+    "workflows": 4,
+    "templates": 6,
+    "checklists": 5,
+    "playbooks": 4,
+    "config": "config.yaml",
+    "entry_point": "tasks/gamification-diagnostic.md",
+    "default_workflow": "workflows/wf-full-gamification.yaml"
+  },
+  "scripts": {
+    "validate": "bash scripts/validate-squad.sh",
+    "stats": "bash scripts/squad-stats.sh",
+    "fidelity": "bash scripts/fidelity-report.sh"
+  }
+}

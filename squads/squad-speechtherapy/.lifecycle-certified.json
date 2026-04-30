@@ -1,0 +1,16 @@
+{
+  "certified": true,
+  "squad_name": "squad-speechtherapy",
+  "squad_type": "pro-specialist",
+  "score": 9.2,
+  "verdict": "PASS",
+  "date": "2026-04-13",
+  "workflow": "lifecycle-squad",
+  "mode": "full",
+  "pre_upgrade_score": 8.7,
+  "post_upgrade_score": 9.2,
+  "upgrades_applied": [
+    "docs/evidence-base.md — evidence base with RCT citations for all protocols",
+    "skills/squad.md — cross-squad integration section + evidence base reference"
+  ]
+}

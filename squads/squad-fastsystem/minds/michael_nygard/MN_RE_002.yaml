@@ -1,0 +1,18 @@
+id: MN_RE_002
+name: "Explicit Timeouts Everywhere"
+mind: michael_nygard
+source: "Release It!, 2nd Edition (2018) — Chapter 5"
+domain: resilience
+description: >
+  Timeouts devem ser explicitamente configurados em TODO ponto
+  de integracao. O timeout default e frequentemente infinito ou
+  muito longo, causando resource exhaustion.
+applies_when:
+  - "Qualquer operacao de I/O ou chamada remota"
+  - "Configurando dependencias"
+action: >
+  Definir connect timeout e read timeout explicitamente para
+  cada dependencia. Nunca usar default. Timeout deve ser menor
+  que o SLA do endpoint.
+severity: critical
+confidence: 0.95

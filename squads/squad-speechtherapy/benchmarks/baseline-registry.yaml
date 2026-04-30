@@ -1,0 +1,129 @@
+# Baseline Registry — SpeechTherapy
+# Registra baselines de performance e qualidade para tracking
+# Updated: 2026-03-13
+
+metadata:
+  version: "1.0.0"
+  squad: "SpeechTherapy"
+  squad_version: "1.0.0"
+  created_at: "2026-03-13"
+
+# ============================================================
+# AGENT BASELINES
+# ============================================================
+
+agent_baselines:
+
+  speechtherapy-chief:
+    smoke_tests: {total: 5, pass: null, fail: null, last_run: null}
+    routing_accuracy: null
+    avg_clarification_questions: null
+
+  ingo-titze:
+    smoke_tests: {total: 5, pass: null, fail: null, last_run: null}
+    heuristics_applied: [IT_SOVT_001, IT_SOVT_002]
+    voice_fidelity: null
+    key_metric: "sovt_parameter_accuracy"
+
+  mara-behlau:
+    smoke_tests: {total: 5, pass: null, fail: null, last_run: null}
+    heuristics_applied: [MB_CLIN_001, MB_CLIN_002]
+    voice_fidelity: null
+    key_metric: "vocal_hygiene_plan_completeness"
+
+  joseph-stemple:
+    smoke_tests: {total: 5, pass: null, fail: null, last_run: null}
+    heuristics_applied: [JS_VFE_001, JS_VFE_002]
+    voice_fidelity: null
+    key_metric: "vfe_progression_accuracy"
+
+  katherine-verdolini:
+    smoke_tests: {total: 5, pass: null, fail: null, last_run: null}
+    heuristics_applied: [KV_LMRVT_001, KV_LMRVT_002]
+    voice_fidelity: null
+    key_metric: "resonance_hierarchy_compliance"
+
+  jackie-gartner-schmidt:
+    smoke_tests: {total: 5, pass: null, fail: null, last_run: null}
+    heuristics_applied: [JG_CTT_001, JG_CTT_002]
+    voice_fidelity: null
+    key_metric: "transfer_to_real_context_rate"
+
+  jacob-lieberman:
+    smoke_tests: {total: 5, pass: null, fail: null, last_run: null}
+    heuristics_applied: [JL_MTD_001, JL_MTD_002]
+    voice_fidelity: null
+    key_metric: "manual_assessment_completeness"
+
+# ============================================================
+# TASK BASELINES
+# ============================================================
+
+task_baselines:
+
+  vocal-assessment:
+    completion_rate: null
+    avg_duration_min: null
+    required_data_points: 12
+    last_evaluated: null
+
+  sovt-protocol:
+    completion_rate: null
+    parameter_accuracy: null
+    patient_tolerance_rate: null
+    last_evaluated: null
+
+  vfe-program:
+    completion_rate: null
+    adherence_rate_target: 0.80
+    avg_sustain_improvement_sec: null
+    last_evaluated: null
+
+  resonant-voice-therapy:
+    completion_rate: null
+    hierarchy_levels_covered: 4
+    transfer_to_speech_rate: null
+    last_evaluated: null
+
+  nodule-rehabilitation:
+    completion_rate: null
+    protocol_duration_weeks: 12
+    phase_completion_rates: {phase_1: null, phase_2: null, phase_3: null, phase_4: null}
+    last_evaluated: null
+
+  singer-return-protocol:
+    completion_rate: null
+    safe_return_rate: null
+    relapse_rate_6mo: null
+    last_evaluated: null
+
+# ============================================================
+# QUALITY GATE BASELINES
+# ============================================================
+
+gate_baselines:
+  ST-QG-001: {pass_rate: null, avg_iterations: null, last_evaluated: null}
+  ST-QG-002: {pass_rate: null, avg_iterations: null, last_evaluated: null}
+  ST-QG-003: {pass_rate: null, avg_iterations: null, last_evaluated: null}
+  ST-QG-004: {pass_rate: null, avg_iterations: null, last_evaluated: null}
+  ST-QG-005: {pass_rate: null, avg_iterations: null, last_evaluated: null}
+
+# ============================================================
+# SQUAD-LEVEL BASELINES
+# ============================================================
+
+squad_baselines:
+  total_agents: 7
+  total_minds: 6
+  total_heuristics: null
+  total_veto_conditions: null
+  total_quality_gates: 5
+  total_smoke_tests: 35
+  total_tasks: 10
+  total_workflows: 1
+  total_checklists: 2
+  total_templates: 0
+  total_data_files: null
+  fidelity_target: 0.87
+  estimated_fidelity: null
+  last_full_benchmark: null

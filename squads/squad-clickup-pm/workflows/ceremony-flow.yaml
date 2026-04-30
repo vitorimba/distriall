@@ -1,0 +1,38 @@
+name: ceremony-flow
+description: "Fluxo de cerimônias ágeis dentro de uma sprint"
+version: 1.0.0
+trigger: manual
+command: "*ceremony-flow"
+
+schedule:
+  sprint_length: "2 semanas"
+  ceremonies:
+    - name: "Sprint Planning"
+      when: "Dia 1 (segunda)"
+      duration: "1h"
+      agent: meeting-master
+      task: planning.md
+
+    - name: "Daily Standup"
+      when: "Todo dia útil"
+      duration: "15min"
+      agent: meeting-master
+      task: daily.md
+
+    - name: "Backlog Refinement"
+      when: "Dia 5 (sexta, semana 1)"
+      duration: "1h"
+      agent: sprint-planner
+      task: refinar.md
+
+    - name: "Sprint Review"
+      when: "Dia 10 (sexta, semana 2)"
+      duration: "30min"
+      agent: meeting-master
+      task: review.md
+
+    - name: "Retrospective"
+      when: "Dia 10 (após review)"
+      duration: "30min"
+      agent: meeting-master
+      task: retro.md

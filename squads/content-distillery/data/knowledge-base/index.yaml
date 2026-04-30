@@ -1,0 +1,50 @@
+# Knowledge Base Index
+#
+# Purpose: Master index for the content-distillery knowledge base.
+# This file tracks all knowledge entries accumulated over time from
+# distillation sessions, framework extractions, and content analysis.
+#
+# Usage: The knowledge-architect agent reads this index to find existing
+# knowledge, avoid duplicates, and build cross-references between entries.
+#
+# Growth: This file is append-only. New entries are added as content is processed.
+#
+# Maintained by: knowledge-architect agent
+# Last updated: TODO — fill on first real update
+
+metadata:
+  created: "TODO"
+  updated: "TODO"
+  entries_count: 0
+  version: "1.0"
+
+# Categories used to classify entries
+categories:
+  - mental_models
+  - heuristics
+  - frameworks
+  - rpd_patterns
+  - tacit_knowledge
+  - content_atoms
+
+# Entry status lifecycle: draft -> validated -> linked -> archived
+statuses:
+  - draft
+  - validated
+  - linked
+  - archived
+
+entries: []
+  # TODO: Entries will be appended here as the knowledge base grows.
+  # Each entry follows this structure:
+  #
+  # - id: "kb-{sequential_number}"
+  #   title: "Entry title"
+  #   category: "mental_models | heuristics | frameworks | rpd_patterns | tacit_knowledge | content_atoms"
+  #   status: "draft | validated | linked | archived"
+  #   source_content: "Video or article title"
+  #   source_speaker: "Speaker name"
+  #   date_added: "YYYY-MM-DD"
+  #   file_path: "relative path to detailed entry file"
+  #   related_entries: []
+  #   tags: []

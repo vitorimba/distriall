@@ -1,0 +1,42 @@
+# Histórico de Sprints — ClickUp PM Squad
+# Atualize conforme sprints são concluídas
+
+current_sprint:
+  name: "Sprint 1"
+  goal: "A definir"
+  start_date: null
+  end_date: null
+  committed_points: 0
+  delivered_points: 0
+  status: "not_started"
+  tasks_total: 0
+  tasks_done: 0
+  blockers: []
+
+sprint_history: []
+# Exemplo de sprint concluída:
+# - name: "Sprint 1"
+#   goal: "MVP do módulo de autenticação"
+#   start_date: "2026-04-07"
+#   end_date: "2026-04-18"
+#   committed_points: 34
+#   delivered_points: 30
+#   commitment_rate: 88
+#   velocity: 30
+#   tasks_total: 12
+#   tasks_done: 10
+#   spillover: 2
+#   highlights:
+#     - "OAuth implementado"
+#     - "Testes >90% coverage"
+#   retrospective_actions:
+#     - "Melhorar estimativas de integração"
+
+velocity_history: []
+# - sprint: "Sprint 1"
+#   velocity: 30
+# - sprint: "Sprint 2"
+#   velocity: 34
+
+average_velocity: 0
+velocity_trend: "stable" # up, down, stable

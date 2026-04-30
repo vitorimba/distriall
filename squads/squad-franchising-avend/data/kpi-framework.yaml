@@ -1,0 +1,986 @@
+# KPI Framework — Avend Franquias
+# Arvore hierarquica de KPIs para gestao da rede de franquias de vending
+# Squad: Franchising Avend
+# Updated: 2026-03-13
+# Version: 1.0
+
+metadata:
+  squad: franchising-avend
+  document: kpi-framework
+  version: "1.0"
+  updated_at: "2026-03-13"
+  owner: franchise-chief
+  description: >-
+    Framework hierarquico de KPIs para a rede Avend Franquias.
+    3 niveis: Rede (L1), Cluster (L2), Unidade (L3).
+    Inclui KPIs especificos de vending machines.
+  levels:
+    - L1: Rede (network-wide)
+    - L2: Cluster (regional)
+    - L3: Unidade (individual franchise)
+
+# ============================================================================
+# LEVEL 1 — REDE (Network-Wide KPIs)
+# ============================================================================
+
+level_1_rede:
+  label: "Rede — Indicadores Globais da Rede Avend"
+  description: >-
+    KPIs agregados de toda a rede de franquias. Visao macro para
+    decisoes estrategicas do franqueador.
+  dashboard: "Dashboard Executivo"
+  refresh: monthly
+
+  # --------------------------------------------------------------------------
+  # Financeiros
+  # --------------------------------------------------------------------------
+  financeiros:
+    label: "Indicadores Financeiros — Rede"
+    items:
+    - id: L1-FIN-001
+      name: "Faturamento Total da Rede"
+      definition: >-
+        Soma do faturamento bruto de todas as unidades franqueadas
+        e operacoes proprias no periodo.
+      formula: "SUM(faturamento_bruto_unidade[i]) para i = 1..N"
+      unit: BRL
+      target: "R$ 24.000.000/ano"
+      alert_threshold: "< R$ 1.600.000/mes"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "sistema_gestao.vendas"
+      dashboard_position: "top-left"
+      trend_direction: up
+
+    - id: L1-FIN-002
+      name: "Crescimento da Rede (YoY)"
+      definition: >-
+        Variacao percentual do faturamento total da rede
+        comparado ao mesmo periodo do ano anterior.
+      formula: "((faturamento_atual - faturamento_anterior) / faturamento_anterior) * 100"
+      unit: percent
+      target: ">= 15%"
+      alert_threshold: "< 5%"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "sistema_gestao.vendas"
+      dashboard_position: "top-center"
+      trend_direction: up
+
+    - id: L1-FIN-003
+      name: "Receita de Royalties"
+      definition: >-
+        Total de royalties recebidos de todos os franqueados no periodo.
+      formula: "SUM(royalties_recebidos[i]) para i = 1..N"
+      unit: BRL
+      target: "Conforme projecao orcamentaria"
+      alert_threshold: "< 90% do projetado"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "financeiro.royalties"
+      dashboard_position: "top-right"
+      trend_direction: up
+
+    - id: L1-FIN-004
+      name: "Inadimplencia da Rede"
+      definition: >-
+        Percentual de franqueados com royalties ou taxas
+        em atraso superior a 30 dias.
+      formula: "(franqueados_inadimplentes / total_franqueados) * 100"
+      unit: percent
+      target: "<= 5%"
+      alert_threshold: "> 10%"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "financeiro.cobranca"
+      dashboard_position: "mid-right"
+      trend_direction: down
+
+    - id: L1-FIN-005
+      name: "ROI Medio da Rede"
+      definition: >-
+        Retorno sobre investimento medio dos franqueados da rede,
+        considerando o investimento inicial e o lucro liquido acumulado.
+      formula: "MEAN((lucro_liquido_acumulado[i] / investimento_total[i]) * 100) para i = 1..N"
+      unit: percent
+      target: ">= 25% ao ano"
+      alert_threshold: "< 15% ao ano"
+      frequency: quarterly
+      owner: franchise-chief
+      data_source: "financeiro.dre_franqueados"
+      dashboard_position: "mid-left"
+      trend_direction: up
+
+    - id: L1-FIN-006
+      name: "Ticket Medio da Rede"
+      definition: >-
+        Valor medio por transacao em todas as maquinas da rede.
+      formula: "faturamento_total / total_transacoes"
+      unit: BRL
+      target: ">= R$ 8,00"
+      alert_threshold: "< R$ 5,00"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "sistema_gestao.vendas"
+      trend_direction: up
+
+    - id: L1-FIN-007
+      name: "Revenue per Machine (RPM) — Rede"
+      definition: >-
+        Faturamento medio mensal por maquina em toda a rede.
+      formula: "faturamento_total_mensal / total_maquinas_ativas"
+      unit: BRL
+      target: ">= R$ 3.500/maquina/mes"
+      alert_threshold: "< R$ 2.000/maquina/mes"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "sistema_gestao.vendas"
+      dashboard_position: "mid-center"
+      trend_direction: up
+
+  # --------------------------------------------------------------------------
+  # Operacionais
+  # --------------------------------------------------------------------------
+  operacionais:
+    label: "Indicadores Operacionais — Rede"
+
+    - id: L1-OPS-001
+      name: "Uptime Medio da Rede"
+      definition: >-
+        Percentual medio de tempo em que as maquinas da rede
+        estao operacionais e disponíveis para venda.
+      formula: "MEAN(uptime_maquina[i]) para i = 1..M (M = total maquinas)"
+      unit: percent
+      target: ">= 95%"
+      alert_threshold: "< 90%"
+      frequency: weekly
+      owner: franchise-chief
+      data_source: "telemetria.status"
+      dashboard_position: "mid-center"
+      trend_direction: up
+
+    - id: L1-OPS-002
+      name: "Total de Maquinas Ativas"
+      definition: >-
+        Numero total de maquinas em operacao em toda a rede.
+      formula: "COUNT(maquinas WHERE status = 'ativa')"
+      unit: units
+      target: ">= 200"
+      alert_threshold: "< 170"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "cadastro.maquinas"
+      trend_direction: up
+
+    - id: L1-OPS-003
+      name: "Frequencia de Reposicao Media"
+      definition: >-
+        Numero medio de reposicoes por maquina por semana
+        em toda a rede.
+      formula: "total_reposicoes_semana / total_maquinas_ativas"
+      unit: "reposicoes/maquina/semana"
+      target: "2.5 - 3.5"
+      alert_threshold: "< 2.0 ou > 5.0"
+      frequency: weekly
+      owner: franchise-chief
+      data_source: "sistema_gestao.reposicao"
+      trend_direction: stable
+
+    - id: L1-OPS-004
+      name: "Shrinkage Rate — Rede"
+      definition: >-
+        Taxa de perda de produtos (vencidos, danificados, furtados)
+        como percentual do estoque total movimentado.
+      formula: "(valor_produtos_perdidos / valor_estoque_movimentado) * 100"
+      unit: percent
+      target: "<= 2%"
+      alert_threshold: "> 5%"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "sistema_gestao.estoque"
+      trend_direction: down
+
+    - id: L1-OPS-005
+      name: "MTBF — Mean Time Between Failures"
+      definition: >-
+        Tempo medio entre falhas das maquinas da rede (em horas).
+      formula: "total_horas_operacao / total_falhas"
+      unit: hours
+      target: ">= 720h (30 dias)"
+      alert_threshold: "< 360h (15 dias)"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "telemetria.manutencao"
+      trend_direction: up
+
+    - id: L1-OPS-006
+      name: "MTTR — Mean Time to Repair"
+      definition: >-
+        Tempo medio para reparo de maquinas apos uma falha (em horas).
+      formula: "total_horas_reparo / total_falhas"
+      unit: hours
+      target: "<= 8h"
+      alert_threshold: "> 24h"
+      frequency: monthly
+      owner: franchise-chief
+      data_source: "telemetria.manutencao"
+      trend_direction: down
+
+  # --------------------------------------------------------------------------
+  # Rede e Franqueados
+  # --------------------------------------------------------------------------
+  rede:
+    label: "Indicadores de Rede e Franqueados"
+
+    - id: L1-NET-001
+      name: "NPS Medio da Rede"
+      definition: >-
+        Net Promoter Score medio da rede, baseado na pesquisa
+        anual com franqueados (satisfacao do franqueado com a franqueadora).
+      formula: "(%promotores - %detratores)"
+      unit: nps_score
+      target: ">= 60"
+      alert_threshold: "< 40"
+      frequency: annual
+      owner: franchise-chief
+      data_source: "pesquisa.nps_franqueados"
+      dashboard_position: "bottom-left"
+      trend_direction: up
+
+    - id: L1-NET-002
+      name: "Churn Rate de Franqueados"
+      definition: >-
+        Percentual de franqueados que encerraram o contrato
+        no periodo (voluntario ou involuntario).
+      formula: "(franqueados_desligados / total_franqueados_inicio_periodo) * 100"
+      unit: percent
+      target: "<= 5% ao ano"
+      alert_threshold: "> 10% ao ano"
+      frequency: quarterly
+      owner: franchise-chief
+      data_source: "cadastro.franqueados"
+      dashboard_position: "bottom-center"
+      trend_direction: down
+
+    - id: L1-NET-003
+      name: "Taxa de Expansao"
+      definition: >-
+        Numero de novos contratos de franquia assinados no periodo.
+      formula: "COUNT(novos_contratos WHERE periodo = atual)"
+      unit: contracts
+      target: ">= 20/ano"
+      alert_threshold: "< 10/ano"
+      frequency: quarterly
+      owner: franchise-strategist
+      data_source: "cadastro.contratos"
+      trend_direction: up
+
+    - id: L1-NET-004
+      name: "E-Factor Medio da Rede"
+      definition: >-
+        Score medio de engajamento dos franqueados (1-5)
+        baseado nas avaliacoes de visitas de campo.
+      formula: "MEAN(e_factor[i]) para i = 1..N"
+      unit: score_1_5
+      target: ">= 4.0"
+      alert_threshold: "< 3.0"
+      frequency: quarterly
+      owner: field-consultant
+      data_source: "visitas.efactor"
+      trend_direction: up
+
+    - id: L1-NET-005
+      name: "Taxa de Certificacao"
+      definition: >-
+        Percentual de franqueados com certificacao de treinamento
+        valida (atualizada nos ultimos 12 meses).
+      formula: "(franqueados_certificados / total_franqueados) * 100"
+      unit: percent
+      target: ">= 95%"
+      alert_threshold: "< 80%"
+      frequency: quarterly
+      owner: franchise-trainer
+      data_source: "treinamento.certificacoes"
+      trend_direction: up
+
+    - id: L1-NET-006
+      name: "Score Medio de Visita de Campo"
+      definition: >-
+        Media geral das avaliacoes de visita de campo (6 dimensoes)
+        em toda a rede.
+      formula: "MEAN(media_geral_visita[i]) para i = 1..N"
+      unit: score_1_5
+      target: ">= 4.0"
+      alert_threshold: "< 3.0"
+      frequency: quarterly
+      owner: field-consultant
+      data_source: "visitas.scores"
+      trend_direction: up
+
+    - id: L1-NET-007
+      name: "Custo de Aquisicao de Franqueado (CAF)"
+      definition: >-
+        Custo medio total para captacao e fechamento de um
+        novo contrato de franquia.
+      formula: "total_investimento_captacao / novos_contratos_assinados"
+      unit: BRL
+      target: "<= R$ 5.000"
+      alert_threshold: "> R$ 10.000"
+      frequency: quarterly
+      owner: franchise-strategist
+      data_source: "marketing.captacao"
+      trend_direction: down
+
+# ============================================================================
+# LEVEL 2 — CLUSTER (Regional KPIs)
+# ============================================================================
+
+level_2_cluster:
+  label: "Cluster — Indicadores Regionais"
+  description: >-
+    KPIs agregados por cluster regional. Permite comparacao
+    entre regioes e identificacao de oportunidades/problemas locais.
+  dashboard: "Dashboard Regional"
+  refresh: monthly
+
+  clusters_definition:
+    description: >-
+      Clusters sao agrupamentos geograficos de unidades franqueadas.
+      Cada cluster tem um consultor de campo responsavel.
+    example_clusters:
+      - id: CL-SP-CAPITAL
+        name: "Sao Paulo Capital"
+      - id: CL-SP-INTERIOR
+        name: "Sao Paulo Interior"
+      - id: CL-RJ
+        name: "Rio de Janeiro"
+      - id: CL-MG
+        name: "Minas Gerais"
+      - id: CL-SUL
+        name: "Sul (PR/SC/RS)"
+      - id: CL-NE
+        name: "Nordeste"
+
+  financeiros:
+    label: "Indicadores Financeiros — Cluster"
+
+    - id: L2-FIN-001
+      name: "Faturamento do Cluster"
+      definition: >-
+        Soma do faturamento bruto de todas as unidades do cluster.
+      formula: "SUM(faturamento_bruto_unidade[i]) para i in cluster"
+      unit: BRL
+      target: "Proporcional a meta da rede por participacao do cluster"
+      alert_threshold: "< 80% da meta do cluster"
+      frequency: monthly
+      owner: field-consultant
+      data_source: "sistema_gestao.vendas"
+      segmentation: cluster_id
+      dashboard_position: "top-left"
+      trend_direction: up
+
+    - id: L2-FIN-002
+      name: "Crescimento do Cluster (YoY)"
+      definition: >-
+        Variacao percentual do faturamento do cluster
+        comparado ao mesmo periodo do ano anterior.
+      formula: "((fat_cluster_atual - fat_cluster_anterior) / fat_cluster_anterior) * 100"
+      unit: percent
+      target: ">= 15%"
+      alert_threshold: "< 5%"
+      frequency: monthly
+      owner: field-consultant
+      data_source: "sistema_gestao.vendas"
+      segmentation: cluster_id
+      trend_direction: up
+
+    - id: L2-FIN-003
+      name: "RPM do Cluster"
+      definition: >-
+        Revenue per Machine medio do cluster.
+      formula: "faturamento_cluster / maquinas_ativas_cluster"
+      unit: BRL
+      target: ">= R$ 3.500/maquina/mes"
+      alert_threshold: "< R$ 2.000/maquina/mes"
+      frequency: monthly
+      owner: field-consultant
+      data_source: "sistema_gestao.vendas"
+      segmentation: cluster_id
+      trend_direction: up
+
+    - id: L2-FIN-004
+      name: "Inadimplencia do Cluster"
+      definition: >-
+        Percentual de franqueados inadimplentes no cluster.
+      formula: "(inadimplentes_cluster / total_franqueados_cluster) * 100"
+      unit: percent
+      target: "<= 5%"
+      alert_threshold: "> 10%"
+      frequency: monthly
+      owner: field-consultant
+      data_source: "financeiro.cobranca"
+      segmentation: cluster_id
+      trend_direction: down
+
+  operacionais:
+    label: "Indicadores Operacionais — Cluster"
+
+    - id: L2-OPS-001
+      name: "Uptime Medio do Cluster"
+      definition: >-
+        Uptime medio das maquinas do cluster.
+      formula: "MEAN(uptime_maquina[i]) para i in cluster"
+      unit: percent
+      target: ">= 95%"
+      alert_threshold: "< 90%"
+      frequency: weekly
+      owner: field-consultant
+      data_source: "telemetria.status"
+      segmentation: cluster_id
+      trend_direction: up
+
+    - id: L2-OPS-002
+      name: "Penetracao de Mercado"
+      definition: >-
+        Numero de maquinas Avend por 100.000 habitantes na regiao do cluster.
+      formula: "(maquinas_cluster / populacao_regiao) * 100000"
+      unit: "maquinas/100k hab"
+      target: "Conforme plano de expansao regional"
+      alert_threshold: "< 50% da meta regional"
+      frequency: quarterly
+      owner: franchise-strategist
+      data_source: "cadastro.maquinas + ibge.populacao"
+      segmentation: cluster_id
+      trend_direction: up
+
+    - id: L2-OPS-003
+      name: "Shrinkage Rate do Cluster"
+      definition: >-
+        Taxa de perda de produtos no cluster.
+      formula: "(valor_perdas_cluster / valor_estoque_movimentado_cluster) * 100"
+      unit: percent
+      target: "<= 2%"
+      alert_threshold: "> 5%"
+      frequency: monthly
+      owner: field-consultant
+      data_source: "sistema_gestao.estoque"
+      segmentation: cluster_id
+      trend_direction: down
+
+  rede:
+    label: "Indicadores de Rede — Cluster"
+
+    - id: L2-NET-001
+      name: "NPS do Cluster"
+      definition: >-
+        NPS medio dos franqueados do cluster.
+      formula: "(%promotores_cluster - %detratores_cluster)"
+      unit: nps_score
+      target: ">= 60"
+      alert_threshold: "< 40"
+      frequency: annual
+      owner: field-consultant
+      data_source: "pesquisa.nps_franqueados"
+      segmentation: cluster_id
+      trend_direction: up
+
+    - id: L2-NET-002
+      name: "E-Factor Medio do Cluster"
+      definition: >-
+        Score de engajamento medio dos franqueados do cluster.
+      formula: "MEAN(e_factor[i]) para i in cluster"
+      unit: score_1_5
+      target: ">= 4.0"
+      alert_threshold: "< 3.0"
+      frequency: quarterly
+      owner: field-consultant
+      data_source: "visitas.efactor"
+      segmentation: cluster_id
+      trend_direction: up
+
+    - id: L2-NET-003
+      name: "Score Medio de Visita — Cluster"
+      definition: >-
+        Media geral das avaliacoes de visita de campo no cluster.
+      formula: "MEAN(media_geral_visita[i]) para i in cluster"
+      unit: score_1_5
+      target: ">= 4.0"
+      alert_threshold: "< 3.0"
+      frequency: quarterly
+      owner: field-consultant
+      data_source: "visitas.scores"
+      segmentation: cluster_id
+      trend_direction: up
+
+    - id: L2-NET-004
+      name: "Churn Rate do Cluster"
+      definition: >-
+        Taxa de desligamento de franqueados no cluster.
+      formula: "(desligados_cluster / total_cluster_inicio) * 100"
+      unit: percent
+      target: "<= 5%"
+      alert_threshold: "> 10%"
+      frequency: quarterly
+      owner: field-consultant
+      data_source: "cadastro.franqueados"
+      segmentation: cluster_id
+      trend_direction: down
+
+# ============================================================================
+# LEVEL 3 — UNIDADE (Individual Franchise KPIs)
+# ============================================================================
+
+level_3_unidade:
+  label: "Unidade — Indicadores do Franqueado Individual"
+  description: >-
+    KPIs por unidade franqueada. Visao operacional e financeira
+    detalhada para o franqueado e consultor de campo.
+  dashboard: "Dashboard do Franqueado"
+  refresh: daily
+
+  # --------------------------------------------------------------------------
+  # Financeiros
+  # --------------------------------------------------------------------------
+  financeiros:
+    label: "Indicadores Financeiros — Unidade"
+
+    - id: L3-FIN-001
+      name: "Faturamento Bruto da Unidade"
+      definition: >-
+        Total de vendas brutas de todas as maquinas da unidade no periodo.
+      formula: "SUM(vendas_maquina[j]) para j = 1..M (M = maquinas da unidade)"
+      unit: BRL
+      target: "Conforme projecao do modelo contratado"
+      alert_threshold: "< 70% da projecao"
+      frequency: daily
+      owner: franqueado
+      data_source: "telemetria.vendas"
+      dashboard_position: "top-left"
+      trend_direction: up
+
+    - id: L3-FIN-002
+      name: "Ticket Medio"
+      definition: >-
+        Valor medio por transacao na unidade.
+      formula: "faturamento_bruto / total_transacoes"
+      unit: BRL
+      target: ">= R$ 8,00"
+      alert_threshold: "< R$ 5,00"
+      frequency: weekly
+      owner: franqueado
+      data_source: "telemetria.vendas"
+      trend_direction: up
+
+    - id: L3-FIN-003
+      name: "Custo Operacional"
+      definition: >-
+        Total de custos operacionais da unidade (produtos, logistica,
+        manutencao, royalties, taxas).
+      formula: "custo_produtos + custo_logistica + custo_manutencao + royalties + taxas + impostos"
+      unit: BRL
+      target: "<= 70% do faturamento bruto"
+      alert_threshold: "> 80% do faturamento bruto"
+      frequency: monthly
+      owner: franqueado
+      data_source: "sistema_gestao.custos"
+      trend_direction: down
+
+    - id: L3-FIN-004
+      name: "Margem Operacional"
+      definition: >-
+        Lucro operacional como percentual do faturamento bruto.
+      formula: "((faturamento_bruto - custo_operacional) / faturamento_bruto) * 100"
+      unit: percent
+      target: ">= 30%"
+      alert_threshold: "< 20%"
+      frequency: monthly
+      owner: franqueado
+      data_source: "sistema_gestao.dre"
+      trend_direction: up
+
+    - id: L3-FIN-005
+      name: "Payback Progress"
+      definition: >-
+        Percentual do investimento inicial ja recuperado
+        pelo lucro liquido acumulado.
+      formula: "(lucro_liquido_acumulado / investimento_total) * 100"
+      unit: percent
+      target: "100% em ate 18 meses"
+      alert_threshold: "< 50% apos 12 meses"
+      frequency: monthly
+      owner: franqueado
+      data_source: "financeiro.dre"
+      trend_direction: up
+
+    - id: L3-FIN-006
+      name: "Revenue per Machine (RPM)"
+      definition: >-
+        Faturamento medio mensal por maquina da unidade.
+      formula: "faturamento_mensal / num_maquinas_ativas"
+      unit: BRL
+      target: ">= R$ 3.500/maquina/mes"
+      alert_threshold: "< R$ 2.000/maquina/mes"
+      frequency: monthly
+      owner: franqueado
+      data_source: "telemetria.vendas"
+      dashboard_position: "top-center"
+      trend_direction: up
+
+  # --------------------------------------------------------------------------
+  # Operacionais — Vending-Specific
+  # --------------------------------------------------------------------------
+  operacionais:
+    label: "Indicadores Operacionais — Unidade (Vending-Specific)"
+
+    - id: L3-OPS-001
+      name: "Uptime de Maquina"
+      definition: >-
+        Percentual de tempo em que cada maquina esteve operacional
+        e disponivel para venda no periodo.
+      formula: "(horas_operacionais / horas_totais_periodo) * 100"
+      unit: percent
+      target: ">= 95%"
+      alert_threshold: "< 90%"
+      frequency: daily
+      owner: franqueado
+      data_source: "telemetria.status"
+      dashboard_position: "top-right"
+      trend_direction: up
+      per_machine: true
+
+    - id: L3-OPS-002
+      name: "Frequencia de Reposicao"
+      definition: >-
+        Numero de reposicoes realizadas por maquina por semana.
+      formula: "reposicoes_semana / num_maquinas"
+      unit: "reposicoes/maquina/semana"
+      target: "2.5 - 3.5"
+      alert_threshold: "< 2.0 ou > 5.0"
+      frequency: weekly
+      owner: franqueado
+      data_source: "sistema_gestao.reposicao"
+      trend_direction: stable
+
+    - id: L3-OPS-003
+      name: "Shrinkage Rate"
+      definition: >-
+        Taxa de perda de produtos da unidade (vencidos, danificados,
+        furtados) como percentual do estoque movimentado.
+      formula: "(valor_perdas / valor_estoque_movimentado) * 100"
+      unit: percent
+      target: "<= 2%"
+      alert_threshold: "> 5%"
+      frequency: monthly
+      owner: franqueado
+      data_source: "sistema_gestao.estoque"
+      trend_direction: down
+
+    - id: L3-OPS-004
+      name: "Location Quality Score"
+      definition: >-
+        Score composto de qualidade do ponto de instalacao,
+        baseado em fluxo de pessoas, visibilidade, seguranca,
+        infraestrutura e adequacao ao publico.
+      formula: >-
+        (fluxo * 0.30) + (visibilidade * 0.20) + (seguranca * 0.20) +
+        (infraestrutura * 0.15) + (adequacao_publico * 0.15)
+      unit: score_1_5
+      target: ">= 4.0"
+      alert_threshold: "< 2.5"
+      frequency: quarterly
+      owner: field-consultant
+      data_source: "visitas.localizacao"
+      trend_direction: up
+      per_machine: true
+      weights:
+        fluxo: 0.30
+        visibilidade: 0.20
+        seguranca: 0.20
+        infraestrutura: 0.15
+        adequacao_publico: 0.15
+
+    - id: L3-OPS-005
+      name: "Vendas por Hora do Dia"
+      definition: >-
+        Distribuicao de vendas por faixa horaria para otimizacao
+        de reposicao e mix de produtos.
+      formula: "COUNT(transacoes WHERE hora = H) para H = 0..23"
+      unit: transactions
+      target: "Usado para analise, sem target fixo"
+      alert_threshold: "N/A"
+      frequency: weekly
+      owner: franqueado
+      data_source: "telemetria.vendas"
+      trend_direction: informational
+
+    - id: L3-OPS-006
+      name: "Mix de Pagamento"
+      definition: >-
+        Distribuicao percentual das formas de pagamento
+        (Pix, cartao credito, cartao debito, dinheiro).
+      formula: "(transacoes_forma[f] / total_transacoes) * 100 para cada forma f"
+      unit: percent
+      target: "Pix + Cartao >= 80%"
+      alert_threshold: "Dinheiro > 50%"
+      frequency: monthly
+      owner: franqueado
+      data_source: "telemetria.pagamentos"
+      trend_direction: informational
+      breakdown:
+        - pix
+        - cartao_credito
+        - cartao_debito
+        - dinheiro
+
+    - id: L3-OPS-007
+      name: "Top 10 Produtos"
+      definition: >-
+        Ranking dos 10 produtos mais vendidos por volume
+        e por receita na unidade.
+      formula: "RANK(produtos BY vendas DESC LIMIT 10)"
+      unit: ranking
+      target: "Usado para otimizacao de mix"
+      alert_threshold: "N/A"
+      frequency: monthly
+      owner: franqueado
+      data_source: "telemetria.vendas"
+      trend_direction: informational
+
+    - id: L3-OPS-008
+      name: "Tempo Medio entre Reposicoes"
+      definition: >-
+        Tempo medio (em horas) entre uma reposicao e a proxima
+        para cada maquina.
+      formula: "MEAN(intervalo_entre_reposicoes[j]) para cada maquina j"
+      unit: hours
+      target: "48 - 72h"
+      alert_threshold: "> 96h"
+      frequency: weekly
+      owner: franqueado
+      data_source: "sistema_gestao.reposicao"
+      trend_direction: stable
+      per_machine: true
+
+    - id: L3-OPS-009
+      name: "Taxa de Stockout"
+      definition: >-
+        Percentual de tempo em que pelo menos um slot da maquina
+        esteve vazio (sem produto).
+      formula: "(horas_com_stockout / horas_totais) * 100"
+      unit: percent
+      target: "<= 5%"
+      alert_threshold: "> 15%"
+      frequency: weekly
+      owner: franqueado
+      data_source: "telemetria.estoque"
+      trend_direction: down
+      per_machine: true
+
+  # --------------------------------------------------------------------------
+  # Satisfacao e Engajamento
+  # --------------------------------------------------------------------------
+  satisfacao:
+    label: "Indicadores de Satisfacao — Unidade"
+
+    - id: L3-SAT-001
+      name: "NPS Local (Consumidor)"
+      definition: >-
+        Net Promoter Score do consumidor final nos pontos
+        da unidade (quando pesquisa disponivel via QR code).
+      formula: "(%promotores - %detratores) no ponto"
+      unit: nps_score
+      target: ">= 50"
+      alert_threshold: "< 30"
+      frequency: quarterly
+      owner: franqueado
+      data_source: "pesquisa.nps_consumidor"
+      trend_direction: up
+
+    - id: L3-SAT-002
+      name: "E-Factor do Franqueado"
+      definition: >-
+        Score de engajamento do franqueado baseado na
+        avaliacao do consultor de campo (8 indicadores, 1-5).
+      formula: "MEAN(indicadores_engajamento[k]) para k = 1..8"
+      unit: score_1_5
+      target: ">= 4.0"
+      alert_threshold: "< 3.0"
+      frequency: quarterly
+      owner: field-consultant
+      data_source: "visitas.efactor"
+      trend_direction: up
+
+    - id: L3-SAT-003
+      name: "Score de Visita de Campo"
+      definition: >-
+        Media geral da avaliacao da ultima visita de campo
+        (6 dimensoes, score 1-5).
+      formula: "MEAN(dimensoes_visita[d]) para d = 1..6"
+      unit: score_1_5
+      target: ">= 4.0"
+      alert_threshold: "< 3.0"
+      frequency: quarterly
+      owner: field-consultant
+      data_source: "visitas.scores"
+      trend_direction: up
+
+    - id: L3-SAT-004
+      name: "Taxa de Conclusao de Acoes"
+      definition: >-
+        Percentual de acoes do plano de acao da visita anterior
+        que foram concluidas no prazo.
+      formula: "(acoes_concluidas_prazo / total_acoes) * 100"
+      unit: percent
+      target: ">= 80%"
+      alert_threshold: "< 50%"
+      frequency: quarterly
+      owner: franqueado
+      data_source: "visitas.acoes"
+      trend_direction: up
+
+    - id: L3-SAT-005
+      name: "Reclamacoes de Consumidores"
+      definition: >-
+        Numero de reclamacoes registradas por consumidores
+        nos pontos da unidade no periodo.
+      formula: "COUNT(reclamacoes WHERE unidade = U AND periodo = P)"
+      unit: count
+      target: "<= 2/mes"
+      alert_threshold: "> 5/mes"
+      frequency: monthly
+      owner: franqueado
+      data_source: "sac.reclamacoes"
+      trend_direction: down
+
+# ============================================================================
+# DASHBOARD MAPPING
+# ============================================================================
+
+dashboard_mapping:
+  label: "Mapeamento de Dashboards"
+  description: >-
+    Define quais KPIs aparecem em cada dashboard do sistema.
+
+  dashboards:
+    - id: DASH-EXEC
+      name: "Dashboard Executivo"
+      audience: "franchise-chief, diretoria"
+      level: L1
+      kpis:
+        - L1-FIN-001  # Faturamento Total
+        - L1-FIN-002  # Crescimento YoY
+        - L1-FIN-003  # Receita Royalties
+        - L1-FIN-004  # Inadimplencia
+        - L1-FIN-007  # RPM Rede
+        - L1-OPS-001  # Uptime Medio
+        - L1-OPS-002  # Total Maquinas
+        - L1-NET-001  # NPS Medio
+        - L1-NET-002  # Churn Rate
+        - L1-NET-003  # Taxa Expansao
+      refresh: daily
+
+    - id: DASH-REGIONAL
+      name: "Dashboard Regional"
+      audience: "field-consultant, gerencia regional"
+      level: L2
+      kpis:
+        - L2-FIN-001  # Faturamento Cluster
+        - L2-FIN-002  # Crescimento Cluster
+        - L2-FIN-003  # RPM Cluster
+        - L2-FIN-004  # Inadimplencia Cluster
+        - L2-OPS-001  # Uptime Cluster
+        - L2-OPS-002  # Penetracao Mercado
+        - L2-NET-001  # NPS Cluster
+        - L2-NET-002  # E-Factor Cluster
+      refresh: daily
+      filter_by: cluster_id
+
+    - id: DASH-FRANQUEADO
+      name: "Dashboard do Franqueado"
+      audience: "franqueado"
+      level: L3
+      kpis:
+        - L3-FIN-001  # Faturamento Unidade
+        - L3-FIN-002  # Ticket Medio
+        - L3-FIN-004  # Margem Operacional
+        - L3-FIN-006  # RPM Unidade
+        - L3-OPS-001  # Uptime Maquina
+        - L3-OPS-005  # Vendas por Hora
+        - L3-OPS-007  # Top 10 Produtos
+        - L3-OPS-009  # Stockout Rate
+        - L3-SAT-001  # NPS Local
+      refresh: real-time
+      filter_by: unidade_id
+
+    - id: DASH-CONSULTOR
+      name: "Dashboard do Consultor de Campo"
+      audience: "field-consultant"
+      level: L3
+      kpis:
+        - L3-FIN-001  # Faturamento Unidade
+        - L3-FIN-004  # Margem Operacional
+        - L3-OPS-001  # Uptime Maquina
+        - L3-OPS-003  # Shrinkage
+        - L3-OPS-004  # Location Quality
+        - L3-SAT-002  # E-Factor
+        - L3-SAT-003  # Score Visita
+        - L3-SAT-004  # Taxa Conclusao Acoes
+        - L3-SAT-005  # Reclamacoes
+      refresh: daily
+      filter_by: cluster_id
+
+    - id: DASH-RECRUITMENT
+      name: "Dashboard de Recrutamento"
+      audience: "franchise-strategist"
+      level: L1
+      kpis:
+        - L1-NET-003  # Taxa Expansao
+        - L1-NET-007  # CAF
+        - L1-FIN-005  # ROI Medio
+        - L1-NET-002  # Churn Rate
+        - L1-NET-001  # NPS (atrativo para candidatos)
+      refresh: weekly
+
+# ============================================================================
+# ALERT CONFIGURATION
+# ============================================================================
+
+alert_config:
+  label: "Configuracao de Alertas"
+  description: "Regras de alerta baseadas nos thresholds dos KPIs"
+
+  severity_levels:
+    - level: critical
+      color: red
+      notification: "Push + SMS + Email"
+      sla: "4h para investigar"
+      examples:
+        - "Uptime < 80%"
+        - "Inadimplencia > 15%"
+        - "Churn > 15%"
+
+    - level: warning
+      color: orange
+      notification: "Push + Email"
+      sla: "24h para investigar"
+      examples:
+        - "Uptime < 90%"
+        - "Inadimplencia > 10%"
+        - "RPM < R$ 2.000"
+
+    - level: info
+      color: yellow
+      notification: "Email semanal (digest)"
+      sla: "Proxima reuniao mensal"
+      examples:
+        - "Shrinkage > 3%"
+        - "E-Factor < 3.5"
+        - "Stockout > 10%"
+
+  escalation:
+    - trigger: "KPI critico por 48h sem acao"
+      action: "Escalacao para gerencia"
+    - trigger: "3+ KPIs warning simultaneos na mesma unidade"
+      action: "Visita de campo emergencial"
+    - trigger: "KPI critico em 3+ unidades do mesmo cluster"
+      action: "Investigacao regional"

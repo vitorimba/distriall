@@ -1,0 +1,18 @@
+id: CM_OBS_002
+name: "Debug in Production"
+mind: charity_majors
+source: "Observability Engineering (2022) — Chapter 5"
+domain: observability
+description: >
+  O sistema deve ser debuggavel em producao sem reproduzir
+  localmente. Problemas de producao frequentemente nao sao
+  reproduziveis em ambientes de desenvolvimento.
+applies_when:
+  - "Investigando problemas em producao"
+  - "Desenhando estrategia de debugging"
+action: >
+  Use distributed tracing e event correlation para investigar
+  sem reproduzir. Structured logs com trace IDs permitem
+  seguir uma request atraves de todo o sistema.
+severity: high
+confidence: 0.85

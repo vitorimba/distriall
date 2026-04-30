@@ -1,0 +1,70 @@
+---
+# Template: Catalog Entry
+# Usage: One entry per downloaded video in the local catalog.
+# The librarian agent uses this to build and maintain the video library.
+
+name: catalog-entry-tmpl
+type: template
+squad: vimeo
+used_by:
+  - organize-downloads
+  - wf-download-batch
+  - wf-download-single
+
+---
+
+catalog_entry:
+  # --- Identification ---
+  id: "{video_id}"                     # Vimeo video ID
+  title: "{title}"                     # Video title
+  slug: "{slug}"                       # URL-safe slug for folder naming
+
+  # --- Source ---
+  source:
+    platform: "vimeo"
+    url: "{source_url}"                # Original Vimeo URL
+    uploader: "{uploader}"             # Channel/user name
+    uploader_url: "{uploader_url}"     # Channel/user URL
+    upload_date: "{upload_date}"       # YYYY-MM-DD
+    collection: "{collection_name}"    # Playlist/channel/showcase name
+    collection_url: "{collection_url}" # Collection URL
+
+  # --- Download Info ---
+  downloaded_at: "{downloaded_at}"     # ISO 8601 timestamp
+  downloaded_by: "vimeo-squad"
+  quality: "{quality}"                 # best, 1080p, 720p, etc.
+  format: "{format}"                   # mp4, webm, etc.
+
+  # --- File Paths ---
+  path:
+    video: "{video_path}"             # Absolute path to video file
+    metadata: "{metadata_path}"       # Path to .json metadata
+    transcript: "{transcript_path}"   # Path to .txt transcript (null if not transcribed)
+    subtitles: "{subtitles_path}"     # Path to .srt subtitles (null if not generated)
+    thumbnail: "{thumbnail_path}"     # Path to thumbnail image (null if not saved)
+
+  # --- Media Info ---
+  duration: 0                         # Duration in seconds
+  duration_formatted: "00:00:00"      # HH:MM:SS
+  size:
+    bytes: 0
+    formatted: "{size_formatted}"     # e.g., "1.2 GB"
+  resolution: "{resolution}"          # e.g., "1920x1080"
+  fps: 0                              # Frames per second
+  codec:
+    video: "{video_codec}"            # e.g., h264, vp9
+    audio: "{audio_codec}"            # e.g., aac, opus
+
+  # --- Transcription ---
+  transcribed: false                  # true if transcript exists
+  transcript_language: "{language}"   # Detected or specified language
+  transcript_model: "{whisper_model}" # e.g., base, small, medium, large
+
+  # --- Tags & Metadata ---
+  description: "{description}"        # Video description (first 500 chars)
+  tags: []                            # User or auto-generated tags
+  category: "{category}"              # User-defined category
+
+  # --- Status ---
+  status: "cataloged"                 # cataloged | archived | deleted
+  notes: ""                           # User notes

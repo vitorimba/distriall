@@ -1,0 +1,214 @@
+workflow:
+  id: performance-optimization
+  name: "Performance Optimization Pipeline"
+  version: "1.0.0"
+  description: "Pipeline completo de otimização de performance — do diagnóstico à implementação e validação"
+  trigger: "*optimize"
+  estimated_duration: "20-45 min"
+  mode: incremental
+  safety_level: write_safe
+
+  # ═══════════════════════════════════════════
+  # PHASE 1: PERFORMANCE DIAGNOSIS
+  # ═══════════════════════════════════════════
+  phases:
+    - id: phase_1
+      name: "Performance Diagnosis"
+      agent: diagnostician
+      mode: triage
+      duration: "5 min"
+
+      steps:
+        - id: 1.1
+          name: "Identify Performance Issue"
+          elicit: true
+          action: "Ask user for specific performance complaint or scan broadly"
+          questions:
+            - "Qual query ou operação está lenta?"
+            - "Quando começou a ficar lento?"
+            - "Quantos registros tem na tabela?"
+
+        - id: 1.2
+          name: "Quick Performance Scan"
+          action: "Check pg_stat_statements, current locks, active connections"
+          output: "perf_triage.json"
+
+        - id: 1.3
+          name: "Route to Optimizer"
+          action: "Hand off findings with context to optimizer"
+
+      checkpoint:
+        id: CP-P1
+        name: "Issue Identified"
+        criteria:
+          - problem_classified: true
+          - baseline_metrics_captured: true
+
+    # ═══════════════════════════════════════════
+    # PHASE 2: DEEP ANALYSIS
+    # ═══════════════════════════════════════════
+    - id: phase_2
+      name: "Deep Performance Analysis"
+      agent: optimizer
+      duration: "10-15 min"
+
+      steps:
+        - id: 2.1
+          name: "EXPLAIN ANALYZE"
+          action: "Run EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) on problematic queries"
+          output: "explain_results.json"
+
+        - id: 2.2
+          name: "Index Analysis"
+          action: "Check existing indexes, identify missing and unused"
+          queries:
+            - "pg_stat_user_indexes for usage stats"
+            - "pg_stat_user_tables for seq_scan counts"
+            - "pg_indexes for current index definitions"
+          output: "index_analysis.json"
+
+        - id: 2.3
+          name: "Table Statistics"
+          action: "Check table size, row count, dead tuples, last vacuum"
+          output: "table_stats.json"
+
+        - id: 2.4
+          name: "RLS Performance Impact"
+          action: "Check if RLS policies are causing performance issues"
+          checks:
+            - non_leakproof_functions: "Functions in policies that prevent index usage"
+            - policy_complexity: "Overly complex policies"
+            - subquery_in_policy: "Subqueries that execute per-row"
+          output: "rls_performance.json"
+
+        - id: 2.5
+          name: "Optimization Plan"
+          action: "Generate prioritized optimization plan"
+          output: "optimization_plan.json"
+          format:
+            - finding: "Description of issue"
+            - impact: "high | medium | low"
+            - fix: "Specific SQL/action"
+            - estimated_improvement: "Percentage or qualitative"
+            - risk: "Safe | Needs testing | Potentially breaking"
+
+      checkpoint:
+        id: CP-P2
+        name: "Analysis Complete"
+        gate: QG-003
+        criteria:
+          - explain_analyzed: true
+          - root_causes_identified: true
+          - optimization_plan_generated: true
+        on_pass: "Present plan to user for approval"
+
+    # ═══════════════════════════════════════════
+    # PHASE 3: IMPLEMENTATION
+    # ═══════════════════════════════════════════
+    - id: phase_3
+      name: "Implement Optimizations"
+      agents: [optimizer, guardian]
+      duration: "5-10 min"
+
+      steps:
+        - id: 3.1
+          name: "User Approval"
+          elicit: true
+          action: "Present optimization plan and get approval for each item"
+
+        - id: 3.2
+          name: "Security Check"
+          agent: guardian
+          action: "Verify optimizations don't compromise security"
+          gate: QG-004
+
+        - id: 3.3
+          name: "Create Indexes"
+          agent: optimizer
+          action: "CREATE INDEX CONCURRENTLY for each recommended index"
+          note: "CONCURRENTLY avoids locking the table during creation"
+
+        - id: 3.4
+          name: "Optimize Queries"
+          agent: optimizer
+          action: "Rewrite queries using recommended patterns"
+          patterns:
+            - "Replace OFFSET with keyset pagination"
+            - "Add proper WHERE clauses"
+            - "Use covering indexes"
+            - "Replace subqueries with JOINs or CTEs"
+
+        - id: 3.5
+          name: "Optimize RLS Policies"
+          agents: [optimizer, guardian]
+          action: "Rewrite non-performant RLS policies"
+          patterns:
+            - "Mark functions as LEAKPROOF where safe"
+            - "Simplify policy expressions"
+            - "Add indexes on policy-referenced columns"
+
+        - id: 3.6
+          name: "Vacuum & Analyze"
+          agent: optimizer
+          action: "Run VACUUM ANALYZE on affected tables"
+
+      checkpoint:
+        id: CP-P3
+        name: "Optimizations Applied"
+        criteria:
+          - all_approved_items_implemented: true
+          - security_verified: true
+          - no_errors: true
+
+    # ═══════════════════════════════════════════
+    # PHASE 4: VALIDATION
+    # ═══════════════════════════════════════════
+    - id: phase_4
+      name: "Validation & Results"
+      agent: optimizer
+      duration: "5 min"
+
+      steps:
+        - id: 4.1
+          name: "Re-run EXPLAIN ANALYZE"
+          action: "Same queries as Phase 2, compare before/after"
+          output: "explain_comparison.json"
+
+        - id: 4.2
+          name: "Calculate Improvement"
+          action: "Calculate percentage improvement for each optimization"
+          metrics:
+            - execution_time_reduction: "percentage"
+            - cost_reduction: "percentage"
+            - buffer_hits_improvement: "percentage"
+            - rows_scanned_reduction: "percentage"
+
+        - id: 4.3
+          name: "Generate Report"
+          action: "Create optimization report with before/after evidence"
+          template: "optimization-report-tmpl.md"
+          output: "OPTIMIZATION-REPORT.md"
+
+        - id: 4.4
+          name: "Automation Recommendations"
+          action: "Suggest ongoing automation (scheduled VACUUM, index monitoring)"
+          handoff_to: automator
+          optional: true
+
+      checkpoint:
+        id: CP-P4
+        name: "Optimization Complete"
+        gate: QG-005
+        criteria:
+          - before_after_compared: true
+          - improvement_measured: true
+          - report_generated: true
+
+  # ═══════════════════════════════════════════
+  # ROLLBACK
+  # ═══════════════════════════════════════════
+  rollback:
+    indexes: "DROP INDEX CONCURRENTLY for each created index"
+    queries: "Revert to original query versions"
+    policies: "Restore original RLS policies from backup"
+    note: "Index creation and query rewrites are generally safe to rollback"

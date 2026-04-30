@@ -1,0 +1,148 @@
+rls_patterns:
+  version: "1.0.0"
+  description: "Padrões de Row Level Security para Supabase"
+  mind_source: "Stephen Frost (PostgreSQL Committer, RLS author)"
+
+  # ═══════════════════════════════════════════
+  # COMMON PATTERNS
+  # ═══════════════════════════════════════════
+  common:
+    - id: RLS-PAT-001
+      name: "User Owns Row"
+      description: "User can only access their own rows"
+      tables: "profiles, user_settings, user_preferences"
+      sql: |
+        ALTER TABLE {table} ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY "Users access own rows"
+        ON {table} FOR ALL
+        TO authenticated
+        USING (auth.uid() = user_id)
+        WITH CHECK (auth.uid() = user_id);
+
+    - id: RLS-PAT-002
+      name: "Organization Access"
+      description: "Users access rows belonging to their organization"
+      tables: "projects, documents, tasks"
+      sql: |
+        CREATE POLICY "Org members access"
+        ON {table} FOR SELECT
+        TO authenticated
+        USING (
+          org_id IN (
+            SELECT org_id FROM org_members
+            WHERE user_id = auth.uid()
+          )
+        );
+      performance_note: "Add index on org_members(user_id) and {table}(org_id)"
+
+    - id: RLS-PAT-003
+      name: "Public Read, Auth Write"
+      description: "Anyone can read, only authenticated users can write"
+      tables: "blog_posts, public_pages, products"
+      sql: |
+        CREATE POLICY "Public read"
+        ON {table} FOR SELECT
+        TO anon, authenticated
+        USING (true);
+
+        CREATE POLICY "Auth insert"
+        ON {table} FOR INSERT
+        TO authenticated
+        WITH CHECK (auth.uid() = author_id);
+
+        CREATE POLICY "Auth update own"
+        ON {table} FOR UPDATE
+        TO authenticated
+        USING (auth.uid() = author_id)
+        WITH CHECK (auth.uid() = author_id);
+
+    - id: RLS-PAT-004
+      name: "Role-Based Access"
+      description: "Access based on user role stored in JWT or metadata"
+      tables: "admin_settings, reports, audit_logs"
+      sql: |
+        CREATE POLICY "Admin only"
+        ON {table} FOR ALL
+        TO authenticated
+        USING (
+          (auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+        );
+
+    - id: RLS-PAT-005
+      name: "Soft Delete Protection"
+      description: "Hide soft-deleted rows from normal queries"
+      tables: "Any table with deleted_at column"
+      sql: |
+        CREATE POLICY "Hide deleted"
+        ON {table} FOR SELECT
+        TO authenticated
+        USING (deleted_at IS NULL AND auth.uid() = user_id);
+
+  # ═══════════════════════════════════════════
+  # MULTI-TENANT PATTERNS
+  # ═══════════════════════════════════════════
+  multi_tenant:
+    - id: RLS-MT-001
+      name: "Session Variable Tenant Isolation"
+      description: "Most performant multi-tenant pattern"
+      sql: |
+        -- Set per-session (in application middleware)
+        SET app.current_tenant = 'tenant_uuid';
+
+        -- Policy uses session variable (O(1), no subquery)
+        CREATE POLICY "Tenant isolation"
+        ON {table} FOR ALL
+        TO authenticated
+        USING (tenant_id = current_setting('app.current_tenant')::uuid)
+        WITH CHECK (tenant_id = current_setting('app.current_tenant')::uuid);
+
+    - id: RLS-MT-002
+      name: "JWT-Based Tenant Isolation"
+      description: "Tenant ID from JWT claims (Supabase native)"
+      sql: |
+        CREATE POLICY "Tenant from JWT"
+        ON {table} FOR ALL
+        TO authenticated
+        USING (
+          tenant_id = (auth.jwt() -> 'app_metadata' ->> 'tenant_id')::uuid
+        );
+
+  # ═══════════════════════════════════════════
+  # ANTI-PATTERNS
+  # ═══════════════════════════════════════════
+  anti_patterns:
+    - id: RLS-ANTI-001
+      name: "Missing RLS on Public Table"
+      severity: critical
+      description: "Table accessible to anyone with anon API key"
+      fix: "ALTER TABLE {table} ENABLE ROW LEVEL SECURITY; + add policies"
+
+    - id: RLS-ANTI-002
+      name: "USING (true) on Sensitive Table"
+      severity: critical
+      description: "All rows visible to all authenticated users"
+      fix: "Replace with proper user/org/role check"
+
+    - id: RLS-ANTI-003
+      name: "Non-LEAKPROOF Function in Policy"
+      severity: high
+      description: "Prevents index usage, causes full table scan"
+      fix: "Mark function LEAKPROOF or rewrite without function"
+
+    - id: RLS-ANTI-004
+      name: "Complex Subquery in Hot Path"
+      severity: high
+      description: "Subquery executes per-row on high-traffic table"
+      fix: "Use session variable or materialized role lookup"
+
+    - id: RLS-ANTI-005
+      name: "Missing WITH CHECK"
+      severity: medium
+      description: "INSERT/UPDATE without WITH CHECK allows invalid data"
+      fix: "Add WITH CHECK clause matching business rules"
+
+    - id: RLS-ANTI-006
+      name: "service_role Bypass in Client"
+      severity: critical
+      description: "service_role key in client code bypasses ALL RLS"
+      fix: "Use anon key in client, service_role only server-side"

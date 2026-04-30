@@ -1,0 +1,259 @@
+# ============================================================================
+# Workflow: Scaling Readiness
+# ============================================================================
+# Prepare system for 10x scale — 7 phases
+# ============================================================================
+
+name: scaling-readiness
+version: 1.0.0
+description: >
+  Prepara o sistema para escalar 10x em trafego/usuarios. Avalia cada camada,
+  identifica bottlenecks de escala, implementa otimizacoes e valida com load
+  tests simulando a carga projetada.
+
+trigger: "Sistema precisa estar pronto para 10x de trafego"
+estimated_duration: "3-7 dias"
+max_iterations: 2
+
+# ============================================================================
+# Phases
+# ============================================================================
+phases:
+  - id: phase-1-current-assessment
+    name: "Current State Assessment"
+    description: "Avaliar capacidade atual de cada componente"
+    agent: system-profiler
+    task: system-diagnostic
+    duration: "3-5 hours"
+    inputs:
+      - current_architecture
+      - current_traffic_metrics
+      - growth_projections
+    outputs:
+      - current_capacity_map
+      - bottleneck_inventory
+    checkpoint:
+      name: "Assessment Complete"
+      criteria:
+        - "Capacidade atual de cada componente documentada"
+        - "Bottlenecks identificados"
+        - "10x target definido em numeros"
+      decision: "continue"
+
+  - id: phase-2-architecture-review
+    name: "Architecture Review"
+    description: "Avaliar se a arquitetura suporta escala 10x"
+    agent: distributed-systems
+    duration: "4-6 hours"
+    inputs:
+      - current_capacity_map
+      - bottleneck_inventory
+    outputs:
+      - architecture_gaps
+      - scaling_strategy
+    actions:
+      - "Avaliar stateless vs stateful"
+      - "Verificar horizontal scaling readiness"
+      - "Avaliar database sharding necessity"
+      - "Verificar connection pooling limits"
+      - "Avaliar message queue necessidade"
+      - "Verificar CDN e edge computing"
+    checkpoint:
+      name: "Architecture Reviewed"
+      criteria:
+        - "Gaps de arquitetura identificados"
+        - "Estrategia de scaling definida"
+      decision: "continue | redesign_needed"
+
+  - id: phase-3-database-scaling
+    name: "Database Scaling"
+    description: "Preparar database para 10x de carga"
+    agent: database-optimizer
+    tasks:
+      - query-optimization
+      - database-indexing
+    duration: "6-10 hours"
+    inputs:
+      - current_capacity_map
+      - scaling_strategy
+    outputs:
+      - optimized_database
+      - scaling_plan_db
+    actions:
+      - "Otimizar top 20 queries"
+      - "Implementar read replicas"
+      - "Configurar connection pooling"
+      - "Avaliar sharding strategy"
+      - "Implementar caching de queries"
+      - "Particionar tabelas grandes"
+    checkpoint:
+      name: "Database Ready"
+      criteria:
+        - "Queries otimizadas"
+        - "Read replicas configuradas"
+        - "Connection pool dimensionado para 10x"
+      decision: "continue | iterate"
+
+  - id: phase-4-caching-layer
+    name: "Caching Layer"
+    description: "Implementar caching para absorver carga"
+    agent: caching-specialist
+    task: caching-strategy
+    duration: "4-6 hours"
+    inputs:
+      - scaling_strategy
+      - access_patterns
+    outputs:
+      - caching_implemented
+      - hit_rate_validated
+    actions:
+      - "Implementar Redis cluster"
+      - "Configurar CDN para assets e APIs publicas"
+      - "HTTP caching para API responses"
+      - "Implementar cache warming"
+      - "Definir invalidacao strategy"
+    checkpoint:
+      name: "Caching Ready"
+      criteria:
+        - "Cache hit rate > 90%"
+        - "CDN configurado"
+        - "Redis cluster operacional"
+      decision: "continue"
+
+  - id: phase-5-resilience
+    name: "Resilience Hardening"
+    description: "Implementar padroes de resiliencia para alta carga"
+    agent: resilience-engineer
+    task: resilience-audit
+    duration: "4-6 hours"
+    inputs:
+      - scaling_strategy
+      - dependency_map
+    outputs:
+      - resilience_implemented
+    actions:
+      - "Circuit breakers em todas dependencias"
+      - "Rate limiting por tenant"
+      - "Bulkhead isolation"
+      - "Graceful degradation paths"
+      - "Auto-scaling policies"
+      - "Health check readiness probes"
+    checkpoint:
+      name: "Resilience Ready"
+      criteria:
+        - "Circuit breakers configurados"
+        - "Rate limiting ativo"
+        - "Auto-scaling testado"
+      decision: "continue"
+
+  - id: phase-6-load-validation
+    name: "Load Validation"
+    description: "Load test simulando 10x de carga"
+    agent: load-tester
+    task: load-testing
+    duration: "6-8 hours"
+    inputs:
+      - performance_budgets
+      - target_10x_load
+    outputs:
+      - load_test_results
+      - saturation_point
+      - remaining_gaps
+    actions:
+      - "Load test: 2x → 5x → 8x → 10x ramp"
+      - "Stress test: encontrar ponto de ruptura > 10x"
+      - "Soak test: 10x por 4 horas"
+      - "Failover test: node failure sob carga"
+    checkpoint:
+      name: "Load Validated"
+      criteria:
+        - "Sistema suporta 10x com p95 dentro do budget"
+        - "Error rate < 1% sob 10x"
+        - "Ponto de ruptura > 12x"
+        - "Sistema se recupera de node failure"
+      decision: "complete | iterate_from_phase_3"
+
+  - id: phase-7-documentation
+    name: "Documentation & Runbook"
+    description: "Documentar arquitetura escalavel e runbooks"
+    agent: performance-lead
+    duration: "2-3 hours"
+    inputs:
+      - all_phase_outputs
+    outputs:
+      - scaling_architecture_doc
+      - operational_runbook
+      - capacity_plan
+    actions:
+      - "Documentar arquitetura final"
+      - "Criar runbook operacional"
+      - "Definir capacity plan com thresholds"
+      - "Documentar rollback procedures"
+      - "Criar dashboard de monitoramento"
+
+# ============================================================================
+# Veto Conditions
+# ============================================================================
+veto_conditions:
+  - id: SR-V-001
+    condition: "Scaling sem capacity assessment previo"
+    severity: BLOCK
+    phase: any
+
+  - id: SR-V-002
+    condition: "Database scaling sem read replicas avaliadas"
+    severity: WARN
+    phase: phase-3-database-scaling
+
+  - id: SR-V-003
+    condition: "10x validation sem soak test"
+    severity: BLOCK
+    phase: phase-6-load-validation
+
+  - id: SR-V-004
+    condition: "Producao sem auto-scaling configurado"
+    severity: BLOCK
+    phase: phase-5-resilience
+
+  - id: SR-V-005
+    condition: "Sem runbook operacional pos-scaling"
+    severity: WARN
+    phase: phase-7-documentation
+
+# ============================================================================
+# Quality Gates
+# ============================================================================
+quality_gates:
+  capacity_assessed:
+    criteria: "Capacidade atual documentada com numeros"
+    blocking: true
+
+  architecture_validated:
+    criteria: "Arquitetura suporta horizontal scaling"
+    blocking: true
+
+  load_test_passed:
+    criteria: "10x load test com metricas dentro do budget"
+    blocking: true
+
+  resilience_validated:
+    criteria: "Sistema sobrevive a node failure sob carga"
+    blocking: true
+
+# ============================================================================
+# Agents Involved
+# ============================================================================
+agents_involved:
+  required:
+    - performance-lead
+    - system-profiler
+    - distributed-systems
+    - database-optimizer
+    - caching-specialist
+    - resilience-engineer
+    - load-tester
+  optional:
+    - api-performance
+    - frontend-performance
+    - devops-performance
+    - observability-engineer

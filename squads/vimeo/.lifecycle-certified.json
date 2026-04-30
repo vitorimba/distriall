@@ -1,0 +1,16 @@
+{
+  "squad": "vimeo",
+  "version": "1.0.0",
+  "certified_at": "2026-04-13T00:00:00.000Z",
+  "lifecycle_workflow": "wf-squad-pro-pipeline",
+  "mode": "from-scratch",
+  "score": 9.0,
+  "verdict": "PASS",
+  "production_ready": true,
+  "type": "pipeline",
+  "agents": 5,
+  "tasks": 10,
+  "workflows": 2,
+  "created_via": "pro-pipeline F0→F4→F5→F7→F9 (skip F2/F3/F6)",
+  "certified_by": "squad-chief (Squad Architect)"
+}

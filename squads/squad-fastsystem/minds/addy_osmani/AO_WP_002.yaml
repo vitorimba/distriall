@@ -1,0 +1,18 @@
+id: AO_WP_002
+name: "Image Optimization Priority"
+mind: addy_osmani
+source: "Learning Patterns (2021)"
+domain: frontend-performance
+description: >
+  Imagens sao o maior payload da web. Otimize formato, tamanho
+  e carregamento para reduzir page weight significativamente.
+applies_when:
+  - "Page weight > 1MB"
+  - "Imagens dominam o payload"
+  - "LCP element e uma imagem"
+action: >
+  Use WebP/AVIF com fallback, lazy loading para below-the-fold,
+  srcset para responsive images, compressao adequada (quality
+  75-85 para JPEG).
+severity: high
+confidence: 0.90

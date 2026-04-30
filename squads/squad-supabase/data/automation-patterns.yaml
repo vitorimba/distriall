@@ -1,0 +1,246 @@
+automation_patterns:
+  version: "1.0.0"
+  description: "Padrões de automação para Supabase (pg_cron, triggers, webhooks, Edge Functions, queues)"
+  mind_source: "Supabase Collective (Paul Copplestone, Ant Wilson, Supabase Engineering)"
+
+  # ═══════════════════════════════════════════
+  # DECISION TREE
+  # ═══════════════════════════════════════════
+  decision_tree:
+    - condition: "Time-based recurring task?"
+      tool: pg_cron
+      examples: ["Cleanup old data", "Refresh materialized views", "Send weekly reports"]
+
+    - condition: "React to data change (INSERT/UPDATE/DELETE)?"
+      tool: "Database trigger + pg_net"
+      examples: ["Notify on new order", "Update audit log", "Sync to external system"]
+
+    - condition: "Need complex server-side logic?"
+      tool: "Edge Function"
+      examples: ["Process payment", "Generate PDF", "Call multiple APIs"]
+
+    - condition: "Large batch job (1000+ items)?"
+      tool: "Queue (pgmq) + Edge Function worker"
+      examples: ["Bulk email send", "Image processing", "Data import"]
+
+    - condition: "External API integration on schedule?"
+      tool: "pg_cron → Edge Function"
+      examples: ["Sync CRM data", "Fetch exchange rates", "Update analytics"]
+
+    - condition: "Real-time notification to client?"
+      tool: "Supabase Realtime (via trigger)"
+      examples: ["Chat messages", "Live dashboard", "Collaborative editing"]
+
+    - condition: "Simple webhook to external URL?"
+      tool: "Database Webhook (pg_net)"
+      examples: ["Slack notification", "Zapier trigger", "Analytics event"]
+
+  # ═══════════════════════════════════════════
+  # PG_CRON PATTERNS
+  # ═══════════════════════════════════════════
+  pg_cron:
+    - id: CRON-001
+      name: "Data Cleanup"
+      schedule: "0 0 * * *"
+      description: "Delete old data daily at midnight"
+      sql: |
+        SELECT cron.schedule('cleanup-old-logs', '0 0 * * *',
+          $$DELETE FROM logs WHERE created_at < NOW() - INTERVAL '30 days'$$
+        );
+
+    - id: CRON-002
+      name: "Materialized View Refresh"
+      schedule: "0 * * * *"
+      description: "Refresh stats view every hour"
+      sql: |
+        SELECT cron.schedule('refresh-stats', '0 * * * *',
+          $$REFRESH MATERIALIZED VIEW CONCURRENTLY mv_daily_stats$$
+        );
+
+    - id: CRON-003
+      name: "Edge Function Trigger"
+      schedule: "0 9 * * 1"
+      description: "Call Edge Function weekly (Monday 9am)"
+      sql: |
+        SELECT cron.schedule('weekly-report', '0 9 * * 1',
+          $$SELECT net.http_post(
+            url := 'https://<project>.supabase.co/functions/v1/weekly-report',
+            headers := '{"Authorization": "Bearer <service_role_key>"}'::jsonb
+          )$$
+        );
+
+    - id: CRON-004
+      name: "Health Ping"
+      schedule: "*/5 * * * *"
+      description: "Ping health endpoint every 5 minutes"
+      sql: |
+        SELECT cron.schedule('health-ping', '*/5 * * * *',
+          $$SELECT net.http_get(
+            url := 'https://your-app.com/api/health'
+          )$$
+        );
+
+    - id: CRON-005
+      name: "Aggregate Data"
+      schedule: "0 1 * * *"
+      description: "Nightly aggregation of daily metrics"
+      sql: |
+        SELECT cron.schedule('nightly-aggregate', '0 1 * * *',
+          $$INSERT INTO daily_metrics (date, total_orders, total_revenue)
+          SELECT DATE(created_at), COUNT(*), SUM(total)
+          FROM orders
+          WHERE DATE(created_at) = CURRENT_DATE - 1
+          GROUP BY DATE(created_at)
+          ON CONFLICT (date) DO UPDATE
+          SET total_orders = EXCLUDED.total_orders,
+              total_revenue = EXCLUDED.total_revenue$$
+        );
+
+  # ═══════════════════════════════════════════
+  # TRIGGER PATTERNS
+  # ═══════════════════════════════════════════
+  triggers:
+    - id: TRIG-001
+      name: "Updated At Auto-Set"
+      description: "Automatically set updated_at on row modification"
+      sql: |
+        CREATE OR REPLACE FUNCTION set_updated_at()
+        RETURNS trigger AS $$
+        BEGIN
+          NEW.updated_at = NOW();
+          RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+
+        CREATE TRIGGER set_updated_at
+        BEFORE UPDATE ON {table}
+        FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+    - id: TRIG-002
+      name: "Audit Log"
+      description: "Log all changes to an audit table"
+      sql: |
+        CREATE OR REPLACE FUNCTION audit_log()
+        RETURNS trigger AS $$
+        BEGIN
+          INSERT INTO audit_log (table_name, operation, old_data, new_data, changed_by, changed_at)
+          VALUES (
+            TG_TABLE_NAME,
+            TG_OP,
+            CASE WHEN TG_OP = 'DELETE' THEN row_to_json(OLD) ELSE NULL END,
+            CASE WHEN TG_OP != 'DELETE' THEN row_to_json(NEW) ELSE NULL END,
+            auth.uid(),
+            NOW()
+          );
+          RETURN COALESCE(NEW, OLD);
+        END;
+        $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+    - id: TRIG-003
+      name: "Notify External Service"
+      description: "Send HTTP notification on data change"
+      sql: |
+        CREATE OR REPLACE FUNCTION notify_external()
+        RETURNS trigger AS $$
+        BEGIN
+          PERFORM net.http_post(
+            url := 'https://your-api.com/webhook',
+            body := jsonb_build_object(
+              'event', TG_OP,
+              'table', TG_TABLE_NAME,
+              'record', row_to_json(NEW)
+            )
+          );
+          RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+
+    - id: TRIG-004
+      name: "Cascade Soft Delete"
+      description: "Soft delete child records when parent is soft deleted"
+      sql: |
+        CREATE OR REPLACE FUNCTION cascade_soft_delete()
+        RETURNS trigger AS $$
+        BEGIN
+          IF NEW.deleted_at IS NOT NULL AND OLD.deleted_at IS NULL THEN
+            UPDATE child_table SET deleted_at = NOW()
+            WHERE parent_id = NEW.id AND deleted_at IS NULL;
+          END IF;
+          RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+
+  # ═══════════════════════════════════════════
+  # WEBHOOK PATTERNS
+  # ═══════════════════════════════════════════
+  webhooks:
+    - id: HOOK-001
+      name: "Slack Notification"
+      trigger_event: "INSERT"
+      description: "Send Slack message on new record"
+      sql: |
+        PERFORM net.http_post(
+          url := 'https://hooks.slack.com/services/XXX/YYY/ZZZ',
+          headers := '{"Content-Type": "application/json"}'::jsonb,
+          body := jsonb_build_object(
+            'text', format('New %s created: %s', TG_TABLE_NAME, NEW.id)
+          )
+        );
+
+    - id: HOOK-002
+      name: "Cache Invalidation"
+      trigger_event: "UPDATE, DELETE"
+      description: "Invalidate external cache on data change"
+      sql: |
+        PERFORM net.http_post(
+          url := 'https://your-cdn.com/api/purge',
+          headers := '{"Authorization": "Bearer <token>"}'::jsonb,
+          body := jsonb_build_object(
+            'keys', ARRAY[format('%s:%s', TG_TABLE_NAME, OLD.id)]
+          )
+        );
+
+  # ═══════════════════════════════════════════
+  # QUEUE PATTERNS (pgmq)
+  # ═══════════════════════════════════════════
+  queues:
+    - id: QUEUE-001
+      name: "Bulk Email Queue"
+      description: "Queue emails for batch processing"
+      sql: |
+        -- Create queue
+        SELECT pgmq.create('email_queue');
+
+        -- Enqueue (from trigger or cron)
+        SELECT pgmq.send('email_queue',
+          jsonb_build_object(
+            'to', NEW.email,
+            'template', 'welcome',
+            'data', row_to_json(NEW)
+          )
+        );
+
+        -- Dequeue (from Edge Function worker)
+        -- SELECT pgmq.read('email_queue', 30, 10);
+        -- Process, then: SELECT pgmq.delete('email_queue', msg_id);
+
+  # ═══════════════════════════════════════════
+  # CRON EXPRESSIONS REFERENCE
+  # ═══════════════════════════════════════════
+  cron_reference:
+    - expression: "* * * * *"
+      meaning: "Every minute"
+    - expression: "*/5 * * * *"
+      meaning: "Every 5 minutes"
+    - expression: "0 * * * *"
+      meaning: "Every hour"
+    - expression: "0 0 * * *"
+      meaning: "Daily at midnight"
+    - expression: "0 9 * * 1-5"
+      meaning: "Weekdays at 9am"
+    - expression: "0 9 * * 1"
+      meaning: "Mondays at 9am"
+    - expression: "0 0 1 * *"
+      meaning: "First day of month at midnight"
+    - expression: "0 0 * * 0"
+      meaning: "Sundays at midnight"

@@ -1,0 +1,379 @@
+##############################################################################
+# Workflow: Responsive Complete Pipeline
+#
+# Full responsive optimization pipeline from audit through QA.
+# 8 phases covering audit, planning, architecture, tokens, implementation,
+# media optimization, cross-device testing, and final reporting.
+#
+# ID:       wf-responsive-complete
+# Squad:    squad-responsive
+# Phases:   8
+# Duration: 4-16 hours (varies by project scope)
+# Entry:    Audit phase (always required)
+##############################################################################
+
+id: wf-responsive-complete
+name: "Responsive Complete Pipeline"
+version: "1.0.0"
+description: >
+  End-to-end responsive optimization workflow covering all phases from initial
+  audit through implementation, testing, and final reporting. Uses all 6 squad
+  agents across 8 phases with quality gates and parallel execution where possible.
+
+trigger:
+  manual: true
+  command: "*responsive"
+  entry_task: responsive-audit
+
+settings:
+  max_iterations: 3           # Max rework cycles per phase
+  quality_gate_enforcement: strict
+  breakpoints_default: [320, 480, 768, 1024, 1280, 1440, 1920, 2560, 3440]
+  documentation_required: true
+  parallel_enabled: true
+
+##############################################################################
+# Phase 1: AUDIT
+# Comprehensive responsive audit of the project
+##############################################################################
+phases:
+  - id: phase_1_audit
+    name: "Audit"
+    description: "Complete responsive design audit across all breakpoints"
+    duration_estimate: "30-60 min"
+    agents:
+      lead: responsive-auditor
+      support: []
+
+    tasks:
+      - id: run_audit
+        task_ref: responsive-audit
+        required: true
+        description: "Execute full responsive audit (entry point)"
+
+    outputs:
+      - responsive-audit-report.md
+      - findings.json
+      - breakpoint-matrix.md
+      - component-health-map.md
+
+    quality_gate:
+      id: RS-QG-001
+      name: "Audit Quality Gate"
+      criteria:
+        - "All target breakpoints tested"
+        - "Issues scored by severity"
+        - "findings.json generated and valid"
+      pass_threshold: "All criteria met"
+      on_fail: "Re-run audit with expanded scope"
+
+  ##############################################################################
+  # Phase 2: PLAN
+  # Create prioritized fix plan from audit results
+  ##############################################################################
+  - id: phase_2_plan
+    name: "Plan"
+    description: "Create prioritized fix plan from audit findings"
+    duration_estimate: "15-30 min"
+    depends_on: [phase_1_audit]
+    agents:
+      lead: responsive-chief
+      support: []
+
+    tasks:
+      - id: create_plan
+        task_ref: create-fix-plan
+        required: true
+        input:
+          audit_report: "{{phase_1_audit.outputs.responsive-audit-report.md}}"
+          findings_json: "{{phase_1_audit.outputs.findings.json}}"
+        description: "Create prioritized fix plan with phases and timeline"
+
+    outputs:
+      - fix-plan.md
+      - execution-order.json
+      - dependency-graph.md
+
+    quality_gate:
+      id: RS-QG-002
+      name: "Plan Quality Gate"
+      criteria:
+        - "All audit issues addressed in plan"
+        - "Phases defined with clear execution order"
+        - "Dependencies mapped"
+        - "Effort estimates provided"
+      pass_threshold: "All criteria met"
+      on_fail: "Revise plan with responsive-chief"
+
+  ##############################################################################
+  # Phase 3: ARCHITECTURE
+  # Mobile-first architecture and layout structure
+  ##############################################################################
+  - id: phase_3_architecture
+    name: "Architecture"
+    description: "Define mobile-first responsive architecture and layout structure"
+    duration_estimate: "30-60 min"
+    depends_on: [phase_2_plan]
+    agents:
+      lead: mobile-first-architect
+      support: [css-layout-engineer]
+
+    tasks:
+      - id: layout_architecture
+        task_ref: implement-fixes
+        required: true
+        input:
+          fix_plan: "{{phase_2_plan.outputs.fix-plan.md}}"
+          execution_order: "{{phase_2_plan.outputs.execution-order.json}}"
+          phase_filter: "1"
+        description: "Implement foundation and structural layout fixes (Phase 1-2 of fix plan)"
+
+    outputs:
+      - foundation-fixes-applied
+      - layout-structure-updated
+
+    quality_gate:
+      id: RS-QG-003
+      name: "Architecture Quality Gate"
+      criteria:
+        - "Foundation CSS applied (viewport, box-sizing, base)"
+        - "Layout structure responsive (Grid/Flexbox)"
+        - "No horizontal overflow at any breakpoint"
+      pass_threshold: "All criteria met"
+      on_fail: "Revise architecture approach"
+
+  ##############################################################################
+  # Phase 4: TOKENS
+  # Fluid design tokens — runs in PARALLEL with Architecture
+  ##############################################################################
+  - id: phase_4_tokens
+    name: "Tokens"
+    description: "Generate fluid design tokens for typography, spacing, and layout"
+    duration_estimate: "30-60 min"
+    depends_on: [phase_2_plan]
+    parallel_with: [phase_3_architecture]
+    agents:
+      lead: fluid-design-tokenizer
+      support: []
+
+    tasks:
+      - id: setup_tokens
+        task_ref: fluid-tokens-setup
+        required: true
+        description: "Generate fluid type scale, space scale, and responsive custom properties"
+
+    outputs:
+      - fluid-tokens.css
+      - token-reference.md
+
+    quality_gate:
+      id: RS-QG-004
+      name: "Tokens Quality Gate"
+      criteria:
+        - "Fluid type scale generated with clamp()"
+        - "Fluid space scale generated"
+        - "Tokens validated at viewport extremes"
+        - "Accessibility: minimum font-size >= 12px"
+      pass_threshold: "All criteria met"
+      on_fail: "Adjust token calculations"
+
+  ##############################################################################
+  # Phase 5: IMPLEMENTATION
+  # Full component-level responsive fixes
+  ##############################################################################
+  - id: phase_5_implementation
+    name: "Implementation"
+    description: "Implement all component-level responsive fixes using tokens and architecture"
+    duration_estimate: "1-4 hours"
+    depends_on: [phase_3_architecture, phase_4_tokens]
+    agents:
+      lead: css-layout-engineer
+      support: [mobile-first-architect]
+
+    tasks:
+      - id: implement_all_fixes
+        task_ref: implement-fixes
+        required: true
+        input:
+          fix_plan: "{{phase_2_plan.outputs.fix-plan.md}}"
+          execution_order: "{{phase_2_plan.outputs.execution-order.json}}"
+          fluid_tokens: "{{phase_4_tokens.outputs.fluid-tokens.css}}"
+          phase_filter: "all"
+        description: "Implement all remaining fixes using fluid tokens and architecture foundation"
+
+    outputs:
+      - fix-changelog.md
+      - regression-notes.md
+
+    quality_gate:
+      id: RS-QG-005
+      name: "Implementation Quality Gate"
+      criteria:
+        - "All planned fixes applied"
+        - "Build passes without errors"
+        - "CSS lint passes"
+        - "No regressions in adjacent breakpoints"
+      pass_threshold: "All criteria met"
+      on_fail: "Revert problematic fixes, re-implement"
+
+  ##############################################################################
+  # Phase 6: MEDIA
+  # Media optimization — runs in PARALLEL with Implementation
+  ##############################################################################
+  - id: phase_6_media
+    name: "Media"
+    description: "Optimize images and media for responsive delivery"
+    duration_estimate: "30-90 min"
+    depends_on: [phase_2_plan]
+    parallel_with: [phase_5_implementation]
+    agents:
+      lead: responsive-media-specialist
+      support: []
+
+    tasks:
+      - id: optimize_media
+        task_ref: optimize-media
+        required: true
+        input:
+          audit_report: "{{phase_1_audit.outputs.responsive-audit-report.md}}"
+        description: "Implement srcset/picture, lazy loading, format optimization, performance budgets"
+
+    outputs:
+      - media-optimization-report.md
+      - image-manifest.json
+
+    quality_gate:
+      id: RS-QG-006
+      name: "Media Quality Gate"
+      criteria:
+        - "All images have srcset or are SVG"
+        - "Lazy loading implemented for below-fold"
+        - "Modern formats (AVIF/WebP) with fallbacks"
+        - "CLS = 0 (width/height attributes present)"
+        - "Performance budget met per breakpoint"
+      pass_threshold: "All criteria met"
+      on_fail: "Re-optimize problematic media"
+
+  ##############################################################################
+  # Phase 7: QA
+  # Comprehensive cross-device testing
+  ##############################################################################
+  - id: phase_7_qa
+    name: "QA"
+    description: "Cross-device testing across all 5 breakpoint ranges"
+    duration_estimate: "30-60 min"
+    depends_on: [phase_5_implementation, phase_6_media]
+    agents:
+      lead: cross-device-qa
+      support: []
+
+    tasks:
+      - id: cross_device_test
+        task_ref: cross-device-test
+        required: true
+        input:
+          fix_changelog: "{{phase_5_implementation.outputs.fix-changelog.md}}"
+          audit_report: "{{phase_1_audit.outputs.responsive-audit-report.md}}"
+        description: "Execute full cross-device test suite across all breakpoint ranges"
+
+    outputs:
+      - test-report.md
+      - screenshots/
+      - performance-metrics.json
+
+    quality_gate:
+      id: RS-QG-007
+      name: "QA Quality Gate"
+      checkpoint: "ALL breakpoints must PASS"
+      criteria:
+        - "Mobile range (320-479): >= 90% pass rate"
+        - "Phablet range (480-767): >= 90% pass rate"
+        - "Tablet range (768-1023): >= 90% pass rate"
+        - "Desktop range (1024-1919): >= 95% pass rate"
+        - "Ultrawide range (1920+): >= 85% pass rate"
+        - "Zero critical regressions"
+        - "LCP < 2.5s on mobile"
+        - "CLS = 0 across all breakpoints"
+      pass_threshold: "All breakpoint ranges meet minimum pass rate"
+      on_fail: "Return to Implementation phase with failing test cases"
+      max_rework_cycles: 3
+
+  ##############################################################################
+  # Phase 8: REPORT
+  # Final responsive report and handoff
+  ##############################################################################
+  - id: phase_8_report
+    name: "Report"
+    description: "Generate final responsive optimization report"
+    duration_estimate: "15-30 min"
+    depends_on: [phase_7_qa]
+    agents:
+      lead: responsive-chief
+      support: []
+
+    tasks:
+      - id: final_report
+        task_ref: null
+        required: true
+        inline: true
+        description: "Compile final responsive report from all phase outputs"
+        steps:
+          - "Aggregate results from all phases"
+          - "Calculate overall responsiveness score improvement (before vs after)"
+          - "List all issues resolved with evidence"
+          - "Document remaining items (if any)"
+          - "Generate executive summary"
+          - "Create maintenance recommendations"
+
+    outputs:
+      - final-responsive-report.md
+      - responsiveness-score-card.md
+      - maintenance-guide.md
+
+    quality_gate:
+      id: RS-QG-008
+      name: "Report Quality Gate"
+      criteria:
+        - "Before/after comparison included"
+        - "All resolved issues documented with evidence"
+        - "Responsiveness score improvement quantified"
+        - "Maintenance guide provided"
+      pass_threshold: "Report is complete and actionable"
+      on_fail: "Expand report sections"
+
+##############################################################################
+# Workflow Metadata
+##############################################################################
+
+execution_graph:
+  # Sequential dependencies
+  sequence:
+    - phase_1_audit
+    - phase_2_plan
+    - phase_5_implementation
+    - phase_7_qa
+    - phase_8_report
+
+  # Parallel execution groups
+  parallel_groups:
+    - group: "foundation"
+      phases: [phase_3_architecture, phase_4_tokens]
+      depends_on: phase_2_plan
+    - group: "execution"
+      phases: [phase_5_implementation, phase_6_media]
+      notes: "Media can run parallel but Implementation depends on Architecture+Tokens"
+
+  # Rework loops
+  rework_loops:
+    - from: phase_7_qa
+      to: phase_5_implementation
+      condition: "QA gate fails"
+      max_iterations: 3
+
+escalation:
+  - trigger: "max_rework_cycles_reached"
+    action: "Escalate to responsive-chief for architectural reassessment"
+  - trigger: "critical_regression_detected"
+    action: "Halt pipeline, revert to pre-fix state, re-audit"
+  - trigger: "performance_budget_exceeded_200_percent"
+    action: "Escalate to responsive-chief for scope reduction"

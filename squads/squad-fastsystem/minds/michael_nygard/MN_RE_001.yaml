@@ -1,0 +1,18 @@
+id: MN_RE_001
+name: "Integration Points Are Failure Points"
+mind: michael_nygard
+source: "Release It!, 2nd Edition (2018) — Chapter 4"
+domain: resilience
+description: >
+  Todo ponto de integracao e um ponto de falha. Cada chamada a
+  servico externo, banco de dados, cache ou API pode falhar de
+  formas imprevisíveis.
+applies_when:
+  - "Qualquer chamada a servico externo ou dependencia"
+  - "Audit de resiliencia"
+action: >
+  Implementar timeout explicito + retry com backoff + fallback
+  para cada ponto de integracao. Nunca assumir que uma
+  dependencia estara disponivel.
+severity: foundational
+confidence: 0.95

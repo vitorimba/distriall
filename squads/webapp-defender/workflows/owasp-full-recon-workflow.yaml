@@ -1,0 +1,633 @@
+# OWASP Top 10 Full Recon Workflow
+# Passive reconnaissance through all 10 OWASP categories
+# User provides target + optional params → automated pipeline → consolidated report
+name: owasp-full-recon
+description: |
+  Complete passive reconnaissance covering all OWASP Top 10 (2021) categories.
+  User provides the target and optional parameters. The pipeline runs through
+  discovery, parallel OWASP analysis across all 10 categories, consolidation,
+  and generates a prioritized report with remediation roadmap.
+  100% passive — ZERO intrusive tests, ZERO exploitation.
+version: "1.0.0"
+trigger: "*owasp-recon"
+orchestrator: shield
+duration: "2-4 hours"
+
+# ─────────────────────────────────────────────────────
+# Input Parameters
+# ─────────────────────────────────────────────────────
+inputs:
+  required:
+    - name: target
+      type: string
+      description: "Target URL (e.g. https://app.example.com)"
+      example: "https://staging.vidalendaria.com.br/"
+
+  optional:
+    - name: source_code
+      type: path
+      description: "Path to local source code directory for static analysis"
+      default: null
+      example: "/home/user/projects/my-app/src"
+
+    - name: sql_dump
+      type: path
+      description: "Path to SQL dump or migration files for database analysis"
+      default: null
+      example: "/home/user/projects/my-app/supabase/migrations"
+
+    - name: supabase_project_id
+      type: string
+      description: "Supabase project ID for Supabase-specific checks"
+      default: null
+      example: "hfmatqksllyhskcikouo"
+
+    - name: stack
+      type: string
+      description: "Tech stack hint (auto-detected if omitted)"
+      default: auto
+      example: "react-vite+supabase+vercel"
+
+    - name: scope
+      type: enum
+      values: [full, quick, focused]
+      description: "Recon depth: full (all 10), quick (top 5 risk), focused (specific categories)"
+      default: full
+
+    - name: categories
+      type: list
+      description: "Specific OWASP categories to run (only when scope=focused)"
+      default: [A01, A02, A03, A04, A05, A06, A07, A08, A09, A10]
+      example: [A01, A03, A07]
+
+    - name: report_lang
+      type: enum
+      values: [pt-br, en]
+      description: "Report language"
+      default: pt-br
+
+    - name: report_path
+      type: path
+      description: "Output directory for the report"
+      default: "./reports"
+
+    - name: previous_report
+      type: path
+      description: "Path to previous audit report for delta comparison (retest mode)"
+      default: null
+
+# ─────────────────────────────────────────────────────
+# Constraints (NON-NEGOTIABLE)
+# ─────────────────────────────────────────────────────
+constraints:
+  - "NEVER send requests that modify target data"
+  - "NEVER attempt authentication bypass or credential testing"
+  - "NEVER perform brute force, fuzzing, or injection attacks"
+  - "NEVER scan ports, probe internal networks, or exploit vulnerabilities"
+  - "ONLY passive analysis: read responses, review code, analyze configs"
+  - "All findings MUST include remediation code/instructions"
+  - "All findings MUST include CVSS 3.1 score and CWE mapping"
+
+# ─────────────────────────────────────────────────────
+# Phases
+# ─────────────────────────────────────────────────────
+phases:
+
+  # ═══════════════════════════════════════════════════
+  # PHASE 0: INTAKE & DISCOVERY
+  # ═══════════════════════════════════════════════════
+  - id: intake
+    name: "Phase 0: Intake & Discovery"
+    description: |
+      Validate inputs, fingerprint the target stack, enumerate the attack surface.
+      Build a target profile that feeds all subsequent phases.
+    agent: shield
+    duration: "10-20 min"
+    tasks:
+      - id: validate_inputs
+        description: "Validate target URL format and optional parameters"
+        steps:
+          - Validate target URL is reachable (single GET, read-only)
+          - Confirm scope and categories selection
+          - Check if source_code / sql_dump paths exist (if provided)
+          - Check if previous_report exists (if retest mode)
+
+      - id: fingerprint_stack
+        description: "Identify tech stack from response headers and public info"
+        steps:
+          - Read HTTP response headers (Server, X-Powered-By, etc.)
+          - Detect framework from HTML meta tags and static assets
+          - Identify CDN/proxy (Cloudflare, Vercel, etc.)
+          - Identify backend (Supabase, Firebase, custom API, etc.)
+          - Identify auth provider (Supabase Auth, Auth0, Clerk, etc.)
+          - "Auto-detect stack if not provided: {framework}+{backend}+{hosting}"
+
+      - id: enumerate_surface
+        description: "Map the visible attack surface"
+        steps:
+          - Collect all response headers for analysis
+          - Check for OpenAPI/Swagger endpoint exposure
+          - Check for GraphQL introspection endpoint
+          - Identify public API endpoints from client-side code
+          - List all external scripts, styles, and CDN resources
+          - Check robots.txt and sitemap.xml for hidden paths
+          - Check for .env, .git, backup files exposure
+          - "If source_code provided: map routes, endpoints, tables from code"
+          - "If sql_dump provided: enumerate tables, functions, policies"
+
+    outputs:
+      - target_profile:
+          url: string
+          stack: object
+          headers: object
+          endpoints: list
+          tables: list
+          functions: list
+          external_resources: list
+          auth_type: string
+          cdn: string
+          openapi_exposed: boolean
+          graphql_exposed: boolean
+
+  # ═══════════════════════════════════════════════════
+  # PHASE 1: OWASP ANALYSIS — WAVE 1 (highest risk)
+  # ═══════════════════════════════════════════════════
+  - id: owasp_wave_1
+    name: "Phase 1: OWASP Wave 1 — Critical Risk (A01, A02, A03)"
+    description: |
+      Parallel analysis of the top 3 OWASP categories.
+      These represent the highest risk and most common vulnerabilities.
+    parallel: true
+    depends_on: [intake]
+    skip_if: "scope=focused AND categories does not include A01,A02,A03"
+    duration: "30-60 min"
+    tasks:
+      - id: a01_access_control
+        agent: owasp-a01-access-warden
+        description: "A01: Broken Access Control audit"
+        skip_if: "scope=focused AND A01 not in categories"
+        input:
+          from_phase: intake
+          uses: [target_profile, sql_dump, source_code]
+        steps:
+          - "Map all routes/endpoints and their authorization requirements"
+          - "If sql_dump: audit RLS policies on every table"
+          - "If sql_dump: check every RPC/function for auth.uid() validation"
+          - "If source_code: scan for IDOR patterns (user-supplied IDs without ownership check)"
+          - "If source_code: review RBAC implementation"
+          - "Analyze CORS configuration from response headers"
+          - "Check for forced browsing / unprotected admin paths"
+          - "Check for metadata manipulation (role escalation via API)"
+        output: a01_findings
+
+      - id: a02_crypto
+        agent: owasp-a02-crypto-auditor
+        description: "A02: Cryptographic Failures audit"
+        skip_if: "scope=focused AND A02 not in categories"
+        input:
+          from_phase: intake
+          uses: [target_profile, source_code, sql_dump]
+        steps:
+          - "If source_code: scan for hardcoded secrets (API keys, passwords, tokens)"
+          - "If source_code: review password hashing implementation"
+          - "If source_code: check for weak algorithms (MD5, SHA1, DES)"
+          - "If source_code: detect insecure random number generation"
+          - "If sql_dump: identify PII columns stored without encryption"
+          - "Analyze TLS configuration from response headers"
+          - "Check for HSTS header presence and configuration"
+          - "Review JWT configuration if accessible"
+          - "Check for sensitive data in URLs (tokens in query strings)"
+        output: a02_findings
+
+      - id: a03_injection
+        agent: owasp-a03-injection-scanner
+        description: "A03: Injection vulnerabilities audit"
+        skip_if: "scope=focused AND A03 not in categories"
+        input:
+          from_phase: intake
+          uses: [target_profile, source_code]
+        steps:
+          - "If source_code: taint analysis — trace user input from sources to sinks"
+          - "If source_code: scan for SQL injection patterns (string concatenation in queries)"
+          - "If source_code: scan for XSS patterns (innerHTML, dangerouslySetInnerHTML, unescaped output)"
+          - "If source_code: scan for command injection (exec, spawn with string args)"
+          - "If source_code: scan for path traversal (user-controlled file paths)"
+          - "If source_code: scan for template injection (SSTI)"
+          - "If source_code: review input validation and sanitization functions"
+          - "Check Content-Security-Policy header for XSS mitigation"
+          - "Check X-Content-Type-Options header"
+        output: a03_findings
+
+    outputs:
+      - a01_findings
+      - a02_findings
+      - a03_findings
+
+  # ═══════════════════════════════════════════════════
+  # PHASE 2: OWASP ANALYSIS — WAVE 2 (design & config)
+  # ═══════════════════════════════════════════════════
+  - id: owasp_wave_2
+    name: "Phase 2: OWASP Wave 2 — Design & Configuration (A04, A05, A06)"
+    description: |
+      Parallel analysis of design flaws, misconfigurations, and dependency risks.
+      These categories often reveal systemic issues rather than point vulnerabilities.
+    parallel: true
+    depends_on: [intake]
+    skip_if: "scope=focused AND categories does not include A04,A05,A06"
+    duration: "30-60 min"
+    tasks:
+      - id: a04_design
+        agent: owasp-a04-design-reviewer
+        description: "A04: Insecure Design audit"
+        skip_if: "scope=focused AND A04 not in categories"
+        input:
+          from_phase: intake
+          uses: [target_profile, source_code]
+        steps:
+          - "Map business logic flows (registration, payment, access granting)"
+          - "Identify missing rate limiting on critical operations"
+          - "Analyze trust boundaries (client→server, service→service)"
+          - "Check for anti-automation protections (CAPTCHA, fingerprinting)"
+          - "If source_code: review resource consumption limits (query depth, upload size, pagination)"
+          - "If source_code: check for information leakage in error responses"
+          - "Generate STRIDE threat model for key features"
+          - "Identify abuse cases for high-value operations"
+        output: a04_findings
+
+      - id: a05_misconfig
+        agent: owasp-a05-misconfig-hunter
+        description: "A05: Security Misconfiguration audit"
+        skip_if: "scope=focused AND A05 not in categories"
+        input:
+          from_phase: intake
+          uses: [target_profile, source_code, sql_dump]
+        steps:
+          - "Audit all HTTP security headers against baseline"
+          - "Check CORS configuration for overly permissive origins"
+          - "Check for OpenAPI/Swagger public exposure"
+          - "Check for debug mode indicators in production"
+          - "Check for default credentials and accounts"
+          - "Check for unnecessary features/endpoints enabled"
+          - "Check for directory listing and file exposure"
+          - "If supabase: check auth settings (disable_signup, autoconfirm, jwt_expiry)"
+          - "If supabase: check auth/v1/settings endpoint exposure"
+          - "If source_code: scan for XXE processing configuration"
+          - "If source_code: review session cookie flags (Secure, HttpOnly, SameSite)"
+          - "Check server/technology version disclosure in headers"
+        output: a05_findings
+
+      - id: a06_dependencies
+        agent: owasp-a06-dependency-tracker
+        description: "A06: Vulnerable and Outdated Components audit"
+        skip_if: "scope=focused AND A06 not in categories"
+        input:
+          from_phase: intake
+          uses: [source_code]
+        steps:
+          - "If source_code: analyze package.json / requirements.txt / Gemfile"
+          - "If source_code: analyze lockfile for exact versions and integrity hashes"
+          - "Cross-reference all dependencies against known CVE databases"
+          - "Identify outdated packages with available security updates"
+          - "Flag deprecated or unmaintained packages"
+          - "Analyze transitive dependencies for hidden vulnerabilities"
+          - "Check for version pinning issues (overly broad ranges)"
+          - "Review license compliance"
+          - "Identify external scripts loaded from CDN (from Phase 0 enumeration)"
+          - "Check CDN script versions against known vulnerabilities"
+        output: a06_findings
+
+    outputs:
+      - a04_findings
+      - a05_findings
+      - a06_findings
+
+  # ═══════════════════════════════════════════════════
+  # PHASE 3: OWASP ANALYSIS — WAVE 3 (auth, integrity, monitoring, ssrf)
+  # ═══════════════════════════════════════════════════
+  - id: owasp_wave_3
+    name: "Phase 3: OWASP Wave 3 — Auth, Integrity, Monitoring, SSRF (A07, A08, A09, A10)"
+    description: |
+      Parallel analysis of authentication, software integrity, logging, and SSRF.
+      These categories complete the OWASP Top 10 coverage.
+    parallel: true
+    depends_on: [intake]
+    skip_if: "scope=focused AND categories does not include A07,A08,A09,A10"
+    duration: "30-60 min"
+    tasks:
+      - id: a07_auth
+        agent: owasp-a07-identity-auditor
+        description: "A07: Identification and Authentication Failures audit"
+        skip_if: "scope=focused AND A07 not in categories"
+        input:
+          from_phase: intake
+          uses: [target_profile, source_code]
+        steps:
+          - "Review password policy configuration (min length, complexity, breach check)"
+          - "Check for brute force protection (lockout, progressive delays, CAPTCHA)"
+          - "If source_code: audit session management (creation, flags, timeout, invalidation)"
+          - "If source_code: check for session fixation vulnerabilities"
+          - "If source_code: review MFA implementation and enforcement"
+          - "If source_code: check credential storage (hashing algorithm, salt)"
+          - "If source_code: review account recovery flow"
+          - "If source_code: audit token lifecycle (JWT expiry, refresh rotation, revocation)"
+          - "If supabase: check Supabase Auth settings via dashboard or config"
+          - "Check for credential enumeration via different error responses"
+        output: a07_findings
+
+      - id: a08_integrity
+        agent: owasp-a08-integrity-checker
+        description: "A08: Software and Data Integrity Failures audit"
+        skip_if: "scope=focused AND A08 not in categories"
+        input:
+          from_phase: intake
+          uses: [target_profile, source_code]
+        steps:
+          - "Check Subresource Integrity (SRI) on all external CDN scripts and styles"
+          - "If source_code: scan for insecure deserialization patterns"
+          - "If source_code: review CI/CD pipeline configuration for injection risks"
+          - "If source_code: check GitHub Actions/GitLab CI for unpinned actions"
+          - "If source_code: verify lockfile integrity (committed, hashes present)"
+          - "If source_code: check webhook signature verification"
+          - "If source_code: review auto-update mechanisms"
+          - "Check for unsigned or unverified external resources"
+        output: a08_findings
+
+      - id: a09_logging
+        agent: owasp-a09-log-auditor
+        description: "A09: Security Logging and Monitoring Failures audit"
+        skip_if: "scope=focused AND A09 not in categories"
+        input:
+          from_phase: intake
+          uses: [source_code]
+        steps:
+          - "If source_code: identify which security events are logged vs missing"
+          - "If source_code: check for sensitive data written to logs (passwords, tokens, PII)"
+          - "If source_code: scan for log injection vulnerabilities (user input in log messages)"
+          - "If source_code: review logging framework configuration (format, level, destination)"
+          - "If source_code: check for monitoring/alerting configuration"
+          - "If source_code: review audit trail completeness for critical operations"
+          - "If source_code: assess logging maturity level (0-5 scale)"
+          - "If source_code: check log retention and rotation policies"
+        output: a09_findings
+
+      - id: a10_ssrf
+        agent: owasp-a10-ssrf-detective
+        description: "A10: Server-Side Request Forgery audit"
+        skip_if: "scope=focused AND A10 not in categories"
+        input:
+          from_phase: intake
+          uses: [target_profile, source_code]
+        steps:
+          - "If source_code: find all server-side HTTP client calls (fetch, axios, http.request)"
+          - "If source_code: trace which URLs come from user input"
+          - "If source_code: review URL validation implementations"
+          - "If source_code: check for cloud metadata blocklists (169.254.169.254)"
+          - "If source_code: check HTTP client redirect following behavior"
+          - "If source_code: review webhook URL handling for SSRF risks"
+          - "If source_code: scan for open redirect patterns (SSRF chain vector)"
+          - "If source_code: check image/file proxy and URL preview features"
+          - "If source_code: check for DNS rebinding protections"
+        output: a10_findings
+
+    outputs:
+      - a07_findings
+      - a08_findings
+      - a09_findings
+      - a10_findings
+
+  # ═══════════════════════════════════════════════════
+  # PHASE 4: CROSS-REFERENCE & CORRELATION
+  # ═══════════════════════════════════════════════════
+  - id: correlation
+    name: "Phase 4: Cross-Reference & Correlation"
+    description: |
+      Shield correlates findings across all 10 categories to identify:
+      - Duplicate findings reported by multiple agents
+      - Attack chains (findings that combine into higher-risk scenarios)
+      - Systemic patterns (same root cause across multiple categories)
+      - Risk amplification (finding X makes finding Y more exploitable)
+    agent: shield
+    depends_on: [owasp_wave_1, owasp_wave_2, owasp_wave_3]
+    duration: "15-30 min"
+    tasks:
+      - id: deduplicate
+        description: "Remove duplicate findings across agents"
+        steps:
+          - Merge all findings from all 10 agents
+          - Identify duplicates (same root cause flagged by multiple agents)
+          - Keep the most detailed version of each duplicate
+          - Tag merged findings with all applicable OWASP categories
+
+      - id: chain_analysis
+        description: "Identify attack chains across categories"
+        steps:
+          - "Detect chains: e.g., A05 CORS misconfiguration + A01 missing auth = cross-origin data theft"
+          - "Detect chains: e.g., A03 XSS + A09 no logging = undetected account takeover"
+          - "Detect chains: e.g., A10 SSRF + A05 exposed metadata = cloud credential theft"
+          - "Detect chains: e.g., A07 no rate limit + A04 no CAPTCHA = credential stuffing"
+          - "Detect chains: e.g., A02 weak JWT + A01 IDOR = mass data extraction"
+          - Assign amplified CVSS scores to chain findings
+
+      - id: pattern_detection
+        description: "Identify systemic patterns"
+        steps:
+          - "Group findings by root cause (e.g., 'missing input validation' affects A01, A03, A10)"
+          - "Group findings by component (e.g., auth module has A01, A07, A04 issues)"
+          - "Identify if the same anti-pattern repeats across the codebase"
+          - Calculate systemic risk score per pattern
+
+      - id: delta_comparison
+        description: "If retest mode: compare with previous report"
+        skip_if: "previous_report is null"
+        steps:
+          - Load previous report findings
+          - "Classify each finding: FIXED / PARTIAL / OPEN / REGRESSION / NEW"
+          - Calculate remediation rate
+          - Highlight regressions with elevated severity
+
+    outputs:
+      - deduplicated_findings: list
+      - attack_chains: list
+      - systemic_patterns: list
+      - delta_report: object (if retest mode)
+      - total_findings: number
+      - severity_breakdown: object
+
+  # ═══════════════════════════════════════════════════
+  # PHASE 5: REMEDIATION PLANNING
+  # ═══════════════════════════════════════════════════
+  - id: remediation
+    name: "Phase 5: Remediation Planning"
+    description: |
+      Generate prioritized remediation roadmap with effort estimates,
+      fix code for every finding, and quick-wins list.
+    agent: shield
+    depends_on: [correlation]
+    duration: "15-30 min"
+    tasks:
+      - id: prioritize
+        description: "Prioritize findings for remediation"
+        steps:
+          - "Score each finding: CVSS × business_impact × exploitability ÷ fix_effort"
+          - Group into priority tiers (P0 immediate, P1 this week, P2 this month, P3 backlog)
+          - Identify quick wins (high impact + low effort)
+          - Flag chain-breaking fixes (one fix that neutralizes multiple chains)
+
+      - id: generate_fixes
+        description: "Generate remediation code and config changes"
+        steps:
+          - "For each finding: generate ready-to-apply fix (SQL, code, config)"
+          - "For Supabase findings: generate SQL migrations"
+          - "For Vercel findings: generate vercel.json / headers config"
+          - "For code findings: generate code patches with before/after"
+          - "For design findings: recommend architecture changes"
+          - Group fixes by deployment unit (database, backend, frontend, infra)
+
+      - id: build_roadmap
+        description: "Build remediation roadmap"
+        steps:
+          - "Sprint 1 (immediate): P0 findings + quick wins"
+          - "Sprint 2 (1-2 weeks): P1 findings + chain-breaking fixes"
+          - "Sprint 3 (2-4 weeks): P2 findings + systemic pattern fixes"
+          - "Backlog: P3 findings + hardening improvements"
+          - Estimate effort per sprint (hours)
+          - Identify dependencies between fixes
+
+    outputs:
+      - prioritized_findings: list
+      - quick_wins: list
+      - fix_code: object (grouped by deployment unit)
+      - roadmap: object (sprints with findings and effort)
+
+  # ═══════════════════════════════════════════════════
+  # PHASE 6: REPORT GENERATION
+  # ═══════════════════════════════════════════════════
+  - id: report
+    name: "Phase 6: Report Generation"
+    description: |
+      Generate the final consolidated report in the requested language and format.
+      Includes executive summary, full findings, attack chains, and remediation roadmap.
+    agent: shield
+    depends_on: [remediation]
+    duration: "10-20 min"
+    tasks:
+      - id: generate_report
+        description: "Build the comprehensive OWASP recon report"
+        steps:
+          - Generate executive summary (1 page, non-technical)
+          - "Generate risk score: overall CVSS-based security score (0-10)"
+          - Generate OWASP Top 10 coverage heatmap (which categories have findings)
+          - "Generate severity breakdown: CRITICAL / HIGH / MEDIUM / LOW / INFO counts"
+          - "List all findings grouped by OWASP category, sorted by severity"
+          - Include attack chains section with visual chain diagrams (ASCII)
+          - Include systemic patterns section
+          - "If retest: include delta comparison (fixed/partial/open/regression/new)"
+          - Include full remediation roadmap with sprints
+          - Include all fix code as appendix
+          - "Include methodology section: what was analyzed, what was NOT tested"
+          - "Include scope disclaimer: PASSIVE ONLY, no exploitation attempted"
+
+      - id: save_report
+        description: "Save report to disk"
+        steps:
+          - "Save main report as: {report_path}/owasp-recon-{target_domain}-{date}.md"
+          - "Save findings JSON as: {report_path}/owasp-recon-{target_domain}-{date}.json"
+          - "Save SQL fixes as: {report_path}/fixes/sql/"
+          - "Save config fixes as: {report_path}/fixes/config/"
+          - Print report path and summary stats to console
+
+    outputs:
+      - report_file: path
+      - findings_json: path
+      - fix_files: list of paths
+      - summary:
+          target: string
+          date: string
+          score: number
+          total_findings: number
+          critical: number
+          high: number
+          medium: number
+          low: number
+          info: number
+          categories_affected: list
+          quick_wins_count: number
+
+# ─────────────────────────────────────────────────────
+# Report Template Structure
+# ─────────────────────────────────────────────────────
+report_template:
+  sections:
+    - title: "Sumario Executivo"
+      content: "Risk score, top findings, business impact summary"
+    - title: "Escopo e Metodologia"
+      content: "Target, stack, what was analyzed, passive-only disclaimer"
+    - title: "Heatmap OWASP Top 10"
+      content: "Visual grid showing finding count per category"
+    - title: "Resumo de Severidades"
+      content: "CRITICAL/HIGH/MEDIUM/LOW/INFO breakdown with chart"
+    - title: "Cadeias de Ataque"
+      content: "Attack chains identified across categories"
+    - title: "Padroes Sistemicos"
+      content: "Root causes that affect multiple categories"
+    - title: "Findings Detalhados"
+      subsections:
+        - "A01 — Broken Access Control"
+        - "A02 — Cryptographic Failures"
+        - "A03 — Injection"
+        - "A04 — Insecure Design"
+        - "A05 — Security Misconfiguration"
+        - "A06 — Vulnerable and Outdated Components"
+        - "A07 — Identification and Authentication Failures"
+        - "A08 — Software and Data Integrity Failures"
+        - "A09 — Security Logging and Monitoring Failures"
+        - "A10 — Server-Side Request Forgery"
+    - title: "Delta Report (Retest)"
+      content: "Only if previous_report provided"
+      conditional: "previous_report is not null"
+    - title: "Roadmap de Remediacao"
+      content: "Prioritized sprints with effort estimates"
+    - title: "Quick Wins"
+      content: "High-impact, low-effort fixes to apply immediately"
+    - title: "Apendice: Codigo de Correcao"
+      content: "All SQL, config, and code fixes"
+
+# ─────────────────────────────────────────────────────
+# Scope Presets
+# ─────────────────────────────────────────────────────
+scope_presets:
+  full:
+    categories: [A01, A02, A03, A04, A05, A06, A07, A08, A09, A10]
+    description: "All 10 OWASP categories — maximum coverage"
+    duration: "2-4 hours"
+
+  quick:
+    categories: [A01, A03, A05, A07, A02]
+    description: "Top 5 highest-risk categories — fast results"
+    duration: "1-2 hours"
+
+  focused:
+    categories: "User-selected from [A01..A10]"
+    description: "Only specific categories — targeted analysis"
+    duration: "Variable"
+
+# ─────────────────────────────────────────────────────
+# Usage Examples
+# ─────────────────────────────────────────────────────
+# Full recon (all 10 categories):
+#   @shield *owasp-recon target=https://app.example.com
+#
+# Full recon with source code (deeper analysis):
+#   @shield *owasp-recon target=https://app.example.com source_code=./src sql_dump=./supabase/migrations
+#
+# Quick recon (top 5 only):
+#   @shield *owasp-recon target=https://app.example.com scope=quick
+#
+# Focused recon (specific categories):
+#   @shield *owasp-recon target=https://app.example.com scope=focused categories=[A01,A03,A10]
+#
+# Retest mode (compare with previous report):
+#   @shield *owasp-recon target=https://app.example.com previous_report=./reports/owasp-recon-2026-03-25.md
+#
+# With Supabase project:
+#   @shield *owasp-recon target=https://app.example.com supabase_project_id=hfmatqksllyhskcikouo sql_dump=./migrations

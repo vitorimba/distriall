@@ -1,0 +1,61 @@
+name: vimeo
+version: 1.0.0
+title: Vimeo Downloader & Transcriber
+description: >
+  Squad pipeline para download batch de videos do Vimeo (terceiros)
+  com transcricao automatica. Suporta playlists, channels, showcases.
+  Stack: yt-dlp + Whisper + ffmpeg.
+author: Synkra AIOX
+icon: "🎬"
+type: pipeline
+entry_agent: vimeo-chief
+slashPrefix: vimeo
+category: media-automation
+
+agents:
+  orchestrator:
+    - vimeo-chief
+  tier_1:
+    - crawler
+    - downloader
+    - transcriber
+    - librarian
+
+tasks:
+  - detect-url-type
+  - crawl-playlist
+  - crawl-channel
+  - generate-manifest
+  - download-single
+  - download-batch
+  - transcribe-video
+  - transcribe-batch
+  - organize-downloads
+  - generate-report
+
+workflows:
+  - wf-download-batch
+  - wf-download-single
+
+templates:
+  - manifest-tmpl
+  - download-report-tmpl
+  - catalog-entry-tmpl
+
+checklists:
+  - download-quality
+
+data:
+  - vimeo-kb
+
+dependencies:
+  tools:
+    - name: yt-dlp
+      required: true
+      description: "Core download engine"
+    - name: ffmpeg
+      required: true
+      description: "Audio extraction + video muxing"
+    - name: whisper
+      required: false
+      description: "OpenAI Whisper for transcription (local or API)"

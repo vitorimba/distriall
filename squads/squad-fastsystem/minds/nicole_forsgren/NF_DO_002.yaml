@@ -1,0 +1,18 @@
+id: NF_DO_002
+name: "Fast Feedback Enables High Performance"
+mind: nicole_forsgren
+source: "Accelerate (2018) — Chapter 4"
+domain: devops
+description: >
+  Testes rapidos com feedback imediato habilitam deployment
+  frequency alto. Pipeline lento e o maior inhibitor de
+  deploy frequency.
+applies_when:
+  - "Pipeline CI/CD lento (> 15 min)"
+  - "Deploy frequency < 1x/dia"
+action: >
+  Paralelizar testes, cachear dependencias, rodar affected
+  tests only, otimizar build. Cada minuto reduzido no
+  pipeline aumenta deployment frequency.
+severity: high
+confidence: 0.85

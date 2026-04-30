@@ -1,0 +1,169 @@
+##############################################################################
+# Baseline Registry — Squad Gamification
+# Performance baselines for agent quality and squad operations
+##############################################################################
+
+baselines:
+
+  # =========================================================================
+  # Agent Response Quality Baselines
+  # =========================================================================
+  agent_quality:
+    gamification-chief:
+      framework_accuracy: 0.90  # % of framework references that are correct
+      delegation_accuracy: 0.95  # % of correct agent delegations
+      veto_enforcement: 1.00  # Must be 100% — never miss a veto
+      anti_pattern_detection: 0.85
+      workflow_routing: 0.90
+
+    motivation-analyst:
+      octalysis_accuracy: 0.95  # Core Drive identification accuracy
+      sdt_application: 0.90
+      overjustification_detection: 0.85
+      motivation_balance_assessment: 0.90
+      framework_citation: 0.95
+
+    behavior-architect:
+      bmap_application: 0.95
+      tiny_habits_accuracy: 0.90
+      ability_factor_analysis: 0.90
+      prompt_design_quality: 0.85
+      motivation_wave_analysis: 0.85
+
+    experience-designer:
+      flow_channel_accuracy: 0.90
+      scaffolding_quality: 0.90
+      progression_balance: 0.85
+      endgame_design_quality: 0.85
+      leaderboard_design_safety: 0.95
+
+    engagement-engineer:
+      hook_model_accuracy: 0.95
+      variable_reward_design: 0.90
+      loop_closure_rate: 1.00  # Loops must always close
+      ab_test_rigor: 0.90
+      trigger_design_quality: 0.85
+
+    player-profiler:
+      hexad_accuracy: 0.95
+      persona_completeness: 0.90
+      mechanic_alignment: 0.90
+      segmentation_quality: 0.85
+      behavioral_signal_mapping: 0.85
+
+    enterprise-strategist:
+      six_d_framework: 0.95
+      roi_projection_quality: 0.85
+      legal_ethics_coverage: 1.00  # Must be 100%
+      pilot_design_quality: 0.90
+      change_management: 0.85
+
+    learning-designer:
+      blooms_alignment: 0.95
+      learning_outcome_priority: 1.00  # Must never prioritize engagement over learning
+      failure_safety: 1.00  # Must never permanently punish
+      srs_design_accuracy: 0.90
+      assessment_validity: 0.90
+
+    emotion-designer:
+      four_keys_mapping: 0.95
+      emotional_safeguard_coverage: 1.00  # Every risk must have safeguard
+      schell_lens_application: 0.90
+      sensory_design_quality: 0.85
+      emotional_journey_completeness: 0.90
+
+  # =========================================================================
+  # Task Execution Baselines
+  # =========================================================================
+  task_baselines:
+    gamification-diagnostic:
+      avg_duration_hours: 3
+      quality_gate_pass_rate: 0.85
+      completeness_score: 0.90
+
+    player-persona-mapping:
+      avg_duration_hours: 2
+      min_personas_created: 3
+      hexad_coverage: 1.00  # All 6 types assessed
+
+    motivation-audit:
+      avg_duration_hours: 1.5
+      octalysis_completeness: 1.00  # All 8 CDs
+      balance_ratio_calculated: true
+
+    progression-design:
+      avg_duration_hours: 3
+      xp_curve_simulated: true
+      dead_zone_max_levels: 3
+
+    engagement-loop-design:
+      avg_duration_hours: 2.5
+      loop_closure_rate: 1.00
+      reward_types_min: 2
+
+    anti-pattern-audit:
+      avg_duration_hours: 1.5
+      patterns_checked_min: 10
+      zero_critical_tolerance: true
+
+  # =========================================================================
+  # Workflow Baselines
+  # =========================================================================
+  workflow_baselines:
+    wf-full-gamification:
+      avg_duration_weeks: 6
+      quality_gates_passed: 7
+      phase_completion_rate: 0.95
+
+    wf-enterprise-gamification:
+      avg_duration_weeks: 12
+      pilot_success_rate: 0.75
+      legal_review_completion: 1.00
+
+    wf-app-gamification:
+      avg_duration_weeks: 4
+      ab_test_positive_rate: 0.70
+      primary_metric_improvement: 0.10  # 10% minimum
+
+    wf-learning-gamification:
+      avg_duration_weeks: 5
+      learning_outcome_improvement: 0.05  # 5% minimum
+      engagement_improvement: 0.15  # 15% minimum
+
+  # =========================================================================
+  # Squad-Level Baselines
+  # =========================================================================
+  squad_baselines:
+    structural_validation_pass: true
+    fidelity_score: 0.90
+    smoke_test_pass_rate: 0.85  # 38/45 tests passing
+    veto_enforcement_rate: 1.00
+    ethics_compliance: 1.00
+    quality_gate_pass_rate: 0.80
+    cross_agent_handoff_quality: 0.90
+    context_preservation: 0.85
+
+  # =========================================================================
+  # Industry Benchmarks (Reference)
+  # =========================================================================
+  industry_benchmarks:
+    gamification_engagement_lift:
+      low: 0.10  # 10% improvement
+      average: 0.25  # 25% improvement
+      high: 0.50  # 50% improvement
+      source: "Gartner, McKinsey research"
+
+    gamification_retention_lift:
+      d7_improvement: 0.15  # 15% average
+      d30_improvement: 0.10  # 10% average
+      source: "Industry meta-analysis"
+
+    enterprise_gamification_roi:
+      break_even_months: 6
+      year_1_roi_median: 0.30  # 30% ROI
+      source: "Gartner, Deloitte research"
+
+    gamification_failure_rate:
+      rate: 0.80  # 80% of gamification efforts fail
+      primary_cause: "pointsification and poor design"
+      source: "Gartner 2014 prediction (validated)"

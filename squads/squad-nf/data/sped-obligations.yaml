@@ -1,0 +1,198 @@
+# =============================================================================
+# SPED Obligations Calendar
+# Squad: squad-nf
+# Structure: obligation, regime, frequency, deadline, description
+# =============================================================================
+
+# Legenda de regimes: mei, simples, presumido, real, all
+# Deadlines sao tipicos — verificar feriados e excecoes estaduais
+
+obligations:
+  # ---------------------------------------------------------------------------
+  # OBRIGACOES MENSAIS
+  # ---------------------------------------------------------------------------
+  - name: "DAS"
+    regime: [mei, simples]
+    frequency: mensal
+    deadline: "dia 20"
+    description: "Documento de Arrecadacao do Simples Nacional / MEI"
+    system: "PGDAS-D (portal do Simples Nacional)"
+    penalty_late: "Multa 2% ao mes + juros Selic"
+
+  - name: "DESTDA"
+    regime: [simples]
+    frequency: mensal
+    deadline: "dia 28"
+    description: "Declaracao de ST, DIFAL e Antecipacao Tributaria"
+    system: "SEDIF-SN"
+    penalty_late: "Multa por atraso conforme legislacao estadual"
+
+  - name: "SPED Fiscal (EFD ICMS/IPI)"
+    regime: [presumido, real]
+    frequency: mensal
+    deadline: "dia 20 do mes seguinte"
+    description: "Escrituracao Fiscal Digital — livros de entrada, saida, apuracao ICMS/IPI"
+    system: "PVA EFD ICMS IPI"
+    penalty_late: "Multa R$ 500/mes (Lucro Real) ou R$ 1.500/mes + 3% sobre valores omitidos"
+    notes: "Obrigatorio para contribuintes ICMS/IPI. Dispensa GIA em alguns estados."
+
+  - name: "EFD Contribuicoes (PIS/COFINS)"
+    regime: [presumido, real]
+    frequency: mensal
+    deadline: "10o dia util do 2o mes seguinte"
+    description: "Escrituracao das contribuicoes PIS/PASEP e COFINS"
+    system: "PVA EFD Contribuicoes"
+    penalty_late: "Multa R$ 500/mes (Presumido) ou R$ 1.500/mes (Real)"
+
+  - name: "DCTF"
+    regime: [presumido, real]
+    frequency: mensal
+    deadline: "15o dia util do 2o mes seguinte"
+    description: "Declaracao de Debitos e Creditos Tributarios Federais"
+    system: "PGD DCTF"
+    penalty_late: "Multa 2% ao mes sobre imposto declarado (minimo R$ 500)"
+    notes: "DCTFWeb substitui DCTF para contribuicoes previdenciarias"
+
+  - name: "DCTFWeb"
+    regime: [presumido, real]
+    frequency: mensal
+    deadline: "dia 15 do mes seguinte"
+    description: "Declaracao de Debitos e Creditos Tributarios Federais Web (contribuicoes previd.)"
+    system: "eCAC"
+    penalty_late: "Multa 2% ao mes"
+
+  - name: "GIA (SP)"
+    regime: [presumido, real]
+    frequency: mensal
+    deadline: "dia 15-20 conforme CNAE"
+    description: "Guia de Informacao e Apuracao do ICMS — estado de SP"
+    system: "GIA Eletronica"
+    state_specific: true
+    states: [SP]
+    notes: "Sendo substituida pela EFD em varios estados"
+
+  - name: "DAPI (MG)"
+    regime: [presumido, real]
+    frequency: mensal
+    deadline: "dia 09 do mes seguinte"
+    description: "Declaracao de Apuracao e Pagamento do ICMS — MG"
+    system: "SIARE/MG"
+    state_specific: true
+    states: [MG]
+
+  - name: "DMA (BA)"
+    regime: [presumido, real]
+    frequency: mensal
+    deadline: "dia 20 do mes seguinte"
+    description: "Declaracao e Apuracao Mensal do ICMS — BA"
+    system: "SEFAZ/BA"
+    state_specific: true
+    states: [BA]
+
+  # ---------------------------------------------------------------------------
+  # OBRIGACOES TRIMESTRAIS
+  # ---------------------------------------------------------------------------
+  - name: "IRPJ (Trimestral)"
+    regime: [presumido]
+    frequency: trimestral
+    deadline: "ultimo dia util do mes seguinte ao trimestre"
+    trimestres: ["Jan-Mar", "Abr-Jun", "Jul-Set", "Out-Dez"]
+    description: "Imposto de Renda Pessoa Juridica sobre base presumida"
+    system: "DARF (codigo 2089)"
+
+  - name: "CSLL (Trimestral)"
+    regime: [presumido]
+    frequency: trimestral
+    deadline: "ultimo dia util do mes seguinte ao trimestre"
+    description: "Contribuicao Social sobre Lucro Liquido"
+    system: "DARF (codigo 2372)"
+
+  - name: "IRPJ (Trimestral ou Estimativa)"
+    regime: [real]
+    frequency: "trimestral ou mensal por estimativa"
+    deadline: "ultimo dia util do mes seguinte"
+    description: "IRPJ sobre lucro real apurado ou base estimada mensal"
+    system: "DARF (codigo 2362 trimestral / 2089 estimativa)"
+
+  # ---------------------------------------------------------------------------
+  # OBRIGACOES ANUAIS
+  # ---------------------------------------------------------------------------
+  - name: "DASN-SIMEI"
+    regime: [mei]
+    frequency: anual
+    deadline: "31 de maio"
+    description: "Declaracao Anual do Simples Nacional para MEI"
+    system: "Portal do Empreendedor"
+
+  - name: "DEFIS"
+    regime: [simples]
+    frequency: anual
+    deadline: "31 de marco"
+    description: "Declaracao de Informacoes Socioeconomicas e Fiscais"
+    system: "PGDAS-D"
+
+  - name: "ECF"
+    regime: [presumido, real]
+    frequency: anual
+    deadline: "ultimo dia util de julho"
+    description: "Escrituracao Contabil Fiscal (substitui DIPJ)"
+    system: "PVA ECF"
+    penalty_late: "Multa 0.25% do lucro liquido por mes"
+
+  - name: "ECD (SPED Contabil)"
+    regime: [real]
+    frequency: anual
+    deadline: "ultimo dia util de maio"
+    description: "Escrituracao Contabil Digital — livros contabeis"
+    system: "PVA ECD"
+    notes: "Obrigatorio para Lucro Real. Opcional para Presumido (mas obrigatorio se distribuir lucros > base presumida)"
+
+  - name: "DIRF"
+    regime: [presumido, real]
+    frequency: anual
+    deadline: "ultimo dia util de fevereiro"
+    description: "Declaracao do Imposto de Renda Retido na Fonte"
+    system: "PGD DIRF"
+    notes: "Sendo substituida pela EFD-Reinf + DCTFWeb"
+
+  - name: "RAIS"
+    regime: [all]
+    frequency: anual
+    deadline: "marco"
+    description: "Relacao Anual de Informacoes Sociais"
+    system: "RAIS Online"
+    notes: "Substituida pelo eSocial para empregadores obrigados"
+
+  # ---------------------------------------------------------------------------
+  # OBRIGACOES ESPECIAIS
+  # ---------------------------------------------------------------------------
+  - name: "Inventario (Bloco H - EFD)"
+    regime: [presumido, real]
+    frequency: anual
+    deadline: "fevereiro (ref. 31/12 do ano anterior)"
+    description: "Registro de estoque na EFD ICMS/IPI (Bloco H)"
+    notes: "Tambem obrigatorio em mudanca de regime tributario"
+
+  - name: "Manifestacao Destinatario"
+    regime: [all]
+    frequency: continuo
+    deadline: "Ate 180 dias apos emissao da NF-e"
+    description: "Confirmar/desconhecer NF-e recebidas no portal SEFAZ"
+    system: "Portal NF-e ou sistema integrado"
+
+# =============================================================================
+# Calendario Resumo por Mes (referencia rapida)
+# =============================================================================
+monthly_calendar:
+  - day: 9
+    obligations: ["DAPI/MG"]
+  - day: 10
+    obligations: ["EFD Contribuicoes (dia util)"]
+  - day: 12
+    obligations: ["GIA/RS", "GIA/PR"]
+  - day: 15
+    obligations: ["DCTF (dia util)", "DCTFWeb", "GIA/SP (varia)"]
+  - day: 20
+    obligations: ["DAS", "SPED Fiscal", "DMA/BA"]
+  - day: 28
+    obligations: ["DESTDA"]

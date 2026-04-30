@@ -1,0 +1,1132 @@
+workflow:
+  id: wf-squad-pro-pipeline
+  name: "Squad PRO Pipeline — Complete End-to-End Creation"
+  version: "1.0.0"
+  purpose: >
+    Mega-orquestrador que encadeia TODAS as fases de criação de um squad PRO:
+    desde o PRD até o handoff final com briefing, analytics e smoke test.
+    Cada fase delega para workflows/tasks especializados que já existem.
+    Este workflow é a "cola" que garante sequência, gates e rastreabilidade.
+  description: >
+    Pipeline completo de 12 fases para criar squads no padrão PRO (nível design squad:
+    8+ agents, 50-100 tasks, 10+ workflows, mind cloning, quality gates, context stack).
+    Suporta 3 entry points (from-scratch, from-prd, from-sources) e permite pausar/retomar.
+  type: orchestration
+  orchestrator: "@squad-chief"
+  icon: "🏭"
+  command: "*pro-pipeline {domain} [--mode from-scratch|from-prd|from-sources] [--pause-after {phase}] [--skip {phase}] [--resume {phase}]"
+
+  metadata:
+    elicit: true
+    confirmation_required: true
+    estimated_duration: "15-30h (full PRO)"
+    benchmark_squad: "design (8 agents, 89 tasks, 11 workflows, score 10/10)"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           ENFORCEMENT (3 LAYERS)
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  enforcement:
+    layer_1_checklist:
+      description: "MANDATORY checklist loaded at pipeline start"
+      file: "checklists/pro-pipeline-execution.md"
+      rule: |
+        BEFORE executing any phase:
+        1. READ checklists/pro-pipeline-execution.md
+        2. Each phase has checkboxes — mark [x] as you complete each step
+        3. NEVER proceed to next phase without marking current phase complete
+        4. If a gate FAILS, enter fix cycle — never skip
+
+    layer_2_state_file:
+      description: "State persistence for pause/resume and phase tracking"
+      file: "squads/{squad_name}/.pipeline-state.yaml"
+      rule: |
+        AFTER completing each phase:
+        1. WRITE/UPDATE .pipeline-state.yaml with current_phase, status, timestamp
+        2. Include outputs generated in that phase
+        3. On resume: READ state file to determine where to continue
+        4. NEVER execute a phase that state file shows as already "complete"
+           unless --force flag is passed
+
+    layer_3_gate_enforcement:
+      description: "Gate conditions that BLOCK advancement"
+      rule: |
+        Each phase has a GATE condition at the bottom of its checklist section.
+        Gates are BLOCKING by default:
+        - PASS: proceed to next phase
+        - FAIL: enter F5.5 fix cycle (or phase-specific fix)
+        - SKIP: only if skip_condition matches (log reason in state file)
+
+        Gate verification:
+        - F0 gate: PRD exists with required sections
+        - F2 gate: Minimum minds validated (by depth)
+        - F3 gate: Each mind smoke test 3/3 PASS
+        - F4 gate: SSOT check — ls {dir} matches config entries
+        - F5 gate: Score >= 7.0, zero veto conditions
+        - F7 gate: Lifecycle score >= 8.0
+        - F9 gate: Smoke test E2E passes
+
+        CRITICAL: "Seems ok" is NOT a gate pass.
+        Run the actual check. Count the files. Compare the lists. Test the activation.
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           INPUTS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  inputs:
+    - field: domain
+      type: string
+      required: true
+      description: "Domínio do squad (ex: legal, finance, health, sales)"
+      example: "design-system"
+
+    - field: mode
+      type: string
+      required: false
+      default: "from-scratch"
+      enum: [from-scratch, from-prd, from-sources]
+      description: >
+        from-scratch: Começa do zero (F0 → F11)
+        from-prd: Já tem PRD, pula F0 (F1 → F11)
+        from-sources: Já tem fontes/materiais dos experts, pula F0-F2 (F3 → F11)
+
+    - field: prd_path
+      type: string
+      required: false
+      description: "Path do PRD existente (obrigatório se mode=from-prd)"
+
+    - field: sources_path
+      type: string
+      required: false
+      description: "Path dos materiais fonte (obrigatório se mode=from-sources)"
+
+    - field: squad_name
+      type: string
+      required: false
+      description: "Nome do squad (se não fornecido, derivado do domain)"
+
+    - field: depth
+      type: string
+      required: false
+      default: "standard"
+      enum: [simple, standard, enterprise]
+      description: >
+        simple: 3-5 agents, MVP
+        standard: 6-10 agents, completo
+        enterprise: 10+ agents, compliance-ready
+
+    - field: pause_after
+      type: string
+      required: false
+      description: "Pausar após fase específica (ex: F3, F5). Retomar com --resume"
+
+    - field: skip
+      type: string[]
+      required: false
+      description: "Fases para pular (ex: F6 se não quer optimize)"
+
+    - field: auto_approve
+      type: boolean
+      required: false
+      default: false
+      description: "Se true, pula confirmações em quality gates (YOLO mode)"
+
+    - field: export_dir
+      type: string
+      required: false
+      default: "from .aiox/sync-config.yaml → export_dir"
+      description: "Pasta central de squads portáteis (zips certificados)"
+
+    - field: projects_base
+      type: string
+      required: false
+      default: "from .aiox/sync-config.yaml → projects_base"
+      description: "Pasta base dos projetos para deploy de slash commands"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           STATE MACHINE
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  state_machine:
+    states:
+      - init
+      - pre_gate_dedup
+      - f0_prd_planning
+      - f1_design_tools
+      - f2_research_minds
+      - f3_clone_dna
+      - f4_build_squad
+      - f4_5_documentation
+      - f5_validate
+      - f5_5_qa_fix_cycle
+      - f6_optimize
+      - f7_lifecycle_save
+      - f8_context_stack
+      - f9_handoff
+      - f10_export_zip
+      - f11_deploy_projects
+      - paused
+      - complete
+      - failed
+
+    transitions:
+      # PRE-GATE
+      - trigger: start
+        source: init
+        dest: pre_gate_dedup
+      - trigger: dedup_clear
+        source: pre_gate_dedup
+        dest: f0_prd_planning
+      - trigger: dedup_clear_skip_prd
+        source: pre_gate_dedup
+        dest: f1_design_tools
+        condition: "mode == from-prd"
+      - trigger: dedup_clear_skip_to_clone
+        source: pre_gate_dedup
+        dest: f3_clone_dna
+        condition: "mode == from-sources"
+      - trigger: dedup_exists_abort
+        source: pre_gate_dedup
+        dest: complete
+        condition: "user chose to use existing squad"
+
+      # F0 → F1
+      - trigger: f0_complete
+        source: f0_prd_planning
+        dest: f1_design_tools
+      - trigger: f0_failed
+        source: f0_prd_planning
+        dest: failed
+
+      # F1 → F2
+      - trigger: f1_complete
+        source: f1_design_tools
+        dest: f2_research_minds
+      - trigger: f1_failed
+        source: f1_design_tools
+        dest: failed
+
+      # F2 → F3
+      - trigger: f2_complete
+        source: f2_research_minds
+        dest: f3_clone_dna
+      - trigger: f2_failed
+        source: f2_research_minds
+        dest: failed
+
+      # F3 → F4
+      - trigger: f3_complete
+        source: f3_clone_dna
+        dest: f4_build_squad
+      - trigger: f3_failed
+        source: f3_clone_dna
+        dest: failed
+
+      # F4 → F4.5
+      - trigger: f4_complete
+        source: f4_build_squad
+        dest: f4_5_documentation
+      - trigger: f4_failed
+        source: f4_build_squad
+        dest: failed
+
+      # F4.5 → F5
+      - trigger: f4_5_complete
+        source: f4_5_documentation
+        dest: f5_validate
+      - trigger: f4_5_failed
+        source: f4_5_documentation
+        dest: failed
+
+      # F5 → F5.5
+      - trigger: f5_complete
+        source: f5_validate
+        dest: f5_5_qa_fix_cycle
+      - trigger: f5_failed
+        source: f5_validate
+        dest: failed
+
+      # F5.5 → F6
+      - trigger: f5_5_complete
+        source: f5_5_qa_fix_cycle
+        dest: f6_optimize
+      - trigger: f5_5_escalate
+        source: f5_5_qa_fix_cycle
+        dest: failed
+
+      # F6 → F7
+      - trigger: f6_complete
+        source: f6_optimize
+        dest: f7_lifecycle_save
+      - trigger: f6_skipped
+        source: f6_optimize
+        dest: f7_lifecycle_save
+        condition: "F6 in skip"
+      - trigger: f6_failed
+        source: f6_optimize
+        dest: failed
+
+      # F7 → F8
+      - trigger: f7_complete
+        source: f7_lifecycle_save
+        dest: f8_context_stack
+      - trigger: f7_failed
+        source: f7_lifecycle_save
+        dest: failed
+
+      # F8 → F9
+      - trigger: f8_complete
+        source: f8_context_stack
+        dest: f9_handoff
+      - trigger: f8_failed
+        source: f8_context_stack
+        dest: failed
+
+      # F9 → F10
+      - trigger: f9_complete
+        source: f9_handoff
+        dest: f10_export_zip
+      - trigger: f9_failed
+        source: f9_handoff
+        dest: failed
+
+      # F10 → F11
+      - trigger: f10_complete
+        source: f10_export_zip
+        dest: f11_deploy_projects
+      - trigger: f10_failed
+        source: f10_export_zip
+        dest: failed
+
+      # F11 → COMPLETE
+      - trigger: f11_complete
+        source: f11_deploy_projects
+        dest: complete
+      - trigger: f11_skipped
+        source: f11_deploy_projects
+        dest: complete
+        condition: "user chose not to deploy"
+      - trigger: f11_failed
+        source: f11_deploy_projects
+        dest: failed
+
+      # PAUSE/RESUME (from any phase)
+      - trigger: pause
+        source: "*"
+        dest: paused
+      - trigger: resume_f0
+        source: paused
+        dest: f0_prd_planning
+      - trigger: resume_f1
+        source: paused
+        dest: f1_design_tools
+      - trigger: resume_f2
+        source: paused
+        dest: f2_research_minds
+      - trigger: resume_f3
+        source: paused
+        dest: f3_clone_dna
+      - trigger: resume_f4
+        source: paused
+        dest: f4_build_squad
+      - trigger: resume_f5
+        source: paused
+        dest: f5_validate
+      - trigger: resume_f6
+        source: paused
+        dest: f6_optimize
+      - trigger: resume_f7
+        source: paused
+        dest: f7_lifecycle_save
+      - trigger: resume_f8
+        source: paused
+        dest: f8_context_stack
+      - trigger: resume_f9
+        source: paused
+        dest: f9_handoff
+      - trigger: resume_f10
+        source: paused
+        dest: f10_export_zip
+      - trigger: resume_f11
+        source: paused
+        dest: f11_deploy_projects
+
+      # FAIL (from any phase)
+      - trigger: fail
+        source: "*"
+        dest: failed
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           SEQUENCE
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  sequence:
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # PRE-GATE: Duplicate Detection
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: pre_gate_dedup
+      id: pre_gate_dedup
+      phase: 0
+      phase_name: "PRE-GATE — Duplicate Check"
+      agent: "@squad-chief"
+      action: check_existing_squads
+      duration_estimate: "1 min"
+      notes: |
+        Antes de qualquer coisa, verificar:
+        1. Ler squad-registry.yaml (se existir)
+        2. Buscar domain keywords no registro
+        3. Listar squads instalados em squads/
+        4. Se match encontrado:
+           - Mostrar squad existente com detalhes
+           - Perguntar: Usar existente / Estender / Criar novo
+        5. Se nenhum match → prosseguir
+
+        GATE: Se usuário escolher "usar existente" → ABORT (sem erro)
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F0: PRD + Deep Planning
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f0_prd_planning
+      id: f0_prd_planning
+      phase: 1
+      phase_name: "F0 — PRD & Deep Planning"
+      agent: "@squad-chief"
+      action: execute_workflow
+      workflow_ref: wf-plan-squad.yaml
+      skip_condition: "mode == from-prd OR mode == from-sources"
+      inputs:
+        domain: "{domain}"
+        depth: "{depth}"
+      outputs:
+        - squad_prd
+        - domain_map
+        - architecture_blueprint
+        - roadmap
+      duration_estimate: "2-4h"
+      quality_gate:
+        id: QG-PRO-001
+        type: hybrid
+        check: "PRD tem: domain map, architecture, tier plan, roadmap?"
+        on_fail: iterate
+      notes: |
+        Delega para wf-plan-squad.yaml completo:
+        preflight → depth-calibration → domain-mapping → architecture →
+        challenge-reorder → roadmap → prd-assembly → handoff
+
+        Se mode=from-prd: pula esta fase, usa prd_path como input
+        Se mode=from-sources: pula esta fase e F1
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F1: Design + Tool Discovery
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f1_design_tools
+      id: f1_design_tools
+      phase: 2
+      phase_name: "F1 — Design & Tool Discovery"
+      agent: "@squad-chief"
+      action: execute_workflow
+      workflow_ref: wf-discover-tools.yaml
+      skip_condition: "mode == from-sources"
+      inputs:
+        domain: "{domain}"
+        architecture_blueprint: "{architecture_blueprint}"
+      outputs:
+        - tool_registry_additions
+        - capability_gap_analysis
+        - integration_plan
+      duration_estimate: "1-2h"
+      quality_gate:
+        id: QG-PRO-002
+        type: automated
+        check: "Tool discovery completou? Gaps mapeados?"
+        on_fail: warn_and_continue
+      notes: |
+        Pesquisa paralela de MCPs, APIs, CLIs, Libraries, GitHub projects
+        que podem potencializar o squad.
+        Output enriquece a arquitetura com ferramentas reais.
+        NÃO bloqueante — se falhar, continua sem tool enrichment.
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F2: Research Elite Minds
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f2_research_minds
+      id: f2_research_minds
+      phase: 3
+      phase_name: "F2 — Research Elite Minds"
+      agent: "@squad-chief"
+      action: execute_workflow
+      workflow_ref: wf-mind-research-loop.yaml
+      skip_condition: "mode == from-sources"
+      inputs:
+        domain: "{domain}"
+        architecture_blueprint: "{architecture_blueprint}"
+        depth: "{depth}"
+      outputs:
+        - elite_minds_list
+        - tier_classification
+        - framework_validation_results
+      duration_estimate: "2-4h"
+      quality_gate:
+        id: QG-PRO-003
+        type: hybrid
+        check: "Mínimo N minds validados com frameworks documentados?"
+        criteria:
+          simple: "3+ minds"
+          standard: "5+ minds"
+          enterprise: "8+ minds"
+        on_fail: block
+      notes: |
+        3-5 iterações com devil's advocate:
+        1. Broad research — mapear universo de experts
+        2. Devil's advocate — questionar cada nome
+        3. Framework validation — documentação existe?
+        4. Tier classification — Tier 0/1/2/3
+        5. Final curation — lista aprovada
+
+        GATE BLOQUEANTE: Sem minds validados = não pode continuar
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F3: Clone DNA (por mind)
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f3_clone_dna
+      id: f3_clone_dna
+      phase: 4
+      phase_name: "F3 — Clone DNA"
+      agent: "@squad-chief"
+      action: execute_workflow_per_mind
+      workflow_ref: wf-clone-mind.yaml
+      inputs:
+        minds: "{elite_minds_list}"
+        sources_path: "{sources_path}"
+      outputs:
+        - mind_dna_collection
+        - smoke_test_results
+        - quality_dashboard
+      duration_estimate: "2-3h per mind"
+      quality_gate:
+        id: QG-PRO-004
+        type: hybrid
+        check: "Cada mind: smoke tests 3/3 PASS? Voice quality >= 8/10?"
+        on_fail: iterate_or_cut
+      notes: |
+        Para CADA mind aprovado na F2:
+        1. Brownfield check — mind já clonado?
+        2. Auto-acquire sources — buscar materiais na web
+        3. Collect + validate sources — qualidade suficiente?
+        4. Extract Voice DNA — vocabulário, tom, frases
+        5. Extract Thinking DNA — frameworks, heurísticas
+        6. Synthesis — combinar em agent block
+        7. Smoke test — 3 testes de comportamento
+        8. Quality dashboard — métricas do clone
+
+        Minds que falharem no smoke test → oferecer corte ou retry
+        Orchestrator agent (chief) NÃO precisa de clone — criado direto
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F4: Build Squad
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f4_build_squad
+      id: f4_build_squad
+      phase: 5
+      phase_name: "F4 — Build Squad"
+      agent: "@squad-chief"
+      action: execute_workflow
+      workflow_ref: wf-create-squad.yaml
+      inputs:
+        domain: "{domain}"
+        squad_name: "{squad_name}"
+        mind_dna_collection: "{mind_dna_collection}"
+        architecture_blueprint: "{architecture_blueprint}"
+        tool_registry_additions: "{tool_registry_additions}"
+      outputs:
+        - squad_path
+        - config_yaml
+        - agents_created
+        - tasks_created
+        - workflows_created
+        - templates_created
+        - checklists_created
+        - data_files_created
+      duration_estimate: "4-8h"
+      quality_gate:
+        id: QG-PRO-005
+        type: automated
+        check: "config.yaml válido? Todos os agents criados? SSOT check?"
+        on_fail: block
+      notes: |
+        Criação sequencial:
+        1. config.yaml (SSOT do squad)
+        2. config/ (coding-standards, tech-stack, source-tree)
+        3. agents/ — chief (direto) + mind clones (com DNA)
+        4. tasks/ — granulares, task-first
+        5. workflows/ — multi-fase com checkpoints
+        6. templates/ — output templates
+        7. checklists/ — quality checklists
+        8. data/ — KBs, catálogos, registros
+        9. scripts/ — utilitários se necessário
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F4.5: Documentation
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f4_5_documentation
+      id: f4_5_documentation
+      phase: 5.5
+      phase_name: "F4.5 — Documentation"
+      agent: "@squad-chief"
+      action: execute_task
+      task_ref: create-documentation.md
+      inputs:
+        squad_name: "{squad_name}"
+        squad_path: "{squad_path}"
+      outputs:
+        - readme_generated
+        - docs_generated
+      duration_estimate: "30-60 min"
+      notes: |
+        Gerar documentação completa:
+        1. README.md — overview, agents, commands, quick start, workflows
+        2. docs/ — guides, FAQ, troubleshooting (se enterprise)
+        3. CHANGELOG.md — v1.0.0 initial release
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F5: Validate
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f5_validate
+      id: f5_validate
+      phase: 6
+      phase_name: "F5 — Validate"
+      agent: "@squad-chief"
+      action: execute_workflow
+      workflow_ref: validate-squad.yaml
+      inputs:
+        squad_name: "{squad_name}"
+      outputs:
+        - validation_report
+        - validation_score
+        - validation_verdict
+        - issues_list
+      duration_estimate: "1-2h"
+      quality_gate:
+        id: QG-PRO-006
+        type: automated
+        check: "Score >= 7.0? Zero veto conditions?"
+        on_fail: proceed_to_fix_cycle
+      notes: |
+        5 subtasks de validação profunda:
+        1. Deterministic — type, structure, security, coverage
+        2. Cross-references — todas as refs resolvem?
+        3. Quality — agents, tasks, templates quality
+        4. Contextual — fit com ecossistema
+        5. Verdict — score final + veto check
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F5.5: QA + Fix Cycle
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f5_5_qa_fix_cycle
+      id: f5_5_qa_fix_cycle
+      phase: 6.5
+      phase_name: "F5.5 — QA Fix Cycle"
+      agent: "@squad-chief"
+      action: execute_task
+      task_ref: qa-after-creation.md
+      inputs:
+        squad_name: "{squad_name}"
+        validation_report: "{validation_report}"
+        issues_list: "{issues_list}"
+      outputs:
+        - fixes_applied
+        - post_fix_score
+      duration_estimate: "30-60 min"
+      max_iterations: 3
+      notes: |
+        Loop de correção:
+        1. Ler issues da validação
+        2. Aplicar fixes automáticos (broken refs, missing fields)
+        3. Re-validar
+        4. Se score < 7.0 após 3 iterações → escalar
+
+        GATE: Score >= 7.0 para prosseguir
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F6: Optimize
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f6_optimize
+      id: f6_optimize
+      phase: 7
+      phase_name: "F6 — Optimize"
+      agent: "@squad-chief"
+      action: execute_workflow
+      workflow_ref: wf-optimize-squad.yaml
+      skip_condition: "F6 in skip OR depth == simple"
+      inputs:
+        squad_name: "{squad_name}"
+      outputs:
+        - executor_map
+        - optimization_report
+        - estimated_savings
+      duration_estimate: "1-2h"
+      notes: |
+        Otimização em 3 trilhas:
+        1. Executor analysis — Worker vs Agent por task
+        2. Workflow optimization — paralelização, checkpoints
+        3. Gap-zero — cobrir gaps de handoff
+
+        SKIP: depth=simple não precisa de optimize
+        SKIP: se usuário passar --skip F6
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F7: Lifecycle + Save
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f7_lifecycle_save
+      id: f7_lifecycle_save
+      phase: 8
+      phase_name: "F7 — Lifecycle & Save"
+      agent: "@aiox-master"
+      action: execute_workflow
+      workflow_ref: lifecycle-squad.yaml
+      inputs:
+        squad_name: "{squad_name}"
+        mode: "quick"
+        auto_upgrade: true
+        force: true
+      outputs:
+        - lifecycle_score
+        - lifecycle_verdict
+        - zip_path
+        - lifecycle_certified
+      duration_estimate: "30-60 min"
+      quality_gate:
+        id: QG-PRO-007
+        type: automated
+        check: "Lifecycle score >= 8.0? Verdict != FAIL?"
+        on_fail: block
+      notes: |
+        Executa lifecycle-squad em mode=quick (sem re-upgrade, squad já foi otimizado):
+        1. Install — copiar para squads/ + slash commands
+        2. Validate — 5 subtasks
+        3. Save — zip certificado com .lifecycle-certified.json
+
+        mode=quick porque o squad já passou por F5+F5.5+F6
+        auto_upgrade=true para aplicar fixes menores automaticamente
+        force=true porque estamos instalando squad recém-criado
+
+        NOTA: Se o squad foi criado diretamente em squads/ (não de fonte externa),
+        o install step é um no-op e o lifecycle foca em validate + save.
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F8: Context Stack + Greeting
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f8_context_stack
+      id: f8_context_stack
+      phase: 9
+      phase_name: "F8 — Context Stack"
+      agent: "@squad-chief"
+      action: execute_workflow
+      workflow_ref: wf-install-context-stack.yaml
+      inputs:
+        squad_name: "{squad_name}"
+      outputs:
+        - context_scripts_generated
+        - greeting_script_generated
+        - activation_tested
+      duration_estimate: "30 min"
+      notes: |
+        Instalar o context stack completo:
+        1. Audit — mapear o que o squad precisa para ativação
+        2. Domain mapping — categorizar dados de domínio
+        3. Generate scripts — greeting, activation, context-loader
+        4. Integration — wiring com .claude/commands/
+        5. Validation — testar ativação end-to-end
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F9: Handoff — Registry, Briefing, Analytics, Smoke Test E2E
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f9_handoff
+      id: f9_handoff
+      phase: 10
+      phase_name: "F9 — Handoff"
+      agent: "@squad-chief"
+      action: execute_handoff_sequence
+      inputs:
+        squad_name: "{squad_name}"
+      outputs:
+        - registry_updated
+        - commands_synced
+        - briefing_report
+        - analytics_dashboard
+        - smoke_test_e2e_result
+      duration_estimate: "30-60 min"
+      notes: |
+        Sequência de handoff (5 subtasks):
+
+        9.1 — Registry Update
+          task: refresh-registry.md
+          Atualizar squad-registry.yaml com novo squad
+
+        9.2 — Slash Command Sync
+          task: sync-ide-skills.md
+          Garantir que .claude/commands/ está sincronizado
+
+        9.3 — Briefing Executivo
+          task: briefing-squad.md --depth full --save
+          Gerar briefing completo do squad criado
+          Salvar em outputs/squad-briefings/
+
+        9.4 — Analytics Dashboard
+          task: squad-analytics.md
+          Gerar dashboard de métricas do squad
+
+        9.5 — Smoke Test E2E
+          Ativar o chief do squad e testar 3 cenários:
+          - Cenário 1: Ativação — chief responde com greeting correto?
+          - Cenário 2: Roteamento — chief roteia para agent correto?
+          - Cenário 3: Task execution — task principal executa sem erro?
+          PASS = squad production-ready
+          FAIL = warn (não bloqueia, mas documenta)
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F10: Export Certified Zip
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f10_export_zip
+      id: f10_export_zip
+      phase: 11
+      phase_name: "F10 — Export Certified Zip"
+      agent: "@squad-chief"
+      action: execute_task
+      task_ref: export-certified-zip.md
+      inputs:
+        squad_name: "{squad_name}"
+        squad_path: "squads/{squad_name}/"
+        export_dir: "{export_dir}"
+      outputs:
+        - zip_path
+        - zip_integrity
+      duration_estimate: "2 min"
+      quality_gate:
+        id: QG-PRO-008
+        type: automated
+        severity: blocking
+        check: "Zip gerado? Integridade OK? Sem credenciais?"
+        on_fail: block
+      notes: |
+        OBRIGATÓRIO — sem este passo o squad não é portátil.
+
+        Gerar zip certificado excluindo artefatos runtime:
+        1. Verificar que squad existe e foi validado
+        2. Gerar zip em {export_dir}/{squad_name}.zip
+        3. Excluir .pipeline-state.yaml e .aiox/
+        4. Verificar integridade (unzip -t)
+        5. Verificar que não contém credenciais (.env, .crt, .key, .pfx)
+
+        CHECKLIST OBRIGATÓRIO:
+        - [ ] Zip salvo em {export_dir}
+        - [ ] Integridade verificada
+        - [ ] Zero credenciais no zip
+        - [ ] Zip é auto-contido (descompactar = squad funcional)
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # F11: Deploy to Projects
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - step: f11_deploy_projects
+      id: f11_deploy_projects
+      phase: 12
+      phase_name: "F11 — Deploy to Projects (Full Copy)"
+      agent: "@squad-chief"
+      action: execute_task
+      task_ref: deploy-to-projects.md
+      inputs:
+        squad_name: "{squad_name}"
+        zip_path: "{zip_path}"
+        projects_base: "{projects_base}"
+      outputs:
+        - deploy_result
+        - projects_deployed
+        - projects_skipped
+      duration_estimate: "5-15 min"
+      notes: |
+        INTERATIVO — SEMPRE perguntar antes de instalar.
+        CÓPIA COMPLETA — squad inteiro + slash commands.
+
+        1. Escanear {projects_base} para projetos
+        2. Listar projetos com status (has_claude, has_squad)
+        3. Perguntar ao usuário:
+           - Instalar em TODOS os projetos?
+           - Escolher projetos específicos?
+           - Não instalar agora?
+        4. Se instalar, POR PROJETO:
+           a. mkdir -p {project}/squads/
+           b. unzip {zip_path} -d {project}/squads/  (squad completo)
+           c. mkdir -p {project}/.claude/commands/{squad_name}/
+           d. cp {project}/squads/{squad_name}/agents/*.md → {project}/.claude/commands/{squad_name}/
+        5. Reportar resultado por projeto
+
+        O QUE É COPIADO:
+        - squads/{squad_name}/  — agents, tasks, workflows, checklists, data, config, README, CHANGELOG
+        - .claude/commands/{squad_name}/ — slash commands (agents como comandos)
+
+        OBRIGAÇÕES (NON-NEGOTIABLE):
+        - [ ] NUNCA instalar sem perguntar — zero deploys automáticos
+        - [ ] Copiar squad COMPLETO (agents + tasks + workflows + checklists + data)
+        - [ ] Instalar slash commands (agents/*.md → .claude/commands/)
+        - [ ] NÃO sobrescrever sem confirmação
+        - [ ] Se "todos", confirmar lista antes de executar
+
+    # ═════════════════════════════════════════════════════════════════════════════
+    # COMPLETE
+    # ═════════════════════════════════════════════════════════════════════════════
+
+    - workflow_end:
+        id: complete
+        action: generate_pipeline_report
+        notes: |
+          Gerar relatório final consolidado:
+
+          ════════════════════════════════════════════════════════════════
+          🏭 SQUAD PRO PIPELINE — COMPLETE
+          ════════════════════════════════════════════════════════════════
+
+          📦 Squad:        {squad_name} v1.0.0
+          🎯 Domínio:      {domain}
+          ⏱️ Tempo total:  {elapsed}
+          📊 Depth:        {depth}
+          🔧 Mode:         {mode}
+
+          ┌────────────────────────────────────────────────────────────┐
+          │ PHASE        │ STATUS  │ DURATION │ SCORE │ NOTES        │
+          ├────────────────────────────────────────────────────────────┤
+          │ PRE: Dedup   │ ✅ PASS │ 1m       │  —    │ No conflicts │
+          │ F0: PRD      │ ✅ PASS │ 3h       │  —    │ 7 subtasks   │
+          │ F1: Tools    │ ✅ PASS │ 1h       │  —    │ N tools      │
+          │ F2: Research │ ✅ PASS │ 2h       │  —    │ N minds      │
+          │ F3: Clone    │ ✅ PASS │ 6h       │ 8.5   │ N cloned     │
+          │ F4: Build    │ ✅ PASS │ 5h       │  —    │ N files      │
+          │ F4.5: Docs   │ ✅ PASS │ 30m      │  —    │ README + docs│
+          │ F5: Validate │ ✅ PASS │ 1h       │ 9.2   │ 0 vetos      │
+          │ F5.5: QA Fix │ ✅ PASS │ 20m      │ 9.5   │ 3 fixes      │
+          │ F6: Optimize │ ✅ PASS │ 1h       │  —    │ N optimized  │
+          │ F7: Lifecycle│ ✅ PASS │ 30m      │ 9.7   │ Certified    │
+          │ F8: Context  │ ✅ PASS │ 20m      │  —    │ 5 scripts    │
+          │ F9: Handoff  │ ✅ PASS │ 30m      │  —    │ E2E passed   │
+          │ F10: Export  │ ✅ PASS │ 2m       │  —    │ Zip saved    │
+          │ F11: Deploy  │ ✅ PASS │ 10m      │  —    │ N projects   │
+          ├────────────────────────────────────────────────────────────┤
+          │ FINAL SCORE  │         │          │ 9.7   │              │
+          │ PRODUCTION   │ ✅ YES  │          │       │              │
+          └────────────────────────────────────────────────────────────┘
+
+          📊 Squad Stats:
+            Agents:     {N} ({N} mind clones + 1 chief)
+            Tasks:      {N}
+            Workflows:  {N}
+            Templates:  {N}
+            Checklists: {N}
+            Data:       {N}
+
+          🔑 Para usar:
+            /{slash_prefix}:{entry_agent}
+
+          📄 Relatórios:
+            outputs/squad-lifecycle/{squad_name}-lifecycle-{date}.md
+            outputs/squad-briefings/{squad_name}-briefing-{date}.md
+
+          ════════════════════════════════════════════════════════════════
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           QUALITY GATES
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  quality_gates:
+    - id: QG-PRO-001
+      phase: f0_prd_planning
+      type: hybrid
+      severity: blocking
+      description: "PRD deve ter domain map, architecture, tier plan, roadmap"
+      on_fail: iterate
+
+    - id: QG-PRO-002
+      phase: f1_design_tools
+      type: automated
+      severity: advisory
+      description: "Tool discovery completou com gap analysis"
+      on_fail: warn_and_continue
+
+    - id: QG-PRO-003
+      phase: f2_research_minds
+      type: hybrid
+      severity: blocking
+      description: "Mínimo de minds validados com frameworks"
+      on_fail: block
+
+    - id: QG-PRO-004
+      phase: f3_clone_dna
+      type: hybrid
+      severity: blocking
+      description: "Cada mind: smoke tests 3/3, voice quality >= 8/10"
+      on_fail: iterate_or_cut
+
+    - id: QG-PRO-005
+      phase: f4_build_squad
+      type: automated
+      severity: blocking
+      description: "config.yaml válido, SSOT check, all agents created"
+      on_fail: block
+
+    - id: QG-PRO-006
+      phase: f5_validate
+      type: automated
+      severity: blocking
+      description: "Validation score >= 7.0, zero veto conditions"
+      on_fail: proceed_to_fix_cycle
+
+    - id: QG-PRO-007
+      phase: f7_lifecycle_save
+      type: automated
+      severity: blocking
+      description: "Lifecycle score >= 8.0, verdict != FAIL"
+      on_fail: block
+
+    - id: QG-PRO-008
+      phase: f10_export_zip
+      type: automated
+      severity: blocking
+      description: "Zip gerado, integridade OK, zero credenciais"
+      on_fail: block
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           MODE CONTRACTS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  mode_contract:
+    from-scratch:
+      description: "Pipeline completo do zero"
+      execute_phases: [PRE, F0, F1, F2, F3, F4, F4.5, F5, F5.5, F6, F7, F8, F9, F10, F11]
+      estimated_time: "15-30h"
+
+    from-prd:
+      description: "Já tem PRD, pula planning"
+      execute_phases: [PRE, F1, F2, F3, F4, F4.5, F5, F5.5, F6, F7, F8, F9, F10, F11]
+      skip: [F0]
+      estimated_time: "12-25h"
+
+    from-sources:
+      description: "Já tem fontes dos experts, pula research"
+      execute_phases: [PRE, F3, F4, F4.5, F5, F5.5, F6, F7, F8, F9, F10, F11]
+      skip: [F0, F1, F2]
+      estimated_time: "8-18h"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           AGENT HANDOFFS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  agent_handoffs:
+    - from: "@squad-chief"
+      to: "@oalanicolas"
+      at: f3_clone_dna
+      handoff_data: [mind_name, domain, sources_path]
+      returns: [voice_dna, thinking_dna, mind_dna_complete]
+
+    - from: "@squad-chief"
+      to: "@pedro-valerio"
+      at: f4_build_squad
+      handoff_data: [mind_dna_collection, architecture_blueprint]
+      returns: [workflows_created, veto_conditions_applied]
+
+    - from: "@squad-chief"
+      to: "@aiox-master"
+      at: f7_lifecycle_save
+      handoff_data: [squad_name, squad_path]
+      returns: [lifecycle_score, zip_path, lifecycle_certified]
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           PERSISTENCE (Pause/Resume)
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  persistence:
+    state_file: "squads/{squad_name}/.pipeline-state.yaml"
+    save_on: "every phase completion"
+    format: |
+      pipeline:
+        id: wf-squad-pro-pipeline
+        squad_name: "{squad_name}"
+        domain: "{domain}"
+        current_phase: "{phase}"
+        started_at: "{timestamp}"
+        last_updated: "{timestamp}"
+        phases_completed: []
+        phases_skipped: []
+        accumulated_outputs: {}
+    resume_command: "*pro-pipeline {domain} --resume {phase}"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           ERROR HANDLING
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  error_handling:
+    phase_failure:
+      action: save_state_and_report
+      message: "Phase {phase} falhou. Estado salvo. Resume com: *pro-pipeline {domain} --resume {phase}"
+
+    clone_failure:
+      action: offer_cut_or_retry
+      message: "Mind {name} falhou no clone. Opções: retry / cortar e continuar / abort"
+
+    validation_failure:
+      action: proceed_to_fix_cycle
+      message: "Validação encontrou issues. Entrando em fix cycle (max 3 iterações)."
+
+    lifecycle_failure:
+      action: save_state_and_report
+      message: "Lifecycle falhou. Squad está construído mas não certificado."
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           OUTPUTS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  outputs:
+    - name: squad_directory
+      path: "squads/{squad_name}/"
+      description: "Squad completo instalado"
+
+    - name: slash_commands
+      path: ".claude/commands/{squad_name}/"
+      description: "Slash commands registrados"
+
+    - name: lifecycle_report
+      path: "outputs/squad-lifecycle/{squad_name}-lifecycle-{date}.md"
+      description: "Relatório de lifecycle"
+
+    - name: briefing_report
+      path: "outputs/squad-briefings/{squad_name}-briefing-{date}.md"
+      description: "Briefing executivo do squad"
+
+    - name: certified_zip
+      path: "{export_dir}/{squad_name}.zip"
+      description: "Zip certificado portátil salvo na pasta central de squads"
+
+    - name: deploy_result
+      path: "transient"
+      description: "Relatório de deploy em projetos (quais instalados, quais pulados)"
+
+    - name: pipeline_report
+      path: "outputs/squad-pipeline/{squad_name}-pipeline-{date}.md"
+      description: "Relatório consolidado do pipeline completo"
+
+    - name: mind_dna
+      path: "outputs/minds/{slug}/"
+      description: "DNA extraído de cada mind clonado"

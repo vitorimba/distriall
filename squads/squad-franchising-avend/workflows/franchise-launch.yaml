@@ -1,0 +1,947 @@
+# Franchise Launch Workflow — Avend Franquias
+# Workflow completo para estruturacao e lancamento de franquia de vending machines
+# 4 fases: Assessment, Formatting, Pilot, Scale
+# Updated: 2026-03-13
+
+id: franchise-launch
+name: "Franchise Launch — Lancamento Completo de Franquia"
+version: "1.0.0"
+squad: franchising-avend
+description: >-
+  Workflow completo para transformar a operacao propria da Avend em modelo de
+  franquia formatado, validado e escalavel. Cobre desde a avaliacao de
+  franqueabilidade ate o plano de expansao nacional. Baseado em Lei 13.966/2019,
+  melhores praticas ABF e experiencia acumulada da Avend com 184 maquinas e
+  90 contratos de franquia.
+
+trigger: "*launch-franchise"
+execution_mode: sequential
+estimated_duration: "6-12 meses"
+total_phases: 4
+
+# ============================================================================
+# PREREQUISITES
+# ============================================================================
+
+prerequisites:
+  - "Operacao propria lucrativa por pelo menos 12 meses"
+  - "Modelo de negocio documentado e replicavel"
+  - "Capital de giro minimo para formatacao (R$50k-R$150k)"
+  - "Decisao estrategica do fundador (Guilherme Alvares) confirmada"
+  - "CNPJ ativo e regular"
+  - "Sem pendencias tributarias ou trabalhistas graves"
+
+# ============================================================================
+# PHASE 1: ASSESSMENT — Avaliacao de Franqueabilidade
+# ============================================================================
+
+phases:
+  - id: phase_1_assessment
+    name: "Assessment — Avaliacao de Franqueabilidade"
+    description: >-
+      Avaliacao completa do negocio para determinar se esta pronto para
+      franchising. Analise financeira, operacional, juridica e de mercado.
+    duration: "4-6 semanas"
+    agents:
+      - franchise-strategist
+      - financial-modeler
+      - legal-compliance
+      - market-analyst
+
+    steps:
+      # --- Step 1.1: Diagnostico do Negocio Atual ---
+      - id: step_1_1
+        name: "Diagnostico do Negocio Atual"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        description: >-
+          Mapear o estado atual da operacao: faturamento, margem, processos,
+          equipe, pontos fortes e fracos.
+        inputs:
+          - "Faturamento mensal dos ultimos 12 meses"
+          - "DRE simplificada"
+          - "Lista de maquinas e localizacoes"
+          - "Estrutura da equipe"
+          - "Processos operacionais existentes"
+        outputs:
+          - "diagnostico-negocio.md"
+          - "mapa-processos.md"
+        checks:
+          - "Faturamento minimo de R$500k/ano (operacao propria)"
+          - "Margem liquida minima de 15%"
+          - "Pelo menos 3 processos-chave documentados"
+          - "Historico minimo de 12 meses de operacao"
+        veto_if:
+          - "Margem liquida negativa nos ultimos 6 meses"
+          - "Processos criticos dependem exclusivamente do fundador"
+          - "Pendencias legais ou tributarias graves em aberto"
+
+      # --- Step 1.2: Analise de Franqueabilidade ---
+      - id: step_1_2
+        name: "Analise de Franqueabilidade (Franchisability Score)"
+        agent: franchise-strategist
+        execution_mode: agent
+        depends_on: step_1_1
+        description: >-
+          Avaliar o negocio nos 8 pilares de franqueabilidade conforme
+          metodologia ABF.
+        inputs:
+          - "diagnostico-negocio.md"
+          - "mapa-processos.md"
+        outputs:
+          - "franchisability-score.md"
+        scoring_pillars:
+          - pillar: "Replicabilidade"
+            weight: 20
+            description: "O modelo pode ser replicado por terceiros com treinamento padrao?"
+            min_score: 6
+          - pillar: "Lucratividade da Unidade"
+            weight: 15
+            description: "A unidade franqueada gera lucro suficiente para o franqueado?"
+            min_score: 7
+          - pillar: "Diferencial Competitivo"
+            weight: 15
+            description: "A marca tem diferenciais claros vs operacao independente?"
+            min_score: 5
+          - pillar: "Transferencia de Know-how"
+            weight: 15
+            description: "O conhecimento pode ser transferido de forma estruturada?"
+            min_score: 6
+          - pillar: "Demanda de Mercado"
+            weight: 10
+            description: "Ha demanda suficiente para expansao em novas pracas?"
+            min_score: 5
+          - pillar: "Suporte Operacional"
+            weight: 10
+            description: "A franqueadora tem capacidade de suportar a rede?"
+            min_score: 5
+          - pillar: "Marca e Posicionamento"
+            weight: 10
+            description: "A marca tem reconhecimento e posicionamento claro?"
+            min_score: 4
+          - pillar: "Compliance Legal"
+            weight: 5
+            description: "A empresa esta em conformidade com as exigencias legais?"
+            min_score: 7
+        checks:
+          - "Score geral minimo de 60/100 para prosseguir"
+          - "Nenhum pilar com score abaixo do minimo"
+          - "Replicabilidade e Lucratividade com score >= 7"
+        veto_if:
+          - "Score geral abaixo de 50/100"
+          - "Replicabilidade abaixo de 5/10"
+          - "Lucratividade da unidade abaixo de 5/10"
+
+      # --- Step 1.3: Modelagem Financeira ---
+      - id: step_1_3
+        name: "Modelagem Financeira do Modelo de Franquia"
+        agent: financial-modeler
+        execution_mode: agent
+        depends_on: step_1_1
+        description: >-
+          Construir modelo financeiro completo: investimento inicial,
+          taxas de franquia, royalties, DRE projetada, payback.
+        inputs:
+          - "diagnostico-negocio.md"
+          - "Custos detalhados por unidade"
+          - "Receita media por maquina"
+          - "Benchmarks do setor de vending"
+        outputs:
+          - "modelo-financeiro.xlsx"
+          - "unit-economics.md"
+          - "simulacao-cenarios.md"
+        financial_parameters:
+          investment_range: "R$35k - R$80k"
+          franchise_fee: "R$15k - R$30k"
+          royalties: "5-8% faturamento bruto"
+          marketing_fund: "1-2% faturamento bruto"
+          payback_target: "12-18 meses"
+          min_roi_annual: "30%"
+        checks:
+          - "Payback projetado <= 24 meses"
+          - "ROI anual >= 25%"
+          - "Margem do franqueado >= 20% apos royalties"
+          - "Tres cenarios modelados (pessimista, realista, otimista)"
+          - "Sensibilidade testada para variaveis-chave"
+        veto_if:
+          - "Payback projetado > 36 meses no cenario realista"
+          - "Margem do franqueado < 12% apos royalties"
+          - "Investimento inicial incompativel com publico-alvo"
+
+      # --- Step 1.4: Analise de Mercado e Territorio ---
+      - id: step_1_4
+        name: "Analise de Mercado e Mapeamento Territorial"
+        agent: market-analyst
+        execution_mode: agent
+        depends_on: step_1_1
+        description: >-
+          Mapear oportunidades de mercado, concorrencia, territorios
+          prioritarios e potencial de expansao.
+        inputs:
+          - "diagnostico-negocio.md"
+          - "Dados de mercado de vending machines no Brasil"
+          - "Mapa de operacao atual da Avend"
+        outputs:
+          - "analise-mercado.md"
+          - "mapa-territorial.md"
+          - "perfil-concorrencia.md"
+        checks:
+          - "Pelo menos 10 territorios mapeados com potencial"
+          - "Concorrentes diretos e indiretos identificados"
+          - "TAM/SAM/SOM estimados"
+          - "Criterios de selecao de territorio definidos"
+        veto_if:
+          - "Mercado saturado (>70% de penetracao) nos territorios primarios"
+          - "Nenhum territorio com potencial de pelo menos 10 maquinas"
+
+      # --- Step 1.5: Checkpoint Phase 1 ---
+      - id: step_1_5
+        name: "Checkpoint — Decisao Go/No-Go Phase 1"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        depends_on:
+          - step_1_2
+          - step_1_3
+          - step_1_4
+        description: >-
+          Consolidar todas as analises e tomar decisao sobre prosseguir
+          com a formatacao da franquia.
+        inputs:
+          - "franchisability-score.md"
+          - "modelo-financeiro.xlsx"
+          - "unit-economics.md"
+          - "analise-mercado.md"
+        outputs:
+          - "phase-1-report.md"
+          - "go-nogo-decision.md"
+        decision_criteria:
+          go:
+            - "Franchisability Score >= 60/100"
+            - "Payback <= 24 meses"
+            - "Pelo menos 10 territorios viaveis"
+            - "Fundador alinhado e comprometido"
+          no_go:
+            - "Score < 50/100 em franqueabilidade"
+            - "Modelo financeiro inviavel"
+            - "Riscos legais nao mitigaveis"
+          conditional:
+            - "Score entre 50-60: listar ajustes necessarios"
+            - "Modelo financeiro marginal: testar com piloto menor"
+        veto_if:
+          - "Decisao de GO sem todos os 4 artefatos completos"
+          - "Prosseguir com score abaixo de 50"
+
+# ============================================================================
+# PHASE 2: FORMATTING — Formatacao da Franquia
+# ============================================================================
+
+  - id: phase_2_formatting
+    name: "Formatting — Formatacao da Franquia"
+    description: >-
+      Preparar todos os documentos, processos, materiais de treinamento e
+      estrutura legal necessarios para operar como franqueadora.
+    duration: "8-16 semanas"
+    depends_on: phase_1_assessment
+    agents:
+      - franchise-strategist
+      - legal-compliance
+      - operations-designer
+      - training-developer
+      - financial-modeler
+
+    steps:
+      # --- Step 2.1: COF (Circular de Oferta de Franquia) ---
+      - id: step_2_1
+        name: "Elaboracao da COF"
+        agent: legal-compliance
+        execution_mode: hybrid
+        description: >-
+          Elaborar a COF conforme Lei 13.966/2019, documento obrigatorio
+          para oferta de franquia no Brasil.
+        inputs:
+          - "modelo-financeiro.xlsx"
+          - "Dados da empresa"
+          - "Contratos existentes"
+          - "Lista de franqueados atuais (se houver)"
+        outputs:
+          - "cof-avend.md"
+        template: "templates/cof-tmpl.md"
+        checklist: "checklists/cof-compliance-checklist.md"
+        legal_requirements:
+          - "Historico resumido da franqueadora"
+          - "Balanco e demonstracoes financeiras dos 2 ultimos exercicios"
+          - "Pendencias judiciais"
+          - "Descricao detalhada da franquia"
+          - "Perfil do franqueado ideal"
+          - "Requisitos de investimento"
+          - "Taxas periodicas e seus calculos"
+          - "Lista de franqueados atuais e desligados"
+          - "Territorio de atuacao"
+          - "Obrigacoes do franqueado e da franqueadora"
+          - "Situacoes de rescisao"
+          - "Penalidades"
+        checks:
+          - "Todas as secoes obrigatorias da Lei 13.966/2019 presentes"
+          - "Valores financeiros consistentes com modelo"
+          - "Linguagem clara e acessivel"
+          - "Revisao juridica concluida"
+        veto_if:
+          - "COF sem revisao de advogado especialista em franchising"
+          - "Omissao de informacao obrigatoria por lei"
+          - "Valores inconsistentes com modelo financeiro aprovado"
+
+      # --- Step 2.2: Manual de Operacoes ---
+      - id: step_2_2
+        name: "Manual de Operacoes"
+        agent: operations-designer
+        execution_mode: agent
+        description: >-
+          Documentar todos os processos operacionais necessarios para
+          o franqueado operar com o padrao Avend.
+        inputs:
+          - "mapa-processos.md"
+          - "Processos atuais da Avend"
+          - "Benchmarks do setor"
+        outputs:
+          - "manual-operacoes.md"
+        sections:
+          - section: "Operacao de Maquinas"
+            topics:
+              - "Tipos de maquinas e especificacoes"
+              - "Instalacao e setup inicial"
+              - "Configuracao de precos e produtos"
+              - "Manutencao preventiva e corretiva"
+              - "Troubleshooting (30 problemas mais comuns)"
+          - section: "Abastecimento e Logistica"
+            topics:
+              - "Roteiro de abastecimento"
+              - "Gestao de estoque"
+              - "Negociacao com fornecedores"
+              - "Controle de validade"
+              - "Mix de produtos por tipo de localizacao"
+          - section: "Comercial"
+            topics:
+              - "Prospecao de pontos de venda"
+              - "Negociacao com proprietarios de locais"
+              - "Contrato de comodato/locacao de espaco"
+              - "Precificacao por categoria e regiao"
+              - "Upsell e cross-sell"
+          - section: "Gestao Financeira"
+            topics:
+              - "DRE mensal"
+              - "Fluxo de caixa"
+              - "Indicadores de performance (KPIs)"
+              - "Calculo de royalties"
+              - "Relatorio mensal para franqueadora"
+          - section: "Atendimento e Relacionamento"
+            topics:
+              - "Canais de atendimento ao consumidor"
+              - "Gestao de reclamacoes"
+              - "Relacionamento com administradores dos locais"
+              - "Pesquisa de satisfacao"
+          - section: "Compliance e Qualidade"
+            topics:
+              - "ANVISA e vigilancia sanitaria"
+              - "Certificacoes necessarias"
+              - "Auditorias periodicas"
+              - "Padrao visual e identidade da marca"
+        checks:
+          - "Todas as 6 secoes documentadas"
+          - "Minimo 80% dos processos criticos com SOP detalhado"
+          - "Checklists operacionais para atividades diarias"
+          - "Fotos e diagramas para processos visuais"
+        veto_if:
+          - "Manual sem secao de troubleshooting"
+          - "Processos de seguranca alimentar incompletos"
+          - "Ausencia de KPIs mensuráveis"
+
+      # --- Step 2.3: Programa de Treinamento ---
+      - id: step_2_3
+        name: "Programa de Treinamento"
+        agent: training-developer
+        execution_mode: agent
+        description: >-
+          Desenvolver programa completo de capacitacao do franqueado
+          e sua equipe.
+        inputs:
+          - "manual-operacoes.md"
+          - "Perfil do franqueado ideal"
+          - "Gap analysis de competencias"
+        outputs:
+          - "programa-treinamento.md"
+          - "cronograma-treinamento.md"
+          - "materiais-treinamento/"
+        training_modules:
+          - module: "Modulo 1 — Conhecendo a Avend"
+            duration: "4 horas"
+            topics:
+              - "Historia e valores da marca"
+              - "Modelo de negocio"
+              - "Mercado de vending machines"
+              - "Expectativas e responsabilidades"
+          - module: "Modulo 2 — Operacao Tecnica"
+            duration: "16 horas"
+            topics:
+              - "Tipos de maquinas (snack, bebida, combo)"
+              - "Instalacao e configuracao"
+              - "Manutencao preventiva"
+              - "Manutencao corretiva basica"
+              - "Telemetria e monitoramento remoto"
+          - module: "Modulo 3 — Comercial e Vendas"
+            duration: "8 horas"
+            topics:
+              - "Prospecao de pontos"
+              - "Abordagem e negociacao"
+              - "Contrato de locacao de espaco"
+              - "Mix de produtos"
+              - "Precificacao"
+          - module: "Modulo 4 — Gestao do Negocio"
+            duration: "8 horas"
+            topics:
+              - "Financeiro (DRE, fluxo de caixa, KPIs)"
+              - "Gestao de estoque"
+              - "Roteiro de abastecimento"
+              - "Relatorios para franqueadora"
+          - module: "Modulo 5 — Compliance e Qualidade"
+            duration: "4 horas"
+            topics:
+              - "Padroes ANVISA"
+              - "Identidade visual"
+              - "Auditorias"
+              - "Gestao de reclamacoes"
+        assessment:
+          - "Prova teorica (minimo 70% para aprovacao)"
+          - "Avaliacao pratica em campo (minimo 80%)"
+          - "Certificacao Avend emitida apos aprovacao"
+        checks:
+          - "5 modulos completos com material de apoio"
+          - "Avaliacao teorica e pratica definidas"
+          - "Cronograma de 40 horas total"
+          - "Material em formato acessivel (video + apostila)"
+        veto_if:
+          - "Treinamento sem componente pratico em campo"
+          - "Ausencia de avaliacao formal"
+          - "Duracao inferior a 30 horas"
+
+      # --- Step 2.4: Estrutura Juridica ---
+      - id: step_2_4
+        name: "Estrutura Juridica e Contratual"
+        agent: legal-compliance
+        execution_mode: hybrid
+        description: >-
+          Preparar toda a estrutura juridica para operacao como
+          franqueadora.
+        inputs:
+          - "cof-avend.md"
+          - "Estrutura societaria atual"
+        outputs:
+          - "contrato-franquia-modelo.md"
+          - "contrato-comodato-maquinas.md"
+          - "acordo-confidencialidade.md"
+          - "registro-inpi.md"
+        legal_documents:
+          - "Contrato de franquia (minimo 5 anos)"
+          - "Contrato de comodato de maquinas (se aplicavel)"
+          - "NDA (acordo de confidencialidade)"
+          - "Registro de marca no INPI"
+          - "Pre-contrato (reserva de territorio)"
+          - "Distrato padrao"
+          - "Termo aditivo modelo"
+        checks:
+          - "Todos os documentos revisados por advogado especialista"
+          - "Clausulas de territorio exclusivo definidas"
+          - "Clausulas de non-compete e confidencialidade"
+          - "Processo de rescisao claro e legal"
+          - "Conformidade com Lei 13.966/2019"
+        veto_if:
+          - "Contrato sem clausula de territorio"
+          - "Ausencia de processo formal de rescisao"
+          - "Clausulas abusivas identificadas"
+
+      # --- Step 2.5: Checkpoint Phase 2 ---
+      - id: step_2_5
+        name: "Checkpoint — Validacao da Formatacao"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        depends_on:
+          - step_2_1
+          - step_2_2
+          - step_2_3
+          - step_2_4
+        description: >-
+          Validar que toda a documentacao esta completa e consistente
+          para iniciar a fase de piloto.
+        outputs:
+          - "phase-2-report.md"
+          - "readiness-checklist.md"
+        checks:
+          - "COF completa e revisada juridicamente"
+          - "Manual de operacoes com 100% das secoes"
+          - "Programa de treinamento com materiais prontos"
+          - "Contratos revisados e aprovados"
+          - "Marca registrada ou em processo no INPI"
+        veto_if:
+          - "COF com pendencias legais"
+          - "Manual de operacoes com menos de 80% de cobertura"
+          - "Programa de treinamento sem avaliacao"
+
+# ============================================================================
+# PHASE 3: PILOT — Piloto com Primeiros Franqueados
+# ============================================================================
+
+  - id: phase_3_pilot
+    name: "Pilot — Validacao com Primeiros Franqueados"
+    description: >-
+      Implantar as primeiras 3-5 unidades franqueadas para validar
+      o modelo, ajustar processos e coletar feedback.
+    duration: "3-6 meses"
+    depends_on: phase_2_formatting
+    agents:
+      - franchise-strategist
+      - recruitment-specialist
+      - operations-designer
+      - training-developer
+      - relationship-manager
+
+    steps:
+      # --- Step 3.1: Selecao de Franqueados Piloto ---
+      - id: step_3_1
+        name: "Selecao de Franqueados Piloto"
+        agent: recruitment-specialist
+        execution_mode: hybrid
+        description: >-
+          Identificar e qualificar os primeiros 3-5 franqueados para
+          o programa piloto.
+        inputs:
+          - "Perfil do franqueado ideal"
+          - "Candidatos pre-identificados"
+          - "Criterios de qualificacao"
+        outputs:
+          - "candidatos-aprovados.md"
+          - "perfil-franqueado-{nome}.md"
+        checklist: "checklists/franchisee-qualification-checklist.md"
+        selection_criteria:
+          - "Capital disponivel compativel com investimento"
+          - "Perfil empreendedor (score comportamental)"
+          - "Disponibilidade de dedicacao minima"
+          - "Localizacao em territorio estrategico"
+          - "Alinhamento com valores da marca"
+        pilot_specifics:
+          target_count: "3-5 franqueados"
+          priority: "Candidatos proximos para facilitar suporte"
+          discount: "Possivel desconto de taxa de franquia (20-30%)"
+          commitment: "Feedback mensal obrigatorio"
+        checks:
+          - "Minimo 3 candidatos qualificados"
+          - "Entrevista presencial realizada"
+          - "Analise financeira do candidato concluida"
+          - "Territorio validado para cada candidato"
+        veto_if:
+          - "Candidato sem capital minimo comprovado"
+          - "Candidato com historico de inadimplencia grave"
+          - "Territorio ja saturado"
+
+      # --- Step 3.2: Implantacao das Unidades Piloto ---
+      - id: step_3_2
+        name: "Implantacao das Unidades Piloto"
+        agent: operations-designer
+        execution_mode: hybrid
+        depends_on: step_3_1
+        description: >-
+          Implantar as primeiras unidades com acompanhamento intensivo.
+        inputs:
+          - "candidatos-aprovados.md"
+          - "manual-operacoes.md"
+          - "programa-treinamento.md"
+        outputs:
+          - "plano-implantacao-{unidade}.md"
+          - "log-implantacao.md"
+        implementation_steps:
+          - "Assinatura de contrato"
+          - "Treinamento completo (40h)"
+          - "Selecao e validacao de pontos de venda"
+          - "Pedido e instalacao de maquinas"
+          - "Configuracao de sistemas (telemetria, pagamento)"
+          - "Abastecimento inicial"
+          - "Go-live acompanhado"
+        checks:
+          - "Treinamento concluido com aprovacao"
+          - "Maquinas instaladas e operacionais"
+          - "Sistemas configurados e testados"
+          - "Primeiro abastecimento realizado"
+          - "Franqueado operando de forma autonoma"
+        veto_if:
+          - "Franqueado nao aprovado no treinamento"
+          - "Maquinas com defeito nao corrigido antes do go-live"
+          - "Sistemas de pagamento nao testados"
+
+      # --- Step 3.3: Monitoramento e Ajustes ---
+      - id: step_3_3
+        name: "Monitoramento 90 Dias e Ajustes"
+        agent: relationship-manager
+        execution_mode: hybrid
+        depends_on: step_3_2
+        description: >-
+          Acompanhar as unidades piloto por 90 dias, coletar feedback
+          e realizar ajustes no modelo.
+        inputs:
+          - "log-implantacao.md"
+          - "KPIs operacionais"
+          - "Feedback dos franqueados piloto"
+        outputs:
+          - "relatorio-30-dias.md"
+          - "relatorio-60-dias.md"
+          - "relatorio-90-dias.md"
+          - "ajustes-modelo.md"
+        monitoring_schedule:
+          daily: "Acompanhamento de vendas via telemetria"
+          weekly: "Call de alinhamento com cada franqueado"
+          day_30:
+            - "Primeiro relatorio completo"
+            - "Pesquisa de satisfacao do franqueado"
+            - "Revisao de KPIs vs projecao"
+          day_60:
+            - "Segundo relatorio com tendencias"
+            - "Ajustes no manual de operacoes (se necessario)"
+            - "Ajustes no modelo financeiro (se necessario)"
+          day_90:
+            - "Relatorio final do piloto"
+            - "Decisao de escalar ou ajustar"
+            - "NPS do franqueado"
+        kpis_tracked:
+          - "Faturamento mensal por maquina"
+          - "Ticket medio"
+          - "Frequencia de abastecimento"
+          - "Uptime das maquinas (% operacional)"
+          - "NPS do franqueado"
+          - "Margem liquida do franqueado"
+          - "Pontualidade no pagamento de royalties"
+        checks:
+          - "3 relatorios mensais entregues"
+          - "KPIs dentro de +/- 20% da projecao"
+          - "NPS do franqueado >= 7"
+          - "Lista de ajustes documentada"
+        veto_if:
+          - "Nenhum franqueado atingiu breakeven em 90 dias"
+          - "NPS medio abaixo de 5"
+          - "Mais de 50% dos franqueados insatisfeitos"
+
+      # --- Step 3.4: Checkpoint Phase 3 ---
+      - id: step_3_4
+        name: "Checkpoint — Decisao de Escalar"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        depends_on: step_3_3
+        description: >-
+          Consolidar aprendizados do piloto e decidir sobre a escala.
+        outputs:
+          - "phase-3-report.md"
+          - "lessons-learned.md"
+          - "modelo-ajustado.md"
+        decision_criteria:
+          scale:
+            - "80%+ dos franqueados piloto atingiram breakeven"
+            - "NPS medio >= 7"
+            - "Modelo financeiro validado na pratica"
+            - "Processos estabilizados"
+          adjust:
+            - "50-80% atingiram breakeven"
+            - "Ajustes identificados e corrigiveis"
+            - "Extender piloto por mais 60 dias"
+          abort:
+            - "Menos de 50% atingiu breakeven"
+            - "Problemas estruturais nao corrigiveis"
+            - "Feedback consistentemente negativo"
+        veto_if:
+          - "Decisao de escalar sem os 3 relatorios mensais completos"
+          - "Escalar com NPS medio abaixo de 6"
+
+# ============================================================================
+# PHASE 4: SCALE — Expansao e Crescimento
+# ============================================================================
+
+  - id: phase_4_scale
+    name: "Scale — Expansao da Rede"
+    description: >-
+      Implementar plano de expansao estruturado para crescer a rede
+      de franqueados de forma sustentavel.
+    duration: "6-12 meses (continuo)"
+    depends_on: phase_3_pilot
+    agents:
+      - franchise-strategist
+      - recruitment-specialist
+      - market-analyst
+      - marketing-specialist
+      - relationship-manager
+
+    steps:
+      # --- Step 4.1: Plano de Expansao ---
+      - id: step_4_1
+        name: "Plano de Expansao Territorial"
+        agent: market-analyst
+        execution_mode: agent
+        description: >-
+          Definir plano de expansao com territorios prioritarios,
+          metas e cronograma.
+        inputs:
+          - "mapa-territorial.md"
+          - "lessons-learned.md"
+          - "modelo-ajustado.md"
+        outputs:
+          - "plano-expansao.md"
+        template: "templates/expansion-plan-tmpl.md"
+        expansion_targets:
+          year_1: "10-20 novos franqueados"
+          year_2: "30-50 novos franqueados"
+          year_3: "80-120 novos franqueados"
+        territory_criteria:
+          - "Populacao minima de 100k habitantes"
+          - "PIB per capita acima de R$30k"
+          - "Fluxo comercial em shoppings/empresas/hospitais"
+          - "Sem concorrente direto estabelecido"
+          - "Logistica de distribuicao viavel"
+        checks:
+          - "Pelo menos 20 territorios priorizados"
+          - "Cronograma de 12 meses definido"
+          - "Meta trimestral clara"
+          - "Budget de expansao aprovado"
+        veto_if:
+          - "Expansao sem capital de giro para suporte"
+          - "Meta acima de 50 franqueados/ano no primeiro ano"
+
+      # --- Step 4.2: Marketing de Recrutamento ---
+      - id: step_4_2
+        name: "Marketing de Recrutamento de Franqueados"
+        agent: marketing-specialist
+        execution_mode: agent
+        description: >-
+          Desenvolver estrategia de marketing para atrair candidatos
+          qualificados a franquia.
+        inputs:
+          - "Perfil do franqueado ideal"
+          - "plano-expansao.md"
+          - "unit-economics.md"
+        outputs:
+          - "estrategia-recrutamento.md"
+          - "materiais-marketing/"
+        channels:
+          - channel: "Portal ABF"
+            description: "Listagem no portal da Associacao Brasileira de Franchising"
+            priority: high
+          - channel: "Feiras de Franquias"
+            description: "ABF Expo, Franchise4U, feiras regionais"
+            priority: high
+          - channel: "Digital (Google Ads + Meta)"
+            description: "Campanhas segmentadas para perfil de investidor"
+            priority: high
+          - channel: "LinkedIn"
+            description: "Conteudo organico + InMail para executivos"
+            priority: medium
+          - channel: "Indicacao da Rede"
+            description: "Programa de indicacao para franqueados atuais"
+            priority: medium
+          - channel: "Imprensa Especializada"
+            description: "PR em midia de franchising e negocios"
+            priority: low
+        materials:
+          - "Landing page de franquia"
+          - "Apresentacao comercial (pitch deck)"
+          - "Video institucional (3 min)"
+          - "Depoimentos de franqueados piloto"
+          - "Folder/e-book para download"
+        checks:
+          - "Pelo menos 3 canais ativos"
+          - "Landing page operacional"
+          - "Funil de conversao definido"
+          - "Budget de marketing aprovado"
+        veto_if:
+          - "Marketing sem mencionar investimento real necessario"
+          - "Promessas de retorno garantido"
+          - "Material nao conforme com COF"
+
+      # --- Step 4.3: Pipeline de Recrutamento ---
+      - id: step_4_3
+        name: "Pipeline de Recrutamento Estruturado"
+        agent: recruitment-specialist
+        execution_mode: hybrid
+        depends_on: step_4_2
+        description: >-
+          Implementar processo estruturado de recrutamento e selecao
+          de novos franqueados.
+        inputs:
+          - "estrategia-recrutamento.md"
+          - "candidatos-aprovados.md (referencia piloto)"
+        outputs:
+          - "pipeline-recrutamento.md"
+          - "sla-recrutamento.md"
+        pipeline_stages:
+          - stage: "Lead"
+            sla: "Resposta em 24h"
+            action: "Envio de material informativo"
+          - stage: "Qualificacao Inicial"
+            sla: "3 dias uteis"
+            action: "Call de 30min + questionario"
+          - stage: "Analise Aprofundada"
+            sla: "7 dias uteis"
+            action: "Entrevista + analise financeira + analise comportamental"
+          - stage: "Entrega da COF"
+            sla: "Imediato apos aprovacao"
+            action: "Entrega formal com protocolo"
+          - stage: "Cooling Period"
+            sla: "10 dias (Lei 13.966/2019)"
+            action: "Aguardar prazo legal minimo"
+          - stage: "Assinatura"
+            sla: "5 dias uteis"
+            action: "Assinatura do contrato + pagamento"
+          - stage: "Onboarding"
+            sla: "Iniciar em 7 dias"
+            action: "Trigger workflow franchisee-onboarding"
+        conversion_targets:
+          lead_to_qualification: "40%"
+          qualification_to_analysis: "50%"
+          analysis_to_cof: "60%"
+          cof_to_signature: "70%"
+          overall: "8-10%"
+        checks:
+          - "Pipeline com 6+ stages definidos"
+          - "SLA para cada stage"
+          - "Metricas de conversao por stage"
+          - "CRM configurado para tracking"
+        veto_if:
+          - "Assinatura de contrato antes do cooling period de 10 dias"
+          - "Qualificacao sem analise financeira"
+          - "COF nao entregue antes da assinatura"
+
+      # --- Step 4.4: Infraestrutura de Suporte a Rede ---
+      - id: step_4_4
+        name: "Infraestrutura de Suporte"
+        agent: relationship-manager
+        execution_mode: agent
+        description: >-
+          Montar estrutura de suporte para atender a rede crescente.
+        inputs:
+          - "plano-expansao.md"
+          - "Estrutura atual de suporte"
+        outputs:
+          - "plano-suporte-rede.md"
+        support_structure:
+          team:
+            - role: "Consultor de Campo"
+              ratio: "1 para cada 15-20 franqueados"
+              responsibilities:
+                - "Visitas mensais"
+                - "Auditorias de qualidade"
+                - "Suporte operacional"
+            - role: "Analista de Expansao"
+              ratio: "1 para cada 30 franqueados"
+              responsibilities:
+                - "Validacao de pontos"
+                - "Analise territorial"
+                - "Suporte comercial"
+            - role: "Suporte Tecnico"
+              ratio: "1 para cada 50 maquinas"
+              responsibilities:
+                - "Manutencao corretiva"
+                - "Treinamento tecnico"
+                - "Gestao de garantia"
+          systems:
+            - "Portal do franqueado (extranet)"
+            - "Sistema de telemetria centralizado"
+            - "Chat de suporte (WhatsApp Business)"
+            - "Base de conhecimento online"
+            - "Sistema de tickets para manutencao"
+          cadence:
+            daily: "Monitoramento de vendas e uptime"
+            weekly: "Report consolidado da rede"
+            monthly: "Reuniao individual com cada franqueado"
+            quarterly: "Reuniao de rede (convencao regional)"
+            annual: "Convencao nacional + planejamento"
+        checks:
+          - "Equipe de suporte dimensionada para meta Year 1"
+          - "Sistemas de comunicacao implementados"
+          - "Cadencia de acompanhamento definida"
+          - "Plano de contingencia para crescimento acelerado"
+        veto_if:
+          - "Expansao sem equipe de suporte contratada"
+          - "Ratio consultor/franqueado acima de 1:30"
+          - "Sem sistema de monitoramento remoto"
+
+      # --- Step 4.5: Checkpoint Phase 4 ---
+      - id: step_4_5
+        name: "Checkpoint — Review Trimestral de Expansao"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        depends_on:
+          - step_4_1
+          - step_4_2
+          - step_4_3
+          - step_4_4
+        description: >-
+          Review trimestral da expansao com ajuste de metas e estrategia.
+          Este checkpoint se repete a cada 90 dias.
+        outputs:
+          - "quarterly-review-{quarter}.md"
+        review_metrics:
+          - "Novos franqueados vs meta"
+          - "Faturamento medio da rede"
+          - "NPS medio da rede"
+          - "Churn de franqueados"
+          - "Pipeline de candidatos"
+          - "ROI de marketing de recrutamento"
+          - "Satisfacao media dos franqueados"
+        checks:
+          - "Dados de todos os KPIs disponíveis"
+          - "Comparativo com trimestre anterior"
+          - "Plano de acao para gaps identificados"
+        veto_if:
+          - "Expansao sem review trimestral"
+          - "Churn de franqueados acima de 15% ao ano"
+          - "NPS medio abaixo de 6 por 2 trimestres consecutivos"
+
+# ============================================================================
+# GLOBAL VETO CONDITIONS
+# ============================================================================
+
+global_veto_conditions:
+  - id: FL-VETO-001
+    condition: "Qualquer avanço de fase sem checkpoint anterior aprovado"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — retornar ao checkpoint pendente"
+
+  - id: FL-VETO-002
+    condition: "COF com informacoes falsas ou omissoes relevantes"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — riscos juridicos severos (Lei 13.966/2019)"
+
+  - id: FL-VETO-003
+    condition: "Franqueado assinando contrato sem cooling period de 10 dias"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — exigencia legal, contrato pode ser anulado"
+
+  - id: FL-VETO-004
+    condition: "Expansao sem modelo financeiro validado pelo piloto"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — risco de comprometer toda a rede"
+
+  - id: FL-VETO-005
+    condition: "Marketing com promessas de retorno garantido"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — infração legal e pratica condenada pela ABF"
+
+# ============================================================================
+# METADATA
+# ============================================================================
+
+metadata:
+  total_steps: 18
+  total_checkpoints: 4
+  total_veto_conditions: 22
+  agents_involved: 9
+  templates_used:
+    - "templates/cof-tmpl.md"
+    - "templates/expansion-plan-tmpl.md"
+    - "templates/unit-economics-tmpl.md"
+  checklists_used:
+    - "checklists/cof-compliance-checklist.md"
+    - "checklists/franchisee-qualification-checklist.md"
+    - "checklists/operations-audit-checklist.md"

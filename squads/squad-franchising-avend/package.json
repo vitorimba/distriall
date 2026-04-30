@@ -1,0 +1,15 @@
+{
+  "name": "@aiox/squad-franchising-avend",
+  "version": "1.0.0",
+  "description": "Elite franchise squad for Avend Franquias - franchisor operations",
+  "author": "Synkra AIOX",
+  "license": "UNLICENSED",
+  "private": true,
+  "keywords": ["franchise", "franquia", "avend", "franqueador", "COF"],
+  "aiox": {
+    "type": "squad",
+    "tier": "pro",
+    "agents": 13,
+    "minds": 10
+  }
+}

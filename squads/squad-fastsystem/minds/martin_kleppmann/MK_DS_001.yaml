@@ -1,0 +1,19 @@
+id: MK_DS_001
+name: "Consistency vs Availability"
+mind: martin_kleppmann
+source: "Designing Data-Intensive Applications (2017) — Chapter 9"
+domain: distributed-systems
+description: >
+  Escolha explicitamente entre consistencia e disponibilidade
+  para cada operacao. O CAP theorem mostra que em presenca de
+  particoes de rede, voce deve escolher entre C e A.
+applies_when:
+  - "Desenhando sistema distribuido"
+  - "Escolhendo cache strategy"
+  - "Definindo replication mode"
+action: >
+  Documente trade-off: AP para reads tolerantes a eventual
+  consistency, CP para writes criticos onde consistencia
+  e obrigatoria.
+severity: foundational
+confidence: 0.90

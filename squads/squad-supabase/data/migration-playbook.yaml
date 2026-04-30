@@ -1,0 +1,183 @@
+migration_playbook:
+  version: "1.0.0"
+  description: "Playbook de migração Supabase-to-Supabase"
+  mind_source: "Dimitri Fontaine (PostgreSQL Major Contributor, pgloader/pgcopydb author)"
+
+  # ═══════════════════════════════════════════
+  # MIGRATION ORDER (CRITICAL)
+  # ═══════════════════════════════════════════
+  execution_order:
+    - step: 1
+      name: "Types & Enums"
+      rationale: "Tables depend on custom types"
+      rollback: "DROP TYPE IF EXISTS"
+
+    - step: 2
+      name: "Tables (no constraints)"
+      rationale: "Create structure without FKs for fast data loading"
+      rollback: "DROP TABLE IF EXISTS CASCADE"
+
+    - step: 3
+      name: "Primary Keys & Unique Constraints"
+      rationale: "Needed before data for duplicate detection"
+      rollback: "ALTER TABLE DROP CONSTRAINT"
+
+    - step: 4
+      name: "Auth Users"
+      rationale: "Must exist before data that references user_id"
+      special_handling: true
+      notes:
+        - "Password hashes must be preserved exactly"
+        - "email_confirmed_at must be transferred"
+        - "User metadata (raw_user_meta_data) included"
+        - "Use service_role connection for auth schema access"
+
+    - step: 5
+      name: "Data (dependency ordered)"
+      rationale: "Parent tables before children"
+      method: "COPY for bulk, INSERT for small tables"
+      rollback: "TRUNCATE TABLE CASCADE"
+
+    - step: 6
+      name: "Foreign Keys"
+      rationale: "After data to avoid constraint violations during load"
+      rollback: "ALTER TABLE DROP CONSTRAINT"
+
+    - step: 7
+      name: "Functions"
+      rationale: "After data, before triggers that may call them"
+      rollback: "DROP FUNCTION IF EXISTS"
+
+    - step: 8
+      name: "Triggers"
+      rationale: "After functions they reference"
+      rollback: "DROP TRIGGER IF EXISTS"
+
+    - step: 9
+      name: "RLS Policies"
+      rationale: "After all data and functions"
+      rollback: "DROP POLICY IF EXISTS; ALTER TABLE DISABLE ROW LEVEL SECURITY"
+
+    - step: 10
+      name: "Indexes"
+      rationale: "LAST — indexes slow down data loading significantly"
+      method: "CREATE INDEX CONCURRENTLY"
+      rollback: "DROP INDEX CONCURRENTLY"
+
+    - step: 11
+      name: "Storage Buckets & Objects"
+      rationale: "After database is complete"
+      method: "Supabase Storage API"
+      rollback: "Delete via API"
+
+    - step: 12
+      name: "Edge Functions"
+      rationale: "After database and storage"
+      method: "supabase functions deploy"
+      rollback: "supabase functions delete"
+
+    - step: 13
+      name: "Cron Jobs & Webhooks"
+      rationale: "Last — only activate automation when everything else works"
+      rollback: "cron.unschedule()"
+
+  # ═══════════════════════════════════════════
+  # AUTH MIGRATION SPECIFICS
+  # ═══════════════════════════════════════════
+  auth_migration:
+    tables:
+      - name: "auth.users"
+        critical_columns:
+          - "id (UUID — must be preserved)"
+          - "email"
+          - "encrypted_password (bcrypt hash — copy exactly)"
+          - "email_confirmed_at"
+          - "raw_user_meta_data (JSONB)"
+          - "raw_app_meta_data (JSONB)"
+          - "created_at"
+          - "updated_at"
+        export_sql: |
+          COPY (
+            SELECT id, email, encrypted_password, email_confirmed_at,
+                   raw_user_meta_data, raw_app_meta_data,
+                   created_at, updated_at, role, aud
+            FROM auth.users
+          ) TO STDOUT WITH CSV HEADER;
+
+      - name: "auth.identities"
+        note: "OAuth provider identities"
+
+      - name: "auth.sessions"
+        note: "Active sessions — usually NOT migrated (users re-login)"
+
+    gotchas:
+      - "Password hashes are bcrypt — they transfer directly"
+      - "OAuth tokens do NOT transfer — users must re-link providers"
+      - "MFA secrets must be re-enrolled"
+      - "Sessions should NOT be migrated — force re-login"
+      - "Confirmation emails may re-trigger if email_confirmed_at is NULL"
+
+  # ═══════════════════════════════════════════
+  # VALIDATION QUERIES
+  # ═══════════════════════════════════════════
+  validation:
+    row_counts: |
+      -- Run on BOTH source and destination, compare results
+      SELECT schemaname, relname, n_live_tup
+      FROM pg_stat_user_tables
+      WHERE schemaname = 'public'
+      ORDER BY relname;
+
+    fk_integrity: |
+      -- Check for orphaned foreign keys
+      SELECT tc.table_name, kcu.column_name, ccu.table_name AS foreign_table
+      FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+      JOIN information_schema.constraint_column_usage ccu ON ccu.constraint_name = tc.constraint_name
+      WHERE tc.constraint_type = 'FOREIGN KEY';
+
+    rls_coverage: |
+      SELECT tablename, rowsecurity
+      FROM pg_tables WHERE schemaname = 'public'
+      ORDER BY tablename;
+
+    sequence_sync: |
+      -- Sequences must be synced after data import
+      SELECT 'SELECT setval(' || quote_literal(sequence_name) || ', (SELECT COALESCE(MAX(id), 1) FROM ' || table_name || '));'
+      FROM information_schema.columns
+      WHERE column_default LIKE 'nextval%'
+      AND table_schema = 'public';
+
+  # ═══════════════════════════════════════════
+  # COMMON GOTCHAS
+  # ═══════════════════════════════════════════
+  gotchas:
+    - id: MIG-GOTCHA-001
+      name: "Sequence Sync"
+      problem: "After COPY, sequences are not updated — next INSERT fails with duplicate key"
+      fix: "Run setval() for each sequence after data import"
+
+    - id: MIG-GOTCHA-002
+      name: "RLS Blocks Migration"
+      problem: "RLS policies may block data import for service_role"
+      fix: "Use postgres role (bypasses RLS) or temporarily disable RLS"
+
+    - id: MIG-GOTCHA-003
+      name: "Storage Object URLs"
+      problem: "Storage URLs contain project ref — old URLs break"
+      fix: "Update all stored URLs in database to new project ref"
+
+    - id: MIG-GOTCHA-004
+      name: "Edge Function Secrets"
+      problem: "Secrets are not exportable from Supabase"
+      fix: "Manually re-enter all secrets in destination project"
+
+    - id: MIG-GOTCHA-005
+      name: "Realtime Subscriptions"
+      problem: "Client-side Realtime subscriptions use project URL"
+      fix: "Update Supabase client initialization with new project URL"
+
+    - id: MIG-GOTCHA-006
+      name: "Custom Domains"
+      problem: "Custom domain DNS points to old project"
+      fix: "Update DNS records after cutover"

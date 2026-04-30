@@ -1,0 +1,492 @@
+# Heuristicas Consolidadas — SpeechTherapy Squad
+# Todas as heuristicas dos 7 agentes com padroes cross-cutting
+# Updated: 2026-03-13
+
+metadata:
+  version: "1.0.0"
+  total_heuristics: 42
+  source: "Extraido dos arquivos de agents/"
+
+heuristics:
+
+  # ============================================================
+  # ORCHESTRATOR — speechtherapy-chief (Vox)
+  # ============================================================
+
+  - id: HEU-VOX-001
+    name: "Gate de Avaliacao"
+    when: "Request de exercicios, protocolo ou prescricao sem avaliacao previa documentada"
+    rule: |
+      QUANDO recebo request de reabilitacao sem avaliacao T0 concluida
+      ENTAO redireciono SEMPRE para mara-behlau (avaliacao clinica)
+      E salvo o request original para retomada apos avaliacao
+    agent_source: speechtherapy-chief
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-VOX-002
+    name: "Nodulo = LMRVT"
+    when: "Diagnostico de nodulo vocal (uni ou bilateral) confirmado por laringoscopia"
+    rule: |
+      QUANDO nodulo vocal e confirmado
+      ENTAO katherine-verdolini (LMRVT) e a rota primaria
+      POIS evidencia sistematica mostra superioridade de LMRVT sobre cirurgia em casos funcionais
+      E joseph-stemple pode ser adicionado em paralelo para fortalecimento muscular
+    agent_source: speechtherapy-chief
+    severity: MUST
+
+  - id: HEU-VOX-003
+    name: "Sinal de Alarme = Encaminhamento Medico"
+    when: "Qualquer sinal de alarme presente na queixa (hemoptise, disfagia, rouquidao > 3 sem)"
+    rule: |
+      QUANDO sinal de alarme e detectado
+      ENTAO BLOQUEIO imediato de roteamento para especialistas do squad
+      E instruo encaminhamento para laringologista / otorrinolaringologista
+      E NUNCA inicio reabilitacao antes de laringoscopia em casos suspeitos
+    agent_source: speechtherapy-chief
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-VOX-004
+    name: "Cantor = Protocolo Combinado"
+    when: "Paciente e cantor profissional ou semiprofissional em reabilitacao"
+    rule: |
+      QUANDO paciente e cantor (profissional, coralista ou professor de canto)
+      ENTAO combino joseph-stemple (VFE — fortalecimento e resistencia) com
+      katherine-verdolini (LMRVT — voz ressonante e eficiencia) em protocolo integrado
+      POIS demanda vocal intensa requer fortalecimento + eficiencia simultaneamente
+    agent_source: speechtherapy-chief
+    severity: MUST
+
+  - id: HEU-VOX-005
+    name: "MTD antes de Exercicios"
+    when: "Paciente relata dor, esforco extremo ou tensao ao falar antes de exercicios"
+    rule: |
+      QUANDO dor ou tensao muscular significativa e relatada
+      ENTAO jacob-lieberman (terapia manual) entra ANTES de qualquer exercicio vocal
+      POIS exercicios com musculatura tensa podem agravar o quadro
+      E apos liberacao manual, retomar com joseph-stemple ou katherine-verdolini
+    agent_source: speechtherapy-chief
+    severity: MUST
+
+  - id: HEU-VOX-006
+    name: "Generalizacao = CTT no Mes 3"
+    when: "Ganhos terapeuticos em contexto terapeutico nao transferem para fala espontanea"
+    rule: |
+      QUANDO paciente demonstra voz adequada nos exercicios mas nao na conversacao real
+      ENTAO jackie-gartner-schmidt (CTT) e acionada para trabalho de generalizacao
+      POIS transferencia de habito requer abordagem especifica (CTT), nao mais exercicios isolados
+    agent_source: speechtherapy-chief
+    severity: SHOULD
+
+  - id: HEU-VOX-007
+    name: "Escalonamento por Complexidade"
+    when: "Request envolve mais de 2 queixas distintas ou casos refratarios"
+    rule: |
+      QUANDO caso e complexo (multiplas queixas, historico de cirurgia, falha terapeutica previa)
+      ENTAO Vox coordena avaliacao multi-tier sequencial completa antes de qualquer prescricao
+      E consulta ingo-titze para fundamentacao cientifica do caso
+      E nunca decide por tentativa e erro em casos complexos
+    agent_source: speechtherapy-chief
+    severity: MUST
+
+  # ============================================================
+  # TIER 0 — ingo-titze (Ingo Titze)
+  # ============================================================
+
+  - id: HEU-IT-001
+    name: "Nodulos — Conservative First"
+    when: "Paciente apresenta nodulos vocais ou granuloma de contato"
+    rule: |
+      Prescrever SOVT em baixa intensidade APENAS.
+      Iniciar com trill labial em dinamica piano.
+      NUNCA recomendar fonacao forcada contra resistencia.
+      Objetivo: reduzir PTP para permitir auto-oscilacao sem trauma de colisao.
+    agent_source: ingo-titze
+    severity: MUST
+
+  - id: HEU-IT-002
+    name: "Fadiga Vocal — Protocolo Canudo"
+    when: "Paciente relata fadiga vocal, deterioracao de voz ao fim do dia"
+    rule: |
+      Prescrever fonacao com canudo em agua (WRSP).
+      Profundidade: 3-5 cm. Duracao: 5 min, 3x ao dia.
+      A resistencia da agua maximiza beneficio de reactancia inercial.
+    agent_source: ingo-titze
+    severity: SHOULD
+
+  - id: HEU-IT-003
+    name: "PTP Elevada Detectada"
+    when: "Paciente tem dificuldade de onset, quebras vocais ou voz soprosa"
+    rule: |
+      Alvo primario: reduzir PTP.
+      Usar humming primeiro (menor resistencia de oclusao).
+      Progredir para fricativas bilabiais, depois fonacao com canudo.
+      Verificar hidratacao — estado de hidratacao afeta PTP fortemente.
+    agent_source: ingo-titze
+    severity: SHOULD
+
+  - id: HEU-IT-004
+    name: "Cantores — SOVT Antes do Warm-Up"
+    when: "Cantor profissional ou semiprofissional solicita protocolo de aquecimento"
+    rule: |
+      Estrutura: SOVT (10 min) → expansao de range → repertorio.
+      NUNCA iniciar com voz plena ou notas agudas.
+      SOVT posiciona as pregas em configuracao otima antes de carga-las.
+    agent_source: ingo-titze
+    severity: MUST
+
+  - id: HEU-IT-005
+    name: "Mismatch de Ressonancia"
+    when: "Paciente com fonacao pressionada, voz hiperfuncional ou MTD"
+    rule: |
+      Investigar mismatch source-filter. Frequentemente o paciente compensa
+      ressonancia ineficiente aumentando pressao subglotica.
+      Prescrever exercicios de nasalidade e colocacao anterior junto com SOVT.
+      Encaminhar para @mara-behlau se hiperfuncao persistir alem de 3 sessoes.
+    agent_source: ingo-titze
+    severity: SHOULD
+
+  - id: HEU-IT-006
+    name: "Pediatrico ou Idoso"
+    when: "Paciente menor de 18 ou maior de 65 anos"
+    rule: |
+      Ajustar intensidade SOVT para BAIXO em 30%.
+      Sessoes mais curtas (3 min max por exercicio).
+      Para idosos: verificar contraindicacoes cardiovasculares com resistencia do canudo.
+      Encaminhar para @mara-behlau para clearance clinico antes de iniciar protocolo.
+    agent_source: ingo-titze
+    severity: MUST
+
+  # ============================================================
+  # TIER 0 — mara-behlau (Mara Behlau)
+  # ============================================================
+
+  - id: HEU-MB-001
+    name: "Nodulos — Protocolo Base"
+    when: "Nodulos vocais confirmados ou suspeitos"
+    rule: |
+      Iniciar repouso vocal IMEDIATO — minimo 7-14 dias de reducao drastica.
+      Hidratacao: 2L agua/dia + umidificacao ambiente.
+      Lavagem nasal 2x/dia. ZERO pigarro, sussurro ou esforco vocal.
+      So iniciar exercicios vocais apos reavaliacao — nunca antes.
+    agent_source: mara-behlau
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-MB-002
+    name: "Cantora — Avaliacao Dupla"
+    when: "Paciente e cantora (profissional ou amadora)"
+    rule: |
+      Avaliar padrao vocal na FALA alem do canto.
+      Investigar demanda vocal total: ensaios + shows + vida cotidiana.
+      Verificar tecnica de canto com pedagogo vocal.
+      Mapear repertorio — tessituras extremas agravam nodulos.
+    agent_source: mara-behlau
+    severity: MUST
+
+  - id: HEU-MB-003
+    name: "Secrecao — Protocolo Nasal"
+    when: "Secrecao nasal presente (rinite, sinusite, refluxo laringofaringeo)"
+    rule: |
+      Protocolo lavagem nasal: solucao isotonica 9mg/L, 2-3x/dia.
+      Hidratacao 2L minimo. Investigar refluxo laringofaringeo.
+      NAO iniciar exercicios vocais com secrecao ativa — mucosa inflamada.
+      Reavaliacao em 21 dias para checar clearance mucociliar.
+    agent_source: mara-behlau
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-MB-004
+    name: "Hidratacao Primeiro"
+    when: "Qualquer queixa vocal — sempre, como primeiro passo"
+    rule: |
+      Verificar ingestao hidrica atual antes de qualquer protocolo.
+      Meta: 2L agua/dia (adulto, sem contraindicacao clinica).
+      Umidificacao ambiente se trabalha em ar condicionado.
+      Eliminar diureticos excessivos: cafe, alcool, cha preto.
+    agent_source: mara-behlau
+    severity: MUST
+
+  - id: HEU-MB-005
+    name: "Repouso Vocal Estruturado"
+    when: "Repouso vocal prescrito para qualquer indicacao"
+    rule: |
+      Definir janelas de comunicacao (nao silencio total — comunicacao consciente).
+      Voz de intensidade baixa a moderada, tom habitual, sem esforco.
+      VETO: sussurro, pigarro, carreira de garganta, voz forcada.
+      Duracao minima 7 dias antes de reavaliar — nunca menos.
+    agent_source: mara-behlau
+    severity: MUST
+
+  - id: HEU-MB-006
+    name: "Progressao de Terapia"
+    when: "Definindo cronograma de terapia vocal em 3 meses"
+    rule: |
+      Fase 1 (semanas 1-4): higiene vocal + repouso — sem exercicios.
+      Fase 2 (semanas 5-8): introducao gradual de SOVT se houver melhora.
+      Fase 3 (semanas 9-12): VFE ou LMRVT — handoff para especialista.
+      Reavaliacao perceptivo-auditiva a cada 4 semanas.
+    agent_source: mara-behlau
+    severity: MUST
+
+  - id: HEU-MB-007
+    name: "Encaminhamento Laringologia"
+    when: "Rouquidao persistente > 3 semanas OU suspeita de lesao organica"
+    rule: |
+      Encaminhar para laringologista para videolaringoscopia.
+      NAO iniciar terapia vocal sem diagnostico laringologico em casos duvidosos.
+      Solicitar laudos antes de handoff para @joseph-stemple ou @katherine-verdolini.
+    agent_source: mara-behlau
+    severity: NON-NEGOTIABLE
+
+  # ============================================================
+  # TIER 1 — joseph-stemple (Joseph Stemple)
+  # ============================================================
+
+  - id: HEU-JS-001
+    name: "Historia Antes de Protocolo"
+    when: "Qualquer request de VFE sem contexto clinico fornecido"
+    rule: |
+      Coletar historia completa ANTES de prescrever qualquer exercicio.
+      Minimo necessario: perfil de uso vocal, queixas especificas, duracao,
+      fatores agravantes/aliviadores, avaliacao laringologica previa.
+    agent_source: joseph-stemple
+    severity: MUST
+
+  - id: HEU-JS-002
+    name: "Warm-Up Antes de Power — Inviolavel"
+    when: "SEMPRE. Sem excecao. Qualquer sessao VFE."
+    rule: |
+      A ordem e: Warm-Up → Stretch → Contract → Power.
+      VETO ABSOLUTO: nunca realizar Power antes dos 3 primeiros exercicios.
+      Warm-Up ativa circulacao mucosa e prepara tecido muscular.
+    agent_source: joseph-stemple
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-JS-003
+    name: "Dor = Parar. Sempre."
+    when: "Qualquer relato de dor, desconforto cervical ou laringeo durante VFE"
+    rule: |
+      VETO ABSOLUTO: interromper imediatamente qualquer exercicio se houver dor.
+      Desconforto leve de esforco e normal. Dor — nao.
+      Encaminhar para laringologista antes de retomar.
+    agent_source: joseph-stemple
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-JS-004
+    name: "Postura SOVT Check"
+    when: "Inicio de qualquer sessao VFE, especialmente com iniciantes"
+    rule: |
+      Verificar postura SOVT: faringe expandida, labios levemente arredondados,
+      onset suave, sem tensao supralangea. Paciente deve sentir vibracao anterior.
+    agent_source: joseph-stemple
+    severity: MUST
+
+  - id: HEU-JS-005
+    name: "Voz Suave mas Engajada"
+    when: "Paciente usa voz forte ou forcada nos exercicios VFE"
+    rule: |
+      Os 4 exercicios VFE sao com voz SUAVE mas ENGAJADA.
+      Nao sussurro. Nao voz de performance.
+      Volume alto aumenta pressao subglotica e derrota o proposito do SOVT.
+    agent_source: joseph-stemple
+    severity: MUST
+
+  - id: HEU-JS-006
+    name: "Medir Resultados"
+    when: "Antes de iniciar protocolo e a cada 4-6 semanas"
+    rule: |
+      Sempre estabelecer baseline mensuravel: VHI-10, MPT em /a/,
+      escala de qualidade vocal subjetiva. Reavaliar nos mesmos parametros.
+    agent_source: joseph-stemple
+    severity: MUST
+
+  - id: HEU-JS-007
+    name: "Consistencia Sobre Intensidade"
+    when: "Paciente quer aumentar repeticoes para progredir mais rapido"
+    rule: |
+      Protocolo VFE: 2 repeticoes de cada exercicio, 2x ao dia.
+      Mais nao e melhor. Descanso entre sessoes e parte do treinamento.
+    agent_source: joseph-stemple
+    severity: SHOULD
+
+  # ============================================================
+  # TIER 1 — katherine-verdolini (Katherine Verdolini Abbott)
+  # ============================================================
+
+  - id: HEU-KV-001
+    name: "Nodulos → LMRVT Primeira Linha"
+    when: "Paciente com nodulos vocais diagnosticados por laringoscopia"
+    rule: |
+      LMRVT e primeira linha para nodulos vocais funcionais em mulheres adultas.
+      Protocolo completo de 8 sessoes antes de considerar cirurgia.
+      RCT suporta resolucao ou reducao significativa em 4-8 semanas.
+    agent_source: katherine-verdolini
+    severity: MUST
+
+  - id: HEU-KV-002
+    name: "Barely-Abducted Antes de Tudo"
+    when: "Inicio de qualquer exercicio LMRVT com paciente novo"
+    rule: |
+      Ensinar postura barely-abducted ANTES de qualquer exercicio vocal.
+      Sequencia: demonstracao tatil do buzz → paciente identifica proprioceptivamente → progride.
+      Nunca pular a ancora proprioceptiva.
+    agent_source: katherine-verdolini
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-KV-003
+    name: "Nunca Empurrar Volume"
+    when: "SEMPRE. Qualquer paciente, qualquer sessao LMRVT."
+    rule: |
+      VETO ABSOLUTO: nunca instruir aumento de volume durante LMRVT.
+      Volume = colisao aumentada = contra-indicado em nodulos.
+      Trabalhar eficiencia de ressonancia, nao loudness.
+    agent_source: katherine-verdolini
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-KV-004
+    name: "8 Sessoes Sao Estrutura"
+    when: "Terapeuta ou paciente quer pular ou comprimir sessoes LMRVT"
+    rule: |
+      As 8 sessoes tem objetivos incrementais obrigatorios.
+      Nao e possivel fazer sessao 5 sem dominio da sessao 3.
+      Sessoes podem ser comprimidas em tempo, mas objetivos devem ser atingidos.
+    agent_source: katherine-verdolini
+    severity: MUST
+
+  - id: HEU-KV-005
+    name: "Carry-Over E o Objetivo"
+    when: "Avaliando progresso do tratamento LMRVT"
+    rule: |
+      Transferencia para voz conversacional (sessao 8) nao e bonus — e o indicador
+      de que o tratamento funcionou. Avaliar SEMPRE o carry-over.
+    agent_source: katherine-verdolini
+    severity: MUST
+
+  # ============================================================
+  # TIER 2 — jackie-gartner-schmidt (Jackie Gartner-Schmidt)
+  # ============================================================
+
+  - id: HEU-JG-001
+    name: "Sustain-Before-Transition"
+    when: "Paciente sustenta qualidade vocal alvo por 3+ turnos conversacionais"
+    rule: |
+      Transicionar de pratica com suporte para conversacao sem suporte.
+      Remover prompts do clinico. Motor learning: fading prematuro causa reversao.
+    agent_source: jackie-gartner-schmidt
+    severity: SHOULD
+
+  - id: HEU-JG-002
+    name: "Singer-to-Speaker Sequencing"
+    when: "Cantor apresenta-se para reabilitacao de voz falada junto com canto"
+    rule: |
+      Iniciar CTT para voz FALADA ANTES de reintroduzir exercicios de canto.
+      Habitos de fala contaminam canto se abordados simultaneamente na ordem errada.
+    agent_source: jackie-gartner-schmidt
+    severity: MUST
+
+  - id: HEU-JG-003
+    name: "Negative Practice Window"
+    when: "Paciente relata que 'nao sente' a diferenca entre padrao antigo e novo"
+    rule: |
+      Introduzir negative practice: produzir padrao antigo intencionalmente, depois alvo, alternar.
+      Percepcao de contraste e pre-requisito para discriminacao motora e autocorrecao.
+    agent_source: jackie-gartner-schmidt
+    severity: SHOULD
+
+  - id: HEU-JG-004
+    name: "Rapport-Reset Signal"
+    when: "Paciente se torna evitativo, monossilabico ou ri nervosamente sobre tentativas vocais"
+    rule: |
+      Pausar trabalho tecnico. Reconstruir rapport: explorar experiencia do paciente, normalizar dificuldade.
+      Seguranca psicologica e o container para aprendizado motor.
+    agent_source: jackie-gartner-schmidt
+    severity: MUST
+
+  # ============================================================
+  # TIER 2 — jacob-lieberman (Jacob Lieberman)
+  # ============================================================
+
+  - id: HEU-JL-001
+    name: "Tensao Primeiro Gate"
+    when: "Paciente com sintomas vocais E relato de tensao cervical, laringea ou globus"
+    rule: |
+      Realizar avaliacao Lieberman Protocol ANTES de qualquer exercicio vocal.
+      Exercicios vocais em tecido tenso entrincheiram padroes de compensacao.
+    agent_source: jacob-lieberman
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-JL-002
+    name: "MTD Suspicion Trigger"
+    when: "Laringoscopia normal mas disfonia persistente, fonacao esforçada ou fadiga vocal"
+    rule: |
+      Iniciar avaliacao completa Lieberman Protocol — palpacao, mobilidade, screen psicologico.
+      MTD e diagnostico clinico. Imagem normal nao exclui. Palpacao e chave diagnostica.
+    agent_source: jacob-lieberman
+    severity: MUST
+
+  - id: HEU-JL-003
+    name: "Globus Backward Mapping"
+    when: "Paciente apresenta globus faringeo como queixa principal"
+    rule: |
+      Mapear cadeia de tensao de tras para frente: suprahioideo → infrahioideo → overlay psicologico.
+      Globus e sintoma, nao diagnostico. Tratar sem identificar fonte causa recorrencia.
+    agent_source: jacob-lieberman
+    severity: MUST
+
+  - id: HEU-JL-004
+    name: "Integracao Psicologica-Somatica"
+    when: "Paciente com distress desproporcional, ganho secundario ou voz de onset traumatico"
+    rule: |
+      Integrar avaliacao de fatores psicologicos (psych-screen) ANTES de terapia manual.
+      Tensao somatica pode ser mantida psicologicamente — liberacao manual isolada nao sustenta.
+    agent_source: jacob-lieberman
+    severity: MUST
+
+  - id: HEU-JL-005
+    name: "Restricao Articular Escalation"
+    when: "Massagem circumlaringea atinge plato — tensao reduz mas range vocal nao melhora"
+    rule: |
+      Avaliar mobilidade das articulacoes cricoaritenoidea e cricotireoidea.
+      Se restricao confirmada, prosseguir com mobilizacao articular graduada.
+      Liberacao muscular isolada nao mobiliza articulacoes restritas.
+    agent_source: jacob-lieberman
+    severity: MUST
+
+  - id: HEU-JL-006
+    name: "Assimetria Unilateral Flag"
+    when: "Palpacao revela tensao unilateral significativa ou assimetria hioide"
+    rule: |
+      Sinalizar para revisao laringologista antes de prosseguir com mobilizacao.
+      Achados unilaterais na regiao laringea podem indicar patologia organica.
+    agent_source: jacob-lieberman
+    severity: NON-NEGOTIABLE
+
+  # ============================================================
+  # CROSS-CUTTING PATTERNS (aplicaveis a multiplos agentes)
+  # ============================================================
+
+  - id: HEU-CROSS-001
+    name: "Clearance Medico Obrigatorio"
+    when: "Qualquer lesao organica confirmada ou suspeitada antes de iniciar protocolo"
+    rule: |
+      Laringoscopia documentada e obrigatoria antes de VFE (nodulos), LMRVT ou terapia manual.
+      Nenhum protocolo terapeutico inicia sem confirmacao diagnostica em casos organicos.
+    agent_source: cross-cutting
+    severity: NON-NEGOTIABLE
+
+  - id: HEU-CROSS-002
+    name: "Interprofissionalidade Obrigatoria"
+    when: "Caso envolve lesao organica, falha terapeutica ou sinais de alarme"
+    rule: |
+      Laringologista para diagnostico. Fonoaudiologa para avaliacao funcional.
+      Psicologista se componente psicogenico. Nunca tratar em isolamento.
+    agent_source: cross-cutting
+    severity: MUST
+
+  - id: HEU-CROSS-003
+    name: "Sequencia Protetora Universal"
+    when: "Qualquer inicio de protocolo terapeutico vocal"
+    rule: |
+      Sequencia obrigatoria: Avaliacao → Higiene Vocal → Repouso (se indicado) →
+      Exercicios Terapeuticos → Generalizacao → Manutencao.
+      Pular etapas e a principal causa de recidiva e agravamento.
+    agent_source: cross-cutting
+    severity: NON-NEGOTIABLE

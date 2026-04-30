@@ -1,0 +1,128 @@
+# ============================================================================
+# Baseline Registry — Squad FastSystem
+# ============================================================================
+# Registro de baselines de performance capturados por projeto
+# ============================================================================
+
+version: 1.0.0
+description: >
+  Registro central de baselines de performance. Cada entrada representa
+  um snapshot de metricas capturado em um momento especifico para um
+  projeto/sistema. Usado para comparacao antes/depois de otimizacoes.
+
+# ============================================================================
+# Template de Baseline Entry
+# ============================================================================
+template:
+  project: "<project-name>"
+  environment: "<production|staging>"
+  captured_at: "<ISO-8601 timestamp>"
+  captured_by: "<agent-name>"
+  trigger: "<reason for baseline capture>"
+
+  traffic:
+    peak_rps: 0
+    avg_rps: 0
+    concurrent_users: 0
+    daily_requests: 0
+
+  api_performance:
+    p50_ms: 0
+    p95_ms: 0
+    p99_ms: 0
+    error_rate_pct: 0
+    throughput_rps: 0
+
+  web_vitals:
+    lcp_ms: 0
+    inp_ms: 0
+    cls: 0
+    fcp_ms: 0
+    ttfb_ms: 0
+    lighthouse_desktop: 0
+    lighthouse_mobile: 0
+
+  database:
+    query_p95_ms: 0
+    cache_hit_ratio_pct: 0
+    active_connections: 0
+    max_connections: 0
+    replication_lag_ms: 0
+
+  caching:
+    hit_rate_pct: 0
+    memory_used_mb: 0
+    memory_max_mb: 0
+    eviction_rate: 0
+    latency_get_ms: 0
+
+  infrastructure:
+    cpu_avg_pct: 0
+    cpu_peak_pct: 0
+    memory_avg_pct: 0
+    memory_peak_pct: 0
+    disk_io_await_ms: 0
+    instances: 0
+
+  bundle:
+    main_js_kb: 0
+    total_js_kb: 0
+    total_css_kb: 0
+    total_images_kb: 0
+
+  notes: "<additional context>"
+
+# ============================================================================
+# Baselines (append new entries below)
+# ============================================================================
+baselines: []
+# Example entry:
+# - project: "my-app"
+#   environment: "production"
+#   captured_at: "2026-03-13T10:00:00Z"
+#   captured_by: "system-profiler"
+#   trigger: "Pre-optimization baseline"
+#   traffic:
+#     peak_rps: 150
+#     avg_rps: 50
+#     concurrent_users: 200
+#     daily_requests: 4320000
+#   api_performance:
+#     p50_ms: 45
+#     p95_ms: 250
+#     p99_ms: 800
+#     error_rate_pct: 0.05
+#     throughput_rps: 200
+#   web_vitals:
+#     lcp_ms: 2200
+#     inp_ms: 150
+#     cls: 0.08
+#     fcp_ms: 1200
+#     ttfb_ms: 400
+#     lighthouse_desktop: 92
+#     lighthouse_mobile: 78
+#   database:
+#     query_p95_ms: 35
+#     cache_hit_ratio_pct: 98.5
+#     active_connections: 45
+#     max_connections: 100
+#     replication_lag_ms: 50
+#   caching:
+#     hit_rate_pct: 92
+#     memory_used_mb: 4200
+#     memory_max_mb: 16000
+#     eviction_rate: 0
+#     latency_get_ms: 0.3
+#   infrastructure:
+#     cpu_avg_pct: 35
+#     cpu_peak_pct: 65
+#     memory_avg_pct: 60
+#     memory_peak_pct: 78
+#     disk_io_await_ms: 2
+#     instances: 3
+#   bundle:
+#     main_js_kb: 180
+#     total_js_kb: 350
+#     total_css_kb: 45
+#     total_images_kb: 420
+#   notes: "Baseline before Q2 optimization sprint"

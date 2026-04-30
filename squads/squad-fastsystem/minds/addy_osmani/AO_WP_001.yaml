@@ -1,0 +1,18 @@
+id: AO_WP_001
+name: "Critical Rendering Path First"
+mind: addy_osmani
+source: "Learning Patterns (2021)"
+domain: frontend-performance
+description: >
+  Otimize o critical rendering path eliminando render-blocking
+  resources. O CRP determina quanto tempo o browser leva para
+  renderizar o primeiro conteudo significativo.
+applies_when:
+  - "LCP ou FCP acima do target"
+  - "Render-blocking resources detectadas"
+action: >
+  Inline critical CSS, defer non-critical JS/CSS, preload
+  LCP resources. Elimine todo CSS e JS que bloqueia rendering
+  sem ser necessario para above-the-fold.
+severity: high
+confidence: 0.90

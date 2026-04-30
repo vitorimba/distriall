@@ -1,0 +1,121 @@
+name: wf-download-single
+title: "Vimeo Single Video Download"
+description: >
+  Simplified workflow for downloading a single Vimeo video.
+  Shortcut that skips crawling and manifest generation.
+  Downloads, transcribes (optional), and organizes the file.
+
+version: 1.0.0
+type: workflow
+squad: vimeo
+entry_task: download-single
+
+# --- Inputs ---
+inputs:
+  url:
+    type: string
+    required: true
+    description: "Direct Vimeo video URL (e.g., https://vimeo.com/123456789)"
+  quality:
+    type: string
+    required: false
+    default: "best"
+    description: "Video quality: best, 1080p, 720p, 480p, audio-only"
+  auth:
+    type: object
+    required: false
+    description: "Authentication config (cookies file, password, referer)"
+    properties:
+      method:
+        type: string
+        enum: [cookies, password, referer]
+      cookies_file:
+        type: string
+      password:
+        type: string
+      referer:
+        type: string
+  transcribe:
+    type: boolean
+    required: false
+    default: true
+    description: "Enable automatic transcription via Whisper"
+  output_dir:
+    type: string
+    required: true
+    description: "Output directory for the downloaded video"
+
+# --- State Machine ---
+states:
+  init:
+    description: "Validate single video URL and check dependencies"
+    task: null  # inline validation
+    on_success: download
+    on_failure: failed
+    actions:
+      - validate_single_video_url
+      - check_disk_space
+      - verify_tools_installed
+
+  download:
+    description: "Download the single video using yt-dlp"
+    task: download-single
+    on_success: transcribe
+    on_failure: failed
+    retry:
+      max_attempts: 3
+      delay_seconds: 15
+    outputs:
+      - video_path
+      - video_metadata
+      - file_size
+
+  transcribe:
+    description: "Transcribe the video using Whisper"
+    task: transcribe-video
+    on_success: organize
+    on_failure: organize  # non-blocking
+    skip_if: "transcribe == false"
+    skip_target: organize
+    outputs:
+      - transcript_path
+      - transcript_text
+
+  organize:
+    description: "Organize video and transcript into final location"
+    task: organize-downloads
+    on_success: complete
+    on_failure: failed
+    actions:
+      - create_output_directory
+      - move_video_file
+      - move_transcript_file
+      - write_catalog_entry
+      - save_metadata_json
+    outputs:
+      - final_video_path
+      - final_transcript_path
+      - catalog_entry
+
+  complete:
+    description: "Download completed successfully"
+    terminal: true
+    status: success
+    summary:
+      - "Video: ${video_metadata.title}"
+      - "Path: ${final_video_path}"
+      - "Size: ${file_size}"
+      - "Transcribed: ${transcript_path != null}"
+
+  failed:
+    description: "Download failed — check error details"
+    terminal: true
+    status: error
+    actions:
+      - cleanup_partial_files
+      - log_error_details
+
+# --- Flow Diagram ---
+# init → download → transcribe → organize → complete
+#   ↓       ↓           ↓           ↓
+# failed  failed     organize     failed

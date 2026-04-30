@@ -1,0 +1,14 @@
+{
+  "certified": true,
+  "squad_name": "marketing-opes",
+  "score": 7.8,
+  "verdict": "PASS",
+  "date": "2026-04-13",
+  "timestamp": "2026-04-13T12:30:00.000Z",
+  "workflow": "lifecycle-squad",
+  "mode": "full",
+  "pre_upgrade_score": 3.5,
+  "post_upgrade_score": 7.8,
+  "source_project": "aiox",
+  "pipeline_version": "1.0.0"
+}

@@ -1,0 +1,79 @@
+# PMBOK Squad - AIOS Squad Manifest
+# Project Management Body of Knowledge - 10 Knowledge Areas + Chief Orchestrator
+name: pmbok
+version: 1.0.0
+description: "Squad educacional baseado no PMBOK 7th Edition. 11 agentes especializados: 1 PM Chief (orquestrador) + 10 agentes, um para cada area de conhecimento do PMBOK (Integracao, Escopo, Cronograma, Custos, Qualidade, Recursos, Comunicacoes, Riscos, Aquisicoes, Partes Interessadas). Projetado para o Cohort AIOS Fundamentals."
+author: "Sid Fernandes"
+license: MIT
+slashPrefix: pmbok
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+# ─────────────────────────────────────────────────────
+# Components
+# ─────────────────────────────────────────────────────
+components:
+  agents:
+    # Chief Orchestrator
+    - pm-chief.md
+    # 10 Knowledge Area Specialists
+    - integration-manager.md
+    - scope-manager.md
+    - schedule-manager.md
+    - cost-manager.md
+    - quality-manager.md
+    - resource-manager.md
+    - communications-manager.md
+    - risk-manager.md
+    - procurement-manager.md
+    - stakeholder-manager.md
+  tasks:
+    # Orchestration
+    - full-project-plan.md
+    # Per Knowledge Area
+    - create-project-charter.md
+    - define-scope.md
+    - create-schedule.md
+    - estimate-costs.md
+    - create-quality-plan.md
+    - create-resource-plan.md
+    - create-communication-plan.md
+    - create-risk-register.md
+    - create-procurement-plan.md
+    - create-stakeholder-register.md
+  workflows:
+    - full-pmbok-cycle.yaml
+  checklists:
+    - project-initiation-checklist.md
+  templates: []
+  tools: []
+  scripts: []
+
+# ─────────────────────────────────────────────────────
+# Configuration
+# ─────────────────────────────────────────────────────
+config:
+  extends: extend
+  coding-standards: config/coding-standards.md
+  tech-stack: config/tech-stack.md
+  source-tree: config/source-tree.md
+
+# ─────────────────────────────────────────────────────
+# Dependencies
+# ─────────────────────────────────────────────────────
+dependencies:
+  node: []
+  python: []
+  squads: []
+
+# ─────────────────────────────────────────────────────
+# Tags
+# ─────────────────────────────────────────────────────
+tags:
+  - pmbok
+  - project-management
+  - educational
+  - cohort-fundamentals
+  - pmo

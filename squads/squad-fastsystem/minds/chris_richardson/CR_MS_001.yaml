@@ -1,0 +1,17 @@
+id: CR_MS_001
+name: "Database Per Service"
+mind: chris_richardson
+source: "Microservices Patterns (2018) — Chapter 2"
+domain: microservices
+description: >
+  Cada microservico deve ter seu proprio banco de dados.
+  Compartilhar banco entre servicos cria acoplamento que
+  anula os beneficios de microservicos.
+applies_when:
+  - "Desenhando arquitetura de microservicos"
+  - "Avaliando acoplamento entre servicos"
+action: >
+  Verificar que servicos nao compartilham tabelas. Usar
+  eventos para sincronizacao de dados entre servicos.
+severity: foundational
+confidence: 0.85

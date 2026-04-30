@@ -1,0 +1,158 @@
+name: Vibe Coder Security Guide
+description: Simplified security workflow for people building apps with AI tools (Lovable, Supabase, Claude, ChatGPT)
+version: "1.0.0"
+trigger: manual
+mode: interactive
+elicit: true
+
+context: >
+  Este workflow e desenhado para "vibe coders" — pessoas que usam ferramentas
+  como Lovable, Bolt, Cursor, v0, Supabase, Vercel para construir apps sem
+  necessariamente ter background profundo em seguranca. Linguagem simples,
+  acoes praticas, resultados imediatos.
+
+phases:
+  1-threat-assessment:
+    name: Quick Threat Assessment
+    executor: adam-shostack
+    task: tasks/secure-my-app.md#phase-1
+    mode: simplified
+    description: >
+      Versao simplificada do threat modeling. Entender o que o app faz,
+      que dados coleta, e identificar os 5 maiores riscos de forma
+      acessivel para quem nao e especialista.
+    inputs:
+      - app_description
+      - tech_stack
+      - data_collected
+    outputs:
+      - top_5_risks
+      - risk_severity_simple
+    checkpoint: "Top 5 riscos identificados em linguagem simples"
+    next: 2-secure-coding-review
+
+  2-secure-coding-review:
+    name: Secure Coding Quick Review
+    executor: jim-manico
+    task: tasks/secure-my-app.md#phase-2
+    description: >
+      Revisar as praticas de coding mais criticas para seguranca.
+      Auth, authz, RLS, input validation, secrets management.
+      Foco em quick fixes que podem ser feitos em horas.
+    inputs:
+      - tech_stack
+      - current_auth_method
+      - has_supabase
+    outputs:
+      - secure_coding_checklist
+      - quick_fixes_list
+    checkpoint: "Quick fixes de coding identificados"
+    next: 3-rls-and-auth-check
+
+  3-rls-and-auth-check:
+    name: RLS & Auth/Authz Check
+    executor: andrew-van-der-stock
+    task: tasks/secure-my-app.md#phase-3
+    description: >
+      Verificar se RLS esta habilitado e configurado corretamente.
+      Verificar separacao entre autenticacao e autorizacao.
+      ASVS Level 1 simplificado.
+    inputs:
+      - supabase_config
+      - auth_setup
+      - rls_policies
+    outputs:
+      - rls_status
+      - auth_vs_authz_gaps
+      - asvs_l1_simplified
+    checkpoint: "RLS e auth verificados"
+    critical_check: >
+      Se RLS desabilitado em producao com dados reais: ESCALATE imediatamente.
+      Este e o risco #1 para vibe coders.
+    next: 4-api-security-basics
+
+  4-api-security-basics:
+    name: API Security Basics
+    executor: corey-ball
+    task: tasks/secure-my-app.md#phase-4
+    mode: simplified
+    description: >
+      Verificar seguranca basica das APIs.
+      Autenticacao, rate limiting, paginacao, validacao de input.
+      Sem jargao tecnico pesado.
+    inputs:
+      - api_endpoints
+      - api_auth_method
+    outputs:
+      - api_security_status
+      - api_quick_fixes
+    checkpoint: "API basica avaliada"
+    next: 5-privacy-basics
+
+  5-privacy-basics:
+    name: Privacy & LGPD Basics
+    executor: ann-cavoukian
+    task: tasks/secure-my-app.md#phase-5
+    mode: simplified
+    description: >
+      Verificar minimos legais de privacidade.
+      Politica de privacidade, consentimento, minimizacao de dados,
+      direito de exclusao. LGPD simplificada para quem nao e advogado.
+    inputs:
+      - data_collected
+      - has_privacy_policy
+      - user_jurisdiction
+    outputs:
+      - lgpd_compliance_basics
+      - privacy_quick_fixes
+    checkpoint: "Minimos legais de privacidade verificados"
+    next: 6-checklist-generation
+
+  6-checklist-generation:
+    name: Security Checklist Generation
+    executor: security-chief
+    task: tasks/secure-my-app.md#phase-7
+    description: >
+      Gerar checklist personalizado para o app.
+      Ordenado por prioridade e facilidade de implementacao.
+      Inclui links para tutoriais e tempo estimado.
+    inputs:
+      - all_previous_phase_outputs
+    outputs:
+      - personalized_security_checklist
+      - security_score_grade
+      - action_plan
+    checkpoint: "Checklist personalizado entregue"
+    template: checklists/vibe-coder-security-checklist.md
+
+quality_gates:
+  - name: "Critical Check: RLS"
+    phase: during-3
+    criteria: "RLS habilitado em todas tabelas com dados de usuarios"
+    blocking: true
+    escalation: "Se RLS desabilitado em producao: parar tudo e corrigir AGORA"
+
+  - name: "Legal Minimum"
+    phase: after-5
+    criteria: "Politica de privacidade existe e consentimento e coletado"
+    blocking: false
+
+escalation_triggers:
+  - condition: "rls_disabled_in_production"
+    action: "PARE TUDO. Habilite RLS agora. Dados de usuarios estao expostos."
+  - condition: "service_role_key_in_frontend"
+    action: "PARE TUDO. Remova a service_role key do frontend. Use apenas anon key."
+  - condition: "no_auth_on_api"
+    action: "Urgente: implementar autenticacao em todos endpoints da API"
+
+estimated_duration:
+  minimum: "1 hour"
+  typical: "2-3 hours"
+  maximum: "1 day"
+
+language_style: >
+  Usar linguagem simples e direta. Evitar jargao tecnico quando possivel.
+  Quando usar termos tecnicos, explicar em parenteses. Dar exemplos concretos.
+  Formato: "O que e → Por que importa → Como corrigir → Quanto tempo leva"
+
+output_template: checklists/vibe-coder-security-checklist.md

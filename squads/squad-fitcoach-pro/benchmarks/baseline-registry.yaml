@@ -1,0 +1,44 @@
+# Golden Baseline Registry — FitCoach Squad
+# Purpose: Track golden baselines for quality validation
+# Updated: 2026-03-11
+
+metadata:
+  version: "1.0.0"
+  total_baselines: 5
+  model_used: "claude-opus-4-6"
+
+baselines:
+  - id: FC-BL-001
+    agent: intake-analyst
+    task: client-intake
+    description: "Anamnese completa para cliente iniciante"
+    file: golden-baselines/FC-BL-001-intake.md
+    created: "2026-03-11"
+
+  - id: FC-BL-002
+    agent: training-builder
+    task: create-training-plan
+    description: "Mesociclo de hipertrofia para intermediário"
+    file: golden-baselines/FC-BL-002-training.md
+    created: "2026-03-11"
+
+  - id: FC-BL-003
+    agent: diet-builder
+    task: create-diet-plan
+    description: "Plano nutricional para cutting"
+    file: golden-baselines/FC-BL-003-diet.md
+    created: "2026-03-11"
+
+  - id: FC-BL-004
+    agent: business-diagnostician
+    task: business-diagnostic
+    description: "Diagnóstico de academia com 50 alunos"
+    file: golden-baselines/FC-BL-004-business.md
+    created: "2026-03-11"
+
+  - id: FC-BL-005
+    agent: fitcoach-chief
+    task: routing
+    description: "Roteamento de request multi-tier"
+    file: golden-baselines/FC-BL-005-routing.md
+    created: "2026-03-11"

@@ -1,0 +1,278 @@
+# ============================================================================
+# Veto Conditions — Squad FastSystem
+# ============================================================================
+# Condicoes que bloqueiam (BLOCK) ou alertam (WARN) atividades
+# ============================================================================
+
+version: 1.0.0
+
+veto_conditions:
+  # ============================================================================
+  # General / Methodology
+  # ============================================================================
+  - id: FS-V-001
+    condition: "Otimizacao iniciada sem baseline documentado"
+    severity: BLOCK
+    scope: all_tasks
+    rationale: "Sem baseline nao ha como medir melhoria"
+
+  - id: FS-V-002
+    condition: "Profiling em producao sem janela aprovada"
+    severity: BLOCK
+    scope: system-diagnostic
+    rationale: "Profiling pode impactar performance de producao"
+
+  - id: FS-V-003
+    condition: "Diagnostico sem USE method completo"
+    severity: WARN
+    scope: system-diagnostic
+    rationale: "USE method e o padrao minimo para diagnostico"
+
+  - id: FS-V-004
+    condition: "Relatorio sem classificacao de severidade"
+    severity: BLOCK
+    scope: all_reports
+    rationale: "Sem severidade nao ha priorizacao"
+
+  - id: FS-V-005
+    condition: "Recomendacoes sem estimativa de impacto"
+    severity: WARN
+    scope: all_reports
+    rationale: "Impacto estimado e necessario para priorizacao"
+
+  - id: FS-V-006
+    condition: "Fix aplicado sem rollback plan"
+    severity: BLOCK
+    scope: all_tasks
+    rationale: "Todo fix deve ser reversivel"
+
+  - id: FS-V-007
+    condition: "Melhoria declarada sem metricas antes/depois"
+    severity: BLOCK
+    scope: all_tasks
+    rationale: "Melhoria deve ser quantificada"
+
+  # ============================================================================
+  # Database
+  # ============================================================================
+  - id: FS-V-010
+    condition: "Index criado sem EXPLAIN ANALYZE previo"
+    severity: BLOCK
+    scope: query-optimization
+    rationale: "Indice deve ser justificado por execution plan"
+
+  - id: FS-V-011
+    condition: "Query reescrita sem validacao de resultado"
+    severity: BLOCK
+    scope: query-optimization
+    rationale: "Otimizacao nao pode alterar resultados"
+
+  - id: FS-V-012
+    condition: "Otimizacao sem baseline documentado"
+    severity: BLOCK
+    scope: query-optimization
+    rationale: "Sem baseline nao ha como comparar"
+
+  - id: FS-V-013
+    condition: "Index em tabela de alta escrita sem analise de impacto"
+    severity: WARN
+    scope: database-indexing
+    rationale: "Indices degradam performance de escrita"
+
+  - id: FS-V-014
+    condition: "Mudanca de parametro global sem teste isolado"
+    severity: BLOCK
+    scope: query-optimization
+    rationale: "Parametros globais afetam todo o sistema"
+
+  - id: FS-V-015
+    condition: "CREATE INDEX sem CONCURRENTLY em producao"
+    severity: BLOCK
+    scope: database-indexing
+    rationale: "CREATE INDEX sem CONCURRENTLY bloqueia tabela"
+
+  - id: FS-V-016
+    condition: "Index duplicado criado"
+    severity: BLOCK
+    scope: database-indexing
+    rationale: "Indices duplicados desperdicam espaco e IO"
+
+  # ============================================================================
+  # Frontend
+  # ============================================================================
+  - id: FS-V-020
+    condition: "Auditoria em dev mode (nao producao build)"
+    severity: BLOCK
+    scope: frontend-audit
+    rationale: "Dev mode nao reflete performance real"
+
+  - id: FS-V-021
+    condition: "LCP > 4.0s sem plano de acao"
+    severity: BLOCK
+    scope: frontend-audit
+    rationale: "LCP > 4.0s e classificado como 'ruim' pelo Google"
+
+  - id: FS-V-022
+    condition: "Bundle > 500KB gzipped sem code splitting"
+    severity: WARN
+    scope: frontend-audit
+    rationale: "Bundle grande degrada TTI significativamente"
+
+  - id: FS-V-023
+    condition: "Imagens sem lazy loading below-the-fold"
+    severity: WARN
+    scope: frontend-audit
+    rationale: "Lazy loading reduz initial page weight"
+
+  - id: FS-V-024
+    condition: "Third-party script sem justificativa"
+    severity: WARN
+    scope: frontend-audit
+    rationale: "Cada script adiciona overhead mensuravel"
+
+  # ============================================================================
+  # Caching
+  # ============================================================================
+  - id: FS-V-030
+    condition: "Cache de dados sensiveis sem encriptacao"
+    severity: BLOCK
+    scope: caching-strategy
+    rationale: "Dados sensiveis devem ser protegidos em cache"
+
+  - id: FS-V-031
+    condition: "TTL > 24h sem invalidacao event-driven"
+    severity: WARN
+    scope: caching-strategy
+    rationale: "TTL longo sem invalidacao = stale data"
+
+  - id: FS-V-032
+    condition: "Cache sem metricas de hit rate"
+    severity: BLOCK
+    scope: caching-strategy
+    rationale: "Sem metricas nao ha como avaliar efetividade"
+
+  - id: FS-V-033
+    condition: "Real-time data com cache TTL > 5s"
+    severity: BLOCK
+    scope: caching-strategy
+    rationale: "Dados real-time nao devem ser cacheados por muito tempo"
+
+  # ============================================================================
+  # Load Testing
+  # ============================================================================
+  - id: FS-V-040
+    condition: "Load test em ambiente de producao"
+    severity: BLOCK
+    scope: load-testing
+    rationale: "Load tests podem degradar producao"
+
+  - id: FS-V-041
+    condition: "Teste sem monitoring ativo"
+    severity: BLOCK
+    scope: load-testing
+    rationale: "Sem monitoring nao ha dados para analisar"
+
+  - id: FS-V-042
+    condition: "Resultados sem baseline comparativo"
+    severity: WARN
+    scope: load-testing
+    rationale: "Sem comparacao nao ha contexto"
+
+  # ============================================================================
+  # Resilience
+  # ============================================================================
+  - id: FS-V-060
+    condition: "Dependencia sem timeout configurado"
+    severity: BLOCK
+    scope: resilience-audit
+    rationale: "Timeout infinito causa resource exhaustion"
+
+  - id: FS-V-061
+    condition: "Retry sem exponential backoff"
+    severity: WARN
+    scope: resilience-audit
+    rationale: "Retry sem backoff amplifica falhas"
+
+  - id: FS-V-062
+    condition: "Servico critico sem circuit breaker"
+    severity: BLOCK
+    scope: resilience-audit
+    rationale: "Cascading failure sem circuit breaker"
+
+  # ============================================================================
+  # API
+  # ============================================================================
+  - id: FS-V-090
+    condition: "Lista sem pagination (> 100 items)"
+    severity: BLOCK
+    scope: api-latency-reduction
+    rationale: "Listas sem paginacao causam OOM e latencia"
+
+  - id: FS-V-091
+    condition: "N+1 query em hot path"
+    severity: BLOCK
+    scope: api-latency-reduction
+    rationale: "N+1 e o anti-pattern mais impactante"
+
+  - id: FS-V-092
+    condition: "SELECT * em API endpoint"
+    severity: WARN
+    scope: api-latency-reduction
+    rationale: "Transfere dados desnecessarios"
+
+  # ============================================================================
+  # Deployment
+  # ============================================================================
+  - id: FS-V-070
+    condition: "Pipeline > 30 min sem plano de otimizacao"
+    severity: WARN
+    scope: deployment-pipeline-optimization
+    rationale: "Pipeline lento reduz deployment frequency"
+
+  - id: FS-V-071
+    condition: "Deploy sem rollback automatico"
+    severity: BLOCK
+    scope: deployment-pipeline-optimization
+    rationale: "Rollback deve ser automatico e testado"
+
+  - id: FS-V-072
+    condition: "Tests removidos para acelerar pipeline"
+    severity: BLOCK
+    scope: deployment-pipeline-optimization
+    rationale: "Velocidade nao pode sacrificar qualidade"
+
+  # ============================================================================
+  # Capacity Planning
+  # ============================================================================
+  - id: FS-V-100
+    condition: "Capacity planning sem dados de utilizacao atual"
+    severity: BLOCK
+    scope: capacity-planning
+    rationale: "Projecao sem dados e adivinhacao"
+
+  - id: FS-V-101
+    condition: "Projecao sem margem de seguranca (>= 20%)"
+    severity: WARN
+    scope: capacity-planning
+    rationale: "Margem protege contra picos inesperados"
+
+  # ============================================================================
+  # Performance Budget
+  # ============================================================================
+  - id: FS-V-110
+    condition: "Deploy sem verificacao de budget"
+    severity: WARN
+    scope: performance-budget
+    rationale: "Budgets devem ser enforced automaticamente"
+
+  - id: FS-V-111
+    condition: "Bundle size > 2x budget sem exception"
+    severity: BLOCK
+    scope: performance-budget
+    rationale: "Violacao grave de performance budget"
+
+  - id: FS-V-112
+    condition: "LCP > 4.0s sem plano de correcao"
+    severity: BLOCK
+    scope: performance-budget
+    rationale: "LCP critico afeta SEO e conversao"

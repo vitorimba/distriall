@@ -1,0 +1,50 @@
+{
+  "squad": "squad-speechtherapy",
+  "version": "1.0.0-pro",
+  "created_at": "2026-03-13T00:00:00Z",
+  "updated_at": "2026-03-13T00:00:00Z",
+  "validation_status": "pending",
+  "governance": {
+    "veto_conditions": {
+      "file": "config/veto-conditions.yaml",
+      "total": 32,
+      "by_severity": {
+        "NON-NEGOTIABLE": 17,
+        "MUST": 10,
+        "SHOULD": 5
+      },
+      "cross_cutting_safety": 5
+    },
+    "quality_gates": {
+      "file": "config/quality-gates.yaml",
+      "total": 8,
+      "ids": [
+        "ST-QG-001",
+        "ST-QG-002",
+        "ST-QG-003",
+        "ST-QG-004",
+        "ST-QG-005",
+        "ST-QG-006",
+        "ST-QG-007",
+        "ST-QG-008"
+      ]
+    },
+    "heuristics": {
+      "file": "config/heuristics.yaml",
+      "total": 42
+    }
+  },
+  "agents": {
+    "total": 7,
+    "list": [
+      "speechtherapy-chief",
+      "ingo-titze",
+      "mara-behlau",
+      "joseph-stemple",
+      "katherine-verdolini",
+      "jackie-gartner-schmidt",
+      "jacob-lieberman"
+    ]
+  },
+  "changelog": "CHANGELOG.md"
+}

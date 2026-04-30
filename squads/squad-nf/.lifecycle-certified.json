@@ -1,0 +1,39 @@
+{
+  "squad": "squad-nf",
+  "version": "1.1.0",
+  "certified_at": "2026-04-14T12:00:00.000Z",
+  "lifecycle_workflow": "wf-squad-pro-pipeline",
+  "mode": "from-scratch",
+  "depth": "standard",
+  "type": "hybrid",
+  "pre_fix_score": 7.5,
+  "post_fix_score": 9.2,
+  "post_optimize_score": 9.5,
+  "score_delta": 2.0,
+  "verdict": "PASS",
+  "production_ready": true,
+  "agents": 11,
+  "tasks": 38,
+  "workflows": 4,
+  "templates": 5,
+  "checklists": 3,
+  "data_files": 8,
+  "total_files": 72,
+  "fixes_applied": [
+    "config.yaml names aligned with disk (v1.0.1)",
+    "whenToUse added to all 11 agents (v1.0.1)",
+    "33 workflow task references fixed (v1.1.0)"
+  ],
+  "enforcement": {
+    "checklist_loaded": true,
+    "state_file_created": true,
+    "gates_verified": true
+  },
+  "thinking_dna_sources": [
+    "Claudio Borges (regime tributario)",
+    "Laerte Cerqueira (classificacao NCM)",
+    "Sandro Rodrigues (SPED compliance)",
+    "CONFAZ/SEFAZ (ICMS rules)"
+  ],
+  "certified_by": "squad-chief (Squad Architect)"
+}

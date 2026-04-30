@@ -1,0 +1,239 @@
+# ============================================================================
+# Optimization Patterns Catalog
+# ============================================================================
+# Padroes comuns de otimizacao organizados por camada
+# ============================================================================
+
+version: 1.0.0
+
+patterns:
+  # ============================================================================
+  # Database Patterns
+  # ============================================================================
+  database:
+    - id: DB-OPT-001
+      name: "Index-Based Access"
+      problem: "Sequential scan em tabelas grandes"
+      solution: "Criar indice adequado para a query"
+      impact: "10x-1000x reducao em query time"
+      effort: low
+      risk: low
+      example: "CREATE INDEX idx_orders_user ON orders(user_id);"
+
+    - id: DB-OPT-002
+      name: "Covering Index"
+      problem: "Table lookup apos index scan"
+      solution: "INCLUDE colunas necessarias no indice"
+      impact: "2x-5x reducao em query time"
+      effort: low
+      risk: low
+      example: "CREATE INDEX idx ON orders(user_id) INCLUDE (status, total);"
+
+    - id: DB-OPT-003
+      name: "Partial Index"
+      problem: "Indice grande com muitas rows nao consultadas"
+      solution: "Filtrar indice com WHERE clause"
+      impact: "Reducao de 50-90% no tamanho do indice"
+      effort: low
+      risk: low
+      example: "CREATE INDEX idx ON orders(user_id) WHERE status = 'active';"
+
+    - id: DB-OPT-004
+      name: "Connection Pooling"
+      problem: "Overhead de criacao de conexao por request"
+      solution: "Usar PgBouncer ou pool nativo"
+      impact: "Reduz connection overhead em 90%+"
+      effort: medium
+      risk: low
+
+    - id: DB-OPT-005
+      name: "Read Replicas"
+      problem: "Database sobrecarregado com reads"
+      solution: "Direcionar reads para replicas"
+      impact: "2x-10x capacidade de leitura"
+      effort: medium
+      risk: medium
+
+    - id: DB-OPT-006
+      name: "Materialized View"
+      problem: "Aggregacao pesada recalculada a cada request"
+      solution: "Pre-computar e refresh periodicamente"
+      impact: "100x+ reducao em query time para reports"
+      effort: medium
+      risk: low
+
+    - id: DB-OPT-007
+      name: "Table Partitioning"
+      problem: "Tabela com bilhoes de rows"
+      solution: "Particionar por range (date) ou hash"
+      impact: "Query pruning elimina 90%+ das partitions"
+      effort: high
+      risk: medium
+
+    - id: DB-OPT-008
+      name: "Batch Operations"
+      problem: "N inserts/updates individuais"
+      solution: "Batch em uma unica operacao"
+      impact: "10x-100x reducao em tempo total"
+      effort: low
+      risk: low
+
+  # ============================================================================
+  # Caching Patterns
+  # ============================================================================
+  caching:
+    - id: CACHE-OPT-001
+      name: "Cache-Aside (Lazy Loading)"
+      problem: "Queries repetitivas ao banco"
+      solution: "Verificar cache antes do DB, popular no miss"
+      impact: "50-95% reducao em DB load"
+      effort: low
+      risk: low
+
+    - id: CACHE-OPT-002
+      name: "Write-Through"
+      problem: "Stale data no cache apos writes"
+      solution: "Atualizar cache e DB simultaneamente"
+      impact: "Zero stale data, leitura consistente"
+      effort: medium
+      risk: low
+
+    - id: CACHE-OPT-003
+      name: "HTTP Immutable Caching"
+      problem: "Browser re-downloading assets inalterados"
+      solution: "Hash no filename + Cache-Control: immutable"
+      impact: "Elimina requests de assets conhecidos"
+      effort: low
+      risk: low
+
+    - id: CACHE-OPT-004
+      name: "CDN Edge Caching"
+      problem: "Latencia por distancia geografica"
+      solution: "Servir conteudo de edge locations"
+      impact: "50-90% reducao em latencia para usuarios distantes"
+      effort: medium
+      risk: low
+
+    - id: CACHE-OPT-005
+      name: "Stale-While-Revalidate"
+      problem: "Cache miss causa spike de latencia"
+      solution: "Servir stale enquanto revalida em background"
+      impact: "Elimina latencia de cache miss para usuarios"
+      effort: medium
+      risk: low
+
+  # ============================================================================
+  # API Patterns
+  # ============================================================================
+  api:
+    - id: API-OPT-001
+      name: "Cursor-Based Pagination"
+      problem: "OFFSET pagination lenta em paginas altas"
+      solution: "Usar cursor (ID do ultimo item)"
+      impact: "Paginacao O(1) em vez de O(N)"
+      effort: medium
+      risk: low
+
+    - id: API-OPT-002
+      name: "Field Selection (Sparse Fieldsets)"
+      problem: "Retornando dados desnecessarios"
+      solution: "?fields=id,name,status"
+      impact: "30-80% reducao em payload size"
+      effort: low
+      risk: low
+
+    - id: API-OPT-003
+      name: "N+1 Elimination"
+      problem: "1 query + N queries para related data"
+      solution: "JOIN ou batch query"
+      impact: "N+1 → 1-2 queries"
+      effort: medium
+      risk: low
+
+    - id: API-OPT-004
+      name: "Response Compression"
+      problem: "Payloads grandes transferidos sem compressao"
+      solution: "Brotli (preferencial) ou Gzip"
+      impact: "60-90% reducao em transfer size"
+      effort: low
+      risk: low
+
+    - id: API-OPT-005
+      name: "Batch API"
+      problem: "Multiplas requests HTTP para operacoes relacionadas"
+      solution: "Endpoint de batch que aceita array de operacoes"
+      impact: "Reduce HTTP overhead, enable server-side optimization"
+      effort: medium
+      risk: low
+
+  # ============================================================================
+  # Frontend Patterns
+  # ============================================================================
+  frontend:
+    - id: FE-OPT-001
+      name: "Code Splitting"
+      problem: "Bundle monolitico carregado inteiro"
+      solution: "Split por rota com dynamic import"
+      impact: "50-80% reducao em initial load JS"
+      effort: medium
+      risk: low
+
+    - id: FE-OPT-002
+      name: "Image Optimization"
+      problem: "Imagens grandes e formato antigo"
+      solution: "WebP/AVIF, lazy loading, srcset"
+      impact: "50-90% reducao em image payload"
+      effort: low
+      risk: low
+
+    - id: FE-OPT-003
+      name: "Tree Shaking"
+      problem: "Dead code incluido no bundle"
+      solution: "ES modules + bundler tree shaking"
+      impact: "10-40% reducao em bundle size"
+      effort: low
+      risk: low
+
+    - id: FE-OPT-004
+      name: "Critical CSS Inlining"
+      problem: "CSS blocking rendering"
+      solution: "Inline CSS critico no head, defer o resto"
+      impact: "Reducao significativa em FCP e LCP"
+      effort: medium
+      risk: low
+
+    - id: FE-OPT-005
+      name: "Prefetching"
+      problem: "Navegacao entre paginas lenta"
+      solution: "Prefetch provaveis proximas paginas"
+      impact: "Near-instant navigation"
+      effort: low
+      risk: low
+
+  # ============================================================================
+  # Infrastructure Patterns
+  # ============================================================================
+  infrastructure:
+    - id: INFRA-OPT-001
+      name: "Horizontal Auto-Scaling"
+      problem: "Instancias fixas nao acompanham demanda"
+      solution: "Auto-scaling baseado em CPU/memory/custom metric"
+      impact: "Capacidade elastica, custo otimizado"
+      effort: medium
+      risk: medium
+
+    - id: INFRA-OPT-002
+      name: "Container Right-Sizing"
+      problem: "Containers over/under provisioned"
+      solution: "Analisar uso real e ajustar limits/requests"
+      impact: "20-50% reducao em custo ou melhoria em performance"
+      effort: low
+      risk: low
+
+    - id: INFRA-OPT-003
+      name: "Connection Reuse (Keep-Alive)"
+      problem: "Nova conexao TCP/TLS por request"
+      solution: "HTTP keep-alive, connection pooling"
+      impact: "Elimina overhead de handshake"
+      effort: low
+      risk: low

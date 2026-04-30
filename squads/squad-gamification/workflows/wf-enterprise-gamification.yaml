@@ -1,0 +1,595 @@
+##############################################################################
+# Workflow: Enterprise Gamification
+#
+# Corporate-focused gamification using Kevin Werbach's 6D Framework.
+# 6 phases: Assessment → Alignment → Design → Pilot → Scale → Monitor
+#
+# ID:       wf-enterprise-gamification
+# Squad:    squad-gamification
+# Phases:   6
+# Duration: 8-16 weeks
+# Context:  Corporate environments, employee engagement, training, compliance
+##############################################################################
+
+id: wf-enterprise-gamification
+name: "Enterprise Gamification Workflow"
+version: "1.0.0"
+description: >
+  Enterprise-focused gamification workflow built on Kevin Werbach's 6D Framework.
+  Emphasizes business alignment, ROI measurement, legal/ethical compliance,
+  and progressive rollout with pilot validation before scale.
+
+trigger:
+  manual: true
+  command: "*enterprise-gamify"
+  conditions:
+    - "context.product_type == 'enterprise'"
+
+settings:
+  max_iterations: 3
+  quality_gate_enforcement: strict
+  ethics_check_required: true
+  legal_review_required: true
+  pilot_before_scale: mandatory
+  roi_tracking: mandatory
+
+##############################################################################
+# Phase 1: ASSESSMENT
+# Organizational assessment and readiness evaluation
+##############################################################################
+phases:
+  - id: phase_1_assessment
+    name: "Organizational Assessment"
+    description: >
+      Comprehensive assessment of organizational readiness, current KPIs,
+      employee demographics, culture, and existing engagement initiatives.
+    duration_estimate: "1-2 weeks"
+    agents:
+      lead: enterprise-strategist
+      support: [gamification-chief, motivation-analyst]
+
+    tasks:
+      - id: org_diagnostic
+        task_ref: gamification-diagnostic
+        required: true
+        description: "Gamification diagnostic adapted for enterprise context"
+
+    actions:
+      - id: stakeholder_mapping
+        agent: enterprise-strategist
+        description: >
+          Map organizational stakeholders:
+          - Executive sponsor (budget, vision)
+          - HR/People team (employee experience)
+          - IT/Engineering (implementation)
+          - Legal/Compliance (regulations)
+          - Department managers (adoption)
+          - Employee representatives/unions
+          - Change management team
+
+      - id: culture_assessment
+        agent: enterprise-strategist
+        description: >
+          Assess organizational culture compatibility:
+          - Competitive vs collaborative culture
+          - Risk tolerance for new initiatives
+          - Previous gamification attempts (if any)
+          - Employee sentiment toward management initiatives
+          - Technology adoption maturity
+          - Remote vs in-office dynamics
+
+      - id: kpi_baseline
+        agent: enterprise-strategist
+        description: >
+          Document current KPI baselines:
+          - Employee engagement score (annual survey)
+          - Training completion rates
+          - Knowledge sharing metrics
+          - Voluntary turnover rate
+          - Absenteeism rate
+          - Internal NPS (eNPS)
+          - Productivity metrics per role
+          - Time-to-competency for new hires
+
+      - id: regulatory_scan
+        agent: enterprise-strategist
+        description: >
+          Scan regulatory requirements:
+          - GDPR/LGPD data processing requirements
+          - Labor law implications (work hours, compensation)
+          - Union agreement constraints
+          - Industry-specific regulations
+          - Accessibility requirements (ADA, WCAG)
+          - Corporate governance policies
+
+    outputs:
+      - org-assessment-report.md
+      - stakeholder-map.yaml
+      - culture-compatibility-score.yaml
+      - kpi-baseline.yaml
+      - regulatory-requirements.md
+
+    quality_gate:
+      id: GM-QG-ENT-001
+      name: "Assessment Quality Gate"
+      criteria:
+        - "Stakeholders mapped with roles and influence"
+        - "Culture assessment complete"
+        - "KPI baselines documented (minimum 5 KPIs)"
+        - "Regulatory requirements identified"
+        - "Executive sponsorship confirmed"
+        - "No blocking regulatory issues"
+      pass_threshold: 6
+      on_fail: rework
+      max_rework: 2
+
+    elicit:
+      - point: "Executive sponsor confirms objectives and budget"
+        required: true
+      - point: "Legal reviews regulatory requirements"
+        required: true
+
+##############################################################################
+# Phase 2: ALIGNMENT
+# Align gamification with business objectives (6D: Define + Delineate)
+##############################################################################
+  - id: phase_2_alignment
+    name: "Business Alignment"
+    description: >
+      Align gamification strategy with business objectives. Apply 6D Framework
+      steps 1 (Define) and 2 (Delineate) to establish clear business goals
+      and target behaviors.
+    duration_estimate: "1 week"
+    depends_on: [phase_1_assessment]
+    agents:
+      lead: enterprise-strategist
+      support: [motivation-analyst, player-profiler]
+
+    tasks:
+      - id: employee_profiling
+        task_ref: player-persona-mapping
+        required: true
+        description: "Map employee types to HEXAD profiles"
+
+      - id: motivation_assessment
+        task_ref: motivation-audit
+        required: true
+        description: "Audit current motivation landscape"
+
+    actions:
+      - id: define_objectives
+        agent: enterprise-strategist
+        description: >
+          6D Step 1 — DEFINE business objectives:
+          - Maximum 3 primary objectives
+          - Each objective must be SMART (Specific, Measurable, Achievable, Relevant, Time-bound)
+          - Objective hierarchy: Company → Department → Team → Individual
+          - Map objectives to gamification potential:
+            HIGH: behavior change, skill building, collaboration
+            MEDIUM: compliance, process adherence
+            LOW: pure productivity (risk of surveillance feel)
+
+      - id: delineate_behaviors
+        agent: enterprise-strategist
+        description: >
+          6D Step 2 — DELINEATE target behaviors:
+          - Each behavior must be:
+            * Observable and measurable
+            * Within employee's control
+            * Connected to a business objective
+            * Ethically appropriate to incentivize
+          - Win states: What does success look like?
+          - Lose states: What should be avoided?
+          - Progression: What levels of mastery exist?
+
+      - id: describe_players
+        agent: player-profiler
+        description: >
+          6D Step 3 — DESCRIBE your players (employees):
+          - Employee segments with HEXAD profiles
+          - Motivation differences by role, tenure, department
+          - Technology comfort levels
+          - Resistance risk assessment per segment
+          - Voluntary participation predictions
+
+    outputs:
+      - business-alignment.md
+      - objective-behavior-map.yaml
+      - employee-personas.md
+      - motivation-audit-report.md
+
+    quality_gate:
+      id: GM-QG-ENT-002
+      name: "Alignment Quality Gate"
+      criteria:
+        - "Business objectives are SMART"
+        - "Target behaviors are measurable and controllable"
+        - "Employee segments profiled with HEXAD"
+        - "Behavior-objective linkage documented"
+        - "Resistance risk assessed per segment"
+      pass_threshold: 5
+      on_fail: rework
+      max_rework: 2
+
+##############################################################################
+# Phase 3: DESIGN
+# Design gamification mechanics (6D: Devise + Don't forget)
+##############################################################################
+  - id: phase_3_design
+    name: "Mechanic Design"
+    description: >
+      Design enterprise-appropriate gamification mechanics. Apply 6D Framework
+      steps 4 (Devise) and 5 (Don't forget the fun, and the ethics).
+    duration_estimate: "1-2 weeks"
+    depends_on: [phase_2_alignment]
+    agents:
+      lead: experience-designer
+      support:
+        - engagement-engineer
+        - behavior-architect
+        - learning-designer
+        - emotion-designer
+        - enterprise-strategist
+
+    tasks:
+      - id: design_progression
+        task_ref: progression-design
+        required: true
+        description: "Design enterprise progression system"
+
+      - id: design_loops
+        task_ref: engagement-loop-design
+        required: true
+        description: "Design engagement loops for workplace context"
+
+      - id: design_onboarding
+        task_ref: onboarding-gamification
+        required: true
+        description: "Gamify employee onboarding"
+
+      - id: design_learning
+        task_ref: learning-gamification
+        required: false
+        condition: "objectives.includes('training')"
+        description: "Gamify training programs"
+
+      - id: anti_pattern_check
+        task_ref: anti-pattern-audit
+        required: true
+        description: "Pre-deployment anti-pattern check"
+
+    actions:
+      - id: devise_activity_cycles
+        agent: experience-designer
+        description: >
+          6D Step 4 — DEVISE activity cycles:
+          Enterprise-safe mechanics selection:
+          RECOMMENDED:
+            - Progress bars for project/training completion
+            - Team challenges for cross-department collaboration
+            - Knowledge sharing points (with quality gates)
+            - Skill badges/certifications
+            - Onboarding quests
+            - Innovation challenges with recognition
+          PROCEED WITH CAUTION:
+            - Opt-in leaderboards (never mandatory)
+            - Peer recognition with virtual currency
+            - Streaks (must accommodate PTO/sick days)
+          AVOID:
+            - Public failure displays
+            - Mandatory competitive rankings
+            - Loss-based mechanics
+            - Surveillance-disguised-as-gamification
+
+      - id: dont_forget
+        agent: enterprise-strategist
+        description: >
+          6D Step 5 — DON'T FORGET:
+          Fun check:
+            - Would YOU want to participate in this?
+            - Is this genuinely engaging or just monitoring?
+            - Does this add value to the employee's day?
+          Ethics check:
+            - Apply ethical-gamification checklist
+            - Legal review of all mechanics
+            - Privacy impact assessment
+            - Accessibility audit
+
+    outputs:
+      - enterprise-mechanics-spec.md
+      - progression-system-spec.md
+      - engagement-loops-spec.md
+      - ethics-review-report.md
+      - anti-pattern-audit-report.md
+
+    quality_gate:
+      id: GM-QG-ENT-003
+      name: "Design Quality Gate"
+      criteria:
+        - "All mechanics enterprise-appropriate"
+        - "No mandatory competitive elements"
+        - "Ethics review passed"
+        - "Anti-pattern audit clean"
+        - "Accessibility requirements met"
+        - "Fun check passed (would participants enjoy this?)"
+        - "Legal review completed"
+      pass_threshold: 7
+      on_fail: rework
+      max_rework: 3
+
+    elicit:
+      - point: "Legal/compliance approval of mechanics"
+        required: true
+      - point: "Employee representative feedback (if applicable)"
+        required: false
+
+##############################################################################
+# Phase 4: PILOT
+# Small-scale deployment and validation
+##############################################################################
+  - id: phase_4_pilot
+    name: "Pilot Deployment"
+    description: >
+      Deploy gamification to a small pilot group (50-100 employees) for
+      4-6 weeks. Validate assumptions, measure impact, gather feedback.
+    duration_estimate: "4-6 weeks"
+    depends_on: [phase_3_design]
+    agents:
+      lead: enterprise-strategist
+      support: [engagement-engineer, player-profiler, gamification-chief]
+
+    actions:
+      - id: select_pilot_group
+        agent: enterprise-strategist
+        description: >
+          Select pilot group:
+          - Size: 50-100 employees
+          - Composition: mix of departments, roles, tenures
+          - Include: early adopters AND skeptics
+          - Control group: similar demographics without gamification
+          - Duration: 4-6 weeks minimum
+          - Communication: clear expectations, opt-out available
+
+      - id: deploy_pilot
+        agent: enterprise-strategist
+        description: >
+          6D Step 6 — DEPLOY (pilot):
+          - Kick-off meeting explaining the initiative
+          - Training on gamification features
+          - Support channels established
+          - Daily monitoring by engagement-engineer
+          - Weekly feedback collection
+          - Bi-weekly adjustment cycle
+
+      - id: measure_pilot
+        agent: engagement-engineer
+        description: >
+          Pilot measurement:
+          - Weekly engagement metrics vs control
+          - Employee satisfaction survey (week 2 and week 4)
+          - Qualitative interviews (sample of 10-15)
+          - Behavior change measurement vs baseline
+          - Participation rate tracking
+          - Support ticket / complaint volume
+          - Manager observation feedback
+
+      - id: analyze_pilot
+        agent: player-profiler
+        description: >
+          Per-segment analysis:
+          - Which HEXAD types responded best?
+          - Which roles benefited most?
+          - What mechanics were most/least used?
+          - What unexpected behaviors emerged?
+          - What feedback themes appeared?
+
+    outputs:
+      - pilot-results-report.md
+      - pilot-metrics.yaml
+      - employee-feedback-analysis.md
+      - segment-impact-analysis.md
+      - scale-recommendations.md
+
+    quality_gate:
+      id: GM-QG-ENT-004
+      name: "Pilot Success Gate"
+      criteria:
+        - "Participation rate >= 70%"
+        - "Target behavior improved >= 15% vs control"
+        - "Employee satisfaction >= 7/10"
+        - "No increase in complaints/support tickets"
+        - "No negative impact on non-pilot KPIs"
+        - "Positive or neutral manager feedback"
+      pass_threshold: 5  # 5 of 6
+      on_fail: redesign
+      max_rework: 2
+
+    elicit:
+      - point: "Executive review of pilot results and scale decision"
+        required: true
+
+##############################################################################
+# Phase 5: SCALE
+# Organization-wide rollout
+##############################################################################
+  - id: phase_5_scale
+    name: "Scale"
+    description: "Progressive rollout to entire organization based on pilot learnings"
+    duration_estimate: "4-8 weeks"
+    depends_on: [phase_4_pilot]
+    agents:
+      lead: enterprise-strategist
+      support: [gamification-chief, engagement-engineer]
+
+    actions:
+      - id: progressive_rollout
+        agent: enterprise-strategist
+        description: >
+          Rollout waves:
+          Wave 1 (Week 1-2): 25% of organization
+            - Priority: departments similar to pilot group
+            - Adjustments from pilot applied
+          Wave 2 (Week 3-4): 50% of organization
+            - Expand to additional departments
+            - Monitor for scale-specific issues
+          Wave 3 (Week 5-6): 75% of organization
+            - Near-complete rollout
+            - Focus on resistant segments
+          Wave 4 (Week 7-8): 100% of organization
+            - Full deployment
+            - Opt-out tracking and support
+
+      - id: change_management
+        agent: enterprise-strategist
+        description: >
+          Change management activities:
+          - Manager training (how to use and promote)
+          - Department-specific communication
+          - FAQ and support documentation
+          - Champion network (early adopters as advocates)
+          - Resistance management plan
+          - Success story sharing
+
+      - id: integration
+        agent: enterprise-strategist
+        description: >
+          System integrations:
+          - HR system integration (link to performance)
+          - LMS integration (training gamification)
+          - Communication tools (Slack/Teams notifications)
+          - SSO integration
+          - Analytics platform integration
+          - Mobile app deployment (if applicable)
+
+    outputs:
+      - rollout-execution-log.md
+      - wave-metrics.yaml
+      - integration-status.md
+      - change-management-report.md
+
+    quality_gate:
+      id: GM-QG-ENT-005
+      name: "Scale Quality Gate"
+      criteria:
+        - "Each wave achieves >= 60% participation"
+        - "No regression in pilot metrics during scale"
+        - "System stable under full load"
+        - "All integrations operational"
+        - "Support volume manageable"
+      pass_threshold: 5
+      on_fail: pause_and_fix
+      max_rework: 2
+
+##############################################################################
+# Phase 6: MONITOR & OPTIMIZE
+# Ongoing monitoring and continuous improvement
+##############################################################################
+  - id: phase_6_monitor
+    name: "Monitor & Optimize"
+    description: "Ongoing monitoring, optimization, and ROI reporting"
+    duration_estimate: "Ongoing"
+    depends_on: [phase_5_scale]
+    agents:
+      lead: enterprise-strategist
+      support: [engagement-engineer, gamification-chief, player-profiler]
+
+    actions:
+      - id: monitoring_cadence
+        agent: enterprise-strategist
+        description: >
+          Monitoring schedule:
+          - Daily: system health, participation rate
+          - Weekly: engagement metrics, anomaly detection
+          - Monthly: behavior change analysis, A/B test results
+          - Quarterly: full gamification audit, ROI report
+          - Annually: strategy review, major evolution planning
+
+      - id: optimization_actions
+        agent: engagement-engineer
+        description: >
+          Continuous optimization:
+          - A/B test mechanic variants monthly
+          - Rotate seasonal challenges quarterly
+          - Refresh content and challenges regularly
+          - Address declining engagement proactively
+          - Introduce new mechanics based on feedback
+
+      - id: roi_reporting
+        agent: enterprise-strategist
+        description: >
+          Quarterly ROI report including:
+          - Investment vs returns calculation
+          - KPI improvements with statistical significance
+          - Employee satisfaction trend
+          - Participation rate trend
+          - Cost savings (turnover, training efficiency)
+          - Comparison to industry benchmarks
+          - Recommendations for next quarter
+
+      - id: annual_review
+        agent: gamification-chief
+        description: >
+          Annual strategic review:
+          - Full Octalysis re-assessment
+          - HEXAD distribution re-profiling
+          - Anti-pattern audit
+          - Technology stack evaluation
+          - Strategy evolution for next year
+          - Budget proposal for enhancements
+
+    outputs:
+      - monthly-health-report.md
+      - quarterly-roi-report.md
+      - annual-strategy-review.md
+      - optimization-log.md
+
+    quality_gate:
+      id: GM-QG-ENT-006
+      name: "Ongoing Health Gate"
+      criteria:
+        - "Participation rate >= 60% sustained"
+        - "ROI positive within 12 months"
+        - "Employee satisfaction stable or improving"
+        - "No unresolved ethical concerns"
+        - "Regular optimization cycle maintained"
+      pass_threshold: 5
+      on_fail: strategy_review
+      max_rework: continuous
+
+##############################################################################
+# Error Handling
+##############################################################################
+error_handling:
+  pilot_failure:
+    action: "Return to design phase with detailed feedback"
+    max_retries: 2
+    escalation: "Executive sponsor decision"
+
+  scale_regression:
+    action: "Pause rollout at current wave, investigate"
+    severity_thresholds:
+      warning: "Participation drops below 50%"
+      critical: "Employee satisfaction drops below 6/10"
+      emergency: "Legal/compliance issue identified"
+
+  employee_backlash:
+    action: "Immediate pause, employee feedback session, executive review"
+    recovery: "Address concerns, modify mechanics, restart with communication"
+
+##############################################################################
+# Completion
+##############################################################################
+completion:
+  definition: "Workflow is 'complete' after full scale deployment, but monitoring continues"
+  minimum_success:
+    - "Full organization deployed"
+    - "Pilot success criteria maintained at scale"
+    - "Quarterly ROI reporting operational"
+    - "Optimization cadence established"
+  artifacts:
+    - org-assessment-report.md
+    - business-alignment.md
+    - enterprise-mechanics-spec.md
+    - pilot-results-report.md
+    - rollout-execution-log.md
+    - quarterly-roi-report.md

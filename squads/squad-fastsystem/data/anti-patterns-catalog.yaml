@@ -1,0 +1,262 @@
+# ============================================================================
+# Performance Anti-Patterns Catalog
+# ============================================================================
+# Anti-patterns comuns com diagnostico e correcao
+# ============================================================================
+
+version: 1.0.0
+
+anti_patterns:
+  # ============================================================================
+  # Database Anti-Patterns
+  # ============================================================================
+  - id: AP-DB-001
+    name: "N+1 Query Problem"
+    layer: database
+    severity: critical
+    description: "1 query para lista + N queries para related data de cada item"
+    symptoms:
+      - "Numero de queries cresce linearmente com tamanho do resultado"
+      - "Latencia cresce com numero de items"
+      - "Alto numero de queries simples no slow log"
+    detection: "APM mostra queries repetitivas em loop"
+    fix: "JOIN, eager loading, ou batch query com IN clause"
+    example_bad: "SELECT users; FOR EACH user: SELECT orders WHERE user_id = ?"
+    example_good: "SELECT users JOIN orders ON orders.user_id = users.id"
+
+  - id: AP-DB-002
+    name: "SELECT * Abuse"
+    layer: database
+    severity: high
+    description: "Selecionar todas as colunas quando apenas algumas sao necessarias"
+    symptoms:
+      - "Payloads grandes"
+      - "Mais dados transferidos do que necessario"
+      - "Index-only scan impossivel"
+    detection: "Query analysis mostra colunas nao utilizadas"
+    fix: "Selecionar apenas colunas necessarias"
+
+  - id: AP-DB-003
+    name: "Missing Index"
+    layer: database
+    severity: critical
+    description: "Sequential scan em tabela grande por falta de indice"
+    symptoms:
+      - "Query time cresce com tamanho da tabela"
+      - "EXPLAIN mostra Seq Scan"
+      - "IO wait alto"
+    detection: "EXPLAIN ANALYZE mostra Seq Scan em tabela > 10K rows"
+    fix: "Criar indice adequado baseado em EXPLAIN"
+
+  - id: AP-DB-004
+    name: "Unbounded Query"
+    layer: database
+    severity: critical
+    description: "Query sem LIMIT que retorna milhares de rows"
+    symptoms:
+      - "Memory spikes"
+      - "Timeout em queries"
+      - "OOM em aplicacao"
+    detection: "pg_stat_statements mostra queries com rows > 1000"
+    fix: "Implementar pagination (cursor-based)"
+
+  - id: AP-DB-005
+    name: "Lock Contention"
+    layer: database
+    severity: high
+    description: "Multiplas transactions esperando pelo mesmo lock"
+    symptoms:
+      - "Queries lentas esporadicamente"
+      - "Deadlocks"
+      - "wait_event em pg_stat_activity"
+    detection: "pg_locks mostra waits frequentes"
+    fix: "Reduzir escopo de transactions, SELECT FOR UPDATE com SKIP LOCKED"
+
+  # ============================================================================
+  # Caching Anti-Patterns
+  # ============================================================================
+  - id: AP-CACHE-001
+    name: "Cache Without TTL"
+    layer: caching
+    severity: high
+    description: "Cache keys sem expiracao causam memory leak"
+    symptoms:
+      - "Memory do Redis cresce continuamente"
+      - "Evictions frequentes"
+      - "Stale data persistente"
+    detection: "redis-cli TTL mostra -1 para keys de dados"
+    fix: "Definir TTL para todas as keys de dados"
+
+  - id: AP-CACHE-002
+    name: "Thundering Herd"
+    layer: caching
+    severity: high
+    description: "Cache miss causa flood de requests ao backend"
+    symptoms:
+      - "Spike de latencia quando cache expira"
+      - "Database overloaded periodicamente"
+      - "Pattern de picos regulares"
+    detection: "Correlacao entre cache miss rate e DB load"
+    fix: "Stale-while-revalidate, mutex/lock on miss, jittered TTL"
+
+  - id: AP-CACHE-003
+    name: "Cache Stampede"
+    layer: caching
+    severity: high
+    description: "Hot key expira e centenas de requests tentam repopular"
+    symptoms:
+      - "Spike subito em backend load"
+      - "Timeout cascade"
+    detection: "Monitoring mostra spike sincronizado com TTL expiry"
+    fix: "Probabilistic early expiry, lock-based refresh"
+
+  - id: AP-CACHE-004
+    name: "Caching Sensitive Data"
+    layer: caching
+    severity: critical
+    description: "Dados sensiveis em cache sem protecao"
+    symptoms:
+      - "Dados pessoais acessiveis via cache"
+      - "Compliance violation"
+    detection: "Audit de cache keys mostra PII"
+    fix: "Encriptar ou nao cachear dados sensiveis"
+
+  # ============================================================================
+  # API Anti-Patterns
+  # ============================================================================
+  - id: AP-API-001
+    name: "Over-fetching"
+    layer: api
+    severity: medium
+    description: "API retorna muito mais dados do que o client precisa"
+    symptoms:
+      - "Payloads grandes (> 100KB)"
+      - "Client descarta maioria dos dados"
+      - "Bandwidth desperdicado"
+    detection: "Compare response payload com dados usados pelo client"
+    fix: "Field selection, GraphQL, ou endpoints especializados"
+
+  - id: AP-API-002
+    name: "Chatty API"
+    layer: api
+    severity: high
+    description: "Client faz muitas requests para completar uma operacao"
+    symptoms:
+      - "Alto numero de requests por page load"
+      - "Waterfall de requests sequenciais"
+      - "Latencia acumulada"
+    detection: "Network tab mostra > 20 API calls por pagina"
+    fix: "Batch API, BFF pattern, ou aggregate endpoints"
+
+  - id: AP-API-003
+    name: "No Rate Limiting"
+    layer: api
+    severity: high
+    description: "API sem protecao contra abuso"
+    symptoms:
+      - "API vulneravel a DDoS"
+      - "Um client pode degradar performance para todos"
+      - "Custo de infra imprevisivel"
+    detection: "Ausencia de rate limit headers na response"
+    fix: "Token bucket ou sliding window rate limiter"
+
+  - id: AP-API-004
+    name: "Synchronous External Calls"
+    layer: api
+    severity: high
+    description: "Chamadas externas sincronas bloqueando response"
+    symptoms:
+      - "Latencia = soma de todas as chamadas externas"
+      - "Timeout cascade"
+      - "Thread starvation"
+    detection: "Distributed trace mostra calls sequenciais"
+    fix: "Async/await paralelo, message queue, ou webhook"
+
+  # ============================================================================
+  # Frontend Anti-Patterns
+  # ============================================================================
+  - id: AP-FE-001
+    name: "Monolithic Bundle"
+    layer: frontend
+    severity: high
+    description: "Todo JavaScript em um unico bundle"
+    symptoms:
+      - "Bundle > 500KB"
+      - "TTI alto"
+      - "Usuarios esperam para interagir"
+    detection: "Bundle analyzer mostra single chunk"
+    fix: "Code splitting por rota, dynamic imports"
+
+  - id: AP-FE-002
+    name: "Layout Thrashing"
+    layer: frontend
+    severity: medium
+    description: "Leituras e escritas alternadas no DOM forcam reflows"
+    symptoms:
+      - "Jank visual"
+      - "Long tasks no Performance tab"
+      - "Forced reflow warnings"
+    detection: "Chrome DevTools Performance mostra purple layout events"
+    fix: "Batch reads then writes, requestAnimationFrame"
+
+  - id: AP-FE-003
+    name: "Unoptimized Images"
+    layer: frontend
+    severity: high
+    description: "Imagens grandes, formato antigo, sem lazy loading"
+    symptoms:
+      - "Page weight > 3MB"
+      - "LCP ruim"
+      - "Bandwidth alto"
+    detection: "Lighthouse image audit"
+    fix: "WebP/AVIF, srcset, lazy loading, compression"
+
+  # ============================================================================
+  # Infrastructure Anti-Patterns
+  # ============================================================================
+  - id: AP-INFRA-001
+    name: "No Connection Pooling"
+    layer: infrastructure
+    severity: critical
+    description: "Nova conexao TCP/DB criada para cada request"
+    symptoms:
+      - "Connection refused under load"
+      - "Alto overhead por request"
+      - "max_connections atingido"
+    detection: "Monitoring mostra connections/s alto"
+    fix: "PgBouncer, pool config no driver"
+
+  - id: AP-INFRA-002
+    name: "Premature Optimization"
+    layer: methodology
+    severity: medium
+    description: "Otimizar sem medir primeiro"
+    symptoms:
+      - "Esforco gasto em areas que nao sao bottleneck"
+      - "Complexidade adicionada sem ganho mensuravel"
+    detection: "Sem baseline documentado antes de otimizar"
+    fix: "Measure first, optimize second"
+
+  - id: AP-INFRA-003
+    name: "Retry Without Backoff"
+    layer: infrastructure
+    severity: high
+    description: "Retry imediato amplifica carga no servico falhando"
+    symptoms:
+      - "Servico degradado nao se recupera"
+      - "Amplificacao de trafego em falha"
+      - "Cascading failure"
+    detection: "Retry rate alto + servico nao se recupera"
+    fix: "Exponential backoff com jitter"
+
+  - id: AP-INFRA-004
+    name: "No Timeout Configuration"
+    layer: infrastructure
+    severity: critical
+    description: "Chamadas externas sem timeout dependem do default (ou infinito)"
+    symptoms:
+      - "Threads/connections penduradas"
+      - "Slow accumulation of resources"
+      - "Eventual resource exhaustion"
+    detection: "Code review mostra HTTP/DB calls sem timeout"
+    fix: "Timeout explicito em TODA chamada externa"

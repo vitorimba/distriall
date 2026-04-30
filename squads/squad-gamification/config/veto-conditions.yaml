@@ -1,0 +1,315 @@
+##############################################################################
+# Veto Conditions — Squad Gamification
+# 32 conditions that block gamification decisions when violated
+##############################################################################
+
+veto_conditions:
+
+  # =========================================================================
+  # ETHICAL VETOS (V-ETH) — Zero tolerance
+  # =========================================================================
+  - id: V-ETH-001
+    name: "No Dark Patterns"
+    description: "Block any mechanic that uses deceptive design to manipulate users"
+    severity: critical
+    agent: gamification-chief
+    trigger: "Mechanic uses artificial scarcity, confirm-shaming, or hidden manipulation"
+    action: reject
+    override: none
+
+  - id: V-ETH-002
+    name: "No Gambling for Minors"
+    description: "Block paid random reward mechanics when minors may access the system"
+    severity: critical
+    agent: gamification-chief
+    trigger: "Paid loot boxes or gacha mechanics accessible to users under 18"
+    action: reject
+    override: none
+
+  - id: V-ETH-003
+    name: "No Social Shaming"
+    description: "Block any mechanic that publicly exposes failure or low performance"
+    severity: critical
+    agent: gamification-chief
+    trigger: "Public display of worst performers, failure states, or punishment"
+    action: reject
+    override: none
+
+  - id: V-ETH-004
+    name: "No Surveillance Gamification"
+    description: "Block gamification that serves as disguised employee monitoring"
+    severity: critical
+    agent: enterprise-strategist
+    trigger: "Granular activity tracking (keystrokes, mouse, idle time) tied to gamification scores"
+    action: reject
+    override: none
+
+  - id: V-ETH-005
+    name: "No Addiction by Design"
+    description: "Block mechanics designed to prevent users from stopping"
+    severity: critical
+    agent: emotion-designer
+    trigger: "No natural stopping points, auto-play loops, or exit punishment"
+    action: reject
+    override: none
+
+  - id: V-ETH-006
+    name: "No Exploitation of Vulnerabilities"
+    description: "Block mechanics targeting known psychological vulnerabilities"
+    severity: critical
+    agent: motivation-analyst
+    trigger: "Mechanics targeting compulsive behavior, loneliness, or self-esteem issues"
+    action: reject
+    override: none
+
+  # =========================================================================
+  # MOTIVATION VETOS (V-MOT)
+  # =========================================================================
+  - id: V-MOT-001
+    name: "No Overjustification Risk"
+    description: "Block extrinsic rewards on activities with strong existing intrinsic motivation"
+    severity: high
+    agent: motivation-analyst
+    trigger: "Adding contingent extrinsic rewards to activities users already enjoy intrinsically"
+    action: flag_for_review
+    override: gamification-chief
+
+  - id: V-MOT-002
+    name: "No Black Hat Dominance"
+    description: "Block designs where Black Hat Core Drives exceed White Hat"
+    severity: high
+    agent: motivation-analyst
+    trigger: "Black Hat score (CD6+CD7+CD8) > White Hat score (CD1+CD2+CD3)"
+    action: require_rebalance
+    override: gamification-chief
+
+  - id: V-MOT-003
+    name: "No Pure Extrinsic System"
+    description: "Block gamification with zero intrinsic motivation mechanics"
+    severity: high
+    agent: motivation-analyst
+    trigger: "Only Left Brain mechanics (CD2, CD4, CD6) with no Right Brain (CD3, CD5, CD7)"
+    action: require_rebalance
+    override: gamification-chief
+
+  - id: V-MOT-004
+    name: "No Mandatory Competition"
+    description: "Block systems that force users into competitive mechanics"
+    severity: high
+    agent: player-profiler
+    trigger: "Leaderboards or competitive features without opt-out"
+    action: require_opt_out
+    override: none
+
+  - id: V-MOT-005
+    name: "No Punishment-Primary Design"
+    description: "Block designs where loss/punishment is the primary motivator"
+    severity: high
+    agent: motivation-analyst
+    trigger: "CD8 (Loss & Avoidance) is the highest-scored Core Drive"
+    action: require_rebalance
+    override: gamification-chief
+
+  # =========================================================================
+  # DESIGN VETOS (V-DES)
+  # =========================================================================
+  - id: V-DES-001
+    name: "No Pointsification"
+    description: "Block addition of points that have no purpose or connection to value"
+    severity: high
+    agent: gamification-chief
+    trigger: "Points exist but cannot be spent, displayed meaningfully, or connected to progression"
+    action: require_redesign
+    override: gamification-chief
+
+  - id: V-DES-002
+    name: "No Dead-End Progression"
+    description: "Block progression systems that end without endgame strategy"
+    severity: medium
+    agent: experience-designer
+    trigger: "Max level exists with no prestige, mastery tracks, or endgame content"
+    action: require_endgame_design
+    override: gamification-chief
+
+  - id: V-DES-003
+    name: "No Badge Inflation"
+    description: "Block trivial badges that don't represent real accomplishments"
+    severity: medium
+    agent: experience-designer
+    trigger: "Badges awarded for opening the app, clicking a button, or trivial actions"
+    action: require_redesign
+    override: gamification-chief
+
+  - id: V-DES-004
+    name: "No Broken Loops"
+    description: "Block engagement loops where investment doesn't load the next trigger"
+    severity: medium
+    agent: engagement-engineer
+    trigger: "Hook cycle has disconnected components (no path from investment back to trigger)"
+    action: require_redesign
+    override: none
+
+  - id: V-DES-005
+    name: "No Flow Violation"
+    description: "Block progression where challenge-skill balance is clearly wrong"
+    severity: medium
+    agent: experience-designer
+    trigger: "Success rate < 30% (too hard) or > 95% (too easy) for extended periods"
+    action: require_tuning
+    override: gamification-chief
+
+  - id: V-DES-006
+    name: "No Notification Abuse"
+    description: "Block excessive notification frequency"
+    severity: medium
+    agent: engagement-engineer
+    trigger: "More than 3 push notifications per day for casual products"
+    action: reduce_frequency
+    override: gamification-chief
+
+  # =========================================================================
+  # ENTERPRISE VETOS (V-ENT)
+  # =========================================================================
+  - id: V-ENT-001
+    name: "No Gamified Overtime"
+    description: "Block mechanics that incentivize working outside paid hours"
+    severity: critical
+    agent: enterprise-strategist
+    trigger: "Points/XP for after-hours activity or weekend work"
+    action: reject
+    override: none
+
+  - id: V-ENT-002
+    name: "No Score-Based Termination"
+    description: "Block linking gamification scores to job security"
+    severity: critical
+    agent: enterprise-strategist
+    trigger: "Gamification metrics used in termination or PIP decisions"
+    action: reject
+    override: none
+
+  - id: V-ENT-003
+    name: "No Mandatory Ranking"
+    description: "Block mandatory public ranking of employees"
+    severity: high
+    agent: enterprise-strategist
+    trigger: "Public employee ranking without opt-out"
+    action: require_opt_in
+    override: none
+
+  - id: V-ENT-004
+    name: "No PTO Punishment"
+    description: "Block mechanics that penalize vacation or sick leave"
+    severity: high
+    agent: enterprise-strategist
+    trigger: "Streaks or scores that reset or decrease due to approved time off"
+    action: require_freeze_mechanism
+    override: none
+
+  - id: V-ENT-005
+    name: "No Skip Legal Review"
+    description: "Block enterprise deployment without legal review"
+    severity: high
+    agent: enterprise-strategist
+    trigger: "Enterprise gamification proceeding without legal/compliance sign-off"
+    action: block_until_review
+    override: none
+
+  # =========================================================================
+  # LEARNING VETOS (V-LRN)
+  # =========================================================================
+  - id: V-LRN-001
+    name: "No Mechanics Over Learning"
+    description: "Block mechanics that distract from learning objectives"
+    severity: high
+    agent: learning-designer
+    trigger: "Users engage with gamification more than with actual content"
+    action: require_redesign
+    override: gamification-chief
+
+  - id: V-LRN-002
+    name: "No Permanent Failure Punishment"
+    description: "Block mechanics that permanently punish learning mistakes"
+    severity: high
+    agent: learning-designer
+    trigger: "Wrong answers cause permanent XP loss, ranking drop, or locked content"
+    action: reject
+    override: none
+
+  - id: V-LRN-003
+    name: "No Speed Over Understanding"
+    description: "Block mechanics that reward speed at the expense of comprehension"
+    severity: medium
+    agent: learning-designer
+    trigger: "Time-based scoring as primary metric without quality counterbalance"
+    action: require_quality_balance
+    override: learning-designer
+
+  - id: V-LRN-004
+    name: "No Academic Integrity Risk"
+    description: "Block mechanics that incentivize cheating or shortcutting"
+    severity: high
+    agent: learning-designer
+    trigger: "Reward structure makes cheating more efficient than genuine learning"
+    action: require_redesign
+    override: none
+
+  # =========================================================================
+  # TECHNICAL VETOS (V-TEC)
+  # =========================================================================
+  - id: V-TEC-001
+    name: "No Launch Without Baseline"
+    description: "Block launch without baseline metrics recorded"
+    severity: medium
+    agent: gamification-chief
+    trigger: "Deployment proceeding without pre-gamification metrics baseline"
+    action: block_until_baseline
+    override: gamification-chief
+
+  - id: V-TEC-002
+    name: "No Launch Without Rollback"
+    description: "Block launch without rollback plan"
+    severity: medium
+    agent: gamification-chief
+    trigger: "No feature flags or rollback mechanism in place"
+    action: block_until_rollback_ready
+    override: none
+
+  - id: V-TEC-003
+    name: "No Guardrail Skip"
+    description: "Block A/B tests without guardrail metrics"
+    severity: medium
+    agent: engagement-engineer
+    trigger: "A/B test launched without defined guardrail metrics (do no harm)"
+    action: block_until_guardrails_defined
+    override: engagement-engineer
+
+  - id: V-TEC-004
+    name: "No Performance Degradation"
+    description: "Block gamification that degrades core product performance"
+    severity: high
+    agent: gamification-chief
+    trigger: "Gamification adds > 200ms to page load or > 500ms to core interactions"
+    action: require_optimization
+    override: none
+
+##############################################################################
+# Summary
+##############################################################################
+summary:
+  total: 32
+  by_severity:
+    critical: 8
+    high: 15
+    medium: 9
+  by_category:
+    ethical: 6
+    motivation: 5
+    design: 6
+    enterprise: 5
+    learning: 4
+    technical: 4
+  override_policy: >
+    Critical vetos have no override. High vetos can be overridden by
+    gamification-chief with documented justification. Medium vetos
+    can be overridden by the responsible agent with justification.

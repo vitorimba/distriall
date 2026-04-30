@@ -1,0 +1,17 @@
+id: AX_SD_002
+name: "Return Only What Client Needs"
+mind: alex_xu
+source: "System Design Interview (2020)"
+domain: api-performance
+description: >
+  Retorne apenas o que o client precisa. Field selection e
+  pagination sao obrigatorios para APIs eficientes.
+applies_when:
+  - "Desenhando ou otimizando API endpoints"
+  - "Payloads grandes detectados"
+action: >
+  Implementar sparse fieldsets (?fields=id,name) e cursor-based
+  pagination em todas as listas. Nunca retornar dados que o
+  client nao usa.
+severity: high
+confidence: 0.90

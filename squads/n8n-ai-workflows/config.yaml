@@ -1,0 +1,184 @@
+pack:
+  name: n8n-ai-workflows
+  version: 1.0.0
+  short-title: n8n AI Workflow Architects
+  description: >-
+    Squad especializado em n8n para criacao de fluxos de AI agents
+    para atendimento ao cliente, vendas, agendamento, RAG, multi-agent
+    systems e automacoes inteligentes. Baseado em elite minds reais
+    com frameworks documentados.
+  author: Synkra AIOX
+  icon: "🔗"
+  slashPrefix: n8nAI
+
+# Pattern Library
+pattern_library:
+  prefix: N8N
+  naming_convention:
+    format: "{PREFIX}-{CATEGORY}-{NUMBER}"
+    example: "N8N-TP-001"
+  categories:
+    - id: TP
+      name: "Task Patterns"
+      description: "Patterns for n8n workflow task structure"
+    - id: EP
+      name: "Executor Patterns"
+      description: "Patterns for executor selection in automations"
+    - id: PP
+      name: "Process Patterns"
+      description: "Patterns for workflow design processes"
+    - id: IP
+      name: "Integration Patterns"
+      description: "Patterns for n8n node integrations"
+    - id: AP
+      name: "Agent Patterns"
+      description: "Patterns for AI agent architecture in n8n"
+    - id: DP
+      name: "Documentation Patterns"
+      description: "Patterns for workflow documentation"
+  patterns: []
+
+# Task Standards
+task_standards:
+  enforce_anatomy: true
+  validator: "N8N-TP-001"
+  required_fields:
+    - task_name
+    - status
+    - responsible_executor
+    - execution_type
+    - input
+    - output
+    - action_items
+    - acceptance_criteria
+  optional_fields:
+    - estimated_time
+    - dependencies
+    - templates
+    - quality_gate
+    - handoff
+
+# Executor Types
+executor_types:
+  human:
+    id: "N8N-EP-001"
+    name: "Human Executor"
+    characteristics: [judgment, creativity, business_logic]
+    cost: "$$$"
+    speed: slow
+    use_for:
+      - "Business requirements definition"
+      - "Workflow architecture decisions"
+      - "Client communication"
+  agent:
+    id: "N8N-EP-002"
+    name: "Agent Executor (AI)"
+    characteristics: [analysis, generation, pattern_recognition]
+    cost: "$$$$"
+    speed: fast
+    use_for:
+      - "Workflow design and optimization"
+      - "Node configuration generation"
+      - "Prompt engineering for AI nodes"
+  hybrid:
+    id: "N8N-EP-003"
+    name: "Hybrid Executor"
+    characteristics: [ai_assisted, human_validated]
+    cost: "$$"
+    speed: moderate
+    use_for:
+      - "Workflow review and testing"
+      - "AI agent prompt refinement"
+      - "Integration debugging"
+  worker:
+    id: "N8N-EP-004"
+    name: "Worker Executor"
+    characteristics: [deterministic, api_integration, file_operations]
+    cost: "$"
+    speed: very_fast
+    use_for:
+      - "n8n API calls"
+      - "Template deployment"
+      - "Workflow import/export"
+
+executor_selection:
+  requires_creativity: human
+  requires_judgment: [human, hybrid]
+  requires_speed: [agent, worker]
+  requires_consistency: worker
+  requires_validation: hybrid
+  requires_learning: agent
+
+# Workflow Configuration
+workflow_config:
+  checkpoint_policy: always_active
+  checkpoint_modes:
+    always_active: "Every checkpoint MUST pass"
+    skip_on_override: "Can skip with manual approval"
+    advisory: "Only alerts, doesn't block"
+  fail_fast: true
+  allow_manual_override: false
+
+# Agents
+agents:
+  - id: n8n-chief
+    name: "n8n Orchestrator"
+    tier: 0
+    role: "Squad orchestrator, workflow architecture, routing"
+
+  - id: cole-medin
+    name: "Cole Medin"
+    tier: 1
+    role: "RAG systems, AI agents production, context engineering"
+
+  - id: nate-herk
+    name: "Nate Herk"
+    tier: 1
+    role: "AI automation business, multi-agent systems, sales workflows"
+
+  - id: max-tkacz
+    name: "Max Tkacz"
+    tier: 2
+    role: "n8n platform internals, AI workflow patterns, node architecture"
+
+  - id: leon-van-zyl
+    name: "Leon van Zyl"
+    tier: 2
+    role: "Practical integrations, WhatsApp agents, memory systems, tutorials"
+
+  - id: pawel-cislo
+    name: "Pawel Cislo"
+    tier: 0
+    role: "AI agent architecture patterns, design decisions, diagnostics"
+
+  - id: jan-oberhauser
+    name: "Jan Oberhauser"
+    tier: 0
+    role: "n8n platform vision, AI orchestration strategy, architectural decisions"
+
+# Domain Coverage
+domain_coverage:
+  primary:
+    - "n8n workflow automation"
+    - "AI agent workflows (customer service, sales, scheduling)"
+    - "RAG systems with n8n"
+    - "Multi-agent orchestration"
+    - "WhatsApp/Telegram/Email AI agents"
+  secondary:
+    - "Voice AI agents"
+    - "Lead qualification automation"
+    - "Meeting/calendar automation"
+    - "Document processing workflows"
+    - "Human-in-the-loop patterns"
+
+# Tier Distribution
+tier_distribution:
+  tier_0_diagnostic:
+    agents: ["n8n-chief", "pawel-cislo", "jan-oberhauser"]
+    purpose: "Architecture, diagnostics, orchestration"
+  tier_1_masters:
+    agents: ["cole-medin", "nate-herk"]
+    purpose: "Core execution, production systems, business automation"
+  tier_2_systematizers:
+    agents: ["max-tkacz", "leon-van-zyl"]
+    purpose: "Implementation patterns, integrations, tutorials"

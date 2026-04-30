@@ -1,0 +1,442 @@
+# Exercise Database — FitCoach Squad
+# Base de exercicios organizada por grupo muscular
+# Version: 1.0.0 | Updated: 2026-03-13
+
+# Difficulty: beginner | intermediate | advanced
+# Equipment: barbell | dumbbell | cable | machine | bodyweight | band | kettlebell
+
+chest:
+  - name: Supino Reto com Barra
+    id: EX-CHEST-001
+    difficulty: beginner
+    equipment: barbell
+    primary_muscle: peitoral_maior_esternal
+    secondary: [deltóide_anterior, tríceps]
+    biomechanics: "Angulo de 0 graus no banco. Pega 1.5x largura dos ombros. Barra toca peito na linha do mamilo."
+    common_errors:
+      - "Bouncing no peito — perda de tensao e risco de fratura esternal"
+      - "Cotovelos muito abertos (90 graus) — stress excessivo no ombro"
+      - "Arco lombar excessivo — transforma em decline press"
+    cue: "Retraia escapulas, desça controlado (2-3s), cotovelos a ~75 graus"
+
+  - name: Supino Inclinado com Halteres
+    id: EX-CHEST-002
+    difficulty: intermediate
+    equipment: dumbbell
+    primary_muscle: peitoral_maior_clavicular
+    secondary: [deltóide_anterior, tríceps]
+    biomechanics: "Banco a 30-45 graus. ROM maior que barra. Convergencia no topo para pico de contracao."
+    common_errors:
+      - "Angulo muito alto (>45 graus) — vira front raise disfarçado"
+      - "Halteres se afastam demais na fase excentrica — perda de tensao"
+    cue: "Desça até sentir alongamento no peitoral, suba convergindo no topo"
+
+  - name: Crossover no Cabo (High to Low)
+    id: EX-CHEST-003
+    difficulty: intermediate
+    equipment: cable
+    primary_muscle: peitoral_maior_esternal
+    secondary: [deltóide_anterior]
+    biomechanics: "Cabos na posicao alta. Movimento em arco descendente. Tensao constante no peitoral."
+    common_errors:
+      - "Usar peso excessivo — compensa com deltóide e biceps"
+      - "Nao cruzar as maos — ROM incompleto"
+    cue: "Pense em abraçar uma árvore grande, mãos se cruzam embaixo"
+
+  - name: Chest Press na Maquina
+    id: EX-CHEST-004
+    difficulty: beginner
+    equipment: machine
+    primary_muscle: peitoral_maior
+    secondary: [deltóide_anterior, tríceps]
+    biomechanics: "Trajetoria fixa. Ideal para iniciantes ou drop sets de alto volume."
+    common_errors:
+      - "Assento muito alto ou baixo — altera angulo de empurro"
+      - "Nao alinhar pegas com linha do peito"
+    cue: "Assento na altura onde pegas ficam na linha do mamilo"
+
+  - name: Flexao de Braço (Push-up)
+    id: EX-CHEST-005
+    difficulty: beginner
+    equipment: bodyweight
+    primary_muscle: peitoral_maior
+    secondary: [deltóide_anterior, tríceps, core]
+    biomechanics: "Corpo em prancha. Maos ligeiramente mais largas que ombros. Peito toca o chao."
+    common_errors:
+      - "Quadril cai ou sobe — falta de ativação de core"
+      - "Meio ROM — não desce até o peito tocar"
+    cue: "Corpo rigido como tabua, peito ao chão, empurre explosivo"
+
+back:
+  - name: Puxada na Barra Fixa (Pull-up)
+    id: EX-BACK-001
+    difficulty: advanced
+    equipment: bodyweight
+    primary_muscle: latissimo_dorsal
+    secondary: [bíceps, rombóides, trapézio_inferior]
+    biomechanics: "Pega pronada, largura 1.5x ombros. Inicia com depressao escapular."
+    common_errors:
+      - "Kipping — momentum rouba trabalho do dorsal"
+      - "ROM parcial — queixo nao passa da barra"
+      - "Ombros sobem nas orelhas — falta depressão escapular"
+    cue: "Puxe os cotovelos para baixo e para trás, peito em direção à barra"
+
+  - name: Remada Curvada com Barra
+    id: EX-BACK-002
+    difficulty: intermediate
+    equipment: barbell
+    primary_muscle: latissimo_dorsal
+    secondary: [rombóides, trapézio, eretor_espinal, bíceps]
+    biomechanics: "Tronco a ~45 graus. Barra sobe em direcao ao umbigo. Movimento de 'remar'."
+    common_errors:
+      - "Tronco muito ereto — vira upright row"
+      - "Lombar arredondada — risco de hernia"
+      - "Puxar com biceps — falta de squeeze escapular"
+    cue: "Peito pra frente, lombar neutra, puxe cotovelos para trás"
+
+  - name: Puxada Alta no Cabo (Lat Pulldown)
+    id: EX-BACK-003
+    difficulty: beginner
+    equipment: cable
+    primary_muscle: latissimo_dorsal
+    secondary: [bíceps, rombóides]
+    biomechanics: "Pega larga pronada. Puxar barra até clavícula. Foco em depressão escapular."
+    common_errors:
+      - "Puxar atrás da nuca — stress no ombro, sem vantagem biomecânica"
+      - "Inclinar tronco demais — vira remada"
+    cue: "Peito alto, puxe a barra até a clavícula, squeeze 1s embaixo"
+
+  - name: Remada Unilateral com Halter
+    id: EX-BACK-004
+    difficulty: beginner
+    equipment: dumbbell
+    primary_muscle: latissimo_dorsal
+    secondary: [rombóides, trapézio, bíceps]
+    biomechanics: "Apoio com mão e joelho no banco. Permite ROM extenso e correção de assimetria."
+    common_errors:
+      - "Rotação excessiva do tronco — usar core para estabilizar"
+      - "Puxar reto pra cima — cotovelo deve ir pra trás, não pra cima"
+    cue: "Pense em colocar o halter no bolso da calça"
+
+  - name: Pullover com Halter
+    id: EX-BACK-005
+    difficulty: intermediate
+    equipment: dumbbell
+    primary_muscle: latissimo_dorsal
+    secondary: [peitoral, serrátil_anterior, tríceps_longo]
+    biomechanics: "Deitado transversal no banco. Extensão de ombro pura. Alonga lat em posição alongada."
+    common_errors:
+      - "Flexionar cotovelos demais — vira extensão de tríceps"
+      - "Descer demais — stress no ombro"
+    cue: "Braços quase retos, desça até sentir alongamento no dorsal, suba com controle"
+
+shoulders:
+  - name: Desenvolvimento Militar com Barra
+    id: EX-SHOULDERS-001
+    difficulty: intermediate
+    equipment: barbell
+    primary_muscle: deltóide_anterior
+    secondary: [deltóide_lateral, tríceps, trapézio_superior]
+    biomechanics: "Em pé ou sentado. Barra na frente, sobe em linha reta. Exige boa mobilidade torácica."
+    common_errors:
+      - "Hiperextensão lombar — compensando falta de mobilidade"
+      - "Barra vai pra frente da cabeça — perda de vantagem mecânica"
+    cue: "Core contraído, barra sobe em linha reta, cabeça passa pela janela"
+
+  - name: Elevação Lateral com Halteres
+    id: EX-SHOULDERS-002
+    difficulty: beginner
+    equipment: dumbbell
+    primary_muscle: deltóide_lateral
+    secondary: [trapézio_superior]
+    biomechanics: "Leve inclinação anterior do tronco. Cotovelos levemente flexionados. Sobe até paralelo."
+    common_errors:
+      - "Peso excessivo — trapézio compensa, ombro sobe"
+      - "Braço reto e rotação interna — impingement"
+      - "Subir acima de 90 graus — trapézio domina"
+    cue: "Lidere com os cotovelos, como se despejasse uma jarra de água"
+
+  - name: Face Pull no Cabo
+    id: EX-SHOULDERS-003
+    difficulty: beginner
+    equipment: cable
+    primary_muscle: deltóide_posterior
+    secondary: [rombóides, trapézio_médio, rotadores_externos]
+    biomechanics: "Cabo na altura da face. Puxa com rotação externa. Essencial para saúde do ombro."
+    common_errors:
+      - "Puxar para o peito — vira remada alta"
+      - "Sem rotação externa no final — perde benefício rehab"
+    cue: "Puxe para as orelhas, termine com polegares apontando para trás"
+
+  - name: Desenvolvimento Arnold
+    id: EX-SHOULDERS-004
+    difficulty: intermediate
+    equipment: dumbbell
+    primary_muscle: deltóide_anterior
+    secondary: [deltóide_lateral, tríceps]
+    biomechanics: "Rotação durante o press. Ativa todas as porções do deltóide em um movimento."
+    common_errors:
+      - "Rotação muito rápida — perda de tensão"
+      - "Não completar a rotação — ROM parcial"
+    cue: "Comece com palmas pra você, gire enquanto sobe, termine com palmas pra frente"
+
+arms_biceps:
+  - name: Rosca Direta com Barra
+    id: EX-BICEPS-001
+    difficulty: beginner
+    equipment: barbell
+    primary_muscle: bíceps_braquial
+    secondary: [braquial, braquiorradial]
+    biomechanics: "Barra reta ou EZ. Cotovelos fixos ao lado do corpo. Supinação completa."
+    common_errors:
+      - "Swing de tronco — usar ego lift com momentum"
+      - "Cotovelos se movem pra frente — deltóide anterior assume"
+    cue: "Cotovelos colados no corpo, suba controlado, squeeze no topo"
+
+  - name: Rosca Martelo
+    id: EX-BICEPS-002
+    difficulty: beginner
+    equipment: dumbbell
+    primary_muscle: braquial
+    secondary: [braquiorradial, bíceps_braquial]
+    biomechanics: "Pega neutra (palmas voltadas uma pra outra). Enfatiza braquial e antebraço."
+    common_errors:
+      - "Supinar no topo — vira rosca alternada"
+      - "Balançar o corpo"
+    cue: "Palmas sempre voltadas uma pra outra, cotovelos fixos"
+
+  - name: Rosca Scott (Preacher Curl)
+    id: EX-BICEPS-003
+    difficulty: intermediate
+    equipment: barbell
+    primary_muscle: bíceps_braquial_cabeça_curta
+    secondary: [braquial]
+    biomechanics: "Braço apoiado no pad. Elimina momentum. Máxima tensão na porção alongada."
+    common_errors:
+      - "Extensão completa explosiva — risco de lesão no tendão distal"
+      - "Pad muito alto — ombro compensa"
+    cue: "Desça controlado (3-4s), não estenda completamente, suba com squeeze"
+
+arms_triceps:
+  - name: Tríceps Pulley (Pushdown)
+    id: EX-TRICEPS-001
+    difficulty: beginner
+    equipment: cable
+    primary_muscle: tríceps_cabeça_lateral
+    secondary: [tríceps_cabeça_medial]
+    biomechanics: "Barra reta ou corda. Cotovelos fixos. Extensão pura de cotovelo."
+    common_errors:
+      - "Cotovelos se afastam do corpo — ombro assume"
+      - "Inclinar tronco sobre o cabo — peso do corpo ajuda"
+    cue: "Cotovelos colados, estenda completamente, squeeze no final"
+
+  - name: Tríceps Francês (Skull Crusher)
+    id: EX-TRICEPS-002
+    difficulty: intermediate
+    equipment: barbell
+    primary_muscle: tríceps_cabeça_longa
+    secondary: [tríceps_cabeça_lateral]
+    biomechanics: "Deitado no banco. Barra EZ desce até a testa. Enfatiza cabeça longa em posição alongada."
+    common_errors:
+      - "Cotovelos se abrem — perde foco no tríceps"
+      - "Descer a barra até o peito — vira close grip press"
+    cue: "Cotovelos apontam pro teto, barra desce até a testa, braços como dobradiça"
+
+  - name: Mergulho em Paralelas (Dip)
+    id: EX-TRICEPS-003
+    difficulty: advanced
+    equipment: bodyweight
+    primary_muscle: tríceps
+    secondary: [peitoral_inferior, deltóide_anterior]
+    biomechanics: "Tronco ereto enfatiza tríceps. Inclinado enfatiza peito. Cotovelos vão para trás."
+    common_errors:
+      - "Descer demais — stress excessivo na cápsula anterior do ombro"
+      - "Ombros sobem — falta de depressão escapular"
+    cue: "Desça até braço paralelo ao chão (90 graus), empurre explosivo"
+
+legs_quads:
+  - name: Agachamento Livre (Back Squat)
+    id: EX-QUADS-001
+    difficulty: intermediate
+    equipment: barbell
+    primary_muscle: quadríceps
+    secondary: [glúteo_máximo, eretor_espinal, core]
+    biomechanics: "Barra alta (trap) ou baixa (deltóide posterior). Joelhos rastreiam sobre os pés. Profundidade: paralelo ou abaixo."
+    common_errors:
+      - "Valgismo de joelho — joelhos caem pra dentro"
+      - "Butt wink — retroversão pélvica no fundo (falta de mobilidade)"
+      - "Peso vai pros dedos — calcanhar levanta"
+    cue: "Peito alto, empurre o chão com os pés, joelhos pra fora"
+
+  - name: Leg Press 45°
+    id: EX-QUADS-002
+    difficulty: beginner
+    equipment: machine
+    primary_muscle: quadríceps
+    secondary: [glúteo, isquiotibiais]
+    biomechanics: "Pés na plataforma na largura dos ombros. Mais alto enfatiza glúteo/posterior. Mais baixo enfatiza quad."
+    common_errors:
+      - "Lombar descola do encosto — risco de hérnia"
+      - "Travar joelhos no topo — stress articular"
+    cue: "Lombar sempre colada, desça até 90 graus de joelho, não trave no topo"
+
+  - name: Hack Squat na Máquina
+    id: EX-QUADS-003
+    difficulty: beginner
+    equipment: machine
+    primary_muscle: quadríceps
+    secondary: [glúteo]
+    biomechanics: "Trajetória fixa. Excelente para isolar quads sem demanda de estabilização lombar."
+    common_errors:
+      - "Pés muito altos — vira leg press inclinado"
+      - "Descer pouco — ROM insuficiente"
+    cue: "Pés na posição média-baixa da plataforma, desça até paralelo"
+
+  - name: Extensora de Joelho (Leg Extension)
+    id: EX-QUADS-004
+    difficulty: beginner
+    equipment: machine
+    primary_muscle: quadríceps
+    secondary: []
+    biomechanics: "Isolamento puro de quad. Máxima tensão no topo (encurtado). Útil para pré-exaustão."
+    common_errors:
+      - "Peso excessivo com impulso — perda de controle excêntrico"
+      - "Não estender completamente — perde pico de contração"
+    cue: "Estenda completamente, segure 1s no topo, desça controlado (3s)"
+
+legs_hamstrings:
+  - name: Stiff (Romanian Deadlift)
+    id: EX-HAMS-001
+    difficulty: intermediate
+    equipment: barbell
+    primary_muscle: isquiotibiais
+    secondary: [glúteo_máximo, eretor_espinal]
+    biomechanics: "Barra desliza na coxa. Joelhos com micro-flexão. Hip hinge puro."
+    common_errors:
+      - "Arredondar lombar — risco de lesão discal"
+      - "Joelhos travam — stress na articulação"
+      - "Barra se afasta do corpo — braço de momento aumenta"
+    cue: "Barra cola na coxa, empurre o quadril pra trás, sinta o alongamento nos isquios"
+
+  - name: Mesa Flexora (Leg Curl Deitado)
+    id: EX-HAMS-002
+    difficulty: beginner
+    equipment: machine
+    primary_muscle: isquiotibiais
+    secondary: [gastrocnêmio]
+    biomechanics: "Isolamento de flexão de joelho. Pad no tendão de Aquiles. Quadril não levanta."
+    common_errors:
+      - "Quadril sobe do banco — compensa com lombar"
+      - "ROM parcial — não flexiona completamente"
+    cue: "Quadril colado no banco, flexione até o máximo, controle a descida"
+
+  - name: Nordic Hamstring Curl
+    id: EX-HAMS-003
+    difficulty: advanced
+    equipment: bodyweight
+    primary_muscle: isquiotibiais
+    secondary: [gastrocnêmio]
+    biomechanics: "Excêntrico puro. Gold standard para prevenção de lesão de isquiotibial. Usado em protocolos FIFA 11+."
+    common_errors:
+      - "Quadril quebra (flexão de quadril) — perde carga excêntrica"
+      - "Não controlar a descida — cai no chão"
+    cue: "Corpo reto do joelho ao ombro, resista a queda o máximo possível"
+
+legs_glutes:
+  - name: Hip Thrust com Barra
+    id: EX-GLUTES-001
+    difficulty: intermediate
+    equipment: barbell
+    primary_muscle: glúteo_máximo
+    secondary: [isquiotibiais, core]
+    biomechanics: "Costas apoiadas no banco. Barra sobre o quadril. Extensão de quadril com pico no topo."
+    common_errors:
+      - "Hiperextensão lombar no topo — arco excessivo"
+      - "Pés muito perto — quads dominam"
+      - "Não segurar no topo — perde pico de contração"
+    cue: "Queixo no peito, contraia glúteo com força no topo, segure 2s"
+
+  - name: Bulgarian Split Squat
+    id: EX-GLUTES-002
+    difficulty: intermediate
+    equipment: dumbbell
+    primary_muscle: glúteo_máximo
+    secondary: [quadríceps, core]
+    biomechanics: "Pé traseiro elevado. Unilateral. Excelente para corrigir assimetrias."
+    common_errors:
+      - "Pé da frente muito perto do banco — joelho vai muito pra frente"
+      - "Tronco muito ereto — reduz ativação de glúteo"
+    cue: "Leve inclinação anterior do tronco, joelho da frente rastreia o pé"
+
+  - name: Abdução no Cabo (Cable Kickback)
+    id: EX-GLUTES-003
+    difficulty: beginner
+    equipment: cable
+    primary_muscle: glúteo_máximo
+    secondary: [glúteo_médio]
+    biomechanics: "Extensão de quadril contra resistência do cabo. Tensão constante."
+    common_errors:
+      - "Hiperextender a lombar — usar core para estabilizar"
+      - "ROM excessivo — vai além da extensão neutra"
+    cue: "Core contraído, empurre o pé pra trás sem arquear a lombar"
+
+core:
+  - name: Prancha (Plank)
+    id: EX-CORE-001
+    difficulty: beginner
+    equipment: bodyweight
+    primary_muscle: transverso_abdominal
+    secondary: [reto_abdominal, oblíquos, eretor_espinal]
+    biomechanics: "Isométrico. Corpo em linha reta. Anti-extensão. Base do treinamento de core."
+    common_errors:
+      - "Quadril sobe ou cai — perda de alinhamento"
+      - "Prender respiração — respirar normalmente"
+    cue: "Corpo reto como tábua, contraia glúteo e core, respire normalmente"
+
+  - name: Ab Wheel Rollout
+    id: EX-CORE-002
+    difficulty: advanced
+    equipment: bodyweight
+    primary_muscle: reto_abdominal
+    secondary: [transverso, oblíquos, latíssimo]
+    biomechanics: "Anti-extensão dinâmico. Desafia core em posição alongada. Progressão da prancha."
+    common_errors:
+      - "Lombar hiper-estende — falta de força de core"
+      - "ROM excessivo — colapsa no chão"
+    cue: "Core super contraído, vá apenas até onde consegue manter lombar neutra"
+
+  - name: Pallof Press
+    id: EX-CORE-003
+    difficulty: intermediate
+    equipment: cable
+    primary_muscle: oblíquos
+    secondary: [transverso, reto_abdominal]
+    biomechanics: "Anti-rotação. Cabo puxa lateralmente, core resiste. Funcional e seguro para lombar."
+    common_errors:
+      - "Rotacionar o tronco — exatamente o oposto do objetivo"
+      - "Pés muito juntos — base instável"
+    cue: "Pés na largura dos ombros, estenda os braços, resista à rotação"
+
+  - name: Crunch no Cabo (Cable Crunch)
+    id: EX-CORE-004
+    difficulty: intermediate
+    equipment: cable
+    primary_muscle: reto_abdominal
+    secondary: [oblíquos]
+    biomechanics: "Flexão de tronco contra resistência. Carregável progressivamente. Superior ao crunch livre."
+    common_errors:
+      - "Puxar com os braços — falta de conexão core"
+      - "Flexionar quadril ao invés de tronco"
+    cue: "Corda atrás da cabeça, flexione o tronco (não o quadril), contraia forte"
+
+  - name: Leg Raise Suspenso
+    id: EX-CORE-005
+    difficulty: advanced
+    equipment: bodyweight
+    primary_muscle: reto_abdominal_inferior
+    secondary: [iliopsoas, oblíquos]
+    biomechanics: "Pendurado na barra. Flexão de quadril + retroversão pélvica. Exige grip strength."
+    common_errors:
+      - "Balançar o corpo — kipping"
+      - "Só flexionar quadril sem retroversão pélvica — iliopsoas domina"
+    cue: "Sem balanço, leve os pés até a barra, arredonde a pelve no topo"

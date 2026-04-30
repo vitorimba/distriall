@@ -1,0 +1,17 @@
+id: AX_SD_001
+name: "Decompose Latency"
+mind: alex_xu
+source: "System Design Interview (2020)"
+domain: api-performance
+description: >
+  Decomponha a latencia em camadas antes de otimizar. Entender
+  onde o tempo e gasto e pre-requisito para otimizar efetivamente.
+applies_when:
+  - "API com latencia acima do budget"
+  - "Investigando endpoint lento"
+action: >
+  Medir latencia por hop: middleware, auth, business logic,
+  database, serialization, network. Atacar o hop com maior
+  contribuicao primeiro.
+severity: high
+confidence: 0.90

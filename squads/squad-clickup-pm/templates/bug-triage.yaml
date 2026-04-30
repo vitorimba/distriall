@@ -1,0 +1,9 @@
+name: "Bug Triage Flow"
+description: "Automação de triagem de bugs: criação → triagem → priorização → escalação"
+automations:
+  - trigger: "Bug criado"
+    action: "Adicionar label 'needs-triage', notificar #bugs"
+  - trigger: "Priority = Critical"
+    action: "Mover para topo da sprint, notificar @team"
+  - trigger: "Bug sem assignee por 24h"
+    action: "Escalar para tech lead"

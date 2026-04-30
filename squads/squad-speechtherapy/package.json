@@ -1,0 +1,18 @@
+{
+  "name": "@aiox/squad-speechtherapy",
+  "version": "1.0.0",
+  "description": "Speech Therapy Squad - Vocal rehabilitation with 7 expert agents covering voice science, clinical assessment, exercises, resonant voice therapy, and manual therapy",
+  "author": "AIOX Framework",
+  "license": "UNLICENSED",
+  "private": true,
+  "keywords": ["speech-therapy", "voice", "vocal-nodules", "fonoaudiologia", "rehabilitation", "SOVT", "VFE", "LMRVT"],
+  "aiox": {
+    "type": "squad",
+    "entry_agent": "speechtherapy-chief",
+    "slash_prefix": "speechtherapy",
+    "tier_count": 3,
+    "agent_count": 7,
+    "mind_count": 6,
+    "target_user": "Singers, voice professionals, speech therapists, patients with vocal disorders"
+  }
+}

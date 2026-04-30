@@ -1,0 +1,301 @@
+# =============================================================================
+# Top 50 NF-e Rejection Codes (SEFAZ)
+# Squad: squad-nf
+# Reference: Manual de Integracao do Contribuinte v4.0
+# Structure: code, name, cause, fix, severity (critical|high|medium|low)
+# =============================================================================
+
+rejection_codes:
+  - code: "203"
+    name: "Emitente nao habilitado ou nao credenciado"
+    cause: "CNPJ do emitente nao esta habilitado para emissao de NF-e na SEFAZ"
+    fix: "Verificar credenciamento do emitente no portal da SEFAZ do estado. Solicitar habilitacao se necessario."
+    severity: critical
+
+  - code: "204"
+    name: "Duplicidade de NF-e"
+    cause: "Ja existe NF-e autorizada com mesma chave de acesso (CNPJ+Modelo+Serie+Numero)"
+    fix: "Consultar NF-e existente. Se autorizada, usar o protocolo ja existente. Se rejeitada, incrementar numero."
+    severity: high
+
+  - code: "205"
+    name: "NF-e esta denegada na base de dados da SEFAZ"
+    cause: "NF-e foi denegada (irregularidade do emitente ou destinatario)"
+    fix: "Verificar regularidade fiscal do emitente e destinatario. Resolver pendencias na SEFAZ."
+    severity: critical
+
+  - code: "206"
+    name: "NF-e ja esta inutilizada na base de dados da SEFAZ"
+    cause: "A numeracao foi previamente inutilizada"
+    fix: "Utilizar proximo numero disponivel na sequencia."
+    severity: medium
+
+  - code: "207"
+    name: "CNPJ do emitente invalido"
+    cause: "CNPJ informado com digitos verificadores incorretos"
+    fix: "Corrigir CNPJ do emitente. Validar digito verificador."
+    severity: critical
+
+  - code: "208"
+    name: "CNPJ do destinatario invalido"
+    cause: "CNPJ do destinatario com digitos verificadores incorretos"
+    fix: "Corrigir CNPJ do destinatario. Validar digito verificador."
+    severity: high
+
+  - code: "209"
+    name: "IE do emitente invalida"
+    cause: "Inscricao Estadual do emitente nao confere com UF ou formato invalido"
+    fix: "Verificar IE no cadastro da SEFAZ. Corrigir formato conforme regra do estado."
+    severity: high
+
+  - code: "210"
+    name: "IE do destinatario invalida"
+    cause: "Inscricao Estadual do destinatario nao confere"
+    fix: "Verificar IE do destinatario. Se nao contribuinte, informar indIEDest=9 e remover campo IE."
+    severity: high
+
+  - code: "213"
+    name: "Digito verificador da chave de acesso invalido"
+    cause: "Calculo do digito verificador (44o digito) esta incorreto"
+    fix: "Recalcular chave de acesso com algoritmo modulo 11. Verificar todos os 43 digitos anteriores."
+    severity: high
+
+  - code: "215"
+    name: "Falha no schema XML"
+    cause: "XML nao esta conforme o schema XSD da NF-e 4.0"
+    fix: "Validar XML contra XSD antes de transmitir. Corrigir campos fora do padrao."
+    severity: high
+
+  - code: "225"
+    name: "Falha no schema XML - elemento nao esperado"
+    cause: "XML contem tag que nao existe no schema"
+    fix: "Remover elementos invalidos. Conferir versao do layout (4.00)."
+    severity: high
+
+  - code: "228"
+    name: "Data de emissao muito antiga"
+    cause: "Data de emissao anterior ao limite aceito pela SEFAZ"
+    fix: "Corrigir data de emissao. Geralmente aceita ate 30 dias retroativos."
+    severity: medium
+
+  - code: "230"
+    name: "CFOP invalido para operacao"
+    cause: "CFOP nao compativel com tipo de operacao (entrada/saida) ou destino"
+    fix: "Revisar CFOP conforme tabela. CFOP 5xxx=interna, 6xxx=interestadual, 7xxx=exportacao."
+    severity: high
+
+  - code: "232"
+    name: "IE do destinatario nao informada"
+    cause: "Operacao com contribuinte ICMS mas IE nao foi informada"
+    fix: "Informar IE do destinatario. Se nao contribuinte, usar indIEDest=9."
+    severity: high
+
+  - code: "233"
+    name: "IE do destinatario nao cadastrada na SEFAZ"
+    cause: "IE informada nao existe no cadastro da SEFAZ do estado do destinatario"
+    fix: "Confirmar IE com destinatario. Consultar SINTEGRA/Cadastro Centralizado."
+    severity: high
+
+  - code: "236"
+    name: "Chave de acesso com campo modelo diferente de 55"
+    cause: "Modelo informado na chave nao corresponde ao tipo de documento"
+    fix: "Verificar campo modelo: 55 para NF-e, 65 para NFC-e."
+    severity: medium
+
+  - code: "238"
+    name: "Codigo numerico da chave difere do previsto"
+    cause: "Codigo numerico aleatorio (8 digitos) nao confere"
+    fix: "Regenerar codigo numerico e recalcular chave de acesso."
+    severity: medium
+
+  - code: "239"
+    name: "Codigo UF difere do cadastro do emitente"
+    cause: "UF na chave de acesso nao corresponde a UF do CNPJ do emitente"
+    fix: "Corrigir codigo UF na chave para corresponder ao estado do emitente."
+    severity: high
+
+  - code: "241"
+    name: "UF do emitente diverge da UF de autorizacao"
+    cause: "Emitente transmitindo para SEFAZ de outro estado"
+    fix: "Transmitir para webservice da SEFAZ do estado do emitente."
+    severity: high
+
+  - code: "243"
+    name: "XML nao assinado"
+    cause: "XML transmitido sem assinatura digital"
+    fix: "Assinar XML com certificado A1/A3 antes de transmitir."
+    severity: critical
+
+  - code: "244"
+    name: "Assinatura digital invalida"
+    cause: "Assinatura nao confere com conteudo do XML ou certificado invalido"
+    fix: "Verificar certificado. Assinar novamente sem alterar XML apos assinatura."
+    severity: critical
+
+  - code: "245"
+    name: "CNPJ do certificado difere do CNPJ do emitente"
+    cause: "Certificado digital pertence a CNPJ diferente do emitente da NF-e"
+    fix: "Usar certificado do mesmo CNPJ do emitente (ou da matriz se filial)."
+    severity: critical
+
+  - code: "246"
+    name: "Certificado digital revogado"
+    cause: "Certificado foi revogado pela Autoridade Certificadora"
+    fix: "Adquirir novo certificado digital junto a AC credenciada."
+    severity: critical
+
+  - code: "247"
+    name: "Certificado digital expirado"
+    cause: "Validade do certificado digital ultrapassada"
+    fix: "Renovar certificado digital. A1 vale 1 ano, A3 vale 3 anos."
+    severity: critical
+
+  - code: "252"
+    name: "Ambiente informado difere do ambiente de recebimento"
+    cause: "tpAmb=1 (producao) enviado para homologacao ou vice-versa"
+    fix: "Corrigir tpAmb: 1=Producao, 2=Homologacao. Enviar para endpoint correto."
+    severity: medium
+
+  - code: "301"
+    name: "Uso denegado: irregularidade fiscal do emitente"
+    cause: "Emitente com pendencias fiscais na SEFAZ"
+    fix: "Regularizar situacao fiscal do emitente junto a SEFAZ. NF denegada nao pode ser reutilizada."
+    severity: critical
+
+  - code: "302"
+    name: "Uso denegado: irregularidade fiscal do destinatario"
+    cause: "Destinatario com pendencias fiscais"
+    fix: "Informar destinatario sobre irregularidade. Usar outro CNPJ/CPF se possivel."
+    severity: critical
+
+  - code: "303"
+    name: "Uso denegado: destinatario nao habilitado a operar na UF"
+    cause: "Destinatario sem IE ativa no estado de destino"
+    fix: "Verificar habilitacao do destinatario. Considerar venda para nao-contribuinte."
+    severity: high
+
+  - code: "401"
+    name: "CPF do destinatario invalido"
+    cause: "CPF informado com digitos verificadores incorretos"
+    fix: "Corrigir CPF do destinatario. Validar digito verificador."
+    severity: high
+
+  - code: "402"
+    name: "XML mal formado"
+    cause: "Erro de sintaxe no XML (tag nao fechada, encoding, etc.)"
+    fix: "Validar XML antes de enviar. Verificar encoding UTF-8 e estrutura de tags."
+    severity: high
+
+  - code: "403"
+    name: "XML com codificacao diferente de UTF-8"
+    cause: "Encoding do XML nao e UTF-8"
+    fix: "Garantir que XML usa encoding UTF-8. Remover BOM se presente."
+    severity: medium
+
+  - code: "404"
+    name: "Uso de caracteres invalidos no XML"
+    cause: "Caracteres especiais nao escapados (&, <, >, etc.) ou acentos incorretos"
+    fix: "Escapar caracteres especiais (&amp; &lt; &gt;). Usar UTF-8 para acentos."
+    severity: medium
+
+  - code: "409"
+    name: "Campo cEAN invalido"
+    cause: "Codigo de barras EAN/GTIN com formato invalido"
+    fix: "Informar EAN valido (8, 12, 13 ou 14 digitos) ou 'SEM GTIN' se nao possui."
+    severity: medium
+
+  - code: "411"
+    name: "Campo nItem fora da faixa permitida"
+    cause: "Numero do item < 1 ou > 990"
+    fix: "NF-e aceita de 1 a 990 itens. Verificar numeracao sequencial."
+    severity: medium
+
+  - code: "413"
+    name: "Codigo NCM invalido"
+    cause: "NCM informado nao existe na tabela NCM vigente"
+    fix: "Consultar tabela NCM atualizada. Usar 8 digitos. BrasilAPI pode ajudar."
+    severity: high
+
+  - code: "461"
+    name: "Informar a razao social/nome do destinatario"
+    cause: "Campo xNome do destinatario em branco"
+    fix: "Preencher razao social (PJ) ou nome completo (PF) do destinatario."
+    severity: medium
+
+  - code: "502"
+    name: "Erro na assinatura - tag Signature fora de posicao"
+    cause: "Elemento Signature no lugar errado no XML"
+    fix: "Posicionar Signature como ultimo filho de infNFe. Seguir spec de assinatura XMLDSig."
+    severity: high
+
+  - code: "539"
+    name: "Duplicidade de NF-e com diferenca na chave de acesso"
+    cause: "Mesma serie+numero mas chave diferente de NF-e ja autorizada"
+    fix: "Incrementar numero da NF-e. Verificar controle de numeracao."
+    severity: high
+
+  - code: "540"
+    name: "CFOP nao permitido para NFC-e"
+    cause: "NFC-e (modelo 65) so aceita CFOP 5xxx (operacao interna)"
+    fix: "Usar CFOP 5.102 ou similar para NFC-e. Operacoes interestaduais devem usar NF-e (55)."
+    severity: medium
+
+  - code: "561"
+    name: "Valor do ICMS difere do calculado"
+    cause: "vICMS informado nao confere com vBC * pICMS"
+    fix: "Recalcular: vICMS = vBC * pICMS / 100. Arredondar para 2 casas decimais."
+    severity: high
+
+  - code: "564"
+    name: "Valor do IPI difere do calculado"
+    cause: "vIPI informado nao confere com vBC * pIPI"
+    fix: "Recalcular: vIPI = vBC * pIPI / 100."
+    severity: high
+
+  - code: "570"
+    name: "Valor total da NF difere do somatorio"
+    cause: "vNF nao confere com somatorio dos componentes"
+    fix: "vNF = vProd + vST + vFrete + vSeg + vOutro + vII + vIPI - vDesc. Conferir cada parcela."
+    severity: high
+
+  - code: "587"
+    name: "Informar CNPJ ou CPF do destinatario"
+    cause: "Nenhum documento do destinatario informado"
+    fix: "Preencher CNPJ (PJ) ou CPF (PF) do destinatario."
+    severity: high
+
+  - code: "591"
+    name: "Informar inscricao estadual do emitente"
+    cause: "Campo IE do emitente em branco"
+    fix: "Preencher IE do emitente. Obrigatoria para contribuintes ICMS."
+    severity: high
+
+  - code: "598"
+    name: "Tipo de emissao divergente"
+    cause: "tpEmis informado nao corresponde ao modo de envio"
+    fix: "tpEmis=1 para normal, 5 para contingencia EPEC, 6 para SVC-AN, 7 para SVC-RS."
+    severity: medium
+
+  - code: "600"
+    name: "CFOP de entrada para NF-e de saida"
+    cause: "Usando CFOP 1/2/3xxx (entrada) em NF-e com tpNF=1 (saida)"
+    fix: "Usar CFOP 5/6/7xxx para saidas. 1/2/3xxx e para entradas."
+    severity: high
+
+  - code: "611"
+    name: "CFOP de operacao interestadual e UF destinatario igual a UF emitente"
+    cause: "CFOP 6xxx mas destino e mesmo estado do emitente"
+    fix: "Usar CFOP 5xxx para operacao interna (mesmo estado)."
+    severity: medium
+
+  - code: "694"
+    name: "Nao informado o grupo de ICMS para a UF de destino"
+    cause: "Falta grupo ICMSUFDest para DIFAL em venda interestadual a consumidor final"
+    fix: "Incluir grupo ICMSUFDest com vBCUFDest, pICMSUFDest, pICMSInter, pICMSInterPart."
+    severity: high
+
+  - code: "778"
+    name: "Informar NCM completo (8 digitos)"
+    cause: "NCM com menos de 8 digitos"
+    fix: "Informar NCM com 8 digitos. Consultar tabela NCM completa."
+    severity: medium

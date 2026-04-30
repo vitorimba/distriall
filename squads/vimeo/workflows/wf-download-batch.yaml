@@ -1,0 +1,161 @@
+name: wf-download-batch
+title: "Vimeo Batch Download Pipeline"
+description: >
+  Full pipeline workflow for batch downloading videos from Vimeo.
+  Supports playlists, channels, showcases, and album URLs.
+  Detects URL type, crawls content, generates manifest, downloads,
+  transcribes, organizes files, and produces a final report.
+
+version: 1.0.0
+type: workflow
+squad: vimeo
+entry_task: detect-url-type
+
+# --- Inputs ---
+inputs:
+  url:
+    type: string
+    required: true
+    description: "Vimeo URL (playlist, channel, showcase, album, or single video)"
+  quality:
+    type: string
+    required: false
+    default: "best"
+    description: "Video quality: best, 1080p, 720p, 480p, audio-only"
+  auth:
+    type: object
+    required: false
+    description: "Authentication config (cookies file, password, referer)"
+    properties:
+      method:
+        type: string
+        enum: [cookies, password, referer]
+      cookies_file:
+        type: string
+      password:
+        type: string
+      referer:
+        type: string
+  transcribe:
+    type: boolean
+    required: false
+    default: true
+    description: "Enable automatic transcription via Whisper"
+  output_dir:
+    type: string
+    required: true
+    description: "Base output directory for downloads"
+
+# --- State Machine ---
+states:
+  init:
+    description: "Validate inputs, check dependencies (yt-dlp, ffmpeg, whisper)"
+    task: null  # inline validation
+    on_success: detect
+    on_failure: failed
+    actions:
+      - validate_url_format
+      - check_disk_space
+      - verify_tools_installed
+
+  detect:
+    description: "Detect URL type: single, playlist, channel, showcase, album"
+    task: detect-url-type
+    on_success: crawl
+    on_failure: failed
+    outputs:
+      - url_type  # single | playlist | channel | showcase | album
+      - metadata
+
+  crawl:
+    description: "Crawl the URL and extract all video entries"
+    task: crawl-${url_type}  # resolves to crawl-playlist, crawl-channel, etc.
+    on_success: manifest
+    on_failure: failed
+    skip_if: "url_type == 'single'"
+    skip_target: manifest
+    outputs:
+      - video_list
+      - total_count
+
+  manifest:
+    description: "Generate download manifest from crawled data"
+    task: generate-manifest
+    on_success: download
+    on_failure: failed
+    template: manifest-tmpl
+    outputs:
+      - manifest_path
+      - manifest_data
+
+  download:
+    description: "Download all videos in manifest using yt-dlp"
+    task: download-batch
+    on_success: transcribe
+    on_failure: failed
+    retry:
+      max_attempts: 3
+      delay_seconds: 30
+      on_partial: continue  # continue with successful downloads
+    outputs:
+      - downloaded_files
+      - failed_downloads
+      - download_stats
+
+  transcribe:
+    description: "Transcribe downloaded videos using Whisper"
+    task: transcribe-batch
+    on_success: organize
+    on_failure: organize  # non-blocking: proceed even if transcription fails
+    skip_if: "transcribe == false"
+    skip_target: organize
+    outputs:
+      - transcripts
+      - transcribe_errors
+
+  organize:
+    description: "Organize files into structured directory layout"
+    task: organize-downloads
+    on_success: report
+    on_failure: failed
+    actions:
+      - create_directory_structure
+      - move_videos_to_folders
+      - move_transcripts_alongside_videos
+      - write_catalog_entries
+    outputs:
+      - organized_paths
+      - catalog_entries
+
+  report:
+    description: "Generate final download report"
+    task: generate-report
+    on_success: complete
+    on_failure: complete  # report failure is non-critical
+    template: download-report-tmpl
+    outputs:
+      - report_path
+
+  complete:
+    description: "Pipeline completed successfully"
+    terminal: true
+    status: success
+    summary:
+      - "Total: ${manifest_data.total_count} videos"
+      - "Downloaded: ${download_stats.success_count}"
+      - "Failed: ${download_stats.fail_count}"
+      - "Transcribed: ${transcripts.count}"
+      - "Report: ${report_path}"
+
+  failed:
+    description: "Pipeline failed — check error details"
+    terminal: true
+    status: error
+    actions:
+      - save_partial_manifest
+      - log_error_details
+
+# --- Flow Diagram ---
+# init → detect → crawl → manifest → download → transcribe → organize → report → complete
+#   ↓       ↓        ↓        ↓          ↓           ↓            ↓         ↓
+# failed  failed   failed   failed     failed     organize     failed   complete

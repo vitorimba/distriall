@@ -1,0 +1,90 @@
+# ============================================================================
+# Quality Gates — Squad FastSystem
+# ============================================================================
+# Gates que devem ser atendidos antes de marcar tarefas como concluidas
+# ============================================================================
+
+version: 1.0.0
+
+quality_gates:
+  - id: QG-001
+    name: "Performance Baseline Established"
+    description: "Baseline de performance documentado com metricas quantitativas"
+    criteria:
+      - "p50, p95, p99 response time documentados"
+      - "Throughput (req/s) medido"
+      - "Error rate capturado"
+      - "Resource utilization registrado"
+    applies_to:
+      - system-diagnostic
+      - full-system-optimization
+      - scaling-readiness
+    blocking: true
+
+  - id: QG-002
+    name: "Regression Check Passed"
+    description: "Nenhuma regressao de performance introduzida"
+    criteria:
+      - "p95 <= baseline + 10%"
+      - "Error rate nao aumentou"
+      - "Throughput nao diminuiu"
+      - "Web Vitals nao degradaram"
+    applies_to:
+      - query-optimization
+      - api-latency-reduction
+      - frontend-audit
+      - caching-strategy
+    blocking: true
+
+  - id: QG-003
+    name: "Load Test Validation"
+    description: "Testes de carga passaram com metricas dentro do budget"
+    criteria:
+      - "p95 < performance budget sob carga"
+      - "Error rate < 1% sob carga normal"
+      - "Sistema se recupera apos stress"
+      - "Nenhum memory leak em soak test"
+    applies_to:
+      - load-testing
+      - full-system-optimization
+      - scaling-readiness
+    blocking: true
+
+  - id: QG-004
+    name: "Web Vitals Compliance"
+    description: "Core Web Vitals dentro dos targets"
+    criteria:
+      - "LCP < 2.5s (p75)"
+      - "INP < 200ms (p75)"
+      - "CLS < 0.1 (p75)"
+      - "Lighthouse Performance >= 90 (desktop)"
+    applies_to:
+      - frontend-audit
+      - performance-budget
+    blocking: false
+
+  - id: QG-005
+    name: "Database Optimization Verified"
+    description: "Queries otimizadas e validadas"
+    criteria:
+      - "EXPLAIN ANALYZE executado para queries alvo"
+      - "Nenhum Seq Scan em tabelas > 10K rows em hot paths"
+      - "Melhoria >= 30% em execution time"
+      - "Indices nao utilizados removidos"
+    applies_to:
+      - query-optimization
+      - database-indexing
+    blocking: true
+
+  - id: QG-006
+    name: "Resilience Patterns Implemented"
+    description: "Padroes de resiliencia configurados e testados"
+    criteria:
+      - "Timeouts em todas as chamadas externas"
+      - "Circuit breakers em dependencias criticas"
+      - "Retry com exponential backoff"
+      - "Graceful degradation testado"
+    applies_to:
+      - resilience-audit
+      - scaling-readiness
+    blocking: false

@@ -1,0 +1,212 @@
+# =============================================================================
+# CFOP Table — Most Used Codes
+# Squad: squad-nf
+# Structure: code, description, operation_type, when_to_use
+# operation_type: sale | purchase | return | transfer | export | import | other
+# =============================================================================
+
+cfop_table:
+  # ---------------------------------------------------------------------------
+  # SAIDAS INTERNAS (5xxx)
+  # ---------------------------------------------------------------------------
+  - code: "5101"
+    description: "Venda de producao do estabelecimento"
+    operation_type: sale
+    when_to_use: "Industria vendendo produto que fabricou, dentro do estado"
+
+  - code: "5102"
+    description: "Venda de mercadoria adquirida ou recebida de terceiros"
+    operation_type: sale
+    when_to_use: "Comercio revendendo mercadoria, dentro do estado"
+
+  - code: "5103"
+    description: "Venda de producao do estabelecimento a nao contribuinte"
+    operation_type: sale
+    when_to_use: "Industria vendendo para consumidor final nao contribuinte, interno"
+
+  - code: "5104"
+    description: "Venda de mercadoria adquirida a nao contribuinte"
+    operation_type: sale
+    when_to_use: "Comercio vendendo para consumidor final nao contribuinte, interno"
+
+  - code: "5201"
+    description: "Devolucao de compra para industrializacao"
+    operation_type: return
+    when_to_use: "Devolvendo mercadoria comprada para uso na producao, ao fornecedor do estado"
+
+  - code: "5202"
+    description: "Devolucao de compra para comercializacao"
+    operation_type: return
+    when_to_use: "Devolvendo mercadoria comprada para revenda, ao fornecedor do estado"
+
+  - code: "5401"
+    description: "Venda de producao do estabelecimento com ST"
+    operation_type: sale
+    when_to_use: "Industria vendendo produto com Substituicao Tributaria, interno"
+
+  - code: "5403"
+    description: "Venda de mercadoria sujeita a ST adquirida de terceiros"
+    operation_type: sale
+    when_to_use: "Comercio revendendo mercadoria com ST ja recolhida, interno"
+
+  - code: "5405"
+    description: "Venda de mercadoria adquirida com ST por contribuinte substituido"
+    operation_type: sale
+    when_to_use: "Varejista vendendo mercadoria cuja ST ja foi recolhida pelo fabricante/distribuidor"
+
+  - code: "5411"
+    description: "Devolucao de compra com ST"
+    operation_type: return
+    when_to_use: "Devolvendo mercadoria comprada com ST, fornecedor interno"
+
+  - code: "5501"
+    description: "Remessa de producao com fim especifico de exportacao"
+    operation_type: other
+    when_to_use: "Envio para trading company para posterior exportacao"
+
+  - code: "5551"
+    description: "Venda de bem do ativo imobilizado"
+    operation_type: sale
+    when_to_use: "Vendendo maquina, equipamento ou veiculo do ativo da empresa"
+
+  - code: "5556"
+    description: "Devolucao de compra de material de uso e consumo"
+    operation_type: return
+    when_to_use: "Devolvendo material de escritorio, limpeza, etc."
+
+  - code: "5910"
+    description: "Remessa em bonificacao"
+    operation_type: other
+    when_to_use: "Envio gratuito de mercadoria como bonificacao/brinde"
+
+  - code: "5929"
+    description: "Lancamento efetuado em decorrencia de emissao de NF para NFC-e"
+    operation_type: other
+    when_to_use: "Registro interno quando emite NFC-e em vez de NF-e"
+
+  # ---------------------------------------------------------------------------
+  # SAIDAS INTERESTADUAIS (6xxx)
+  # ---------------------------------------------------------------------------
+  - code: "6101"
+    description: "Venda de producao do estabelecimento"
+    operation_type: sale
+    when_to_use: "Industria vendendo produto que fabricou, para outro estado"
+
+  - code: "6102"
+    description: "Venda de mercadoria adquirida ou recebida de terceiros"
+    operation_type: sale
+    when_to_use: "Comercio revendendo mercadoria, para outro estado"
+
+  - code: "6107"
+    description: "Venda de producao a nao contribuinte"
+    operation_type: sale
+    when_to_use: "Industria vendendo para consumidor final de outro estado (e-commerce)"
+
+  - code: "6108"
+    description: "Venda de mercadoria adquirida a nao contribuinte"
+    operation_type: sale
+    when_to_use: "Comercio vendendo para consumidor final de outro estado (e-commerce)"
+
+  - code: "6201"
+    description: "Devolucao de compra para industrializacao"
+    operation_type: return
+    when_to_use: "Devolvendo mercadoria comprada para producao, fornecedor de outro estado"
+
+  - code: "6202"
+    description: "Devolucao de compra para comercializacao"
+    operation_type: return
+    when_to_use: "Devolvendo mercadoria comprada para revenda, fornecedor de outro estado"
+
+  - code: "6401"
+    description: "Venda de producao com ST"
+    operation_type: sale
+    when_to_use: "Industria vendendo produto com ST para outro estado (conferir convenio/protocolo)"
+
+  - code: "6403"
+    description: "Venda de mercadoria sujeita a ST"
+    operation_type: sale
+    when_to_use: "Comercio vendendo mercadoria com ST para outro estado"
+
+  # ---------------------------------------------------------------------------
+  # SAIDAS EXPORTACAO (7xxx)
+  # ---------------------------------------------------------------------------
+  - code: "7101"
+    description: "Venda de producao do estabelecimento"
+    operation_type: export
+    when_to_use: "Exportacao direta de produto fabricado"
+
+  - code: "7102"
+    description: "Venda de mercadoria adquirida"
+    operation_type: export
+    when_to_use: "Exportacao direta de mercadoria comprada para revenda"
+
+  # ---------------------------------------------------------------------------
+  # ENTRADAS INTERNAS (1xxx)
+  # ---------------------------------------------------------------------------
+  - code: "1101"
+    description: "Compra para industrializacao"
+    operation_type: purchase
+    when_to_use: "Comprando materia-prima/insumo de fornecedor do estado"
+
+  - code: "1102"
+    description: "Compra para comercializacao"
+    operation_type: purchase
+    when_to_use: "Comprando mercadoria para revenda de fornecedor do estado"
+
+  - code: "1201"
+    description: "Devolucao de venda de producao"
+    operation_type: return
+    when_to_use: "Recebendo devolucao de produto que voce fabricou e vendeu, cliente do estado"
+
+  - code: "1202"
+    description: "Devolucao de venda de mercadoria"
+    operation_type: return
+    when_to_use: "Recebendo devolucao de mercadoria que voce revendeu, cliente do estado"
+
+  - code: "1401"
+    description: "Compra para industrializacao com ST"
+    operation_type: purchase
+    when_to_use: "Comprando insumo com ST de fornecedor do estado"
+
+  - code: "1403"
+    description: "Compra para comercializacao com ST"
+    operation_type: purchase
+    when_to_use: "Comprando mercadoria com ST para revenda, fornecedor do estado"
+
+  - code: "1556"
+    description: "Compra de material de uso e consumo"
+    operation_type: purchase
+    when_to_use: "Comprando material de escritorio, limpeza, etc."
+
+  - code: "1551"
+    description: "Compra de bem para o ativo imobilizado"
+    operation_type: purchase
+    when_to_use: "Comprando maquina, equipamento, veiculo para a empresa"
+
+  # ---------------------------------------------------------------------------
+  # ENTRADAS INTERESTADUAIS (2xxx)
+  # ---------------------------------------------------------------------------
+  - code: "2101"
+    description: "Compra para industrializacao"
+    operation_type: purchase
+    when_to_use: "Comprando materia-prima de fornecedor de outro estado"
+
+  - code: "2102"
+    description: "Compra para comercializacao"
+    operation_type: purchase
+    when_to_use: "Comprando mercadoria para revenda de fornecedor de outro estado"
+
+  - code: "2201"
+    description: "Devolucao de venda de producao"
+    operation_type: return
+    when_to_use: "Recebendo devolucao de produto fabricado, cliente de outro estado"
+
+  - code: "2202"
+    description: "Devolucao de venda de mercadoria"
+    operation_type: return
+    when_to_use: "Recebendo devolucao de mercadoria revendida, cliente de outro estado"
+
+  - code: "2403"
+    description: "Compra para comercializacao com ST"
+    operation_type: purchase
+    when_to_use: "Comprando mercadoria com ST de outro estado"

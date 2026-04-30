@@ -1,0 +1,396 @@
+##############################################################################
+# Motivation Frameworks Reference
+# Squad: squad-gamification
+# All frameworks used by squad agents for motivation analysis
+##############################################################################
+
+frameworks:
+
+  ##########################################################################
+  # Octalysis Framework — Yu-kai Chou
+  ##########################################################################
+  octalysis:
+    author: "Yu-kai Chou"
+    year: 2012
+    description: "8 Core Drives of human motivation mapped in an octagonal framework"
+    levels:
+      level_1: "Core Drives (general assessment)"
+      level_2: "Core Drives × Player Journey Phase (Discovery, Onboarding, Scaffolding, Endgame)"
+      level_3: "Core Drives × Player Journey × Player Type"
+
+    core_drives:
+      CD1:
+        name: "Epic Meaning & Calling"
+        category: white_hat
+        brain: neither  # center
+        description: "The drive to do something greater than oneself"
+        game_techniques:
+          - "Narrative"
+          - "Humanity Hero"
+          - "Elitism"
+          - "Beginner's Luck"
+          - "Free Lunch"
+        product_examples: ["Wikipedia editing", "Open source contribution", "Charity platforms"]
+
+      CD2:
+        name: "Development & Accomplishment"
+        category: white_hat
+        brain: left_brain
+        description: "The drive to make progress, develop skills, and achieve mastery"
+        game_techniques:
+          - "Points"
+          - "Badges"
+          - "Leaderboards"
+          - "Progress Bars"
+          - "Quests"
+          - "Boss Battles"
+          - "Certificates"
+        product_examples: ["Duolingo levels", "LinkedIn skill assessments", "Codecademy"]
+
+      CD3:
+        name: "Empowerment of Creativity & Feedback"
+        category: white_hat
+        brain: right_brain
+        description: "The drive to create, try different combinations, and receive feedback"
+        game_techniques:
+          - "Instant Feedback"
+          - "Boosters"
+          - "Milestone Unlocks"
+          - "Blank Fills"
+          - "Customization"
+          - "Plant Pickers"
+          - "Evergreen Mechanics"
+        product_examples: ["Minecraft", "Lego", "Canva"]
+
+      CD4:
+        name: "Ownership & Possession"
+        category: neither
+        brain: left_brain
+        description: "The drive to own things and improve what we possess"
+        game_techniques:
+          - "Virtual Goods"
+          - "Avatars"
+          - "Collection Sets"
+          - "Build From Scratch"
+          - "Alfred Effect"
+          - "Monitoring"
+        product_examples: ["Pokémon collection", "Home decoration apps", "Investment portfolios"]
+
+      CD5:
+        name: "Social Influence & Relatedness"
+        category: neither
+        brain: right_brain
+        description: "The drive to connect, compete, and be influenced by others"
+        game_techniques:
+          - "Mentorship"
+          - "Friending"
+          - "Social Treasure"
+          - "Conformity Anchors"
+          - "Group Quests"
+          - "Brag Buttons"
+          - "Water Cooler"
+        product_examples: ["Facebook/Instagram", "Fitbit friends", "Strava segments"]
+
+      CD6:
+        name: "Scarcity & Impatience"
+        category: black_hat
+        brain: left_brain
+        description: "The drive to want things because they are rare or unattainable"
+        game_techniques:
+          - "Appointment Dynamics"
+          - "Magnetic Caps"
+          - "Dangling"
+          - "Prize Pacing"
+          - "Options Pacing"
+          - "Last Mile Drive"
+          - "Evolved UI"
+        product_examples: ["Clubhouse invite-only launch", "Limited edition drops", "Waitlists"]
+
+      CD7:
+        name: "Unpredictability & Curiosity"
+        category: black_hat
+        brain: right_brain
+        description: "The drive to find out what happens next"
+        game_techniques:
+          - "Glowing Choice"
+          - "Mini Quests"
+          - "Random Rewards"
+          - "Rolling Rewards"
+          - "Easter Eggs"
+          - "Obvious Wonder"
+          - "Myst Boxes"
+        product_examples: ["Social media feeds", "Mystery box subscriptions", "Wordle"]
+
+      CD8:
+        name: "Loss & Avoidance"
+        category: black_hat
+        brain: left_brain
+        description: "The drive to avoid loss, negative events, or missed opportunities"
+        game_techniques:
+          - "Progress Loss"
+          - "Sunk Cost Prison"
+          - "Status Quo Sloth"
+          - "FOMO Punch"
+          - "Weep Tune"
+          - "Scarlet Letter"
+          - "Visual Grave"
+        product_examples: ["Snapchat streaks", "Insurance products", "Countdown timers"]
+
+    analysis_dimensions:
+      white_hat_vs_black_hat:
+        white_hat: [CD1, CD2, CD3]
+        black_hat: [CD6, CD7, CD8]
+        ideal_ratio: "1.5-2.5 (White Hat / Black Hat)"
+        note: "White Hat is sustainable but lacks urgency; Black Hat creates urgency but is unsustainable"
+
+      left_brain_vs_right_brain:
+        left_brain: [CD2, CD4, CD6]
+        right_brain: [CD3, CD5, CD7]
+        note: "Left Brain is extrinsic/logical; Right Brain is intrinsic/creative"
+
+  ##########################################################################
+  # Self-Determination Theory — Deci & Ryan
+  ##########################################################################
+  self_determination_theory:
+    authors: ["Edward Deci", "Richard Ryan"]
+    year: 1985
+    description: "Three basic psychological needs that drive intrinsic motivation"
+    needs:
+      autonomy:
+        description: "The need to feel volition and choice in one's actions"
+        gamification_support:
+          - "Multiple paths to achievement"
+          - "Customization options"
+          - "Opt-in/opt-out for features"
+          - "Self-set goals"
+          - "Branching skill trees"
+        gamification_undermine:
+          - "Forced participation"
+          - "Single linear path"
+          - "Mandatory mechanics"
+          - "No customization"
+
+      competence:
+        description: "The need to feel effective and masterful"
+        gamification_support:
+          - "Clear feedback loops"
+          - "Progressive difficulty (Flow)"
+          - "Skill-based challenges"
+          - "Mastery indicators"
+          - "Adaptive difficulty"
+        gamification_undermine:
+          - "Unclear scoring"
+          - "Too easy or too hard"
+          - "Luck-based rewards"
+          - "No progress feedback"
+
+      relatedness:
+        description: "The need to feel connected to others"
+        gamification_support:
+          - "Teams and groups"
+          - "Peer recognition"
+          - "Collaborative challenges"
+          - "Social sharing"
+          - "Mentoring systems"
+        gamification_undermine:
+          - "Forced isolation"
+          - "Toxic competition"
+          - "Social shaming"
+          - "Privacy violations"
+
+    motivation_continuum:
+      - type: "Amotivation"
+        description: "No motivation; learned helplessness"
+        regulation: "Non-regulation"
+
+      - type: "External Regulation"
+        description: "Motivated by external rewards/punishments"
+        regulation: "Controlled"
+
+      - type: "Introjected Regulation"
+        description: "Motivated by internal pressure (guilt, ego)"
+        regulation: "Somewhat controlled"
+
+      - type: "Identified Regulation"
+        description: "Values the behavior, does it by choice"
+        regulation: "Somewhat autonomous"
+
+      - type: "Integrated Regulation"
+        description: "Behavior aligned with self-identity"
+        regulation: "Autonomous"
+
+      - type: "Intrinsic Motivation"
+        description: "Does it for inherent satisfaction"
+        regulation: "Fully autonomous"
+
+  ##########################################################################
+  # HEXAD User Types — Andrzej Marczewski
+  ##########################################################################
+  hexad:
+    author: "Andrzej Marczewski"
+    year: 2015
+    description: "6 gamification user types based on intrinsic/extrinsic motivation"
+    types:
+      philanthropist:
+        motivation: "Purpose & Meaning"
+        sdt_need: relatedness
+        description: "Altruistic, wants to help others and contribute to something bigger"
+        responds_to: ["Gifting", "Knowledge sharing", "Collection for cause", "Mentoring"]
+        repelled_by: ["Selfish competition", "Individual rewards only"]
+        percentage_typical: "15-20%"
+
+      socialiser:
+        motivation: "Relatedness"
+        sdt_need: relatedness
+        description: "Wants social interaction, connection, and belonging"
+        responds_to: ["Teams", "Chat", "Social discovery", "Guilds", "Co-op"]
+        repelled_by: ["Isolation", "Solo-only mechanics"]
+        percentage_typical: "20-25%"
+
+      free_spirit:
+        motivation: "Autonomy"
+        sdt_need: autonomy
+        description: "Values self-expression, exploration, and creative freedom"
+        responds_to: ["Customization", "Exploration", "Easter eggs", "Creative tools"]
+        repelled_by: ["Linear paths", "Rigid rules", "Forced mechanics"]
+        percentage_typical: "15-20%"
+
+      achiever:
+        motivation: "Mastery"
+        sdt_need: competence
+        description: "Seeks to master challenges and demonstrate competence"
+        responds_to: ["Difficult challenges", "Skill trees", "Certifications", "Boss battles"]
+        repelled_by: ["Trivial tasks", "Participation trophies"]
+        percentage_typical: "15-20%"
+
+      player:
+        motivation: "Extrinsic Rewards"
+        sdt_need: null
+        description: "Primarily motivated by external rewards and tangible benefits"
+        responds_to: ["Points", "Leaderboards", "Prizes", "Lotteries", "Badges"]
+        repelled_by: ["No visible rewards", "Intrinsic-only experiences"]
+        percentage_typical: "10-15%"
+
+      disruptor:
+        motivation: "Change"
+        sdt_need: autonomy
+        description: "Wants to push boundaries, change the system, find loopholes"
+        responds_to: ["Voting systems", "Innovation contests", "Hacking challenges", "Feedback channels"]
+        repelled_by: ["Rigid systems", "No voice", "Status quo"]
+        percentage_typical: "5-10%"
+
+  ##########################################################################
+  # 4 Keys to Fun — Nicole Lazzaro
+  ##########################################################################
+  four_keys_to_fun:
+    author: "Nicole Lazzaro"
+    year: 2004
+    description: "4 types of fun that create emotional engagement in games"
+    keys:
+      hard_fun:
+        emotion: "Fiero (personal triumph)"
+        description: "Fun from challenge, strategy, and problem solving"
+        player_expression: "Fist pump, 'YES!', raised arms"
+        game_techniques: ["Challenges", "Boss battles", "Puzzles", "Competitive modes"]
+        design_rule: "Must be genuinely difficult but fair"
+
+      easy_fun:
+        emotion: "Curiosity and Wonder"
+        description: "Fun from exploration, role play, and creativity"
+        player_expression: "Leaning forward, 'Ooh!', exploring"
+        game_techniques: ["Easter eggs", "Exploration", "Mystery boxes", "Narrative"]
+        design_rule: "Reward exploration without punishing non-exploration"
+
+      people_fun:
+        emotion: "Amusement and Social bonding"
+        description: "Fun from interaction with others"
+        player_expression: "Laughter, high-fives, communication"
+        game_techniques: ["Teams", "Gifting", "Co-op", "Friendly competition"]
+        design_rule: "Social mechanics must feel natural and optional"
+
+      serious_fun:
+        emotion: "Relaxation and Meaning"
+        description: "Fun from making a difference, completion, and rhythm"
+        player_expression: "Calm focus, satisfaction, mindful engagement"
+        game_techniques: ["Collections", "Real-world impact", "Meditation", "Streaks"]
+        design_rule: "Connect to values larger than the game"
+
+  ##########################################################################
+  # B=MAP — BJ Fogg
+  ##########################################################################
+  fogg_behavior_model:
+    author: "BJ Fogg"
+    year: 2009
+    updated: 2019
+    description: "Behavior occurs when Motivation, Ability, and Prompt converge"
+    formula: "B = M × A × P"
+    components:
+      motivation:
+        description: "Desire to perform the behavior"
+        elements:
+          - "Sensation (pleasure/pain)"
+          - "Anticipation (hope/fear)"
+          - "Belonging (social acceptance/rejection)"
+
+      ability:
+        description: "Capacity to perform the behavior"
+        factors:
+          - name: "Time"
+            simplify: "Reduce time required"
+          - name: "Money"
+            simplify: "Reduce or eliminate cost"
+          - name: "Physical Effort"
+            simplify: "Minimize physical requirements"
+          - name: "Mental Effort"
+            simplify: "Reduce cognitive load"
+          - name: "Social Deviance"
+            simplify: "Make behavior socially acceptable"
+          - name: "Non-Routine"
+            simplify: "Align with existing habits"
+
+      prompt:
+        description: "Cue that triggers the behavior"
+        types:
+          - name: "Spark"
+            use_when: "High ability, low motivation"
+          - name: "Facilitator"
+            use_when: "High motivation, low ability"
+          - name: "Signal"
+            use_when: "High motivation, high ability"
+
+    tiny_habits:
+      formula: "After I [ANCHOR], I will [TINY BEHAVIOR]"
+      principles:
+        - "Start incredibly small (2 minutes or less)"
+        - "Anchor to existing behavior"
+        - "Celebrate immediately"
+        - "Let the habit grow naturally"
+
+  ##########################################################################
+  # Flow Theory — Csikszentmihalyi
+  ##########################################################################
+  flow_theory:
+    author: "Mihaly Csikszentmihalyi"
+    year: 1990
+    description: "Optimal experience occurs when challenge and skill are balanced"
+    conditions:
+      - "Clear goals"
+      - "Immediate feedback"
+      - "Challenge-skill balance"
+      - "Sense of control"
+      - "Deep concentration"
+      - "Merging of action and awareness"
+      - "Loss of self-consciousness"
+      - "Time distortion"
+      - "Autotelic experience (intrinsically rewarding)"
+
+    zones:
+      anxiety: "Challenge >> Skill"
+      flow: "Challenge ≈ Skill (slightly above)"
+      boredom: "Skill >> Challenge"
+
+    design_implications:
+      - "Adaptive difficulty to maintain flow zone"
+      - "Progressive challenge increase matching skill growth"
+      - "Immediate feedback to maintain awareness"
+      - "Clear goals at every level"

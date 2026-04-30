@@ -1,0 +1,183 @@
+name: Full Security Audit
+description: Complete end-to-end security audit workflow covering threat modeling, verification, penetration testing, and compliance
+version: "1.0.0"
+trigger: manual
+mode: interactive
+elicit: true
+
+phases:
+  1-threat-modeling:
+    name: Threat Modeling
+    executor: adam-shostack
+    task: tasks/threat-modeling.md
+    description: >
+      Criar modelo de ameacas usando STRIDE e o framework das 4 perguntas.
+      Mapear DFD, trust boundaries, e priorizar ameacas por impacto.
+    inputs:
+      - system_description
+      - architecture_diagram
+      - tech_stack
+    outputs:
+      - threat_model_document
+      - stride_analysis_table
+      - prioritized_threats
+    checkpoint: "Threat model completo com STRIDE por componente"
+    next: 2-asvs-verification
+
+  2-asvs-verification:
+    name: ASVS Security Verification
+    executor: andrew-van-der-stock
+    task: tasks/security-audit.md#phase-3
+    description: >
+      Verificar controles de seguranca contra OWASP ASVS Level 1/2.
+      Cobrir autenticacao, sessao, acesso, input, crypto, logging.
+    inputs:
+      - threat_model_document
+      - system_access
+    outputs:
+      - asvs_verification_results
+      - asvs_score_by_category
+      - gaps_identified
+    checkpoint: "ASVS score calculado por categoria"
+    next: 3-web-pentest
+
+  3-web-pentest:
+    name: Web Application Penetration Testing
+    executor: dafydd-stuttard
+    task: tasks/pentest-execution.md#phase-3
+    description: >
+      Testar aplicacao web para vulnerabilidades exploraveis.
+      Cobrir injecoes, auth bypass, IDOR, business logic, SSRF.
+    inputs:
+      - asvs_gaps
+      - threat_model_focus_areas
+      - test_credentials
+    outputs:
+      - web_pentest_findings
+      - proof_of_concepts
+    checkpoint: "Web findings documentados com PoC"
+    next: 4-api-pentest
+
+  4-api-pentest:
+    name: API Security Testing
+    executor: corey-ball
+    task: tasks/api-security-test.md
+    description: >
+      Testar APIs contra OWASP API Security Top 10.
+      Focar em BOLA, BFLA, mass assignment, rate limiting.
+    inputs:
+      - api_documentation
+      - test_credentials
+      - api_endpoints
+    outputs:
+      - api_pentest_findings
+      - owasp_api_top10_mapping
+    checkpoint: "OWASP API Top 10 completamente testado"
+    next: 5-network-pentest
+
+  5-network-pentest:
+    name: Network & Infrastructure Penetration Testing
+    executor: ed-skoudis
+    task: tasks/pentest-execution.md#phase-2
+    description: >
+      Testar infraestrutura de rede para vulnerabilidades.
+      Port scanning, service enumeration, exploit validation.
+    inputs:
+      - network_scope
+      - ip_ranges
+    outputs:
+      - network_findings
+      - service_vulnerabilities
+    checkpoint: "Network findings documentados"
+    next: 6-container-audit
+
+  6-container-audit:
+    name: Container & Cloud-Native Security Audit
+    executor: liz-rice
+    task: tasks/container-security-audit.md
+    description: >
+      Auditar seguranca de containers usando modelo de 5 camadas.
+      Images, runtime, orchestration, host, network.
+    inputs:
+      - cluster_access
+      - container_registry
+    outputs:
+      - container_audit_results
+      - cis_benchmark_scores
+    checkpoint: "5-layer audit completo"
+    skip_if: "no_containers"
+    next: 7-compliance-check
+
+  7-compliance-check:
+    name: Compliance & Privacy Check
+    executor:
+      - ron-ross
+      - ann-cavoukian
+    task: tasks/compliance-check.md
+    description: >
+      Verificar compliance com LGPD, GDPR, NIST.
+      Avaliar Privacy by Design e gerar gap analysis.
+    inputs:
+      - data_types_processed
+      - jurisdictions
+      - previous_compliance_reports
+    outputs:
+      - compliance_report
+      - lgpd_score
+      - gdpr_gaps
+      - remediation_plan
+    checkpoint: "Compliance gaps mapeados com remediacao"
+    next: 8-report-generation
+
+  8-report-generation:
+    name: Final Report Generation
+    executor: security-chief
+    task: null
+    description: >
+      Consolidar todos os findings em um relatorio unico.
+      Classificar por severidade, calcular risk score, gerar roadmap.
+    inputs:
+      - threat_model_document
+      - asvs_verification_results
+      - web_pentest_findings
+      - api_pentest_findings
+      - network_findings
+      - container_audit_results
+      - compliance_report
+    outputs:
+      - security_audit_report
+      - executive_summary
+      - remediation_roadmap
+    checkpoint: "Relatorio final revisado e entregue"
+    template: templates/security-audit-report-tmpl.md
+
+quality_gates:
+  - name: "Scope Approval"
+    phase: before-1
+    criteria: "Escopo definido e aprovado pelo solicitante"
+    blocking: true
+
+  - name: "Finding Severity Review"
+    phase: after-3
+    criteria: "Findings criticos comunicados imediatamente"
+    blocking: false
+
+  - name: "Report Review"
+    phase: after-8
+    criteria: "Relatorio revisado por pelo menos 2 especialistas"
+    blocking: true
+
+escalation_triggers:
+  - condition: "critical_finding_in_production"
+    action: "Notify stakeholders immediately, pause audit for remediation"
+  - condition: "active_breach_detected"
+    action: "Switch to incident-response workflow"
+  - condition: "compliance_violation_active"
+    action: "Notify DPO/Legal team"
+
+estimated_duration:
+  minimum: "3 days"
+  typical: "5-7 days"
+  maximum: "10 days"
+
+output_template: templates/security-audit-report-tmpl.md

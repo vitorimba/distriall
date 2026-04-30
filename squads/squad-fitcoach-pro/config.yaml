@@ -1,0 +1,307 @@
+# FitCoach Squad — Plataforma de Coaching Fitness
+# Squad completo para coaches de fisiculturismo e personal trainers online
+
+name: fitcoach
+version: 1.0.0
+tested: false
+updated_at: "2026-03-11"
+short-title: FitCoach Squad
+description: >-
+  Squad completo para plataforma de coaching fitness com conselheiros elite
+  de bodybuilding e business, automação, gamificação e e-commerce.
+  Orquestrador: @fitcoach-chief (triage, routing, coordenação entre tiers).
+  Tier 0: Intake e diagnóstico do cliente/negócio.
+  Tier 1 Bodybuilding: 6 elite minds (Israetel, Rambod, Norton, Bompa, Glass, Jansen).
+  Tier 2 Business: 4 elite minds (Hormozi, Cooper, Yu-kai Chou, Nir Eyal).
+  Tier 3 Platform: 6 agents operacionais para building e automação.
+  Tools: 5 ferramentas especializadas para geração, cálculo e tracking.
+
+author: Synkra AIOX
+entry_agent: fitcoach-chief
+slashPrefix: FitCoach
+pattern_prefix: FC
+
+workspace_integration:
+  level: none
+
+target_user: >-
+  Personal trainers e coaches de fisiculturismo que fazem consultoria online
+
+# ============================================================================
+# TIER STRUCTURE
+# ============================================================================
+
+tier_structure:
+  orchestrator: fitcoach-chief
+
+  # Tier 0 — Intake & Diagnosis
+  tier_0:
+    description: "Coleta inicial de dados e diagnóstico do cliente/negócio"
+    agents:
+      - id: intake-analyst
+        role: "Análise inicial do cliente, coleta de dados, anamnese fitness"
+      - id: business-diagnostician
+        role: "Diagnóstico do modelo de negócio do coach, gaps e oportunidades"
+
+  # Tier 1 — Bodybuilding Elite Council
+  tier_1_bodybuilding:
+    description: "Conselheiros elite de bodybuilding baseados em minds reais"
+    agents:
+      - id: hypertrophy-scientist
+        mind: "Mike Israetel"
+        role: "Volume landmarks, MEV/MRV/MAV, periodização de hipertrofia baseada em evidência"
+      - id: prep-master
+        mind: "Hany Rambod"
+        role: "Contest prep, FST-7, peak week, manipulação de água/sódio/carb"
+      - id: nutrition-scientist
+        mind: "Layne Norton"
+        role: "Reverse dieting, IIFYM, metabolic adaptation, evidence-based nutrition"
+      - id: periodization-architect
+        mind: "Tudor Bompa"
+        role: "Periodização clássica e ondulatória, macrociclos, mesociclos, microciclos"
+      - id: biomechanics-coach
+        mind: "Charles Glass"
+        role: "Biomecânica aplicada, variações de exercícios, ativação muscular, correção de forma"
+      - id: elite-coach
+        mind: "Matt Jansen"
+        role: "Coaching de elite, intensity techniques, offseason strategy, cliente de alto nível"
+
+  # Tier 2 — Business Elite Council
+  tier_2_business:
+    description: "Conselheiros elite de business e growth para o negócio do coach"
+    agents:
+      - id: gym-scaler
+        mind: "Alex Hormozi"
+        role: "Scaling, ofertas irresistíveis, modelo de precificação, lead generation"
+      - id: gym-operator
+        mind: "Chris Cooper"
+        role: "Operação de gym/coaching business, métricas, processos, retenção de clientes"
+      - id: gamification-designer
+        mind: "Yu-kai Chou"
+        role: "Octalysis framework, 8 core drives, gamificação de aderência ao treino/dieta"
+      - id: retention-engineer
+        mind: "Nir Eyal"
+        role: "Hook model, loop de hábito, trigger design, variable reward, retenção"
+
+  # Tier 1.5 — Specialists (Cross-cutting)
+  tier_1_5_specialists:
+    description: "Agentes especialistas transversais — lesões, reabilitação e mindset"
+    agents:
+      - id: injury-manager
+        mind: "Collective — Stuart McGill, Kelly Starrett, Gray Cook"
+        role: "Triagem de lesões, modificação de exercícios, protocolos de retorno, red flags"
+      - id: mindset-coach
+        mind: "Collective — BJ Fogg, Motivational Interviewing, Self-Determination Theory"
+        role: "Aderência, formação de hábitos, motivação intrínseca, prevenção de dropout"
+
+  # Tier 3 — Platform Builders
+  tier_3_platform:
+    description: "Agents operacionais para construção e automação da plataforma"
+    agents:
+      - id: training-builder
+        role: "Montagem de planilhas de treino, templates, progressão de carga"
+      - id: diet-builder
+        role: "Montagem de planos alimentares, substituições, ajustes semanais"
+      - id: automation-engineer
+        role: "Automação WhatsApp, email sequences, onboarding flows, CRM"
+      - id: progress-tracker
+        role: "Acompanhamento de fotos, medidas, PRs, composição corporal"
+      - id: ecommerce-manager
+        role: "E-commerce de suplementos, produtos digitais, upsell, cross-sell"
+      - id: content-repurposer
+        role: "Reaproveitamento de conteúdo para redes sociais, blog, email"
+
+# ============================================================================
+# TOOLS
+# ============================================================================
+
+tools:
+  - id: training-plan-generator
+    description: "Gera planilhas de treino completas com periodização, volume e intensidade"
+  - id: macro-calculator
+    description: "Calcula macronutrientes baseado em objetivo, peso, BF%, TDEE"
+  - id: progress-comparator
+    description: "Compara fotos, medidas e métricas entre check-ins"
+  - id: gamification-engine
+    description: "Motor de pontos, badges, streaks, leaderboard e challenges"
+  - id: quality-checker
+    description: "Valida protocolos de treino/dieta contra evidência científica"
+
+# ============================================================================
+# USE CASES
+# ============================================================================
+
+use_cases:
+  - name: "Prescrição de treino/dieta"
+    description: "Montagem completa de protocolo de treino e plano alimentar personalizado"
+    tiers: [tier_1_bodybuilding, tier_3_platform]
+  - name: "Automação WhatsApp/email"
+    description: "Fluxos automatizados de comunicação com clientes"
+    tiers: [tier_3_platform]
+  - name: "Acompanhamento de progressão com fotos"
+    description: "Tracking visual e métrico da evolução do cliente"
+    tiers: [tier_3_platform]
+  - name: "Gamificação"
+    description: "Sistema de engajamento com pontos, badges, streaks e challenges"
+    tiers: [tier_2_business, tier_3_platform]
+  - name: "E-commerce de suplementos/produtos"
+    description: "Loja integrada com recomendações personalizadas"
+    tiers: [tier_3_platform]
+  - name: "Consultoria com conselheiros elite"
+    description: "Acesso a expertise de elite minds para decisões complexas"
+    tiers: [tier_1_bodybuilding, tier_2_business]
+  - name: "Scaling do negócio"
+    description: "Estratégias para escalar o negócio de coaching online"
+    tiers: [tier_2_business]
+  - name: "Periodização inteligente"
+    description: "Macrociclos, mesociclos e microciclos otimizados"
+    tiers: [tier_1_bodybuilding]
+  - name: "Prep de competição"
+    description: "Protocolo completo de contest prep com peak week"
+    tiers: [tier_1_bodybuilding]
+  - name: "Reverse dieting"
+    description: "Protocolo de reverse diet pós-competição ou pós-dieta"
+    tiers: [tier_1_bodybuilding]
+  - name: "Modelo de precificação"
+    description: "Estruturação de ofertas, pacotes e pricing strategy"
+    tiers: [tier_2_business]
+  - name: "Métricas de retenção"
+    description: "Dashboard de churn, LTV, NPS e engagement do cliente"
+    tiers: [tier_2_business]
+  - name: "Loop de hábito"
+    description: "Design de hábitos usando Hook Model para aderência"
+    tiers: [tier_2_business]
+  - name: "8 drives de motivação"
+    description: "Aplicação do Octalysis Framework para engajamento total"
+    tiers: [tier_2_business]
+
+# ============================================================================
+# QUALITY GATES
+# ============================================================================
+
+quality_gates:
+  - id: FC-QG-001
+    name: "Client Intake"
+    transition: "Input → Tier 0"
+    description: "Validação de dados mínimos do cliente antes de routing para análise"
+    checks:
+      - "Dados antropométricos completos (peso, altura, BF%)"
+      - "Objetivo definido (hipertrofia, cutting, recomp, prep)"
+      - "Histórico de treino e lesões informado"
+      - "Restrições alimentares declaradas"
+
+  - id: FC-QG-002
+    name: "Diagnosis Complete"
+    transition: "Tier 0 → Tier 1/2"
+    description: "Diagnóstico completo antes de encaminhar para conselheiros elite"
+    checks:
+      - "Perfil do cliente classificado (iniciante/intermediário/avançado)"
+      - "Modelo de negócio do coach mapeado"
+      - "Gaps e oportunidades identificados"
+      - "Tier de destino definido (bodybuilding, business ou ambos)"
+
+  - id: FC-QG-003
+    name: "Protocol Review"
+    transition: "Draft → Output"
+    description: "Revisão de qualidade do protocolo de treino/dieta antes da entrega"
+    checks:
+      - "Volume dentro dos landmarks (MEV-MRV)"
+      - "Macros alinhados com objetivo e TDEE"
+      - "Periodização com progressão lógica"
+      - "Sem contraindicações para o perfil do cliente"
+
+  - id: FC-QG-004
+    name: "Business Strategy Review"
+    transition: "Analysis → Recommendation"
+    description: "Validação de estratégia de negócio antes de recomendação final"
+    checks:
+      - "ROI estimado para recomendação"
+      - "Viabilidade operacional validada"
+      - "Alinhamento com modelo atual do coach"
+      - "Métricas de sucesso definidas"
+
+  - id: FC-QG-005
+    name: "Output Quality"
+    transition: "Execution → Delivery"
+    description: "Gate final antes de entregar qualquer output ao coach/cliente"
+    checks:
+      - "Formato profissional e apresentável"
+      - "Linguagem adequada ao público-alvo"
+      - "Dados validados pelo quality-checker"
+      - "Sem informações conflitantes entre tiers"
+
+# ============================================================================
+# SETTINGS
+# ============================================================================
+
+settings:
+  activation:
+    show_ecosystem_report: true
+    show_greeting: true
+    show_quick_commands: true
+  ecosystem_report:
+    show_totals: true
+    show_top_squads: false
+    show_quality_refs: true
+    show_gaps: true
+    top_squads_limit: 5
+
+# ============================================================================
+# ROUTING RULES
+# ============================================================================
+
+# ============================================================================
+# PLAYBOOKS
+# ============================================================================
+
+playbooks:
+  - id: client-onboarding-playbook
+    description: "Playbook completo de onboarding de novo aluno — intake, anamnese, avaliação, primeiro protocolo"
+  - id: cutting-phase-playbook
+    description: "Playbook de fase de cutting — déficit, cardio progressivo, refeeds, métricas de progresso"
+  - id: bulking-phase-playbook
+    description: "Playbook de fase de bulking — superávit controlado, volume progressivo, checkpoints"
+  - id: competition-prep-playbook
+    description: "Playbook de prep para competição — 16-20 semanas, peak week, reverse diet"
+  - id: injury-return-playbook
+    description: "Playbook de retorno pós-lesão — triagem, modificações, loading progressivo, alta"
+  - id: business-launch-playbook
+    description: "Playbook de lançamento do negócio do coach — oferta, funil, automação, primeiros clientes"
+
+# ============================================================================
+# DATA FILES
+# ============================================================================
+
+data:
+  - id: fitcoach-kb
+    file: "data/fitcoach-kb.md"
+    description: "Knowledge base completa do FitCoach — domínio, mercado, ciência, negócio"
+  - id: exercise-database
+    file: "data/exercise-database.yaml"
+    description: "Database de exercícios por grupo muscular — dificuldade, equipamento, biomecânica, erros comuns"
+  - id: macro-formulas
+    file: "data/macro-formulas.yaml"
+    description: "Fórmulas de cálculo nutricional — BMR, TDEE, macros, déficit/superávit"
+  - id: supplement-protocols
+    file: "data/supplement-protocols.yaml"
+    description: "Guia de suplementação baseado em evidência — Tier A/B/C, dosagens, interações"
+  - id: periodization-models
+    file: "data/periodization-models.yaml"
+    description: "Modelos de periodização — Linear, DUP, Block, Conjugate, RP Hypertrophy"
+
+# ============================================================================
+# ROUTING RULES
+# ============================================================================
+
+routing:
+  default_flow: "intake → diagnosis → tier_routing → execution → quality_gate → delivery"
+  tier_routing_rules:
+    - condition: "client needs training/diet protocol"
+      route_to: tier_1_bodybuilding
+    - condition: "coach needs business strategy"
+      route_to: tier_2_business
+    - condition: "needs automation or platform building"
+      route_to: tier_3_platform
+    - condition: "complex case requiring multiple expertise"
+      route_to: [tier_1_bodybuilding, tier_2_business]
+      mode: collaborative

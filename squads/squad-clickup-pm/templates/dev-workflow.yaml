@@ -1,0 +1,13 @@
+name: "Dev Task Flow"
+description: "Automação do fluxo de desenvolvimento: task → branch → PR → review → done"
+automations:
+  - trigger: "Task movida para In Progress"
+    action: "Criar branch no GitHub (feat/{task-id}-{slug})"
+  - trigger: "PR aberto no GitHub"
+    action: "Mover task para In Review"
+  - trigger: "PR merged"
+    action: "Mover task para QA"
+  - trigger: "QA aprovado (custom field)"
+    action: "Mover task para Done"
+  - trigger: "Task movida para Done"
+    action: "Notificar no Slack #releases"

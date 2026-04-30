@@ -1,0 +1,77 @@
+# ═══════════════════════════════════════════════════════════════════════
+# Squad: Client Intake & Briefing
+# Version: 1.0.0
+# Created: 2026-04-14
+# ═══════════════════════════════════════════════════════════════════════
+
+squad:
+  name: squad-intake
+  display_name: "Client Intake & Briefing"
+  version: "1.0.0"
+  description: |
+    Squad especializado em coletar informações completas e estruturadas
+    sobre o negócio de novos clientes para viabilizar o início de projetos
+    (sistema, app, site, automação, solução específica).
+
+    Fluxo: Reunião Inicial → Briefing Personalizado → Análise → Handoff
+
+  domain: client-intake
+  keywords:
+    - intake
+    - briefing
+    - discovery
+    - questionnaire
+    - onboarding
+    - client
+    - requirements
+    - interview
+
+  philosophy: |
+    "Diagnose before prescribing. Listen before asking. Understand before building."
+    Baseado em elite minds com frameworks documentados de entrevista,
+    discovery e onboarding de clientes.
+
+  tier_distribution:
+    tier_0_diagnosis:
+      - rob-fitzpatrick    # Entrevista sem viés (The Mom Test)
+      - indi-young         # Escuta profunda (Mental Models)
+    tier_1_execution:
+      - alan-weiss         # Estruturação do intake (Conceptual Agreement)
+      - blair-enns         # Discovery de expert (Win Without Pitching)
+    tier_2_specialist:
+      - donna-weber        # Processo de onboarding (Orchestrated Onboarding)
+      - erika-hall         # Pesquisa pragmática (Just Enough Research)
+    orchestrator:
+      - intake-chief       # Orquestra o fluxo completo
+
+  handoffs:
+    outbound:
+      - target: "squad-pm:discovery-session"
+        when: "Intake completo e validado"
+        artifact: "docs/intake/intake-report.md"
+      - target: "squad-pm:write-prd"
+        when: "Intake + discovery completos"
+        artifact: "docs/intake/intake-report.md"
+
+  project_types:
+    - id: web-app
+      label: "Sistema / Aplicação Web"
+      specific_questions: true
+    - id: mobile-app
+      label: "Aplicativo Mobile"
+      specific_questions: true
+    - id: website
+      label: "Website / Landing Page"
+      specific_questions: true
+    - id: automation
+      label: "Automação de Processos"
+      specific_questions: true
+    - id: saas
+      label: "Plataforma SaaS"
+      specific_questions: true
+    - id: ecommerce
+      label: "E-commerce"
+      specific_questions: true
+    - id: custom
+      label: "Solução Específica / Outro"
+      specific_questions: false

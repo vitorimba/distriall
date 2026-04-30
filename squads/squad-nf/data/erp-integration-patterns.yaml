@@ -1,0 +1,299 @@
+# =============================================================================
+# ERP Integration Patterns
+# Squad: squad-nf
+# Patterns for integrating NF-e with common ERPs and custom systems
+# =============================================================================
+
+integration_patterns:
+  # ---------------------------------------------------------------------------
+  # TOTVS Protheus
+  # ---------------------------------------------------------------------------
+  - system: totvs_protheus
+    display_name: "TOTVS Protheus"
+    type: erp
+    description: "ERP lider no mercado brasileiro. Modulo fiscal nativo (SIGAFIS)."
+
+    architecture:
+      api_type: REST
+      auth: "oauth2 + client_credentials"
+      base_url: "https://{host}:{port}/rest"
+      documentation: "https://tdn.totvs.com/display/public/framework/REST"
+
+    nf_module:
+      has_native: true
+      native_module: "SIGAFIS"
+      integration_approach: "Complementar — usar API TOTVS para operacoes fiscais nativas"
+
+    endpoints:
+      - method: POST
+        path: "/api/fiscal/v1/invoices"
+        operation: "Emitir NF-e via modulo fiscal nativo"
+      - method: GET
+        path: "/api/fiscal/v1/invoices/{id}"
+        operation: "Consultar NF-e"
+      - method: POST
+        path: "/api/fiscal/v1/invoices/{id}/cancel"
+        operation: "Cancelar NF-e"
+
+    data_mapping:
+      order_entity: "SC5 (Pedidos de Venda)"
+      product_entity: "SB1 (Produtos)"
+      customer_entity: "SA1 (Clientes)"
+      invoice_entity: "SF2 (Cabecalho NF Saida) + SD2 (Itens NF Saida)"
+
+    webhook_support: false
+    notes: "TOTVS ja possui emissao integrada. Integracao customizada geralmente para automacao de fluxos ou dashboard externo."
+
+  # ---------------------------------------------------------------------------
+  # OMIE
+  # ---------------------------------------------------------------------------
+  - system: omie
+    display_name: "Omie ERP"
+    type: erp_cloud
+    description: "ERP cloud para PMEs. API REST completa com modulo fiscal."
+
+    architecture:
+      api_type: REST
+      auth: "app_key + app_secret (body params)"
+      base_url: "https://app.omie.com.br/api/v1"
+      documentation: "https://developer.omie.com.br"
+      rate_limit: "1 req/segundo por endpoint"
+
+    nf_module:
+      has_native: true
+      integration_approach: "API — emitir NF via endpoints Omie"
+
+    endpoints:
+      - method: POST
+        path: "/produtos/nfconsultar/"
+        operation: "Consultar NF-e"
+        body_call: "ConsultarNF"
+      - method: POST
+        path: "/produtos/nfincluir/"
+        operation: "Incluir NF-e"
+        body_call: "IncluirNF"
+      - method: POST
+        path: "/produtos/nfcancelar/"
+        operation: "Cancelar NF-e"
+        body_call: "CancelarNF"
+      - method: POST
+        path: "/produtos/nflistar/"
+        operation: "Listar NF-e"
+        body_call: "ListarNF"
+
+    data_mapping:
+      order_entity: "pedido_venda"
+      product_entity: "produto"
+      customer_entity: "cliente"
+      invoice_entity: "nf (nota fiscal)"
+
+    webhook_support: true
+    webhook_events: ["nf.autorizada", "nf.cancelada", "nf.rejeitada"]
+    notes: "API usa JSON-RPC style (call name no body). Rate limit rigoroso."
+
+  # ---------------------------------------------------------------------------
+  # BLING
+  # ---------------------------------------------------------------------------
+  - system: bling
+    display_name: "Bling ERP"
+    type: erp_cloud
+    description: "ERP cloud focado em e-commerce e marketplaces."
+
+    architecture:
+      api_type: REST
+      auth: "oauth2"
+      base_url: "https://api.bling.com.br/Api/v3"
+      documentation: "https://developer.bling.com.br"
+
+    nf_module:
+      has_native: true
+      integration_approach: "API REST v3 — endpoints de NF-e"
+
+    endpoints:
+      - method: POST
+        path: "/nfe"
+        operation: "Criar NF-e"
+      - method: POST
+        path: "/nfe/{id}/enviar"
+        operation: "Transmitir NF-e a SEFAZ"
+      - method: GET
+        path: "/nfe/{id}"
+        operation: "Consultar NF-e"
+      - method: DELETE
+        path: "/nfe/{id}"
+        operation: "Cancelar NF-e"
+      - method: GET
+        path: "/nfe/{id}/xml"
+        operation: "Download XML"
+
+    data_mapping:
+      order_entity: "pedidos/vendas"
+      product_entity: "produtos"
+      customer_entity: "contatos"
+      invoice_entity: "nfe"
+
+    webhook_support: true
+    webhook_events: ["nfe.created", "nfe.authorized", "nfe.cancelled"]
+    marketplace_integrations: ["Mercado Livre", "Shopee", "Amazon", "Magalu", "Americanas"]
+    notes: "Muito usado em e-commerce. Integracao com marketplaces automatiza emissao."
+
+  # ---------------------------------------------------------------------------
+  # SHOPIFY (com app NF-e)
+  # ---------------------------------------------------------------------------
+  - system: shopify
+    display_name: "Shopify + App NF-e"
+    type: ecommerce
+    description: "Shopify nao tem NF nativa. Requer app ou integracao customizada."
+
+    architecture:
+      api_type: REST + GraphQL
+      auth: "oauth2 (Shopify Partner)"
+      base_url: "https://{store}.myshopify.com/admin/api/2024-01"
+      documentation: "https://shopify.dev/docs/api"
+
+    nf_module:
+      has_native: false
+      integration_approach: "Custom app + NF provider (Focus NFe / NFe.io)"
+      recommended_apps:
+        - name: "Emitte"
+          description: "App brasileiro para emissao automatica de NF-e no Shopify"
+        - name: "Custom (Next.js + provider)"
+          description: "Webhook Shopify order → API provider NF-e"
+
+    integration_flow:
+      trigger: "Shopify webhook: orders/paid"
+      steps:
+        - "Receber webhook de pedido pago"
+        - "Extrair dados do pedido (itens, cliente, endereco)"
+        - "Classificar fiscalmente (CFOP, NCM, CST)"
+        - "Chamar provider NF-e para emissao"
+        - "Armazenar chave/XML no metafield do pedido"
+        - "Enviar DANFE ao cliente"
+
+    data_mapping:
+      order_entity: "orders"
+      product_entity: "products"
+      customer_entity: "customers"
+      invoice_storage: "metafields (order-level)"
+
+    webhook_support: true
+    webhook_events: ["orders/paid", "orders/cancelled", "refunds/create"]
+    notes: "Sem NF nativa. Necessita mapeamento fiscal manual (NCM, CFOP em metafields do produto)."
+
+  # ---------------------------------------------------------------------------
+  # CUSTOM: Next.js + Supabase
+  # ---------------------------------------------------------------------------
+  - system: custom_nextjs_supabase
+    display_name: "Custom (Next.js + Supabase)"
+    type: custom
+    description: "Sistema customizado com Next.js (frontend+API) e Supabase (DB+Auth)."
+
+    architecture:
+      frontend: "Next.js (App Router)"
+      api: "Next.js API Routes / Server Actions"
+      database: "Supabase (PostgreSQL)"
+      auth: "Supabase Auth"
+      storage: "Supabase Storage"
+      queue: "Supabase Edge Functions + pg_cron"
+
+    nf_module:
+      has_native: false
+      integration_approach: "Build from scratch using templates + NF provider"
+
+    recommended_stack:
+      nf_provider: "Focus NFe (melhor DX) ou NFe.io"
+      tables: "Usar migration-tmpl.sql"
+      service: "Usar nf-module-tmpl.ts"
+      design: "Usar integration-design-tmpl.md"
+
+    implementation_steps:
+      - step: 1
+        description: "Aplicar migration SQL no Supabase"
+        template: "migration-tmpl.sql"
+      - step: 2
+        description: "Implementar NfService com provider adapter"
+        template: "nf-module-tmpl.ts"
+      - step: 3
+        description: "Criar API routes (emit, cancel, consult)"
+        path: "app/api/nf/"
+      - step: 4
+        description: "Criar webhook receiver"
+        path: "app/api/nf/webhook/route.ts"
+      - step: 5
+        description: "Configurar Supabase Storage para XMLs/DANFEs"
+        bucket: "nf-documents"
+      - step: 6
+        description: "Implementar RLS policies"
+        template: "migration-tmpl.sql (secao RLS)"
+      - step: 7
+        description: "Criar UI components (lista NF, emissao, detalhes)"
+        path: "app/(dashboard)/nf/"
+      - step: 8
+        description: "Testar em homologacao"
+        checklist: "integration-readiness.md"
+
+    api_routes:
+      - path: "app/api/nf/emit/route.ts"
+        method: POST
+      - path: "app/api/nf/[id]/route.ts"
+        method: GET
+      - path: "app/api/nf/[id]/cancel/route.ts"
+        method: POST
+      - path: "app/api/nf/[id]/correct/route.ts"
+        method: POST
+      - path: "app/api/nf/[id]/xml/route.ts"
+        method: GET
+      - path: "app/api/nf/[id]/danfe/route.ts"
+        method: GET
+      - path: "app/api/nf/webhook/route.ts"
+        method: POST
+
+    supabase_config:
+      tables: [invoices, invoice_items, invoice_events]
+      rls: true
+      storage_bucket: "nf-documents"
+      edge_functions:
+        - name: "nf-emit"
+          trigger: "HTTP"
+        - name: "nf-webhook-processor"
+          trigger: "HTTP"
+        - name: "nf-certificate-check"
+          trigger: "pg_cron (daily)"
+
+    notes: "Pattern mais flexivel. Total controle sobre UX e logica de negocio. Requer mais implementacao mas permite personalizar todo o fluxo."
+
+  # ---------------------------------------------------------------------------
+  # CUSTOM: Generic REST System
+  # ---------------------------------------------------------------------------
+  - system: custom_other
+    display_name: "Custom (Other)"
+    type: custom
+    description: "Qualquer sistema com API REST. Pattern generico de integracao."
+
+    integration_approach: "Adapter pattern — criar adapter entre sistema e provider NF-e"
+
+    adapter_pattern:
+      interface: |
+        interface NfAdapter {
+          mapOrderToNf(order: SystemOrder): NfEmitInput;
+          mapNfToSystem(nf: NfResult): SystemUpdate;
+          getOrder(orderId: string): Promise<SystemOrder>;
+          updateOrder(orderId: string, data: SystemUpdate): Promise<void>;
+        }
+
+    generic_flow:
+      - "1. Sistema dispara evento (pedido aprovado/pago)"
+      - "2. Adapter converte dados do sistema para formato NF"
+      - "3. NfService emite NF via provider"
+      - "4. Adapter converte resultado NF para formato do sistema"
+      - "5. Sistema atualiza registro com dados da NF"
+      - "6. Webhooks atualizam status em tempo real"
+
+    considerations:
+      - "Mapear campos do sistema para campos NF (CNPJ, endereco, itens)"
+      - "Garantir que produtos tenham NCM e CFOP cadastrados"
+      - "Definir onde armazenar certificado digital (vault, env var)"
+      - "Implementar retry e dead letter queue"
+      - "Multi-tenant: isolar dados NF por organizacao"
+
+    notes: "Use wf-erp-integration.yaml para guiar o processo passo a passo."

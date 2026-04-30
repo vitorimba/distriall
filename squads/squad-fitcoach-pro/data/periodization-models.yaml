@@ -1,0 +1,390 @@
+# Periodization Models — FitCoach Squad
+# Modelos de periodizacao de referencia para prescricao de treino
+# Version: 1.0.0 | Updated: 2026-03-13
+
+# ===========================================================================
+# LINEAR PERIODIZATION (Bompa / Matveyev)
+# ===========================================================================
+
+linear_periodization:
+  name: "Periodização Linear Clássica"
+  origin: "Tudor Bompa (1963) / Lev Matveyev"
+  philosophy: "Progressão sistemática de alto volume/baixa intensidade para baixo volume/alta intensidade."
+
+  structure:
+    macrocycle:
+      duration: "6-12 meses (temporada completa)"
+      description: "Plano anual dividido em fases sequenciais"
+    mesocycle:
+      duration: "3-6 semanas cada"
+      description: "Bloco com objetivo específico"
+    microcycle:
+      duration: "1 semana (tipicamente)"
+      description: "Unidade de planejamento semanal"
+
+  phases:
+    - name: "Anatomical Adaptation (AA)"
+      duration: "2-4 semanas"
+      sets: "2-3"
+      reps: "12-15"
+      intensity: "50-60% 1RM"
+      rest: "60-90s"
+      objective: "Preparar tendões, ligamentos, base aeróbia. Prevenir lesões."
+
+    - name: "Hypertrophy"
+      duration: "4-8 semanas"
+      sets: "3-5"
+      reps: "8-12"
+      intensity: "65-75% 1RM"
+      rest: "60-120s"
+      objective: "Maximizar hipertrofia muscular. Volume alto."
+
+    - name: "Strength"
+      duration: "4-6 semanas"
+      sets: "4-6"
+      reps: "3-6"
+      intensity: "80-90% 1RM"
+      rest: "2-4 min"
+      objective: "Converter hipertrofia em força funcional."
+
+    - name: "Power / Peaking"
+      duration: "2-4 semanas"
+      sets: "3-5"
+      reps: "1-3"
+      intensity: "90-100% 1RM"
+      rest: "3-5 min"
+      objective: "Pico de performance. Competição."
+
+    - name: "Active Recovery / Deload"
+      duration: "1-2 semanas"
+      sets: "2-3"
+      reps: "12-15"
+      intensity: "40-50% 1RM"
+      rest: "90s"
+      objective: "Recuperação sistêmica. Regeneração."
+
+  pros:
+    - "Simples de programar e entender"
+    - "Excelente para iniciantes e intermediários"
+    - "Progressão lógica e previsível"
+    - "Fundamentado em décadas de pesquisa"
+  cons:
+    - "Qualidades treinadas nas fases iniciais podem regredir"
+    - "Monotonia — mesmo estímulo por semanas"
+    - "Menos eficiente para atletas avançados que precisam manter múltiplas qualidades"
+  when_to_use:
+    - "Iniciantes (primeiro ano de treino)"
+    - "Retorno pós-lesão ou layoff"
+    - "Atletas de força com competição sazonal"
+    - "Clientes que preferem estrutura simples"
+
+# ===========================================================================
+# UNDULATING PERIODIZATION (DUP)
+# ===========================================================================
+
+daily_undulating_periodization:
+  name: "Periodização Ondulatória Diária (DUP)"
+  origin: "Rhea MR et al. (2002) / Zourdos MC"
+  philosophy: "Variar volume e intensidade a cada sessão dentro da semana."
+
+  structure:
+    microcycle:
+      duration: "1 semana"
+      sessions: "3-4 por semana"
+      description: "Cada sessão tem um foco diferente"
+
+  typical_weekly_setup:
+    3_day:
+      - day: "Segunda"
+        focus: "Hypertrophy"
+        reps: "8-12"
+        intensity: "65-75% 1RM"
+        sets: "3-4"
+      - day: "Quarta"
+        focus: "Strength"
+        reps: "3-5"
+        intensity: "82-88% 1RM"
+        sets: "4-5"
+      - day: "Sexta"
+        focus: "Power/Speed"
+        reps: "1-3"
+        intensity: "88-95% 1RM"
+        sets: "5-6"
+
+    4_day:
+      - day: "Segunda"
+        focus: "Upper Hypertrophy"
+        reps: "8-12"
+      - day: "Terca"
+        focus: "Lower Strength"
+        reps: "3-5"
+      - day: "Quinta"
+        focus: "Upper Strength"
+        reps: "3-5"
+      - day: "Sexta"
+        focus: "Lower Hypertrophy"
+        reps: "8-12"
+
+  progression:
+    method: "Adicionar carga quando atingir topo do range de reps"
+    deload: "A cada 4-6 semanas, reduzir volume 40-50%"
+    overreaching: "Monitorar RPE. Se RPE consistentemente >9, deload."
+
+  pros:
+    - "Variedade de estímulos previne estagnação"
+    - "Superior à linear para atletas intermediários+ (meta-análise Rhea 2002)"
+    - "Mantém múltiplas qualidades simultaneamente"
+    - "Menor monotonia, maior aderência"
+  cons:
+    - "Mais complexo de programar"
+    - "Pode ser confuso para iniciantes"
+    - "Fadiga acumulada entre sessões de diferentes focos"
+  when_to_use:
+    - "Atletas intermediários e avançados"
+    - "Powerlifters que precisam treinar S/B/D múltiplas vezes/semana"
+    - "Clientes entediados com periodização linear"
+    - "Recomposição corporal (variar estímulo maximiza adaptações)"
+
+# ===========================================================================
+# BLOCK PERIODIZATION (Issurin)
+# ===========================================================================
+
+block_periodization:
+  name: "Periodização em Blocos"
+  origin: "Vladimir Issurin (2008)"
+  philosophy: "Concentrar estímulos em blocos curtos de 2-4 semanas com 1-3 qualidades por bloco."
+
+  structure:
+    block_duration: "2-4 semanas cada"
+    blocks_per_cycle: "3-4 blocos"
+    total_cycle: "8-16 semanas"
+
+  blocks:
+    - name: "Accumulation"
+      duration: "3-4 semanas"
+      focus: "Volume, hipertrofia, base de trabalho"
+      reps: "8-15"
+      intensity: "60-75% 1RM"
+      volume: "Alto"
+      description: "Construir capacidade de trabalho e massa muscular."
+
+    - name: "Transmutation"
+      duration: "2-3 semanas"
+      focus: "Força máxima, intensidade"
+      reps: "3-6"
+      intensity: "80-90% 1RM"
+      volume: "Moderado"
+      description: "Converter volume acumulado em força. Intensificar."
+
+    - name: "Realization"
+      duration: "1-2 semanas"
+      focus: "Peaking, performance máxima"
+      reps: "1-3"
+      intensity: "90-100% 1RM"
+      volume: "Baixo"
+      description: "Expressão máxima de força/potência. Taper para competição."
+
+  residual_training_effects:
+    description: "Quanto tempo cada qualidade se mantém após parar de treiná-la"
+    endurance: "~30 dias"
+    strength: "~30 dias"
+    maximal_strength: "~15-20 dias"
+    power: "~5-10 dias"
+    note: "Blocos devem ser sequenciados respeitando os efeitos residuais."
+
+  pros:
+    - "Foco concentrado = adaptações mais fortes por bloco"
+    - "Excelente para atletas avançados"
+    - "Facilita periodização para múltiplas competições"
+    - "Menos interferência entre qualidades concorrentes"
+  cons:
+    - "Qualidades não treinadas declinam (residual effects limitados)"
+    - "Requer planejamento avançado"
+    - "Não ideal para iniciantes"
+  when_to_use:
+    - "Atletas avançados com calendário competitivo"
+    - "Powerlifters e weightlifters"
+    - "Múltiplos peaks por ano"
+    - "Quando linear/DUP pararam de funcionar"
+
+# ===========================================================================
+# CONJUGATE METHOD (Westside Barbell)
+# ===========================================================================
+
+conjugate_method:
+  name: "Método Conjugado (Westside Barbell)"
+  origin: "Louie Simmons / Westside Barbell — baseado no sistema soviético"
+  philosophy: "Treinar múltiplas qualidades simultaneamente em sessões diferentes (ME + DE)."
+
+  weekly_template:
+    - day: "Segunda"
+      type: "Max Effort Upper"
+      description: "Trabalhar até 1-3RM em variação de bench press"
+      method: "Subir até max do dia. Rotacionar exercício a cada 1-3 semanas."
+      examples: ["Floor Press", "Board Press", "Close Grip Bench", "Pin Press"]
+
+    - day: "Quarta"
+      type: "Max Effort Lower"
+      description: "Trabalhar até 1-3RM em variação de squat/deadlift"
+      method: "Subir até max do dia. Rotacionar exercício."
+      examples: ["Box Squat", "Front Squat", "Deficit Deadlift", "Good Morning"]
+
+    - day: "Sexta (ou Quinta)"
+      type: "Dynamic Effort Upper"
+      description: "Bench press com accommodating resistance, velocidade máxima"
+      method: "8-12 sets x 3 reps @ 50-60% 1RM + bands/chains"
+
+    - day: "Sábado (ou Sexta)"
+      type: "Dynamic Effort Lower"
+      description: "Squat/Deadlift com velocidade, accommodating resistance"
+      method: "10-12 sets x 2 reps @ 50-60% 1RM + bands/chains"
+
+  key_principles:
+    max_effort: "Trabalhar até 1-3RM. Rotacionar exercício a cada 1-3 semanas para evitar acomodação."
+    dynamic_effort: "Mover cargas submáximas com velocidade máxima. Desenvolve rate of force development."
+    repetition_effort: "Acessório de alto volume após ME/DE para hipertrofia e weak points."
+    accommodating_resistance: "Bands e chains alteram curva de resistência. Mais carga no lockout."
+    exercise_rotation: "Nunca repetir o mesmo exercício ME por mais de 3 semanas consecutivas."
+
+  pros:
+    - "Treina força, velocidade e hipertrofia simultaneamente"
+    - "Variedade constante previne acomodação"
+    - "Excelente para powerlifters equipados e raw"
+    - "Identifica e corrige pontos fracos específicos"
+  cons:
+    - "Curva de aprendizado íngreme"
+    - "Requer equipamento específico (bands, chains, specialty bars)"
+    - "Risco de overtraining se mal programado"
+    - "Concebido para atletas avançados com anos de base"
+  when_to_use:
+    - "Powerlifters avançados"
+    - "Atletas que estagnaram com periodização tradicional"
+    - "Quem tem acesso a gym bem equipada (Westside-style)"
+  when_not_to_use:
+    - "Iniciantes (falta base para ME work)"
+    - "Bodybuilders focados em hipertrofia pura"
+    - "Sem acesso a bands/chains/specialty bars"
+
+# ===========================================================================
+# RP HYPERTROPHY MESOCYCLE (Israetel)
+# ===========================================================================
+
+rp_hypertrophy:
+  name: "Mesociclo de Hipertrofia RP (Israetel)"
+  origin: "Dr. Mike Israetel / Renaissance Periodization"
+  philosophy: "Manipular volume sistematicamente dentro de mesociclos usando volume landmarks."
+
+  volume_landmarks:
+    mev:
+      name: "Minimum Effective Volume"
+      description: "Volume mínimo para estimular hipertrofia"
+      typical: "~6-10 sets/semana por grupo muscular"
+    mav:
+      name: "Maximum Adaptive Volume"
+      description: "Volume que produz máxima hipertrofia sem overreaching"
+      typical: "~12-20 sets/semana (varia por grupo e nível)"
+    mrv:
+      name: "Maximum Recoverable Volume"
+      description: "Máximo volume do qual você consegue se recuperar"
+      typical: "~20-30 sets/semana (limite superior)"
+    mv:
+      name: "Maintenance Volume"
+      description: "Volume para manter ganhos existentes"
+      typical: "~4-8 sets/semana"
+
+  mesocycle_structure:
+    duration: "4-6 semanas (tipicamente 5)"
+    progression: "Volume progressivo de MEV para MRV"
+
+    weeks:
+      - week: 1
+        volume: "MEV (ponto de partida)"
+        rpe: "6-7"
+        description: "Começar conservador. Estabelecer baseline."
+
+      - week: 2
+        volume: "MEV + 2-4 sets"
+        rpe: "7-8"
+        description: "Primeiro aumento de volume."
+
+      - week: 3
+        volume: "Approaching MAV"
+        rpe: "8-9"
+        description: "Volume produtivo. Fadiga acumulando."
+
+      - week: 4
+        volume: "MAV a MRV"
+        rpe: "9-10"
+        description: "Volume alto. Sinais de fadiga esperados."
+
+      - week: 5
+        volume: "At/near MRV"
+        rpe: "9.5-10"
+        description: "Pico de volume. Functional overreaching intencional."
+
+      - week: 6
+        volume: "Deload (MV ou menos)"
+        rpe: "5-6"
+        description: "Descarregar. Supercompensação. Novo mesociclo."
+
+  key_principles:
+    progressive_overload: "Adicionar sets a cada semana, não apenas carga"
+    stimulus_to_fatigue_ratio: "Preferir exercícios com alto estímulo e baixa fadiga sistêmica"
+    rep_ranges:
+      compounds: "5-10 reps"
+      isolations: "10-20 reps"
+      small_muscles: "15-30 reps"
+    rir_tracking: "Reps in Reserve — parar 0-3 reps antes da falha"
+    soreness_rule: "Se ainda dolorido do treino anterior, volume está alto demais"
+
+  pros:
+    - "Sistema mais sofisticado e individualizado para hipertrofia"
+    - "Auto-regulado via RIR e sinais de fadiga"
+    - "Baseado em pesquisa científica extensa"
+    - "Funciona para todos os níveis (ajustar landmarks)"
+    - "Frameworks claros: MEV/MAV/MRV guiam decisões"
+  cons:
+    - "Requer tracking detalhado (sets, RIR, soreness)"
+    - "Curva de aprendizado para entender landmarks pessoais"
+    - "Pode ser complexo demais para iniciantes sem coach"
+  when_to_use:
+    - "Objetivo primário é hipertrofia"
+    - "Atletas intermediários a avançados"
+    - "Bodybuilders em offseason"
+    - "Qualquer cliente que quer maximizar ganho muscular"
+
+# ===========================================================================
+# SELECTION GUIDE
+# ===========================================================================
+
+selection_guide:
+  description: "Quando usar cada modelo de periodização"
+
+  by_level:
+    beginner:
+      recommended: "Linear Periodization"
+      alternative: "RP Hypertrophy (com coach guiando)"
+      rationale: "Progressão simples, aprender padrões de movimento"
+
+    intermediate:
+      recommended: "DUP ou RP Hypertrophy"
+      alternative: "Block Periodization"
+      rationale: "Variedade de estímulos, manter múltiplas qualidades"
+
+    advanced:
+      recommended: "Block ou Conjugate"
+      alternative: "DUP com autoregulação avançada"
+      rationale: "Estímulos concentrados, periodização sofisticada"
+
+  by_goal:
+    hypertrophy: "RP Hypertrophy Mesocycle"
+    strength: "DUP ou Block"
+    powerlifting: "Conjugate ou Block"
+    competition_prep: "Linear (macro) com RP (meso)"
+    general_fitness: "DUP simplificado"
+    return_from_injury: "Linear (Anatomical Adaptation primeiro)"
+
+  by_schedule:
+    "2-3_days_week": "Linear ou DUP simplificado (full body)"
+    "4_days_week": "DUP (Upper/Lower) ou RP"
+    "5-6_days_week": "RP Hypertrophy ou Block ou Conjugate"

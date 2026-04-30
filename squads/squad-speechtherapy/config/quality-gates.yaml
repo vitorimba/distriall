@@ -1,0 +1,212 @@
+# Quality Gates — SpeechTherapy Squad
+# Pipeline de qualidade para reabilitacao vocal
+# Updated: 2026-03-13
+
+quality_gates:
+  ST-QG-001:
+    name: "Intake Assessment Gate"
+    trigger: "Paciente novo → Inicio de qualquer protocolo"
+    blocking: true
+    phase: "Pre-diagnostico"
+    criteria:
+      - "Queixa vocal minimamente descrita (tipo, duracao, fatores agravantes)"
+      - "Anamnese vocal completa (historia, contexto, demandas vocais)"
+      - "Avaliacao perceptivo-auditiva realizada (GRBAS/CAPE-V)"
+      - "Classificacao da disfonia definida (funcional, organofuncional, organica)"
+      - "Sinais de alarme rastreados e documentados (hemoptise, disfagia, rouquidao > 3 sem)"
+      - "Ocupacao e demanda vocal registradas (cantora, professora, uso geral)"
+      - "Hidratacao e higiene vocal basica avaliadas"
+    veto_if:
+      - "Sinal de alarme presente sem encaminhamento para laringologista"
+      - "Queixa vocal sem descricao minima para classificacao"
+      - "Anamnese com menos de 4 campos essenciais preenchidos"
+    agents_responsible:
+      - mara-behlau
+      - speechtherapy-chief
+    next_gate: ST-QG-002
+
+  ST-QG-002:
+    name: "Diagnosis Validation Gate"
+    trigger: "Avaliacao T0 concluida → Roteamento para T1"
+    blocking: true
+    phase: "Pos-diagnostico"
+    criteria:
+      - "Hipotese diagnostica documentada (funcional / organofuncional / organica)"
+      - "Laringoscopia realizada ou encaminhada quando indicada (rouquidao > 3 sem, suspeita organica)"
+      - "Fatores agravantes identificados (secrecao, refluxo, desidratacao, abuso vocal)"
+      - "Baseline registrado (GRBAS score, VHI-10 quando disponivel, MPT)"
+      - "Protocolo nasal concluido se secrecao ativa presente"
+      - "Clearance medico documentado se lesao organica confirmada"
+      - "Tier de destino confirmado (T1 reabilitacao ou T2 especializado)"
+    veto_if:
+      - "Secrecao nasal ativa sem protocolo nasal iniciado"
+      - "Lesao organica suspeitada sem laringoscopia solicitada"
+      - "Hipotese diagnostica ausente ou incompleta"
+    agents_responsible:
+      - mara-behlau
+      - ingo-titze
+      - speechtherapy-chief
+    next_gate: ST-QG-003
+
+  ST-QG-003:
+    name: "Protocol Selection Gate"
+    trigger: "Diagnostico validado → Inicio de protocolo terapeutico T1"
+    blocking: true
+    phase: "Pre-reabilitacao"
+    checklist: "checklists/protocol-selection-checklist.md"
+    criteria:
+      - "Protocolo selecionado com base em evidencia clinica (VFE, LMRVT, SOVT)"
+      - "Indicacao clinica correta para o protocolo escolhido"
+      - "Contraindicacoes verificadas e ausentes"
+      - "Higiene vocal em curso ha minimo 4 semanas (para casos com nodulos)"
+      - "Repouso vocal cumprido quando prescrito"
+      - "Baseline de medicao definido (VHI, MPT, GRBAS)"
+      - "Frequencia e duracao do protocolo definidos"
+      - "Criterios de progressao e alta explicitados"
+    veto_if:
+      - "Nodulos vocais + exercicios VFE sem repouso vocal previo consolidado"
+      - "LMRVT sem laringoscopia confirmando diagnostico de nodulos"
+      - "Protocolo iniciado sem baseline de medicao"
+      - "Exercicios vocais com secrecao nasal ativa nao resolvida"
+    agents_responsible:
+      - joseph-stemple
+      - katherine-verdolini
+      - speechtherapy-chief
+    next_gate: ST-QG-004
+
+  ST-QG-004:
+    name: "Session Progress Gate"
+    trigger: "A cada 4 semanas de tratamento ou a cada 4 sessoes LMRVT"
+    blocking: false
+    severity: WARNING
+    phase: "Intra-reabilitacao"
+    criteria:
+      - "Reavaliacao perceptivo-auditiva realizada (GRBAS comparativo)"
+      - "MPT reavaliado e comparado com baseline"
+      - "VHI-10 reaplicado quando disponivel"
+      - "Adesao ao protocolo domiciliar verificada"
+      - "Sinais de piora ou estagnacao documentados"
+      - "Ajustes de protocolo justificados clinicamente"
+      - "Nenhum sinal de alarme novo presente"
+    veto_if:
+      - "Piora objetiva sem reavaliacao diagnostica"
+      - "Dor relatada durante exercicios sem interrupcao do protocolo"
+      - "Estagnacao > 6 semanas sem revisao diagnostica"
+    agents_responsible:
+      - joseph-stemple
+      - katherine-verdolini
+      - speechtherapy-chief
+    escalation:
+      - condition: "Ausencia de progresso em 6 semanas"
+        action: "Revisao diagnostica obrigatoria + considerar mudanca de protocolo"
+      - condition: "Piora de nodulos apos protocolo"
+        action: "Interromper protocolo + laringoscopia de controle + discussao cirurgica se indicado"
+    next_gate: ST-QG-005
+
+  ST-QG-005:
+    name: "Phase Transition Gate"
+    trigger: "Transicao entre fases: Mes 1 (diagnostico) → Mes 2 (reabilitacao) → Mes 3 (generalizacao)"
+    blocking: true
+    phase: "Transicao de fase"
+    criteria:
+      month_1_to_2:
+        - "Hipotese diagnostica confirmada"
+        - "Higiene vocal em curso e aderida"
+        - "Secrecao nasal resolvida ou controlada"
+        - "Repouso vocal cumprido quando prescrito"
+        - "Laudo laringologico disponivel se lesao suspeita"
+        - "GRBAS pos-higiene mostra estabilidade ou melhora"
+      month_2_to_3:
+        - "Ganhos perceptuais mensuraveis (GRBAS, MPT)"
+        - "VFE ou LMRVT em progresso documentado"
+        - "Paciente executa exercicios com autonomia"
+        - "Carry-over inicial observado em contexto terapeutico"
+        - "Sem sinais de piora ou novo alarme"
+    veto_if:
+      - "Transicao para Mes 2 sem conclusao de avaliacao T0"
+      - "Transicao para Mes 3 sem ganhos perceptuais documentados"
+      - "Transicao sem reavaliacao formal entre fases"
+    agents_responsible:
+      - speechtherapy-chief
+    next_gate: ST-QG-006
+
+  ST-QG-006:
+    name: "Return-to-Singing Gate"
+    trigger: "Cantor em reabilitacao solicita retorno a pratica vocal intensa"
+    blocking: true
+    phase: "Reintegracao vocal"
+    criteria:
+      - "Protocolo de reabilitacao concluido (VFE e/ou LMRVT completados)"
+      - "Laringoscopia de controle sem nodulos ativos ou com reducao significativa"
+      - "MPT dentro de parametros de referencia (homens >= 25s, mulheres >= 20s)"
+      - "VHI-10 pos-tratamento com reducao clinicamente significativa"
+      - "Carry-over conversacional confirmado (CTT ou avaliacao funcional)"
+      - "VFE como warm-up integrado ao aquecimento tecnico"
+      - "Carga vocal progressiva definida (ensaios antes de performances completas)"
+      - "Protocolo de manutencao diario prescrito"
+    veto_if:
+      - "Nodulos ainda ativos na laringoscopia de controle"
+      - "MPT abaixo de 15s (mulheres) ou 20s (homens)"
+      - "Dor ou fadiga vocal persistente apos exercicios"
+      - "Carry-over nao atingido"
+    agents_responsible:
+      - joseph-stemple
+      - katherine-verdolini
+      - speechtherapy-chief
+    next_gate: ST-QG-007
+
+  ST-QG-007:
+    name: "Discharge Readiness Gate"
+    trigger: "Conclusao do protocolo de 3 meses ou alta terapeutica"
+    blocking: true
+    phase: "Pre-alta"
+    criteria:
+      - "Objetivos terapeuticos atingidos (documentados com medicoes)"
+      - "Carry-over conversacional consolidado (CTT confirmado ou avaliacao funcional)"
+      - "Laringoscopia de controle realizada (nodulos resolvidos ou estabilizados)"
+      - "VHI-10 final com melhora clinicamente significativa vs. baseline"
+      - "MPT dentro de parametros de referencia"
+      - "Paciente demonstra autonomia nos exercicios de manutencao"
+      - "Habito vocal saudavel estabelecido (higiene vocal integrada)"
+      - "Fatores de risco identificados e mitigados (secrecao, refluxo, abuso vocal)"
+    veto_if:
+      - "Nodulos sem resolucao apos protocolo completo sem revisao ORL"
+      - "Carry-over nao atingido em contexto funcional"
+      - "Paciente sem autonomia nos exercicios de manutencao"
+      - "VHI-10 sem melhora significativa"
+    agents_responsible:
+      - speechtherapy-chief
+      - mara-behlau
+    next_gate: ST-QG-008
+
+  ST-QG-008:
+    name: "Maintenance Plan Gate"
+    trigger: "Alta terapeutica concedida → Plano de manutencao"
+    blocking: false
+    severity: WARNING
+    phase: "Pos-alta"
+    criteria:
+      - "Plano de manutencao escrito e entregue ao paciente"
+      - "Exercicios de manutencao diarios definidos (humming 5-10 min, VFE 1x/dia)"
+      - "Sinais de recidiva explicados (quando voltar: fadiga > 3 dias, rouquidao recorrente)"
+      - "Protocolo de hidratacao mantido"
+      - "Agenda de follow-up definida (3, 6, 12 meses)"
+      - "Cantores: warm-up vocal pre-performance integrado a rotina"
+      - "Profissionais de voz: estrategias de preservacao vocal documentadas"
+    veto_if:
+      - "Alta sem plano de manutencao escrito"
+      - "Alta sem orientacao sobre sinais de recidiva"
+    agents_responsible:
+      - speechtherapy-chief
+      - mara-behlau
+    next_gate: null
+
+gate_enforcement:
+  strict_mode: true
+  allow_override: false
+  override_requires: "speechtherapy-chief explicit approval"
+  log_gate_decisions: true
+  notify_on_block: true
+  escalation_chain:
+    - speechtherapy-chief
+    - laringologista (encaminhamento externo)

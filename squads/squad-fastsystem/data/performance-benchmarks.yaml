@@ -1,0 +1,282 @@
+# ============================================================================
+# Performance Benchmarks — Industry Standards
+# ============================================================================
+# Referencia de benchmarks para cada camada do sistema
+# ============================================================================
+
+version: 1.0.0
+last_updated: 2026-03-13
+
+# ============================================================================
+# Web Vitals (Google)
+# ============================================================================
+web_vitals:
+  lcp:
+    good: "< 2.5s"
+    needs_improvement: "2.5s - 4.0s"
+    poor: "> 4.0s"
+    percentile: p75
+    source: "web.dev/lcp"
+
+  inp:
+    good: "< 200ms"
+    needs_improvement: "200ms - 500ms"
+    poor: "> 500ms"
+    percentile: p75
+    source: "web.dev/inp"
+
+  cls:
+    good: "< 0.1"
+    needs_improvement: "0.1 - 0.25"
+    poor: "> 0.25"
+    percentile: p75
+    source: "web.dev/cls"
+
+  fcp:
+    good: "< 1.8s"
+    needs_improvement: "1.8s - 3.0s"
+    poor: "> 3.0s"
+    percentile: p75
+    source: "web.dev/fcp"
+
+  ttfb:
+    good: "< 800ms"
+    needs_improvement: "800ms - 1800ms"
+    poor: "> 1800ms"
+    percentile: p75
+    source: "web.dev/ttfb"
+
+  tbt:
+    good: "< 200ms"
+    needs_improvement: "200ms - 600ms"
+    poor: "> 600ms"
+    source: "web.dev/tbt"
+
+  speed_index:
+    good: "< 3.4s"
+    needs_improvement: "3.4s - 5.8s"
+    poor: "> 5.8s"
+    source: "Lighthouse"
+
+# ============================================================================
+# API / Backend
+# ============================================================================
+api_latency:
+  internal_api:
+    p50: "< 50ms"
+    p95: "< 200ms"
+    p99: "< 500ms"
+    notes: "Servicos internos, mesma rede"
+
+  public_api:
+    p50: "< 100ms"
+    p95: "< 500ms"
+    p99: "< 1000ms"
+    notes: "APIs publicas, incluindo rede"
+
+  critical_path:
+    p50: "< 50ms"
+    p95: "< 200ms"
+    p99: "< 500ms"
+    notes: "Login, checkout, feed"
+
+  background_job:
+    p50: "< 1s"
+    p95: "< 5s"
+    p99: "< 30s"
+    notes: "Jobs assincronos"
+
+  error_rate:
+    excellent: "< 0.01%"
+    good: "< 0.1%"
+    acceptable: "< 1%"
+    poor: "> 1%"
+
+  throughput:
+    per_instance:
+      node_js: "500-2000 req/s"
+      go: "5000-20000 req/s"
+      python: "200-1000 req/s"
+      java: "2000-10000 req/s"
+    notes: "Varia com complexidade da request"
+
+# ============================================================================
+# Database (PostgreSQL)
+# ============================================================================
+database:
+  query_time:
+    simple_lookup:
+      p95: "< 1ms"
+      notes: "Primary key lookup com indice"
+    indexed_query:
+      p95: "< 10ms"
+      notes: "Query com index adequado"
+    complex_query:
+      p95: "< 50ms"
+      notes: "JOINs, aggregations"
+    report_query:
+      p95: "< 5s"
+      notes: "Queries analiticas, background"
+
+  cache_hit_ratio:
+    excellent: "> 99%"
+    good: "> 95%"
+    acceptable: "> 90%"
+    poor: "< 90%"
+    source: "pg_stat_database"
+
+  connection_utilization:
+    healthy: "< 60%"
+    warning: "60-80%"
+    critical: "> 80%"
+
+  replication_lag:
+    excellent: "< 100ms"
+    acceptable: "< 1s"
+    concerning: "< 5s"
+    critical: "> 5s"
+
+  index_usage:
+    sequential_scan_threshold: "10000 rows"
+    notes: "Tables > 10K rows should not use seq scan in hot paths"
+
+  transaction_rate:
+    small_db: "100-500 TPS"
+    medium_db: "500-5000 TPS"
+    large_db: "5000-50000 TPS"
+    notes: "Depends on hardware and query complexity"
+
+# ============================================================================
+# Caching (Redis)
+# ============================================================================
+caching:
+  hit_rate:
+    excellent: "> 95%"
+    good: "> 85%"
+    acceptable: "> 75%"
+    poor: "< 75%"
+
+  latency:
+    get:
+      excellent: "< 0.5ms"
+      good: "< 1ms"
+      acceptable: "< 5ms"
+      poor: "> 5ms"
+    set:
+      excellent: "< 0.5ms"
+      good: "< 1ms"
+      acceptable: "< 5ms"
+      poor: "> 5ms"
+
+  throughput:
+    single_node: "100K-200K ops/s"
+    cluster: "500K-1M ops/s"
+    notes: "Simple GET/SET operations"
+
+  memory_utilization:
+    healthy: "< 70%"
+    warning: "70-85%"
+    critical: "> 85%"
+
+# ============================================================================
+# Infrastructure
+# ============================================================================
+infrastructure:
+  cpu:
+    healthy: "< 60%"
+    warning: "60-80%"
+    critical: "> 80%"
+    notes: "Sustained utilization"
+
+  memory:
+    healthy: "< 70%"
+    warning: "70-85%"
+    critical: "> 85%"
+    notes: "Excluding cache/buffers"
+
+  disk_io:
+    ssd_latency:
+      excellent: "< 1ms"
+      good: "< 5ms"
+      acceptable: "< 10ms"
+      poor: "> 10ms"
+    hdd_latency:
+      excellent: "< 5ms"
+      good: "< 10ms"
+      acceptable: "< 20ms"
+      poor: "> 20ms"
+
+  network:
+    retransmission_rate:
+      healthy: "< 0.1%"
+      warning: "0.1-1%"
+      critical: "> 1%"
+    packet_loss:
+      healthy: "< 0.01%"
+      warning: "0.01-0.1%"
+      critical: "> 0.1%"
+
+# ============================================================================
+# DORA Metrics
+# ============================================================================
+dora:
+  deployment_frequency:
+    elite: "On-demand (multiple deploys/day)"
+    high: "Between once/day and once/week"
+    medium: "Between once/week and once/month"
+    low: "Between once/month and once/6months"
+
+  lead_time:
+    elite: "< 1 hour"
+    high: "1 day - 1 week"
+    medium: "1 week - 1 month"
+    low: "1 - 6 months"
+
+  mttr:
+    elite: "< 1 hour"
+    high: "< 1 day"
+    medium: "1 day - 1 week"
+    low: "> 6 months"
+
+  change_failure_rate:
+    elite: "0-15%"
+    high: "16-30%"
+    medium: "16-30%"
+    low: "46-60%"
+  source: "Accelerate (Forsgren, 2018)"
+
+# ============================================================================
+# Bundle Size
+# ============================================================================
+bundle_size:
+  javascript:
+    main_bundle: "< 200KB gzipped"
+    total_js: "< 400KB gzipped"
+    vendor_bundle: "< 150KB gzipped"
+  css:
+    total: "< 100KB gzipped"
+  images:
+    per_page: "< 500KB"
+    hero_image: "< 200KB"
+  fonts:
+    total: "< 100KB"
+    per_font: "< 50KB"
+  total_page_weight:
+    good: "< 1.5MB"
+    acceptable: "< 3MB"
+    poor: "> 3MB"
+
+# ============================================================================
+# SLA Targets
+# ============================================================================
+sla_targets:
+  availability:
+    three_nines: "99.9% (8.76h downtime/year)"
+    four_nines: "99.99% (52.6min downtime/year)"
+    five_nines: "99.999% (5.26min downtime/year)"
+  response_time:
+    web_page: "< 3s full load"
+    api_call: "< 500ms p95"
+    search: "< 200ms p95"
+  throughput:
+    minimum: "Handle peak load with 30% headroom"

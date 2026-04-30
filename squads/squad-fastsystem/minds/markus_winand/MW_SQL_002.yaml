@@ -1,0 +1,17 @@
+id: MW_SQL_002
+name: "Composite Index Design"
+mind: markus_winand
+source: "SQL Performance Explained (2012) — Chapter 2"
+domain: database
+description: >
+  Um indice composto bem projetado substitui multiplos indices
+  simples. A ordem das colunas no indice e critica para performance.
+applies_when:
+  - "Queries com multiplas condicoes WHERE"
+  - "Desenhando estrategia de indices"
+action: >
+  Ordenar colunas no indice: equality first, range last,
+  ORDER BY in between. Um unico indice composto pode servir
+  multiplas queries eficientemente.
+severity: high
+confidence: 0.90

@@ -1,0 +1,334 @@
+# Heurísticas Consolidadas — FitCoach Squad
+# Todas as heurísticas dos 10 agentes principais + orquestrador
+# Updated: 2026-03-11
+
+metadata:
+  version: "1.0.0"
+  total_heuristics: 27
+  source: "Extraído dos arquivos de agents/"
+
+heuristics:
+
+  # ============================================================
+  # ORCHESTRATOR — fitcoach-chief (Coach Prime)
+  # ============================================================
+
+  - id: HEU-CHIEF-001
+    name: "Pre-Requisite Resolution"
+    agent: fitcoach-chief
+    category: routing
+    trigger: "Request recebido com pre-requisite não atendido"
+    rule: >
+      QUANDO um request é recebido E o agente alvo tem pre-requisites não atendidos
+      ENTÃO Coach Prime automaticamente roteia para o agente que resolve o pre-requisite
+      E salva o request original para retomada automática após resolução.
+
+  - id: HEU-CHIEF-002
+    name: "Conflict Detection"
+    agent: fitcoach-chief
+    category: quality
+    trigger: "Novo output de agente gerado"
+    rule: >
+      QUANDO training-builder ou diet-builder geram output
+      ENTÃO verificar consistência entre treino e dieta.
+      SE conflito detectado (ex: treino intenso + déficit calórico extremo)
+      ENTÃO bloquear output e solicitar revisão conjunta.
+
+  - id: HEU-CHIEF-003
+    name: "Escalation Intelligence"
+    agent: fitcoach-chief
+    category: escalation
+    trigger: "Agente não consegue resolver request"
+    rule: >
+      QUANDO um agente reporta incapacidade de resolver
+      ENTÃO analisar a causa:
+        - Dados insuficientes → coletar dados e reenviar
+        - Fora do escopo → rotear para agente correto
+        - Complexidade alta → consultar conselheiros Tier 1/2
+        - Risco de segurança → BLOQUEAR e alertar o coach.
+
+  # ============================================================
+  # TIER 0 — intake-analyst (Scout)
+  # ============================================================
+
+  - id: HEU-INTAKE-001
+    name: "Progressive Disclosure"
+    agent: intake-analyst
+    category: communication
+    trigger: "Início de anamnese com novo aluno"
+    rule: >
+      QUANDO conduzindo anamnese
+      ENTÃO apresentar perguntas em blocos de 3-5 questões
+      E avançar para o próximo bloco apenas quando o anterior estiver completo
+      E adaptar a ordem dos blocos baseado nas respostas
+      (ex: se aluno menciona lesão no Bloco 1, aprofundar no Bloco 2 antes de prosseguir).
+
+  - id: HEU-INTAKE-002
+    name: "Implicit Data Extraction"
+    agent: intake-analyst
+    category: data_collection
+    trigger: "Aluno fornece informações durante conversa"
+    rule: >
+      QUANDO aluno menciona dados relevantes fora do contexto direto da pergunta
+      ENTÃO extrair e registrar automaticamente no perfil
+      E NÃO repetir a pergunta correspondente.
+
+  - id: HEU-INTAKE-003
+    name: "Calibration Check"
+    agent: intake-analyst
+    category: expectation_management
+    trigger: "Aluno declara objetivo com prazo"
+    rule: >
+      QUANDO aluno declara objetivo com prazo
+      ENTÃO validar contra benchmarks reais
+      SE expectativa irrealista
+      ENTÃO recalibrar com dados antes de prosseguir
+      E registrar no perfil: "expectativa recalibrada".
+
+  # ============================================================
+  # TIER 0 — business-diagnostician (Pulse)
+  # ============================================================
+
+  - id: HEU-BIZ-001
+    name: "Metric Gap Detection"
+    agent: business-diagnostician
+    category: diagnosis
+    trigger: "Coach não consegue fornecer métrica solicitada"
+    rule: >
+      QUANDO coach não consegue fornecer uma métrica chave
+      ENTÃO registrar como "não mensurado" em vez de assumir
+      E incluir a implementação do tracking no plano de ação
+      E calcular estimativas conservadoras baseadas em dados disponíveis.
+
+  - id: HEU-BIZ-002
+    name: "Concentration Risk Alert"
+    agent: business-diagnostician
+    category: risk
+    trigger: "Fonte de receita >60% concentrada"
+    rule: >
+      QUANDO uma única fonte representa >60% da receita
+      ENTÃO alertar sobre risco de concentração
+      E incluir diversificação de receita no roadmap prioritário.
+
+  - id: HEU-BIZ-003
+    name: "Quick Win Identification"
+    agent: business-diagnostician
+    category: strategy
+    trigger: "Diagnóstico concluído"
+    rule: >
+      QUANDO diagnóstico for concluído
+      ENTÃO identificar pelo menos 1 ação de "quick win" (< 30 dias, ROI alto)
+      ALÉM das ações estratégicas de médio/longo prazo
+      Para manter engajamento do coach durante a transformação.
+
+  # ============================================================
+  # TIER 1 BB — training-builder (Forge)
+  # ============================================================
+
+  - id: HEU-TRAIN-001
+    name: "Minimum Effective Dose"
+    agent: training-builder
+    category: volume_management
+    trigger: "Início de novo bloco de treino"
+    rule: >
+      QUANDO iniciando novo mesociclo
+      ENTÃO começar no MEV (Minimum Effective Volume)
+      E progredir gradualmente em direção ao MAV
+      NUNCA iniciar no MRV ou acima.
+
+  - id: HEU-TRAIN-002
+    name: "Injury-Aware Selection"
+    agent: training-builder
+    category: safety
+    trigger: "Prescrição de exercício para músculo adjacente a lesão"
+    rule: >
+      QUANDO aluno tem lesão registrada no student_profile
+      ENTÃO verificar cada exercício prescrito em relação à lesão
+      E documentar adaptações quando necessário
+      E incluir nota de acompanhamento profissional se severidade > Nível 1.
+
+  - id: HEU-TRAIN-003
+    name: "Diet Alignment Check"
+    agent: training-builder
+    category: integration
+    trigger: "Finalização de protocolo de treino"
+    rule: >
+      QUANDO finalizar protocolo de treino
+      ENTÃO verificar ou sinalizar para diet-builder sobre volume total de treino
+      Para garantir que calorias prescritas suportem o volume
+      Especialmente em fases de cutting — MEV é o alvo, não MAV.
+
+  # ============================================================
+  # TIER 1 BB — diet-builder (Nourish)
+  # ============================================================
+
+  - id: HEU-DIET-001
+    name: "Adherence Over Perfection"
+    agent: diet-builder
+    category: compliance
+    trigger: "Montagem de cardápio"
+    rule: >
+      QUANDO montando cardápio
+      ENTÃO priorizar alimentos que o aluno JÁ come e aceita
+      E fazer substituições graduais
+      NUNCA substituir todos os alimentos de uma vez
+      Um cardápio seguido a 80% supera um cardápio perfeito seguido a 40%.
+
+  - id: HEU-DIET-002
+    name: "Training Load Alignment"
+    agent: diet-builder
+    category: integration
+    trigger: "Presença de dias de treino e descanso na semana"
+    rule: >
+      QUANDO existem dias de treino e descanso
+      ENTÃO diferenciar ingestão calórica
+      Dias de treino: calorias completas
+      Dias de descanso: reduzir carboidratos em -50-100g
+      Manter proteína constante em todos os dias.
+
+  - id: HEU-DIET-003
+    name: "Phase Transition Safety"
+    agent: diet-builder
+    category: safety
+    trigger: "Transição entre fases (bulk→cut ou cut→bulk)"
+    rule: >
+      QUANDO planejando transição de fase
+      ENTÃO incluir período de manutenção ou reverse diet
+      NÃO ir de déficit direto para superávit sem transição
+      Duração mínima de transição: 4 semanas para preservar metabolismo.
+
+  # ============================================================
+  # TIER 1 BB — hypertrophy-scientist (Mike Israetel Mind)
+  # ============================================================
+
+  - id: HEU-HS-001
+    name: "Volume Progression Rule"
+    agent: hypertrophy-scientist
+    category: volume
+    trigger: "Montagem ou ajuste de programa de hipertrofia"
+    rule: >
+      Volume deve ser progressivo dentro do mesociclo (MEV → MAV → MRV)
+      e reduzido no deload. Nunca prescrever acima do MRV sem deload planejado.
+
+  - id: HEU-HS-002
+    name: "Frequency Optimization Rule"
+    agent: hypertrophy-scientist
+    category: frequency
+    trigger: "Definição de frequência de treino"
+    rule: >
+      Para iniciantes: 2x/semana por grupo muscular é suficiente.
+      Para intermediários+: 2-3x/semana maximiza síntese proteica.
+      Frequência deve ser aumentada antes de volume quando em plateau.
+
+  - id: HEU-HS-003
+    name: "Exercise Selection Priority"
+    agent: hypertrophy-scientist
+    category: exercise_selection
+    trigger: "Seleção de exercícios para o programa"
+    rule: >
+      Priorizar exercícios com alta relação estímulo/fadiga.
+      Compostos como exercícios principais.
+      Isolados com amplitude máxima para grupos lagging.
+      Evitar exercícios sem evidência de superioridade para hipertrofia.
+
+  # ============================================================
+  # TIER 1 BB — prep-master (Hany Rambod Mind)
+  # ============================================================
+
+  - id: HEU-PR-001
+    name: "Prep Readiness Assessment"
+    agent: prep-master
+    category: safety
+    trigger: "Atleta quer iniciar contest prep"
+    rule: >
+      Avaliar BF% inicial, timeline disponível e taxa de perda necessária.
+      SE taxa necessária > 1% BW/semana → recomendar adiar ou fazer mais offseason.
+      Prep seguro requer 12-20 semanas para maioria dos atletas.
+
+  - id: HEU-PR-002
+    name: "Peak Week Adjustment Rule"
+    agent: prep-master
+    category: peak_week
+    trigger: "Ajuste durante peak week"
+    rule: >
+      Mudanças durante peak week apenas baseadas em dados objetivos.
+      NÃO fazer ajustes reativos por pânico estético.
+      Consistência no plano > ajustes de última hora.
+
+  - id: HEU-PR-003
+    name: "FST-7 Application Rule"
+    agent: prep-master
+    category: technique
+    trigger: "Aplicação do protocolo FST-7"
+    rule: >
+      FST-7 é EXCLUSIVO para exercícios de isolamento (último exercício do grupo).
+      7 sets de 8-12 reps com 30-45s de descanso.
+      NUNCA aplicar em compostos (supino, agachamento, terra, desenvolvimento).
+
+  # ============================================================
+  # TIER 2 BUSINESS — gym-scaler (Alex Hormozi Mind)
+  # ============================================================
+
+  - id: HEU-GS-001
+    name: "Offer Before Traffic"
+    agent: gym-scaler
+    category: strategy
+    trigger: "Coach quer investir em marketing/tráfego"
+    rule: >
+      Validar oferta organicamente antes de investir em tráfego pago.
+      Conversão orgânica < 5% = oferta não validada = ads desperdiçado.
+      Sequência correta: Oferta → Validação → Tráfego.
+
+  - id: HEU-GS-002
+    name: "Diagnose Backwards"
+    agent: gym-scaler
+    category: diagnosis
+    trigger: "Negócio com problema de crescimento"
+    rule: >
+      Diagnóstico de trás para frente: entrega → retenção → conversão → tráfego.
+      O gargalo raramente está onde o coach acha que está.
+      Resolver problema mais downstream primeiro.
+
+  - id: HEU-GS-003
+    name: "Premium Filter"
+    agent: gym-scaler
+    category: pricing
+    trigger: "Definição de precificação"
+    rule: >
+      Preço baixo atrai cliente de baixo comprometimento = alto churn.
+      Premium price filtra: quem paga mais, valida mais.
+      ARM mínimo saudável para negócio fitness: R$250/mês.
+
+  # ============================================================
+  # TIER 2 BUSINESS — retention-engineer (Nir Eyal Mind)
+  # ============================================================
+
+  - id: HEU-RE-001
+    name: "Internal Trigger First"
+    agent: retention-engineer
+    category: behavioral_design
+    trigger: "Design de sistema de retenção"
+    rule: >
+      Identificar internal trigger (emoção/estado) antes de projetar external triggers.
+      Notificações sem internal trigger = spam = ignorado em 2 semanas.
+      Usar 5 Whys para descobrir por que o aluno treina (motivação real).
+
+  - id: HEU-RE-002
+    name: "Stored Value Design"
+    agent: retention-engineer
+    category: retention
+    trigger: "Aumento do custo de saída do cliente"
+    rule: >
+      Projetar sistemas onde o aluno acumula valor ao longo do tempo
+      (histórico de treinos, badges, progresso fotográfico, PRs registrados).
+      Stored value = custo percebido de sair = retenção intrínseca.
+
+  - id: HEU-RE-003
+    name: "Variable Reward Balance"
+    agent: retention-engineer
+    category: engagement
+    trigger: "Definição de recompensas no sistema"
+    rule: >
+      Recompensas previsíveis perdem valor rapidamente.
+      Introduzir elemento de variabilidade (desafio surpresa, badge inesperado).
+      Balancear: 70% recompensas previsíveis + 30% variáveis.

@@ -1,0 +1,415 @@
+# Franchising Avend Squad — Rede de Franquias de Vending Machines
+# Squad completo para gestao e expansao da rede Avend Franquias
+# Updated: 2026-03-13
+
+name: franchising-avend
+version: 1.0.0-pro
+tested: false
+updated_at: "2026-03-13"
+short-title: Franchising Avend Squad
+description: >-
+  Squad completo para gestao da maior rede de franquias de vending machines
+  do Brasil — Avend Franquias. 13 agentes especializados em formatacao,
+  expansao, operacao e compliance de franquias. Fundador: Guilherme Alvares.
+  184 maquinas, 90 contratos de franquia, ~R$20M faturamento.
+  Associada ABF. Modelo de microfranquia de vending machines.
+
+author: Synkra AIOX
+entry_agent: franchising-chief
+slashPrefix: Avend
+pattern_prefix: FA
+
+target_user: >-
+  Guilherme Alvares e equipe Avend Franquias — gestao da rede de franquias
+  de vending machines, expansao territorial e suporte a franqueados.
+
+# ============================================================================
+# TIER STRUCTURE
+# ============================================================================
+
+tier_structure:
+  orchestrator: franchising-chief
+
+  # Tier 0 — Strategy & Governance
+  tier_0:
+    description: "Estrategia, governanca e decisoes de alto nivel da rede"
+    agents:
+      - id: franchise-architect
+        role: "Estrategia de franchising, avaliacao de franqueabilidade, planejamento de expansao"
+        mind: minds/michael-gerber.md
+      - id: franchise-legal
+        role: "Compliance legal, COF, contratos, Lei 13.966/2019, INPI"
+        mind: minds/andrew-sherman.md
+
+  # Tier 1 — Operations & Finance
+  tier_1:
+    description: "Operacoes, financeiro e modelagem do negocio de franquia"
+    agents:
+      - id: franchise-financial
+        role: "Modelagem financeira, unit economics, DRE, payback, cenarios"
+        mind: minds/mark-siebert.md
+      - id: franchise-operations
+        role: "Design de processos operacionais, manual, SOPs, auditorias"
+        mind: minds/michael-seid.md
+      - id: franchise-training
+        role: "Programa de treinamento, materiais, avaliacao, certificacao"
+        mind: minds/penny-hopkinson.md
+      - id: franchise-master-br
+        role: "Estrategia de franquias no mercado brasileiro, ABF, Lei 13.966"
+        mind: minds/marcelo-cherto.md
+      - id: franchise-lifecycle
+        role: "Ciclo de vida da franquia, internacionalizacao, maturidade"
+        mind: minds/ana-vecchi.md
+
+  # Tier 2 — Growth & Recruitment
+  tier_2:
+    description: "Expansao, recrutamento e marketing de franqueados"
+    agents:
+      - id: franchise-growth
+        role: "Crescimento da rede, analise de mercado, territorios, concorrencia"
+        mind: minds/joe-mathews.md
+      - id: franchise-assessor
+        role: "Recrutamento e qualificacao de candidatos a franqueado"
+        mind: minds/mark-siebert.md
+      - id: franchise-documentation
+        role: "Manuais de operacao, SOPs, documentacao de processos"
+        mind: minds/adir-ribeiro.md
+
+  # Tier 3 — Relationship & Support
+  tier_3:
+    description: "Relacionamento com franqueados e suporte continuo"
+    agents:
+      - id: franchise-relationship
+        role: "Gestao do relacionamento, satisfacao, NPS, check-ins 30/60/90"
+        mind: minds/greg-nathan.md
+      - id: franchise-field-ops
+        role: "Operacoes de campo, visitas, auditorias in-loco, suporte presencial"
+        mind: minds/adir-ribeiro.md
+
+# ============================================================================
+# TOOLS
+# ============================================================================
+
+tools:
+  - id: financial-model-engine
+    description: "Gera modelos financeiros com DRE, fluxo de caixa e cenarios"
+  - id: territory-mapper
+    description: "Mapeamento e scoring de territorios para expansao"
+  - id: franchise-scorecard
+    description: "Calcula scores de franqueabilidade, qualificacao e health"
+  - id: cof-validator
+    description: "Valida COF contra requisitos da Lei 13.966/2019"
+  - id: network-dashboard
+    description: "Dashboard de KPIs consolidados da rede de franqueados"
+
+# ============================================================================
+# TASKS (12 tasks)
+# ============================================================================
+
+tasks:
+  - id: FA-T-001
+    name: "Franchisability Assessment"
+    file: "tasks/franchisability-assessment.md"
+    executor: hybrid
+    description: "Avaliacao de franqueabilidade do negocio nos 8 pilares"
+
+  - id: FA-T-002
+    name: "Financial Model"
+    file: "tasks/financial-model.md"
+    executor: agent
+    description: "Modelagem financeira completa: unit economics, DRE, payback"
+
+  - id: FA-T-003
+    name: "COF Creation"
+    file: "tasks/create-cof.md"
+    executor: hybrid
+    description: "Elaboracao da COF conforme Lei 13.966/2019"
+
+  - id: FA-T-004
+    name: "Operations Manual"
+    file: "tasks/operations-manual.md"
+    executor: agent
+    description: "Criacao do manual de operacoes da franquia"
+
+  - id: FA-T-005
+    name: "Training Program"
+    file: "tasks/training-program.md"
+    executor: agent
+    description: "Design do programa de treinamento de franqueados"
+
+  - id: FA-T-006
+    name: "Franchisee Screening"
+    file: "tasks/franchisee-screening.md"
+    executor: hybrid
+    description: "Triagem e qualificacao de candidatos a franqueado"
+
+  - id: FA-T-007
+    name: "Expansion Plan"
+    file: "tasks/expansion-plan.md"
+    executor: agent
+    description: "Planejamento de expansao territorial"
+
+  - id: FA-T-008
+    name: "Network Diagnostic"
+    file: "tasks/network-diagnostic.md"
+    executor: agent
+    description: "Analise de saude da rede com KPIs e benchmarking"
+
+  - id: FA-T-009
+    name: "Marketing Plan"
+    file: "tasks/marketing-plan.md"
+    executor: agent
+    description: "Estrategia de marketing para recrutamento de franqueados"
+
+  - id: FA-T-010
+    name: "Compliance Audit"
+    file: "tasks/compliance-audit.md"
+    executor: hybrid
+    description: "Auditoria de compliance legal e operacional"
+
+  - id: FA-T-011
+    name: "Competitive Analysis"
+    file: "tasks/competitive-analysis.md"
+    executor: agent
+    description: "Analise competitiva do mercado de franquias"
+
+  - id: FA-T-012
+    name: "Franchise Valuation"
+    file: "tasks/franchise-valuation.md"
+    executor: agent
+    description: "Valuation da rede de franquias"
+
+  - id: FA-T-013
+    name: "Conflict Resolution"
+    file: "tasks/conflict-resolution.md"
+    executor: hybrid
+    description: "Resolucao de conflitos entre franqueador e franqueado"
+
+  - id: FA-T-014
+    name: "Scenario Simulator"
+    file: "tasks/scenario-simulator.md"
+    executor: agent
+    description: "Simulacao de cenarios financeiros e operacionais"
+
+# ============================================================================
+# WORKFLOWS (3 workflows)
+# ============================================================================
+
+workflows:
+  - id: franchise-launch
+    name: "Franchise Launch"
+    file: "workflows/franchise-launch.yaml"
+    phases: 4
+    description: "Lancamento completo de franquia (assessment, formatting, pilot, scale)"
+
+  - id: franchisee-onboarding
+    name: "Franchisee Onboarding"
+    file: "workflows/franchisee-onboarding.yaml"
+    phases: 3
+    description: "Onboarding de novo franqueado (screening, setup, launch)"
+
+  - id: network-health-review
+    name: "Network Health Review"
+    file: "workflows/network-health-review.yaml"
+    phases: 3
+    description: "Review trimestral de saude da rede"
+
+  - id: due-diligence-completa
+    name: "Due Diligence Completa"
+    file: "workflows/due-diligence-completa.yaml"
+    description: "Due diligence completa para aquisicao ou investimento em rede"
+
+  - id: franchise-turnaround
+    name: "Franchise Turnaround"
+    file: "workflows/franchise-turnaround.yaml"
+    description: "Recuperacao de unidade ou rede em crise operacional/financeira"
+
+# ============================================================================
+# USE CASES
+# ============================================================================
+
+use_cases:
+  - name: "Avaliar franqueabilidade"
+    description: "Avaliar se o negocio esta pronto para ser franqueado"
+    tiers: [tier_0]
+  - name: "Formatar franquia"
+    description: "COF, manual, contratos, treinamento"
+    tiers: [tier_0, tier_1]
+  - name: "Recrutar franqueados"
+    description: "Marketing, triagem, qualificacao, conversao"
+    tiers: [tier_2]
+  - name: "Onboardar franqueado"
+    description: "Contrato, treinamento, instalacao, go-live"
+    tiers: [tier_1, tier_3]
+  - name: "Monitorar rede"
+    description: "KPIs, NPS, health score, benchmarking"
+    tiers: [tier_1, tier_3]
+  - name: "Expandir territorios"
+    description: "Analise de mercado, mapeamento, plano de expansao"
+    tiers: [tier_2]
+  - name: "Auditar operacoes"
+    description: "Auditoria de qualidade das unidades franqueadas"
+    tiers: [tier_1, tier_3]
+  - name: "Suporte a franqueados"
+    description: "Check-ins 30/60/90, resolucao de problemas"
+    tiers: [tier_3]
+  - name: "Modelagem financeira"
+    description: "Unit economics, DRE, payback, cenarios"
+    tiers: [tier_1]
+
+# ============================================================================
+# QUALITY GATES
+# ============================================================================
+
+quality_gates:
+  - id: FA-QG-001
+    name: "Franchisability Gate"
+    transition: "Assessment → Formatting"
+    description: "Valida que o negocio e franqueavel antes de investir em formatacao"
+    checks:
+      - "Franchisability Score >= 60/100"
+      - "Nenhum pilar critico abaixo do minimo"
+      - "Modelo financeiro viavel (payback <= 24 meses)"
+
+  - id: FA-QG-002
+    name: "COF Compliance Gate"
+    transition: "Draft COF → Approved COF"
+    description: "Valida conformidade da COF com Lei 13.966/2019"
+    checks:
+      - "Todas secoes obrigatorias presentes"
+      - "Revisao juridica concluida"
+      - "Valores consistentes com modelo financeiro"
+
+  - id: FA-QG-003
+    name: "Franchisee Qualification Gate"
+    transition: "Candidato → Aprovado"
+    description: "Valida qualificacao do candidato a franqueado"
+    checks:
+      - "Score geral >= 60/100"
+      - "Nenhum veto condition ativo"
+      - "Referencias verificadas"
+
+  - id: FA-QG-004
+    name: "Onboarding Completion Gate"
+    transition: "Setup → Go-Live"
+    description: "Valida que onboarding esta completo antes do go-live"
+    checks:
+      - "Treinamento concluido e aprovado"
+      - "Maquinas instaladas e testadas"
+      - "Sistemas configurados"
+      - "Abastecimento inicial realizado"
+
+  - id: FA-QG-005
+    name: "Pilot Validation Gate"
+    transition: "Pilot → Scale"
+    description: "Valida resultados do piloto antes de escalar"
+    checks:
+      - "80%+ franqueados piloto atingiram breakeven"
+      - "NPS medio >= 7"
+      - "Modelo financeiro validado na pratica"
+
+  - id: FA-QG-006
+    name: "Network Health Gate"
+    transition: "Review → Action Plan"
+    description: "Valida saude da rede antes de definir acoes"
+    checks:
+      - "Dados de >= 70% da rede coletados"
+      - "Health Score calculado"
+      - "Franqueados classificados em clusters"
+
+  - id: FA-QG-007
+    name: "Expansion Readiness Gate"
+    transition: "Planning → Execution"
+    description: "Valida que a franqueadora esta pronta para expandir"
+    checks:
+      - "Equipe de suporte dimensionada"
+      - "Budget aprovado"
+      - "Territorios mapeados e priorizados"
+
+  - id: FA-QG-008
+    name: "Legal Compliance Gate"
+    transition: "Contract → Signature"
+    description: "Valida compliance legal antes de assinatura de contrato"
+    checks:
+      - "COF entregue com protocolo"
+      - "Cooling period de 10 dias cumprido"
+      - "Contrato revisado por advogado"
+
+# ============================================================================
+# GOVERNANCE
+# ============================================================================
+
+governance:
+  quality_gates_file: "config/quality-gates.yaml"
+  veto_conditions_file: "config/veto-conditions.yaml"
+  heuristics_file: "config/heuristics.yaml"
+
+# ============================================================================
+# TESTING
+# ============================================================================
+
+testing:
+  benchmarks:
+    - id: FA-BENCH-001
+      name: "COF Compliance"
+      description: "Validar COF contra todos os requisitos legais"
+      expected: "100% dos itens obrigatorios presentes"
+    - id: FA-BENCH-002
+      name: "Franchisee Qualification"
+      description: "Score de qualificacao para candidato padrao"
+      expected: "Score >= 60 para candidato qualificado"
+    - id: FA-BENCH-003
+      name: "Unit Economics"
+      description: "Modelo financeiro gera payback <= 24 meses"
+      expected: "Payback realista <= 18 meses"
+
+  smoke_tests:
+    - "franchise-chief responde a saudacao"
+    - "franchise-strategist gera franchisability score"
+    - "financial-modeler gera DRE projetada"
+    - "legal-compliance valida COF"
+    - "recruitment-specialist qualifica candidato"
+
+# ============================================================================
+# SCRIPTS
+# ============================================================================
+
+scripts:
+  validate_cof: "scripts/validate-cof.sh"
+  generate_report: "scripts/generate-network-report.sh"
+  qualify_candidate: "scripts/qualify-candidate.sh"
+
+# ============================================================================
+# SETTINGS
+# ============================================================================
+
+settings:
+  activation:
+    show_ecosystem_report: true
+    show_greeting: true
+    show_quick_commands: true
+  ecosystem_report:
+    show_totals: true
+    show_top_squads: false
+    show_quality_refs: true
+    show_gaps: true
+    top_squads_limit: 5
+
+# ============================================================================
+# ROUTING RULES
+# ============================================================================
+
+routing:
+  default_flow: "intake → strategy → execution → quality_gate → delivery"
+  tier_routing_rules:
+    - condition: "Avaliacao de franqueabilidade ou estrategia"
+      route_to: tier_0
+    - condition: "Modelagem financeira ou operacional"
+      route_to: tier_1
+    - condition: "Expansao, recrutamento ou marketing"
+      route_to: tier_2
+    - condition: "Suporte, relacionamento ou sistemas"
+      route_to: tier_3
+    - condition: "Onboarding completo de franqueado"
+      route_to: [tier_1, tier_2, tier_3]
+      mode: sequential

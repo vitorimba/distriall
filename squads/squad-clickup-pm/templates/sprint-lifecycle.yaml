@@ -1,0 +1,9 @@
+name: "Sprint Lifecycle"
+description: "Automação do ciclo de vida da sprint: início → daily → fim → report"
+automations:
+  - trigger: "Sprint start date"
+    action: "Criar sprint list, mover committed tasks, notificar time"
+  - trigger: "Sprint end date"
+    action: "Gerar report, mover spillover, arquivar sprint"
+  - trigger: "Daily (9am)"
+    action: "Post daily standup reminder no Slack"

@@ -1,0 +1,100 @@
+# Bank Endpoints Catalog — Quick Reference
+# Use this as a lookup table for endpoint discovery
+
+banks:
+  inter:
+    name: "Banco Inter"
+    portal: "https://developers.inter.co/"
+    base_url_prod: "https://cdpj.partners.bancointer.com.br"
+    base_url_sandbox: "https://cdpj-sandbox.partners.bancointer.com.br"
+    auth_url: "https://cdpj.partners.bancointer.com.br/oauth/v2/token"
+    auth_method: "OAuth2 + mTLS"
+    value_format: "reais (float)"
+    endpoints:
+      banking:
+        - { method: GET, path: "/banking/v2/saldo", scope: "extrato.read", desc: "Consultar saldo" }
+        - { method: GET, path: "/banking/v2/extrato", scope: "extrato.read", desc: "Extrato simplificado" }
+        - { method: GET, path: "/banking/v2/extrato/completo", scope: "extrato.read", desc: "Extrato detalhado" }
+      cobranca:
+        - { method: POST, path: "/cobranca/v3/cobrancas", scope: "boleto-cobranca.write", desc: "Criar cobranca" }
+        - { method: GET, path: "/cobranca/v3/cobrancas/{id}", scope: "boleto-cobranca.read", desc: "Consultar cobranca" }
+        - { method: GET, path: "/cobranca/v3/cobrancas/{id}/pdf", scope: "boleto-cobranca.read", desc: "PDF do boleto" }
+      pix:
+        - { method: POST, path: "/pix/v2/cob", scope: "cob.write", desc: "Criar cobranca Pix" }
+        - { method: GET, path: "/pix/v2/cob/{txid}", scope: "cob.read", desc: "Consultar cobranca Pix" }
+        - { method: GET, path: "/pix/v2/pix", scope: "pix.read", desc: "Listar Pix recebidos" }
+        - { method: POST, path: "/pix/v2/pix", scope: "pix.write", desc: "Enviar Pix" }
+      webhook:
+        - { method: PUT, path: "/pix/v2/webhook/{chave}", scope: "webhook.write", desc: "Configurar webhook" }
+        - { method: GET, path: "/pix/v2/webhook/{chave}", scope: "webhook.read", desc: "Consultar webhook" }
+
+  sicoob:
+    name: "Sicoob"
+    portal: "https://developers.sicoob.com.br/"
+    base_url_prod: "https://api.sicoob.com.br"
+    base_url_sandbox: "https://sandbox.sicoob.com.br"
+    auth_url: "https://auth.sicoob.com.br/auth/realms/cooperado/protocol/openid-connect/token"
+    auth_method: "OAuth2 + certificado ICP-Brasil"
+    value_format: "reais (float)"
+    endpoints:
+      conta_corrente:
+        - { method: GET, path: "/conta-corrente/v2/saldo", scope: "cco_saldo", desc: "Consultar saldo" }
+        - { method: GET, path: "/conta-corrente/v2/extrato", scope: "cco_extrato", desc: "Extrato por mes" }
+        - { method: GET, path: "/conta-corrente/v2/extrato-por-periodo", scope: "cco_extrato", desc: "Extrato por periodo" }
+      cobranca_v3:
+        - { method: POST, path: "/cobranca-bancaria/v3/boletos", scope: "cobranca_boletos_incluir", desc: "Emitir boleto" }
+        - { method: GET, path: "/cobranca-bancaria/v3/boletos/{nossoNumero}", scope: "cobranca_boletos_consultar", desc: "Consultar boleto" }
+        - { method: PATCH, path: "/cobranca-bancaria/v3/boletos/{nossoNumero}", scope: "cobranca_boletos_alterar", desc: "Alterar boleto" }
+      pix:
+        - { method: POST, path: "/pix/api/v2/cob", scope: "cob.write", desc: "Criar cobranca Pix" }
+        - { method: GET, path: "/pix/api/v2/cob/{txid}", scope: "cob.read", desc: "Consultar cobranca Pix" }
+        - { method: GET, path: "/pix/api/v2/pix", scope: "pix.read", desc: "Listar Pix" }
+
+  stone:
+    name: "Stone"
+    portal: "https://www.stone.com.br/devcenter"
+    products:
+      online:
+        base_url_prod: "https://api.openbank.stone.com.br"
+        base_url_sandbox: "https://sandbox-api.openbank.stone.com.br"
+        auth_url: "https://accounts.openbank.stone.com.br/auth/realms/stone_bank/protocol/openid-connect/token"
+        auth_method: "OAuth2"
+        value_format: "centavos (integer)"
+        endpoints:
+          - { method: GET, path: "/api/v1/accounts/{id}/balance", desc: "Saldo" }
+          - { method: GET, path: "/api/v1/accounts/{id}/statement", desc: "Extrato" }
+          - { method: POST, path: "/api/v1/accounts/{id}/transfers/internal", desc: "Transferencia interna" }
+          - { method: POST, path: "/api/v1/accounts/{id}/transfers/external", desc: "Transferencia externa (TED)" }
+          - { method: POST, path: "/api/v1/accounts/{id}/pix/outbound_payments", desc: "Enviar Pix" }
+          - { method: POST, path: "/api/v1/accounts/{id}/payments", desc: "Pagar boleto" }
+      conciliacao:
+        base_url_prod: "https://conciliation-api.stone.com.br"
+        auth_method: "API Key (Bearer)"
+        value_format: "reais (float)"
+        endpoints:
+          - { method: GET, path: "/v1/merchant/{stone_code}/financial-statements", desc: "Movimentacao financeira" }
+          - { method: GET, path: "/v1/merchant/{stone_code}/transactions", desc: "Transacoes de cartao" }
+          - { method: GET, path: "/v1/merchant/{stone_code}/receivables", desc: "Agenda de recebiveis" }
+
+  xp:
+    name: "XP Investimentos"
+    portal: "https://developer.xpinc.com/"
+    base_url_prod: "https://api.xpinc.com"
+    auth_url: "https://auth.xpinc.com/oauth/token"
+    auth_method: "OAuth2"
+    value_format: "reais (float)"
+    access_restriction: "Parceiros e AAIs apenas"
+    endpoints:
+      position:
+        - { method: GET, path: "/api/v1/position", desc: "Posicao de carteira" }
+        - { method: GET, path: "/api/v1/position/consolidated", desc: "Posicao consolidada" }
+      movements:
+        - { method: GET, path: "/api/v1/movements", desc: "Movimentacoes" }
+      inflows:
+        - { method: GET, path: "/api/v1/inflows", desc: "Captacao" }
+      revenue:
+        - { method: GET, path: "/api/v1/revenue", desc: "Receita/comissao" }
+      open_finance:
+        - { method: GET, path: "/open-finance/accounts/v2/accounts", desc: "Listar contas" }
+        - { method: GET, path: "/open-finance/accounts/v2/accounts/{id}/balances", desc: "Saldo" }
+        - { method: GET, path: "/open-finance/accounts/v2/accounts/{id}/transactions", desc: "Transacoes" }

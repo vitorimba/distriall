@@ -1,0 +1,111 @@
+squad:
+  name: squad-supabase
+  title: "Squad Supabase"
+  version: "1.0.0"
+  author: "Synkra AIOX"
+  description: "Especialista em Supabase e PostgreSQL — análises complexas, otimização, segurança, automação e migração de bancos de dados"
+  domain: "Supabase / Database Engineering (PostgreSQL)"
+  slash_prefix: "SquadSupabase"
+  pattern_prefix: "SB"
+  created_at: "2026-03-09"
+
+  target_user:
+    primary: "Felipe Oliveira"
+    scope: "Projetos próprios e de clientes"
+
+  use_cases:
+    - id: UC-001
+      name: "Análise de dados e correção de dados quebrados"
+      primary_agents: ["diagnostician", "analyst"]
+    - id: UC-002
+      name: "Identificação de melhorias e organização world-class"
+      primary_agents: ["diagnostician", "optimizer", "analyst"]
+    - id: UC-003
+      name: "Otimização das funcionalidades Supabase"
+      primary_agents: ["optimizer", "diagnostician"]
+    - id: UC-004
+      name: "Automação hands-off"
+      primary_agents: ["automator", "diagnostician"]
+    - id: UC-005
+      name: "Migração entre contas Supabase"
+      primary_agents: ["migrator", "guardian"]
+
+  tier_structure:
+    orchestrator:
+      agent: supabase-chief
+      persona: Atlas
+    tier_0:
+      - agent: diagnostician
+        persona: Scout
+        mind: Paul Copplestone
+        modes: [health_check, triage, audit]
+    tier_1:
+      - agent: optimizer
+        persona: Turbo
+        mind: Markus Winand
+      - agent: migrator
+        persona: Voyager
+        mind: Dimitri Fontaine
+      - agent: analyst
+        persona: Sage
+        mind: Joe Celko
+    tier_2:
+      - agent: guardian
+        persona: Shield
+        mind: Stephen Frost
+    tier_3:
+      - agent: automator
+        persona: Cron
+        mind: Supabase Collective
+
+  quality_gates:
+    - id: QG-001
+      name: "Request Classification"
+      type: routing
+    - id: QG-002
+      name: "Diagnosis Complete"
+      type: blocking
+    - id: QG-003
+      name: "Impact Assessment"
+      type: blocking
+    - id: QG-004
+      name: "Security Review"
+      type: blocking
+    - id: QG-005
+      name: "Output Validation"
+      type: blocking
+    - id: QG-006
+      name: "Rollback & Recovery"
+      type: blocking
+
+  handoff_schema:
+    sections:
+      - context
+      - diagnosis
+      - artifacts
+      - security_review
+      - recovery
+
+  patterns:
+    - id: SB-001
+      name: "Database Analysis Protocol"
+    - id: SB-002
+      name: "Optimization Standard"
+    - id: SB-003
+      name: "Migration Safety"
+    - id: SB-004
+      name: "Security-First Operations"
+    - id: SB-005
+      name: "Automation Pipeline"
+
+  dependencies:
+    tools:
+      - supabase-cli
+      - psql
+      - pg_dump
+      - pg_restore
+    extensions:
+      - pg_cron
+      - pg_net
+      - pg_stat_statements
+      - pgvector

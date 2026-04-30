@@ -1,0 +1,123 @@
+# =============================================================================
+# Workflow: Monthly Fiscal Audit
+# Squad: squad-nf
+# Description: Auditoria mensal de notas fiscais e preparacao SPED
+# =============================================================================
+
+id: wf-audit-monthly
+name: "Monthly Fiscal Audit"
+version: "1.0.0"
+description: >
+  Auditoria mensal baseada na metodologia de 7 fases do Sandro Rodrigues.
+  Download de XMLs, cruzamento com registros internos, geracao de relatorio
+  de divergencias e preparacao de obrigacoes SPED.
+
+trigger:
+  - cron: "0 8 1 * *"  # dia 1 de cada mes, 8h
+  - manual
+
+inputs:
+  - name: competencia
+    type: string
+    required: true
+    description: "Mes/Ano de referencia (MM/YYYY)"
+  - name: cnpj
+    type: string
+    required: true
+  - name: regime
+    type: enum
+    values: [simples, presumido, real, mei]
+    required: true
+
+states:
+  init:
+    description: "Preparar contexto da auditoria mensal"
+    task: validate-obligations
+    on_success: download-xml
+    on_failure: failed
+    actions:
+      - validate_competencia
+      - load_previous_audit
+      - set_obligation_calendar
+
+  download-xml:
+    description: "Baixar XMLs do portal da SEFAZ e Receita Federal"
+    task: download-xml
+    on_success: cross-check
+    on_failure: failed
+    actions:
+      - download_nfe_emitidas  # portal SEFAZ
+      - download_nfe_recebidas # manifestacao destinatario
+      - download_nfse          # se aplicavel
+      - download_cte           # se aplicavel
+      - organize_xml_by_cfop
+
+  cross-check:
+    description: "Cruzar XMLs com registros internos do ERP"
+    task: audit-cross-check
+    on_success: report
+    on_failure: failed
+    actions:
+      - match_xml_vs_erp
+      - identify_missing_entries  # XML sem registro no ERP
+      - identify_orphan_entries   # ERP sem XML
+      - validate_tax_calculations
+      - check_cfop_consistency
+      - check_cst_consistency
+      - flag_duplicates
+
+  report:
+    description: "Gerar relatorio de auditoria com divergencias"
+    task: prepare-efd
+    on_success: prepare-sped
+    on_failure: failed
+    actions:
+      - generate_divergence_report
+      - calculate_risk_score
+      - list_corrective_actions
+      - generate_summary_dashboard
+
+  prepare-sped:
+    description: "Preparar arquivos para obrigacoes SPED do periodo"
+    task: prepare-sped-fiscal
+    on_success: complete
+    on_failure: failed
+    actions:
+      - generate_sped_fiscal     # EFD ICMS/IPI
+      - generate_sped_contribuicoes  # EFD PIS/COFINS
+      - generate_dctf            # se aplicavel
+      - validate_sped_layout
+      - generate_das             # se Simples Nacional
+
+  complete:
+    description: "Auditoria concluida"
+    task: monitor-deadlines
+    terminal: true
+    actions:
+      - store_audit_report
+      - notify_accountant
+      - schedule_next_audit
+      - archive_xmls
+
+  failed:
+    description: "Auditoria falhou"
+    task: monitor-certificates
+    terminal: true
+    actions:
+      - log_error
+      - notify_operator
+      - save_partial_results
+
+outputs:
+  - name: audit_report
+    type: object
+    fields: [divergences, risk_score, corrective_actions, sped_files]
+  - name: sped_files
+    type: array
+    description: "Arquivos SPED gerados para transmissao"
+
+config:
+  sefaz_download_timeout_ms: 60000
+  max_divergence_threshold: 50
+  xml_archive_path: "storage/audit/"
+  sped_output_path: "storage/sped/"

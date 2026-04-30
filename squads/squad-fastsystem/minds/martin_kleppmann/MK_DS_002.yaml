@@ -1,0 +1,17 @@
+id: MK_DS_002
+name: "Partition Strategy"
+mind: martin_kleppmann
+source: "Designing Data-Intensive Applications (2017) — Chapter 6"
+domain: distributed-systems
+description: >
+  Escolha estrategia de particionamento baseada no padrao
+  de acesso predominante.
+applies_when:
+  - "Database ou cache precisa de sharding"
+  - "Tabela > 100M rows"
+action: >
+  Range partition para queries de range (date-based access),
+  hash partition para distribuicao uniforme (key-based access).
+  Cuidado com hot partitions em ambos os casos.
+severity: high
+confidence: 0.85

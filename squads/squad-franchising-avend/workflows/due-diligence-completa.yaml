@@ -1,0 +1,1086 @@
+# Due Diligence Completa Workflow — Avend Franquias
+# Processo completo de due diligence para candidatos a franqueado
+# 4 fases: Initial Screening, Financial Deep Dive, Legal Review, Final Approval
+# Updated: 2026-03-13
+
+id: due-diligence-completa
+name: "Due Diligence Completa — Qualificacao de Candidatos a Franqueado"
+version: "1.0.0"
+squad: franchising-avend
+description: >-
+  Workflow completo de due diligence para avaliacao e aprovacao de candidatos
+  a franqueado da Avend Franquias. Processo estruturado em 4 fases com gates
+  de decisao, vetos automaticos e compliance total com Lei 13.966/2019.
+  Projetado para o modelo de microfranquia de vending machines (~R$50k
+  investimento total), garantindo que apenas candidatos qualificados e
+  alinhados entrem na rede.
+
+trigger: "*due-diligence"
+execution_mode: sequential
+estimated_duration: "30-45 dias"
+total_phases: 4
+
+# ============================================================================
+# CONTEXT — Por que Due Diligence e Fundamental
+# ============================================================================
+
+context: >-
+  A qualidade da rede de franquias depende diretamente da qualidade dos
+  franqueados selecionados. Due diligence deficiente e a principal causa
+  de problemas futuros: inadimplencia, conflitos, turnarounds custosos,
+  litigios e dano reputacional. Na Avend, com modelo de microfranquia,
+  o risco individual e menor (R$50k vs R$500k+ de franquias maiores),
+  mas o volume de candidatos e maior e a tentacao de aprovar rapido e real.
+
+  Dados do setor (ABF 2024-2025):
+  - 30% dos conflitos franqueador-franqueado originam de selecao inadequada
+  - Custo de um franqueado mal selecionado: 5-10x o custo do screening
+  - Taxa ideal de aprovacao: 20-35% dos candidatos (seletividade saudavel)
+  - Tempo medio de due diligence no Brasil: 30-60 dias (varia por segmento)
+
+  Contexto legal (Lei 13.966/2019):
+  - COF deve ser entregue com 10 dias de antecedencia da assinatura
+  - Candidato tem 10 dias de cooling period (prazo de reflexao)
+  - Informacoes da COF devem ser verdadeiras e completas
+  - Penalidades por omissao ou informacao falsa
+
+# ============================================================================
+# PREREQUISITES
+# ============================================================================
+
+prerequisites:
+  - "Candidato preencheu formulario de interesse/pre-qualificacao"
+  - "COF atualizada e vigente disponivel"
+  - "Modelo financeiro atualizado com unit economics correntes"
+  - "Mapeamento de territorios disponivel com aberturas"
+  - "Contrato de franquia modelo revisado por juridico"
+  - "Equipe de selecao disponivel para o ciclo"
+
+# ============================================================================
+# CANDIDATE SOURCES — De onde vem os candidatos
+# ============================================================================
+
+candidate_sources:
+  organic:
+    - source: "Site institucional Avend"
+      typical_quality: "Media-Alta"
+      volume: "15-25 leads/mes"
+    - source: "Portal ABF (Associacao Brasileira de Franchising)"
+      typical_quality: "Alta"
+      volume: "5-10 leads/mes"
+    - source: "Indicacao de franqueados atuais"
+      typical_quality: "Alta"
+      volume: "3-5 leads/mes"
+    - source: "Feiras de franquia (ABF Franchising Expo, etc)"
+      typical_quality: "Media"
+      volume: "20-50 leads por feira"
+  paid:
+    - source: "Google Ads (franquia vending machine)"
+      typical_quality: "Media"
+      volume: "30-60 leads/mes"
+    - source: "Redes sociais (Instagram, Facebook)"
+      typical_quality: "Media-Baixa"
+      volume: "40-80 leads/mes"
+    - source: "Portais de franquia (Guia Franquias, Franquias.com.br)"
+      typical_quality: "Media"
+      volume: "10-20 leads/mes"
+
+# ============================================================================
+# IDEAL CANDIDATE PROFILE — Perfil Ideal do Franqueado Avend
+# ============================================================================
+
+ideal_candidate_profile:
+  demographics:
+    age_range: "28-55 anos"
+    education: "Ensino medio completo (minimo), superior desejavel"
+    location: "Residir na regiao do territorio pretendido"
+    availability: "Minimo 10h/semana para operacao (semi-passivo)"
+  financial:
+    minimum_capital: "R$55k (investimento + capital de giro)"
+    ideal_capital: "R$70k-R$100k (margem de seguranca)"
+    income_source: "Renda principal estavel (emprego, outro negocio)"
+    credit_status: "Sem restricoes em SPC/Serasa"
+    max_debt_ratio: "Comprometimento de renda < 30% com o investimento"
+  behavioral:
+    entrepreneurial_mindset: "Orientado a processos, nao a improviso"
+    tech_comfort: "Confortavel com apps e sistemas basicos"
+    compliance_attitude: "Aceita padronizacao e regras da rede"
+    patience: "Entende que retorno vem em 12-18 meses"
+    local_knowledge: "Conhece a regiao e tem network local"
+  red_flags:
+    - "Busca exclusivamente renda passiva (zero envolvimento)"
+    - "Historico de conflitos com franqueadores anteriores"
+    - "Expectativa de retorno em menos de 6 meses"
+    - "Capital 100% financiado (sem capital proprio)"
+    - "Pressao familiar para investir (decisao nao propria)"
+    - "Indisponibilidade total para treinamento presencial"
+
+# ============================================================================
+# PHASE 1: INITIAL SCREENING — Triagem Inicial
+# ============================================================================
+
+phases:
+  - id: phase_1_screening
+    name: "Initial Screening — Triagem e Qualificacao Inicial"
+    description: >-
+      Primeira avaliacao do candidato baseada em formulario de interesse,
+      conversa inicial e validacao basica de requisitos minimos.
+      Objetivo: filtrar candidatos que claramente nao atendem perfil
+      antes de investir tempo em analise aprofundada.
+    duration: "3-5 dias"
+    agents:
+      - franchise-growth
+
+    steps:
+      # --- Step 1.1: Profile Validation ---
+      - id: step_1_1
+        name: "Validacao do Perfil Basico"
+        agent: franchise-growth
+        execution_mode: agent
+        description: >-
+          Analisar formulario de pre-qualificacao e validar requisitos
+          minimos do candidato. Aplicar scorecard de pre-screening.
+        inputs:
+          - "Formulario de interesse preenchido pelo candidato"
+          - "Ideal candidate profile (acima)"
+          - "Territorios disponiveis"
+        outputs:
+          - "dd-prescreening-{candidate_id}.md"
+        prescreening_scorecard:
+          dimensions:
+            - id: ps_location
+              name: "Localizacao"
+              weight: 20
+              scoring:
+                0: "Fora de area de atuacao, sem territorio disponivel"
+                5: "Area de atuacao mas territorio saturado"
+                10: "Territorio disponivel e prioritario"
+            - id: ps_capital
+              name: "Capital Declarado"
+              weight: 25
+              scoring:
+                0: "Abaixo de R$40k"
+                3: "R$40k-R$54k (insuficiente sem financiamento)"
+                5: "R$55k-R$69k (minimo viavel)"
+                8: "R$70k-R$99k (adequado)"
+                10: "R$100k+ (confortavel)"
+            - id: ps_availability
+              name: "Disponibilidade"
+              weight: 15
+              scoring:
+                0: "Nenhuma disponibilidade declarada"
+                3: "Menos de 5h/semana"
+                5: "5-10h/semana"
+                8: "10-20h/semana"
+                10: "20h+ ou dedicacao exclusiva"
+            - id: ps_motivation
+              name: "Motivacao Declarada"
+              weight: 20
+              scoring:
+                0: "Apenas renda passiva, zero envolvimento"
+                3: "Investimento financeiro com minimo envolvimento"
+                5: "Renda complementar com algum envolvimento"
+                8: "Negocio proprio semi-dedicado"
+                10: "Empreendedor buscando modelo validado"
+            - id: ps_experience
+              name: "Experiencia Relevante"
+              weight: 10
+              scoring:
+                0: "Sem experiencia em negocios ou vendas"
+                5: "Experiencia basica em comercio/vendas"
+                8: "Experiencia em franquias ou negocios proprios"
+                10: "Experiencia em vending ou automacao de vendas"
+            - id: ps_profile_fit
+              name: "Fit com Perfil Ideal"
+              weight: 10
+              scoring:
+                0: "Multiplos red flags identificados"
+                3: "1-2 red flags, perfil parcialmente adequado"
+                5: "Nenhum red flag, perfil neutro"
+                8: "Perfil bom, alinhamento cultural aparente"
+                10: "Perfil ideal, alta probabilidade de sucesso"
+          thresholds:
+            approved: ">= 6.0 — Prosseguir para conversa inicial"
+            review: "4.0 - 5.9 — Avaliar caso a caso"
+            rejected: "< 4.0 — Agradecer e encerrar"
+        checks:
+          - "Formulario completo e consistente"
+          - "Scorecard de pre-screening calculado"
+          - "Red flags verificados"
+          - "Territorio disponivel confirmado"
+
+      # --- Step 1.2: Conversa Inicial ---
+      - id: step_1_2
+        name: "Conversa Inicial com Candidato"
+        agent: franchise-growth
+        execution_mode: hybrid
+        description: >-
+          Call de 30-45 minutos com candidato pre-aprovado para aprofundar
+          entendimento do perfil, alinhar expectativas e avaliar fit cultural.
+        inputs:
+          - "dd-prescreening-{candidate_id}.md"
+          - "Material de apresentacao da franquia Avend"
+          - "Unit economics resumido"
+          - "FAQ de candidatos"
+        outputs:
+          - "dd-conversa-inicial-{candidate_id}.md"
+        conversation_guide:
+          abertura:
+            - "Apresentacao do consultor e da Avend"
+            - "Como conheceu a Avend?"
+            - "O que chamou atencao no modelo?"
+          aprofundamento_perfil:
+            - "Conte sobre sua trajetoria profissional"
+            - "Ja teve experiencia com franquias ou negocio proprio?"
+            - "Como e sua situacao financeira atual? (trabalho, renda, investimentos)"
+            - "Quanto tempo voce consegue dedicar semanalmente?"
+            - "Voce tem veiculo proprio? (necessario para operacao)"
+          expectativas:
+            - "O que voce espera de retorno financeiro?"
+            - "Em quanto tempo espera ter retorno do investimento?"
+            - "Voce entende que o modelo Avend e semi-passivo, nao passivo?"
+            - "Voce esta disposto a seguir processos padronizados da rede?"
+          apresentacao_modelo:
+            - "Explicar modelo de operacao Avend"
+            - "Apresentar investimento total e composicao"
+            - "Explicar royalties e taxas"
+            - "Mostrar unit economics basico (sem detalhes sigilosos)"
+            - "Explicar processo de selecao e proximos passos"
+          encerramento:
+            - "Perguntas do candidato"
+            - "Disponibilidade para proximas etapas"
+            - "Alinhamento de timeline"
+        checks:
+          - "Call realizada com duracao minima de 30 minutos"
+          - "Todas as secoes do guia cobertas"
+          - "Impressoes documentadas imediatamente apos call"
+          - "Decisao de prosseguir ou nao registrada"
+          - "Candidato informado sobre proximas etapas"
+        veto_if:
+          - "Candidato demonstra expectativa irrealista de renda passiva total"
+          - "Candidato nao tem veiculo ou disponibilidade minima"
+          - "Candidato declara capital significativamente menor que o informado"
+          - "Red flags comportamentais graves durante a conversa"
+
+      # --- Step 1.3: Motivation Assessment ---
+      - id: step_1_3
+        name: "Avaliacao de Motivacao e Fit Cultural"
+        agent: franchise-growth
+        execution_mode: agent
+        description: >-
+          Consolidar avaliacao do perfil, motivacao e fit cultural do
+          candidato com base em pre-screening e conversa inicial.
+          Gerar scorecard consolidado Phase 1.
+        inputs:
+          - "dd-prescreening-{candidate_id}.md"
+          - "dd-conversa-inicial-{candidate_id}.md"
+          - "Perfil de franqueados bem-sucedidos da rede (benchmark)"
+        outputs:
+          - "dd-phase1-scorecard-{candidate_id}.md"
+        motivation_matrix:
+          primary_motivations:
+            - motivation: "Empreendedorismo com modelo validado"
+              score_modifier: "+2"
+              risk: "Baixo"
+            - motivation: "Renda complementar ativa"
+              score_modifier: "+1"
+              risk: "Baixo"
+            - motivation: "Diversificacao de investimentos"
+              score_modifier: "0"
+              risk: "Medio — monitorar envolvimento"
+            - motivation: "Transicao de carreira"
+              score_modifier: "+1"
+              risk: "Medio — verificar paciencia"
+            - motivation: "Renda passiva sem envolvimento"
+              score_modifier: "-3"
+              risk: "Alto — provavel fracasso"
+            - motivation: "Pressao de terceiros"
+              score_modifier: "-5"
+              risk: "Critico — veto recomendado"
+          cultural_fit_dimensions:
+            - dimension: "Orientacao a processos"
+              weight: 30
+              description: "Candidato valoriza e segue processos estruturados"
+            - dimension: "Adaptabilidade tecnologica"
+              weight: 20
+              description: "Conforto com apps, dashboards, telemetria"
+            - dimension: "Colaboracao em rede"
+              weight: 20
+              description: "Disposicao para participar da comunidade de franqueados"
+            - dimension: "Resiliencia"
+              weight: 15
+              description: "Capacidade de lidar com frustracoes e oscilacoes"
+            - dimension: "Alinhamento com marca"
+              weight: 15
+              description: "Identificacao com valores e proposito da Avend"
+        checks:
+          - "Scorecard Phase 1 consolidado com nota final"
+          - "Motivacao primaria identificada e classificada"
+          - "Fit cultural avaliado em todas as dimensoes"
+          - "Recomendacao GO/NO-GO registrada"
+          - "Red flags documentados (se houver)"
+
+    # --- Phase 1 Checkpoint ---
+    checkpoint:
+      name: "Screening Checkpoint"
+      decision_maker: franchise-growth
+      criteria:
+        - "Pre-screening score >= 6.0"
+        - "Conversa inicial realizada e documentada"
+        - "Motivacao avaliada como adequada"
+        - "Nenhum red flag critico identificado"
+      decisions:
+        proceed: "Score >= 6.0, motivacao adequada, zero red flags criticos — Phase 2"
+        hold: "Score 5.0-5.9 com aspectos positivos — solicitar informacoes adicionais"
+        reject: "Score < 5.0 ou red flags criticos — agradecer e encerrar"
+      veto_conditions:
+        - "Capital declarado < R$40k"
+        - "Candidato em regiao sem territorio disponivel"
+        - "Motivacao exclusivamente passiva confirmada"
+        - "Historico de conflitos com franqueadores"
+      handoff:
+        from: "franchise-growth"
+        to: "franchise-financial"
+        artifacts:
+          - "dd-phase1-scorecard-{candidate_id}.md"
+          - "dd-conversa-inicial-{candidate_id}.md"
+          - "dd-prescreening-{candidate_id}.md"
+        context: >-
+          Candidato aprovado na Phase 1 (triagem inicial). Score de
+          pre-screening e motivacao adequados. Proximo passo: deep dive
+          financeiro para validar capacidade real de investimento.
+
+  # ============================================================================
+  # PHASE 2: FINANCIAL DEEP DIVE — Analise Financeira Aprofundada
+  # ============================================================================
+
+  - id: phase_2_financial
+    name: "Financial Deep Dive — Analise Financeira Aprofundada"
+    description: >-
+      Analise financeira detalhada do candidato para verificar capacidade
+      real de investimento, saude financeira, perfil de credito e
+      viabilidade do business plan personalizado.
+    duration: "5-10 dias"
+    agents:
+      - franchise-financial
+
+    steps:
+      # --- Step 2.1: Credit Analysis ---
+      - id: step_2_1
+        name: "Analise de Credito e Restricoes"
+        agent: franchise-financial
+        execution_mode: hybrid
+        description: >-
+          Verificar situacao crediticia do candidato em orgaos de protecao
+          ao credito e bases publicas. Identificar restricoes, protestos,
+          acoes judiciais e score de credito.
+        inputs:
+          - "CPF/CNPJ do candidato"
+          - "Autorizacao de consulta assinada pelo candidato"
+          - "dd-phase1-scorecard-{candidate_id}.md"
+        outputs:
+          - "dd-credit-analysis-{candidate_id}.md"
+        credit_checks:
+          obligatory:
+            - check: "Consulta SPC/Serasa"
+              source: "Serasa Experian ou Boa Vista"
+              criteria: "Score >= 500, sem restricoes ativas"
+              veto_if: "Score < 300 ou 3+ restricoes ativas"
+            - check: "Consulta de protestos"
+              source: "Central de Protestos"
+              criteria: "Zero protestos ativos"
+              veto_if: "Protestos > R$5k ou 3+ protestos"
+            - check: "Receita Federal — situacao CPF"
+              source: "Receita Federal"
+              criteria: "CPF regular"
+              veto_if: "CPF irregular, suspenso ou cancelado"
+          recommended:
+            - check: "Acoes judiciais ativas"
+              source: "Tribunais estaduais"
+              criteria: "Sem acoes contra franqueadores"
+              flag_if: "Qualquer acao contra franqueador"
+            - check: "Participacao societaria"
+              source: "Receita Federal/Junta Comercial"
+              criteria: "Sem impedimentos societarios"
+              flag_if: "Socio de empresa com dividas tributarias"
+            - check: "Certidao negativa de debitos trabalhistas"
+              source: "TST"
+              criteria: "Negativa ou positiva com efeito de negativa"
+              flag_if: "Debitos trabalhistas significativos"
+        checks:
+          - "Todas as consultas obrigatorias realizadas"
+          - "Resultados documentados com data e fonte"
+          - "Red flags de credito identificados e avaliados"
+          - "Autorizacao do candidato arquivada"
+        veto_if:
+          - "CPF irregular na Receita Federal"
+          - "Score Serasa < 300"
+          - "Protestos ativos > R$10k"
+          - "Historico de falencia pessoal ou empresarial nos ultimos 5 anos"
+
+      # --- Step 2.2: Capital Verification ---
+      - id: step_2_2
+        name: "Verificacao de Capital e Origem dos Recursos"
+        agent: franchise-financial
+        execution_mode: hybrid
+        description: >-
+          Verificar se o candidato efetivamente possui o capital necessario
+          para o investimento e capital de giro, e entender a origem dos
+          recursos (compliance PLD/FT).
+        inputs:
+          - "Declaracao de patrimonio do candidato"
+          - "Extratos bancarios (ultimos 3 meses)"
+          - "dd-credit-analysis-{candidate_id}.md"
+        outputs:
+          - "dd-capital-verification-{candidate_id}.md"
+        capital_requirements:
+          investment_breakdown:
+            - item: "Taxa de franquia"
+              value: "R$15k-R$25k"
+              description: "Inclui treinamento, suporte inicial, uso da marca"
+            - item: "Maquinas de vending (2-5 unidades)"
+              value: "R$20k-R$40k"
+              description: "Valor depende do numero e modelo de maquinas"
+            - item: "Estoque inicial"
+              value: "R$2k-R$5k"
+              description: "Produtos para abastecimento inicial"
+            - item: "Capital de giro"
+              value: "R$5k-R$10k"
+              description: "Reserva para primeiros 3-6 meses"
+            - item: "Marketing local de inauguracao"
+              value: "R$1k-R$3k"
+              description: "Acao de inauguracao nos pontos"
+          minimum_total: "R$50k"
+          recommended_total: "R$70k-R$100k"
+          funding_rules:
+            - rule: "Minimo 50% de capital proprio"
+              description: "Pelo menos metade do investimento deve ser com recursos proprios"
+            - rule: "Financiamento aceito ate 50%"
+              description: "Candidato pode financiar ate metade (banco, consorcio, BNDES)"
+            - rule: "Recursos de terceiros aceitos com restricoes"
+              description: "Emprestimos familiares aceitos, agiota VETADO"
+          origin_verification:
+            - "Extratos bancarios comprovando saldo"
+            - "Declaracao de imposto de renda (opcional mas recomendado)"
+            - "Origem dos recursos declarada e compativel"
+            - "Compliance basico com PLD/FT (lavagem de dinheiro)"
+        checks:
+          - "Capital total verificado e compativel"
+          - "Origem dos recursos comprovada"
+          - "Proporcao capital proprio vs financiado avaliada"
+          - "Capital de giro adequado alem do investimento"
+          - "Compliance PLD/FT basico concluido"
+        veto_if:
+          - "Capital total comprovado < R$45k"
+          - "100% do capital via emprestimo/financiamento"
+          - "Origem dos recursos incompativel ou suspeita"
+          - "Candidato precisaria comprometer mais de 40% da renda mensal"
+
+      # --- Step 2.3: Business Plan Review ---
+      - id: step_2_3
+        name: "Revisao do Business Plan Personalizado"
+        agent: franchise-financial
+        execution_mode: agent
+        description: >-
+          Gerar e revisar business plan personalizado para o candidato,
+          considerando territorio pretendido, numero de maquinas, custos
+          locais e projecoes realistas de faturamento.
+        inputs:
+          - "dd-capital-verification-{candidate_id}.md"
+          - "Modelo financeiro padrao da Avend"
+          - "Dados de mercado do territorio pretendido"
+          - "Unit economics de franqueados em territorios similares"
+        outputs:
+          - "dd-business-plan-{candidate_id}.md"
+        business_plan_sections:
+          investimento:
+            - "Detalhamento do investimento total"
+            - "Composicao: taxa + maquinas + estoque + giro"
+            - "Cronograma de desembolso"
+          projecao_receita:
+            - "Faturamento projetado por maquina (cenarios P/M/O)"
+            - "Cenario Pessimista: R$2k/maq/mes"
+            - "Cenario Moderado: R$4k/maq/mes"
+            - "Cenario Otimista: R$6k/maq/mes"
+            - "Ramp-up: 60% no mes 1, 80% no mes 2, 100% a partir do mes 3"
+          dre_projetada:
+            - "Receita bruta mensal"
+            - "(-) Custo dos produtos vendidos (40-50%)"
+            - "(-) Royalties (taxa fixa ou % conforme contrato)"
+            - "(-) Fundo de marketing (se aplicavel)"
+            - "(-) Custos operacionais (deslocamento, manutencao)"
+            - "(-) Custos fixos (aluguel de ponto, se houver)"
+            - "(=) Lucro liquido projetado"
+          payback:
+            - "Payback estimado: 12-18 meses (cenario moderado)"
+            - "Break-even: 3-6 meses"
+            - "ROI anual projetado: 30-60% (cenario moderado)"
+          riscos:
+            - "Cenario de ruptura (quando a operacao deixa de ser viavel)"
+            - "Sensibilidade a variacao de volume"
+            - "Impacto de sazonalidade"
+            - "Riscos especificos do territorio"
+        checks:
+          - "Business plan gerado com 3 cenarios"
+          - "Projecoes baseadas em dados reais da rede"
+          - "Payback e break-even calculados"
+          - "Riscos mapeados e apresentados ao candidato"
+          - "Candidato entende e aceita as projecoes"
+        veto_if:
+          - "Cenario pessimista mostra prejuizo sustentado apos 6 meses"
+          - "Payback estimado > 24 meses mesmo no cenario moderado"
+          - "Custos locais inviabilizam margem minima de 15%"
+
+    # --- Phase 2 Checkpoint ---
+    checkpoint:
+      name: "Financial Deep Dive Checkpoint"
+      decision_maker: franchise-financial
+      criteria:
+        - "Credito aprovado (score >= 500, sem restricoes graves)"
+        - "Capital verificado e suficiente (>= R$50k comprovado)"
+        - "Business plan viavel nos cenarios moderado e otimista"
+        - "Origem dos recursos verificada e compliance"
+      decisions:
+        proceed: "Financeiramente qualificado — Phase 3 (Legal Review)"
+        conditional: "Aprovado condicionalmente — candidato precisa resolver pendencia"
+        reject: "Financeiramente inviavel — agradecer e encerrar"
+      veto_conditions:
+        - "CPF irregular"
+        - "Capital comprovado < R$45k"
+        - "Origem de recursos suspeita"
+        - "Cenario moderado com payback > 24 meses"
+      handoff:
+        from: "franchise-financial"
+        to: "franchise-legal"
+        artifacts:
+          - "dd-credit-analysis-{candidate_id}.md"
+          - "dd-capital-verification-{candidate_id}.md"
+          - "dd-business-plan-{candidate_id}.md"
+          - "dd-phase1-scorecard-{candidate_id}.md"
+        context: >-
+          Candidato aprovado financeiramente. Credito ok, capital verificado,
+          business plan viavel. Proximo passo: revisao legal, background
+          check e entrega da COF com cooling period de 10 dias.
+
+  # ============================================================================
+  # PHASE 3: LEGAL REVIEW — Revisao Legal e COF
+  # ============================================================================
+
+  - id: phase_3_legal
+    name: "Legal Review — Revisao Legal, Background Check e COF"
+    description: >-
+      Fase juridica da due diligence: background check aprofundado, revisao
+      de questoes legais, entrega formal da COF e cumprimento do cooling
+      period de 10 dias conforme Lei 13.966/2019.
+    duration: "12-18 dias (inclui 10 dias de cooling period)"
+    agents:
+      - franchise-legal
+
+    steps:
+      # --- Step 3.1: Background Check ---
+      - id: step_3_1
+        name: "Background Check Aprofundado"
+        agent: franchise-legal
+        execution_mode: hybrid
+        description: >-
+          Verificacao aprofundada do historico do candidato em bases
+          juridicas, societarias e regulatorias.
+        inputs:
+          - "CPF/CNPJ do candidato"
+          - "dd-credit-analysis-{candidate_id}.md (dados basicos ja coletados)"
+          - "Autorizacao de consulta do candidato"
+        outputs:
+          - "dd-background-check-{candidate_id}.md"
+        background_checks:
+          judicial:
+            - check: "Acoes civeis"
+              sources: "TJ estadual, TRF regional"
+              scope: "Ultimos 10 anos"
+              risk_level: "Medio"
+            - check: "Acoes criminais"
+              sources: "TJ estadual, TRF regional"
+              scope: "Ultimos 10 anos"
+              risk_level: "Alto"
+            - check: "Acoes trabalhistas (como empregador)"
+              sources: "TRT regional"
+              scope: "Ultimos 5 anos"
+              risk_level: "Medio"
+            - check: "Acoes contra franqueadores"
+              sources: "TJ + busca especifica"
+              scope: "Sem limite"
+              risk_level: "Critico"
+            - check: "Acoes de execucao fiscal"
+              sources: "TJ estadual, TRF"
+              scope: "Ultimos 5 anos"
+              risk_level: "Alto"
+          regulatorio:
+            - check: "CEIS (Cadastro de Empresas Inidôneas)"
+              source: "Portal da Transparencia"
+              criteria: "Nao constar"
+            - check: "CNEP (Cadastro de Empresas Punidas)"
+              source: "Portal da Transparencia"
+              criteria: "Nao constar"
+            - check: "Lista de PEP (Pessoa Exposta Politicamente)"
+              source: "COAF"
+              criteria: "Se PEP, due diligence reforçada"
+          societario:
+            - check: "Participacoes societarias ativas"
+              source: "Receita Federal"
+              criteria: "Sem conflito de interesse com concorrentes"
+            - check: "Empresas baixadas/canceladas"
+              source: "Receita Federal"
+              criteria: "Avaliar motivos de encerramento"
+            - check: "Clausulas de nao-concorrencia vigentes"
+              source: "Declaracao do candidato"
+              criteria: "Sem impedimentos contratuais"
+        checks:
+          - "Todas as consultas judiciais realizadas"
+          - "Consultas regulatorias concluidas"
+          - "Participacoes societarias mapeadas"
+          - "Risk flags documentados e avaliados"
+          - "Parecer juridico consolidado"
+        veto_if:
+          - "Condenacao criminal transitada em julgado"
+          - "Acao contra franqueador anterior com valor > R$50k"
+          - "Candidato consta em CEIS/CNEP"
+          - "Clausula de nao-concorrencia ativa com vending/franquias"
+
+      # --- Step 3.2: Contract Review ---
+      - id: step_3_2
+        name: "Preparacao e Revisao do Contrato"
+        agent: franchise-legal
+        execution_mode: agent
+        description: >-
+          Preparar contrato de franquia personalizado para o candidato,
+          ajustando clausulas especificas de territorio, prazo, condicoes
+          comerciais e particularidades identificadas na due diligence.
+        inputs:
+          - "Contrato de franquia modelo (template)"
+          - "Territorio atribuido ao candidato"
+          - "Condicoes comerciais negociadas"
+          - "dd-business-plan-{candidate_id}.md"
+          - "dd-background-check-{candidate_id}.md"
+        outputs:
+          - "dd-contrato-draft-{candidate_id}.md"
+        contract_key_clauses:
+          - clause: "Territorio"
+            description: "Definicao precisa do territorio exclusivo"
+            customizable: true
+          - clause: "Prazo de vigencia"
+            description: "Duracao do contrato e condicoes de renovacao"
+            standard: "5 anos com renovacao"
+          - clause: "Taxa de franquia"
+            description: "Valor e condicoes de pagamento"
+            customizable: true
+          - clause: "Royalties"
+            description: "Percentual ou valor fixo mensal"
+            standard: "Conforme tabela vigente"
+          - clause: "Obrigacoes do franqueado"
+            description: "Padronizacao, abastecimento, manutencao, relatorios"
+            customizable: false
+          - clause: "Obrigacoes do franqueador"
+            description: "Suporte, treinamento, sistemas, marketing"
+            customizable: false
+          - clause: "Rescisao"
+            description: "Condicoes de rescisao por ambas as partes"
+            standard: "Conforme Lei 13.966/2019"
+          - clause: "Nao-concorrencia"
+            description: "Restricao durante e pos-contrato"
+            standard: "2 anos pos-contrato, raio de 5km"
+          - clause: "Propriedade intelectual"
+            description: "Uso da marca, logotipos, materiais"
+            customizable: false
+          - clause: "Resolucao de conflitos"
+            description: "Mediacao, arbitragem ou judicial"
+            standard: "Mediacao obrigatoria antes de judicial"
+        checks:
+          - "Contrato customizado com territorio e condicoes"
+          - "Todas as clausulas obrigatorias por lei presentes"
+          - "Revisao juridica concluida"
+          - "Versao para entrega ao candidato preparada"
+
+      # --- Step 3.3: COF Delivery and Cooling Period ---
+      - id: step_3_3
+        name: "Entrega da COF e Cooling Period (10 dias)"
+        agent: franchise-legal
+        execution_mode: hybrid
+        description: >-
+          Entrega formal da Circular de Oferta de Franquia (COF) ao candidato
+          conforme Art. 2 da Lei 13.966/2019. Inicio do cooling period de
+          10 dias corridos durante o qual o candidato NÃO pode assinar
+          contrato nem efetuar pagamentos.
+        inputs:
+          - "COF atualizada da Avend"
+          - "dd-contrato-draft-{candidate_id}.md"
+          - "dd-business-plan-{candidate_id}.md"
+          - "Lista de franqueados para contato (exigido por lei)"
+        outputs:
+          - "dd-cof-delivery-{candidate_id}.md"
+          - "dd-recibo-cof-{candidate_id}.md"
+        cof_requirements:
+          mandatory_content:
+            - "Historico resumido da franqueadora"
+            - "Balanco e demonstracoes financeiras (2 ultimos exercicios)"
+            - "Pendencias judiciais contra franqueadora"
+            - "Descricao da franquia e operacao"
+            - "Perfil do franqueado ideal"
+            - "Investimento total estimado"
+            - "Taxas de franquia, royalties e demais pagamentos"
+            - "Lista completa de franqueados e ex-franqueados (12 meses)"
+            - "Territorio (exclusivo ou nao)"
+            - "Obrigacoes do franqueado pos-contrato"
+            - "Condicoes de rescisao"
+          delivery_rules:
+            - rule: "Entrega minimo 10 dias antes da assinatura do contrato"
+              lei: "Art. 2, Lei 13.966/2019"
+            - rule: "Entrega minimo 10 dias antes de qualquer pagamento"
+              lei: "Art. 2, Lei 13.966/2019"
+            - rule: "Recibo de entrega assinado pelo candidato"
+              lei: "Boa pratica — protecao juridica"
+            - rule: "COF deve conter informacoes verdadeiras e completas"
+              lei: "Art. 1, Lei 13.966/2019"
+          cooling_period:
+            duration: "10 dias corridos"
+            start: "Data de entrega formal da COF"
+            end: "10o dia corrido apos entrega"
+            restrictions:
+              - "Candidato NAO pode assinar contrato"
+              - "Candidato NAO pode efetuar pagamentos"
+              - "Franqueadora NAO pode pressionar decisao"
+            allowed:
+              - "Candidato pode fazer perguntas"
+              - "Candidato pode consultar advogado proprio"
+              - "Candidato pode conversar com franqueados da lista"
+              - "Franqueadora pode esclarecer duvidas objetivas"
+        checks:
+          - "COF completa e atualizada entregue"
+          - "Recibo de entrega assinado pelo candidato com data"
+          - "Cooling period de 10 dias respeitado"
+          - "Nenhuma pressao ou urgencia exercida"
+          - "Candidato informado sobre direito de consultar advogado"
+          - "Lista de franqueados para contato fornecida"
+        veto_if:
+          - "COF desatualizada (mais de 12 meses)"
+          - "Cooling period nao respeitado (assinatura ou pagamento antes)"
+          - "Informacoes falsas ou omissoes graves na COF"
+
+      # --- Step 3.4: Candidate Questions and Clarifications ---
+      - id: step_3_4
+        name: "Periodo de Esclarecimento — Duvidas do Candidato"
+        agent: franchise-legal
+        execution_mode: hybrid
+        description: >-
+          Durante o cooling period, atender duvidas do candidato sobre
+          a COF, contrato, operacao e condicoes comerciais. Documentar
+          todas as interacoes.
+        inputs:
+          - "COF entregue"
+          - "dd-contrato-draft-{candidate_id}.md"
+          - "dd-business-plan-{candidate_id}.md"
+        outputs:
+          - "dd-qa-log-{candidate_id}.md"
+        common_questions:
+          financial:
+            - "Qual o faturamento real dos franqueados atuais?"
+            - "Os royalties podem ser renegociados?"
+            - "O que acontece se nao atingir o faturamento projetado?"
+            - "Ha custos ocultos alem dos listados na COF?"
+          operational:
+            - "Quantas horas por semana preciso dedicar realmente?"
+            - "Posso ter um operador/funcionario cuidando das maquinas?"
+            - "Como funciona a manutencao? Quem paga?"
+            - "Posso escolher os produtos que coloco nas maquinas?"
+          contractual:
+            - "O que acontece se eu quiser sair antes do prazo?"
+            - "Posso vender minha franquia para outra pessoa?"
+            - "O territorio e realmente exclusivo?"
+            - "O que acontece na renovacao do contrato?"
+          legal:
+            - "Posso levar o contrato para meu advogado revisar?"
+            - "O que dizem os franqueados atuais sobre a Avend?"
+            - "Ja houve processos judiciais contra a Avend?"
+        response_guidelines:
+          - "Respostas sempre factuais e documentadas"
+          - "Nunca prometer resultados financeiros especificos"
+          - "Encorajar candidato a consultar advogado proprio"
+          - "Encorajar candidato a conversar com franqueados da lista"
+          - "Nao criar urgencia artificial"
+        checks:
+          - "Todas as duvidas respondidas e documentadas"
+          - "Tom respeitoso e informativo mantido"
+          - "Nenhuma promessa ou garantia indevida feita"
+          - "Candidato informado sobre lista de franqueados"
+
+    # --- Phase 3 Checkpoint ---
+    checkpoint:
+      name: "Legal Review Checkpoint"
+      decision_maker: franchise-legal
+      criteria:
+        - "Background check limpo (sem vetos)"
+        - "Contrato customizado e revisado"
+        - "COF entregue com recibo assinado"
+        - "Cooling period de 10 dias cumprido"
+        - "Duvidas do candidato esclarecidas"
+      decisions:
+        proceed: "Candidato legalmente apto — Phase 4 (Final Approval)"
+        conditional: "Pendencia legal menor — resolver antes de prosseguir"
+        reject: "Impedimento legal identificado — encerrar processo"
+      veto_conditions:
+        - "Condenacao criminal relevante"
+        - "Restricoes legais impeditivas"
+        - "Candidato recusa assinar recibo de COF"
+        - "Cooling period violado"
+      handoff:
+        from: "franchise-legal"
+        to: "franchise-chief"
+        artifacts:
+          - "dd-background-check-{candidate_id}.md"
+          - "dd-contrato-draft-{candidate_id}.md"
+          - "dd-cof-delivery-{candidate_id}.md"
+          - "dd-qa-log-{candidate_id}.md"
+          - "Todos os artefatos das Phases 1 e 2"
+        context: >-
+          Candidato aprovado em todas as fases de due diligence: screening,
+          financeiro e legal. COF entregue, cooling period cumprido.
+          Proximo passo: decisao final do comite de aprovacao.
+
+  # ============================================================================
+  # PHASE 4: FINAL APPROVAL — Aprovacao Final
+  # ============================================================================
+
+  - id: phase_4_approval
+    name: "Final Approval — Decisao do Comite e Onboarding"
+    description: >-
+      Decisao final sobre aprovacao do candidato pelo comite de franquia.
+      Se aprovado, atribuicao de territorio e trigger do workflow de
+      onboarding.
+    duration: "3-5 dias"
+    agents:
+      - franchise-chief
+
+    steps:
+      # --- Step 4.1: Committee Decision Matrix ---
+      - id: step_4_1
+        name: "Comite de Aprovacao — Decision Matrix"
+        agent: franchise-chief
+        execution_mode: hybrid
+        description: >-
+          Reuniao do comite de aprovacao para analisar dossiê completo
+          do candidato e tomar decisao final. Comite composto por:
+          franchise-chief, franchise-growth e franchise-legal.
+        inputs:
+          - "Dossiê completo do candidato (todos os artefatos das Phases 1-3)"
+          - "Criterios de aprovacao vigentes"
+          - "Status do territorio pretendido"
+          - "Capacidade de suporte da rede (quantos novos franqueados pode absorver)"
+        outputs:
+          - "dd-committee-decision-{candidate_id}.md"
+        decision_matrix:
+          scoring_dimensions:
+            - dimension: "Perfil e Motivacao (Phase 1)"
+              weight: 25
+              source: "dd-phase1-scorecard"
+            - dimension: "Saude Financeira (Phase 2)"
+              weight: 30
+              source: "dd-credit-analysis + dd-capital-verification"
+            - dimension: "Viabilidade do Business Plan (Phase 2)"
+              weight: 20
+              source: "dd-business-plan"
+            - dimension: "Background Legal (Phase 3)"
+              weight: 15
+              source: "dd-background-check"
+            - dimension: "Territorio e Timing (estrategico)"
+              weight: 10
+              source: "Avaliacao do comite"
+          overall_thresholds:
+            approved: ">= 7.0 — APROVADO unanime"
+            approved_conditional: "6.0 - 6.9 — APROVADO com condicoes"
+            deferred: "5.0 - 5.9 — ADIADO para reavaliacao"
+            rejected: "< 5.0 — REJEITADO"
+          committee_rules:
+            - "Decisao requer unanimidade para aprovacao"
+            - "Qualquer membro pode vetar com justificativa documentada"
+            - "Veto de franchise-legal por questoes legais e irrecorrivel"
+            - "Candidato rejeitado pode reaplicar apos 6 meses"
+            - "Feedback construtivo obrigatorio em todos os casos"
+        checks:
+          - "Dossie completo revisado por todos os membros"
+          - "Scoring em todas as dimensoes registrado"
+          - "Decisao unanime (ou veto documentado)"
+          - "Justificativa da decisao documentada"
+          - "Candidato informado do resultado em 48h"
+
+      # --- Step 4.2: Territory Assignment ---
+      - id: step_4_2
+        name: "Atribuicao de Territorio"
+        agent: franchise-chief
+        execution_mode: agent
+        description: >-
+          Para candidatos aprovados, atribuir territorio exclusivo
+          formalmente, definindo limites geograficos, numero de maquinas
+          e potencial de mercado.
+        inputs:
+          - "dd-committee-decision-{candidate_id}.md (APROVADO)"
+          - "Mapa de territorios disponivel"
+          - "Dados demograficos e de mercado do territorio"
+          - "Proximidade com outros franqueados"
+        outputs:
+          - "dd-territory-assignment-{candidate_id}.md"
+        territory_criteria:
+          - "Territorio com potencial minimo de 5 maquinas"
+          - "Distancia minima de 2km de outro franqueado"
+          - "Populacao minima de 20k habitantes na area"
+          - "Pelo menos 10 pontos potenciais mapeados"
+          - "Perfil demografico compativel com produtos Avend"
+        territory_documentation:
+          - "Mapa com limites precisos do territorio"
+          - "Lista de pontos potenciais mapeados"
+          - "Potencial estimado de faturamento do territorio"
+          - "Franqueados vizinhos e areas de fronteira"
+          - "Restricoes especificas (se houver)"
+        checks:
+          - "Territorio atribuido formalmente"
+          - "Documentacao de territorio preparada"
+          - "Nao conflita com territorios existentes"
+          - "Potencial validado pelo market-analyst"
+
+      # --- Step 4.3: Onboarding Trigger ---
+      - id: step_4_3
+        name: "Trigger de Onboarding — Transicao para Franqueado"
+        agent: franchise-chief
+        execution_mode: agent
+        description: >-
+          Disparar workflow de onboarding para o novo franqueado aprovado.
+          Preparar documentacao de transicao, agendar assinatura de contrato
+          e definir cronograma de onboarding.
+        inputs:
+          - "dd-committee-decision-{candidate_id}.md"
+          - "dd-territory-assignment-{candidate_id}.md"
+          - "dd-contrato-draft-{candidate_id}.md"
+          - "Calendario de onboarding disponivel"
+        outputs:
+          - "dd-onboarding-trigger-{candidate_id}.md"
+        onboarding_preparation:
+          pre_signature:
+            - "Agendar reuniao de assinatura do contrato"
+            - "Preparar contrato final (versao assinavel)"
+            - "Confirmar forma de pagamento da taxa de franquia"
+            - "Preparar kit de boas-vindas"
+          post_signature:
+            - "Disparar workflow franchisee-onboarding"
+            - "Agendar treinamento inicial"
+            - "Iniciar processo de aquisicao de maquinas"
+            - "Iniciar mapeamento de pontos no territorio"
+            - "Configurar acessos a sistemas (telemetria, portal)"
+          timeline:
+            - "Dia 0: Assinatura do contrato + pagamento da taxa"
+            - "Dia 1-7: Treinamento teorico (operacao, marca, sistemas)"
+            - "Dia 8-14: Treinamento pratico (maquinas, abastecimento)"
+            - "Dia 15-21: Negociacao e instalacao de maquinas nos pontos"
+            - "Dia 22-30: Inauguracao + acompanhamento intensivo"
+        checks:
+          - "Contrato finalizado para assinatura"
+          - "Cronograma de onboarding definido"
+          - "Workflow de onboarding pronto para disparar"
+          - "Kit de boas-vindas preparado"
+          - "Todos os acessos planejados"
+
+      # --- Step 4.4: Communication ---
+      - id: step_4_4
+        name: "Comunicacao do Resultado ao Candidato"
+        agent: franchise-chief
+        execution_mode: hybrid
+        description: >-
+          Comunicar resultado final ao candidato — aprovacao, rejeicao
+          ou adiamento — com feedback construtivo e proximos passos.
+        inputs:
+          - "dd-committee-decision-{candidate_id}.md"
+          - "dd-territory-assignment-{candidate_id}.md (se aprovado)"
+          - "dd-onboarding-trigger-{candidate_id}.md (se aprovado)"
+        outputs:
+          - "dd-communication-{candidate_id}.md"
+        communication_templates:
+          approved:
+            channel: "Call + email formal"
+            tone: "Entusiasmado mas profissional"
+            content:
+              - "Parabens pela aprovacao"
+              - "Detalhes do territorio atribuido"
+              - "Proximos passos e cronograma"
+              - "Documentos necessarios para assinatura"
+          rejected:
+            channel: "Call + email formal"
+            tone: "Respeitoso e construtivo"
+            content:
+              - "Agradecimento pelo interesse e tempo investido"
+              - "Motivos da nao-aprovacao (sem expor detalhes sensiveis)"
+              - "Sugestoes construtivas (se aplicavel)"
+              - "Possibilidade de reaplicacao apos 6 meses"
+          deferred:
+            channel: "Call + email formal"
+            tone: "Transparente e orientativo"
+            content:
+              - "Explicacao do adiamento"
+              - "O que precisa ser resolvido"
+              - "Timeline para reavaliacao"
+              - "Canais de comunicacao para duvidas"
+        checks:
+          - "Candidato comunicado em ate 48h apos decisao"
+          - "Comunicacao feita por call (nao apenas escrito)"
+          - "Feedback construtivo fornecido em todos os casos"
+          - "Proximos passos claros e documentados"
+          - "Registro da comunicacao arquivado"
+
+    # --- Phase 4 Final Checkpoint ---
+    checkpoint:
+      name: "Final Approval Checkpoint"
+      decision_maker: franchise-chief
+      criteria:
+        - "Decisao do comite registrada e documentada"
+        - "Territorio atribuido (se aprovado)"
+        - "Candidato comunicado"
+        - "Onboarding triggered (se aprovado)"
+      decisions:
+        close_approved: "Candidato aprovado — onboarding iniciado"
+        close_deferred: "Candidato adiado — reavaliacao em 30-60 dias"
+        close_rejected: "Candidato rejeitado — processo encerrado"
+      veto_conditions:
+        - "Aprovacao sem cooling period cumprido"
+        - "Aprovacao sem background check concluido"
+        - "Aprovacao sem capital verificado"
+        - "Territorio atribuido sem validacao de potencial"
+
+# ============================================================================
+# GLOBAL VETO CONDITIONS
+# ============================================================================
+
+global_veto_conditions:
+  - "Due diligence nao pode ser acelerada para menos de 20 dias totais"
+  - "Cooling period de 10 dias e inviolavel (Lei 13.966/2019)"
+  - "Nenhum pagamento pode ser aceito antes da entrega da COF"
+  - "Nenhum contrato pode ser assinado antes do cooling period"
+  - "Candidato rejeitado so pode reaplicar apos 6 meses"
+  - "Maximo de 5 candidatos em due diligence simultanea (capacidade da equipe)"
+
+# ============================================================================
+# SLA E METRICAS DO PROCESSO
+# ============================================================================
+
+process_slas:
+  response_time:
+    first_contact: "24h apos recebimento do formulario"
+    screening_result: "5 dias uteis apos formulario completo"
+    financial_result: "10 dias uteis apos documentos recebidos"
+    legal_result: "5 dias uteis apos cooling period"
+    final_decision: "3 dias uteis apos legal review"
+  pipeline_metrics:
+    lead_to_screening: "Target: 100% em ate 48h"
+    screening_to_financial: "Target: 25-35% conversao"
+    financial_to_legal: "Target: 70-85% conversao"
+    legal_to_approval: "Target: 85-95% conversao"
+    overall_conversion: "Target: 15-25% (lead to franqueado)"
+  quality_metrics:
+    franqueado_satisfaction_12m: "NPS >= 7 apos 12 meses de operacao"
+    early_churn_rate: "< 5% de churn nos primeiros 12 meses"
+    turnaround_rate: "< 15% de franqueados precisando de turnaround"
+    litigation_rate: "< 2% de litigios nos primeiros 24 meses"

@@ -1,0 +1,16 @@
+{
+  "name": "@aiox/squad-fitcoach",
+  "version": "1.0.0",
+  "description": "FitCoach Squad - Elite coaching platform with 10 mind clones for bodybuilding and fitness business",
+  "author": "AIOX Framework",
+  "license": "UNLICENSED",
+  "private": true,
+  "keywords": ["fitness", "coaching", "bodybuilding", "gamification", "hormozi", "periodization"],
+  "aiox": {
+    "type": "squad",
+    "entry_agent": "fitcoach-chief",
+    "tier_count": 4,
+    "agent_count": 19,
+    "target_user": "Personal trainers, gym owners, fitness coaches"
+  }
+}

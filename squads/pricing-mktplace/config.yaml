@@ -1,0 +1,143 @@
+# ============================================================================
+# Squad Pricing Marketplace — Configuration
+# ============================================================================
+name: pricing-mktplace
+version: 1.0.0
+domain: "Precificação & Custos de Marketplaces Brasil — Comissões, Taxas, Simulação de Margem"
+description: >
+  Squad especializado em regras de precificação de todos os marketplaces
+  brasileiros. Cada agente domina 100% da estrutura de custos do seu
+  marketplace: comissões por categoria, taxas fixas, frete, fulfillment,
+  ads e programas especiais. Atualizado em tempo real via *atualizar-regras.
+  Dados base: 07/04/2026.
+author: Synkra AIOX
+icon: "💰"
+slashPrefix: pricing
+
+# Agents (15)
+agents:
+  # Tier 0 — Orquestração
+  - id: pricing-chief
+    name: "Pricing Strategist"
+    tier: 0
+    role: "Orquestrador — comparação cross-marketplace, simulação de margem, routing"
+
+  - id: pricing-updater
+    name: "Pricing Updater"
+    tier: 0
+    role: "Auto-atualização de regras via web research, detecção de mudanças"
+
+  # Tier 1 — Big 4
+  - id: ml-pricing
+    name: "Mercado Livre Pricing Expert"
+    tier: 1
+    role: "Comissões Clássico/Premium, custo operacional variável, Mercado Ads, Full"
+
+  - id: shopee-pricing
+    name: "Shopee Pricing Expert"
+    tier: 1
+    role: "Faixas escalonadas mar/2026, programa frete obrigatório, Shopee Ads"
+
+  - id: amazon-pricing
+    name: "Amazon BR Pricing Expert"
+    tier: 1
+    role: "Referral fees por categoria, FBA fees, planos Individual/Pro, Amazon Ads"
+
+  - id: magalu-pricing
+    name: "Magalu Pricing Expert"
+    tier: 1
+    role: "Comissão por categoria, Magalu Entregas, Magalu Ads, taxa fixa R$3"
+
+  # Tier 2 — Players Relevantes
+  - id: casasbahia-pricing
+    name: "Casas Bahia Pricing Expert"
+    tier: 2
+    role: "Comissão 17-21%, multi-bandeira (CB + Ponto + Extra), reembolso 50%"
+
+  - id: americanas-pricing
+    name: "Americanas Pricing Expert"
+    tier: 2
+    role: "Comissão 16-19% por departamento, repasse semanal +1%, Americanas Entrega"
+
+  - id: shein-pricing
+    name: "SHEIN Pricing Expert"
+    tier: 2
+    role: "Comissão 20% + R$5 fixo, SFS fulfillment, período 0% novos sellers"
+
+  - id: netshoes-pricing
+    name: "Netshoes/Zattini Pricing Expert"
+    tier: 2
+    role: "Comissão 15-30%, taxa R$2,49/pedido, MagaluPay, dual brand NS+ZT"
+
+  - id: tiktokshop-pricing
+    name: "TikTok Shop Pricing Expert"
+    tier: 2
+    role: "Comissão 6% + 6% frete, taxa fixa R$2, afiliados 8-15%, Shopping Ads"
+
+  - id: meta-pricing
+    name: "Meta Commerce Pricing Expert"
+    tier: 2
+    role: "0% comissão, social commerce, affiliate links, Instagram Shopping"
+
+  # Tier 3 — Verticais & Hubs
+  - id: mirakl-pricing
+    name: "Mirakl Pricing Expert"
+    tier: 3
+    role: "Carrefour 16% + Leroy Merlin 18% + R$49/mês, plataforma Mirakl"
+
+  - id: verticais-pricing
+    name: "Verticais Pricing Expert"
+    tier: 3
+    role: "Dafiti 25-30% + KaBuM! 18% + MadeiraMadeira 14-21%"
+
+  - id: olist-pricing
+    name: "Olist Pricing Expert"
+    tier: 3
+    role: "Hub all-inclusive 19-21%, planos Lite/Pro/Premium, R$5/item"
+
+# Tier Distribution
+tier_distribution:
+  tier_0:
+    agents: ["pricing-chief", "pricing-updater"]
+    purpose: "Comparação cross-marketplace, simulação, auto-atualização"
+  tier_1:
+    agents: ["ml-pricing", "shopee-pricing", "amazon-pricing", "magalu-pricing"]
+    purpose: "Big 4 — maior GMV, regras mais complexas, mudanças frequentes"
+  tier_2:
+    agents: ["casasbahia-pricing", "americanas-pricing", "shein-pricing", "netshoes-pricing", "tiktokshop-pricing", "meta-pricing"]
+    purpose: "Players relevantes com estruturas de custo específicas"
+  tier_3:
+    agents: ["mirakl-pricing", "verticais-pricing", "olist-pricing"]
+    purpose: "Verticais, plataformas intermediárias e hubs"
+
+# Domain Coverage
+domain_coverage:
+  primary:
+    - "Comissões por categoria e tipo de anúncio"
+    - "Taxas fixas por transação/item/pedido"
+    - "Custos de frete e fulfillment"
+    - "Programas de frete grátis (custo para seller)"
+    - "Taxas de ads/marketing por marketplace"
+    - "Planos e mensalidades"
+    - "Simulação de margem líquida"
+    - "Comparação de custo total entre marketplaces"
+  secondary:
+    - "Períodos promocionais e isenções para novos sellers"
+    - "Ciclos de pagamento e antecipação"
+    - "Penalidades e taxas de reembolso/cancelamento"
+    - "Programas especiais (Mall, Premium, Full, FBA)"
+    - "Histórico de mudanças de taxas"
+    - "Tendências de precificação"
+
+# Data Sources
+data_sources:
+  primary: "data/pricing-rules.yaml"
+  last_updated: "2026-04-07"
+  update_command: "*atualizar-regras"
+  update_frequency: "Sob demanda ou mensal recomendado"
+
+# Workflow Config
+workflow_config:
+  checkpoint_policy: always_active
+  fail_fast: true
+  allow_manual_override: false

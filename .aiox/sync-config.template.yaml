@@ -1,0 +1,21 @@
+# Sync Template Configuration — TEMPLATE
+#
+# FIRST TIME SETUP:
+# 1. Copy this file: cp sync-config.template.yaml sync-config.yaml
+# 2. Edit sync-config.yaml with YOUR paths
+# 3. Done — workflows read sync-config.yaml automatically
+#
+# sync-config.yaml is gitignored (local to each machine)
+# sync-config.template.yaml is committed (shared reference)
+
+template_path: "__EDIT_ME__"   # Path to the aiox template clone
+projects_base: "__EDIT_ME__"   # Path where your projects live
+export_dir: "__EDIT_ME__"      # Path where squad zips are saved
+
+exclude_projects: []
+
+defaults:
+  layers: "all"
+  dry_run: false
+  force: false
+  skip_commit: false

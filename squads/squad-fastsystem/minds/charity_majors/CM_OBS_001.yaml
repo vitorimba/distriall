@@ -1,0 +1,18 @@
+id: CM_OBS_001
+name: "Observability Over Monitoring"
+mind: charity_majors
+source: "Observability Engineering (2022) — Chapter 1"
+domain: observability
+description: >
+  Instrumente para explorar, nao apenas para alertar. Monitoring
+  responde perguntas conhecidas. Observability permite fazer
+  perguntas que voce nao sabia que precisava fazer.
+applies_when:
+  - "Configurando instrumentacao de sistema"
+  - "Avaliando ferramenta de monitoring"
+action: >
+  Use high-cardinality data e structured events, nao apenas
+  metricas agregadas. Instrumente com traces e eventos ricos
+  que permitam explorar comportamento em producao.
+severity: foundational
+confidence: 0.90

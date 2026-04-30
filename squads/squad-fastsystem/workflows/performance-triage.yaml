@@ -1,0 +1,192 @@
+# ============================================================================
+# Workflow: Performance Triage
+# ============================================================================
+# Diagnostic → Profile → Identify → Fix → Verify
+# 5-phase rapid triage for performance issues
+# ============================================================================
+
+name: performance-triage
+version: 1.0.0
+description: >
+  Triage rapido de problemas de performance. Diagnostica, identifica o
+  gargalo principal, aplica fix e verifica melhoria. Ideal para resposta
+  rapida a problemas pontuais.
+
+trigger: "Sistema com problema de performance pontual"
+estimated_duration: "2-6 hours"
+max_iterations: 3
+
+# ============================================================================
+# Phases
+# ============================================================================
+phases:
+  - id: phase-1-diagnostic
+    name: "Diagnostic"
+    description: "Coleta de contexto e diagnostico inicial usando USE method"
+    agent: system-profiler
+    task: system-diagnostic
+    duration: "30-60 min"
+    inputs:
+      - symptom_description
+      - affected_component
+      - when_started
+    outputs:
+      - diagnostic_report
+      - resource_utilization_data
+      - initial_hypothesis
+    checkpoint:
+      name: "Diagnostic Complete"
+      criteria:
+        - "USE method aplicado para todos os recursos"
+        - "Hipotese inicial formulada"
+        - "Metricas baseline coletadas"
+      decision: "continue | escalate"
+
+  - id: phase-2-profile
+    name: "Profile"
+    description: "Profiling detalhado do componente suspeito"
+    agent: dynamic  # baseado na hipotese do phase-1
+    duration: "30-90 min"
+    agent_routing:
+      - condition: "bottleneck == 'database'"
+        agent: database-optimizer
+        task: query-optimization
+      - condition: "bottleneck == 'frontend'"
+        agent: frontend-performance
+        task: frontend-audit
+      - condition: "bottleneck == 'api'"
+        agent: api-performance
+        task: api-latency-reduction
+      - condition: "bottleneck == 'cache'"
+        agent: caching-specialist
+        task: caching-strategy
+      - condition: "bottleneck == 'infrastructure'"
+        agent: system-profiler
+        task: system-diagnostic
+    inputs:
+      - diagnostic_report
+      - initial_hypothesis
+    outputs:
+      - profiling_data
+      - root_cause_identified
+      - fix_proposal
+    checkpoint:
+      name: "Root Cause Identified"
+      criteria:
+        - "Root cause confirmado com dados"
+        - "Fix proposto com estimativa de impacto"
+      decision: "continue | re-profile | escalate"
+
+  - id: phase-3-identify
+    name: "Identify & Plan"
+    description: "Confirmar root cause e planejar fix"
+    agent: performance-lead
+    duration: "15-30 min"
+    inputs:
+      - profiling_data
+      - root_cause_identified
+      - fix_proposal
+    outputs:
+      - confirmed_root_cause
+      - fix_plan
+      - rollback_plan
+    checkpoint:
+      name: "Fix Plan Approved"
+      criteria:
+        - "Root cause confirmado pelo lead"
+        - "Fix plan com rollback definido"
+        - "Risco avaliado"
+      decision: "continue | alternative_fix | escalate"
+
+  - id: phase-4-fix
+    name: "Fix"
+    description: "Implementar a correcao"
+    agent: dynamic  # mesmo agent do phase-2
+    duration: "30-120 min"
+    inputs:
+      - fix_plan
+      - rollback_plan
+    outputs:
+      - fix_implemented
+      - changes_documented
+    checkpoint:
+      name: "Fix Implemented"
+      criteria:
+        - "Fix implementado conforme plano"
+        - "Testes unitarios passando"
+        - "Mudancas documentadas"
+      decision: "continue | rollback"
+
+  - id: phase-5-verify
+    name: "Verify"
+    description: "Verificar que o fix resolveu o problema"
+    agent: performance-lead
+    duration: "15-30 min"
+    inputs:
+      - fix_implemented
+      - baseline_metrics
+    outputs:
+      - verification_report
+      - before_after_comparison
+      - final_status
+    checkpoint:
+      name: "Fix Verified"
+      criteria:
+        - "Metricas melhoraram >= 30%"
+        - "Nenhuma regressao em outros componentes"
+        - "Performance budget respeitado"
+      decision: "complete | iterate | rollback"
+
+# ============================================================================
+# Veto Conditions
+# ============================================================================
+veto_conditions:
+  - id: PT-V-001
+    condition: "Fix aplicado sem baseline documentado"
+    severity: BLOCK
+    phase: phase-4-fix
+
+  - id: PT-V-002
+    condition: "Fix sem rollback plan"
+    severity: BLOCK
+    phase: phase-4-fix
+
+  - id: PT-V-003
+    condition: "Verificacao sem comparacao antes/depois"
+    severity: BLOCK
+    phase: phase-5-verify
+
+  - id: PT-V-004
+    condition: "Profiling sem USE method no diagnostic"
+    severity: WARN
+    phase: phase-2-profile
+
+# ============================================================================
+# Quality Gates
+# ============================================================================
+quality_gates:
+  diagnostic_complete:
+    criteria: "USE method completo + hipotese"
+    blocking: true
+
+  root_cause_confirmed:
+    criteria: "Evidencia quantitativa do root cause"
+    blocking: true
+
+  fix_verified:
+    criteria: "Melhoria >= 30% com zero regressao"
+    blocking: true
+
+# ============================================================================
+# Agents Involved
+# ============================================================================
+agents_involved:
+  required:
+    - performance-lead
+    - system-profiler
+  conditional:
+    - database-optimizer
+    - frontend-performance
+    - api-performance
+    - caching-specialist
+    - observability-engineer

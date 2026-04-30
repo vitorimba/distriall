@@ -1,0 +1,131 @@
+# Tool Discovery — Banking API Squad
+# Generated: 2026-04-14
+# Phase: F1 (PRO Pipeline)
+
+discovered_tools:
+
+  # ── Python Libraries ──────────────────────────────────────────────
+  python:
+    - name: bancointer-python
+      type: library
+      url: https://github.com/renatojdev/bancointer-python
+      description: "Cliente Python para API Banco Inter PJ — boletos, banking, Pix"
+      coverage: [inter]
+      impact: high
+      effort: low
+      status: recommended
+
+    - name: bancointer (lucasrcezimbra)
+      type: library
+      url: https://github.com/lucasrcezimbra/bancointer
+      description: "Client Python alternativo para APIs Banco Inter"
+      coverage: [inter]
+      impact: medium
+      effort: low
+      status: alternative
+
+    - name: api-sicoob
+      type: library
+      url: https://github.com/divulgueregional/api-sicoob
+      description: "Integracao com Open Banking Sicoob para PJ"
+      coverage: [sicoob]
+      impact: high
+      effort: low
+      status: recommended
+
+  # ── Node.js / NPM ────────────────────────────────────────────────
+  nodejs:
+    - name: bancos-brasileiros
+      type: npm-package
+      url: https://www.npmjs.com/package/bancos-brasileiros
+      description: "Dados de bancos brasileiros (codigos, ISPB, nomes)"
+      coverage: [all]
+      impact: low
+      effort: minimal
+      status: utility
+
+  # ── Postman Collections ───────────────────────────────────────────
+  postman:
+    - name: Open Banking Sicoob Collection
+      type: postman-collection
+      url: https://www.postman.com/api-sisbr/apis-do-sicoob-sisbr-como-plataforma-s-public-workspace/collection/u4hlto8/open-banking-sicoob
+      description: "Collection completa da API Sicoob para testes"
+      coverage: [sicoob]
+      impact: high
+      effort: minimal
+      status: recommended
+
+    - name: Sicoob Cobranca Bancaria
+      type: postman-collection
+      url: https://documenter.getpostman.com/view/20565799/Uzs6yNhe
+      description: "Collection da API de Cobranca Bancaria Sicoob"
+      coverage: [sicoob]
+      impact: medium
+      effort: minimal
+      status: recommended
+
+  # ── Reference Repositories ────────────────────────────────────────
+  github:
+    - name: open-banking-brazil (curated list)
+      type: awesome-list
+      url: https://github.com/magnobiet/open-banking-brazil
+      description: "Lista curada de recursos Open Banking Brasil"
+      coverage: [all]
+      impact: medium
+      effort: none
+      status: reference
+
+  # ── Official Portals (Primary Source of Truth) ────────────────────
+  portals:
+    - name: Banco Inter Developers
+      url: https://developers.inter.co/
+      coverage: [inter]
+      note: "Fonte primaria para todos endpoints Inter"
+
+    - name: Sicoob Developers
+      url: https://developers.sicoob.com.br/
+      coverage: [sicoob]
+      note: "Fonte primaria + sandbox"
+
+    - name: Stone Dev Center
+      url: https://www.stone.com.br/devcenter
+      coverage: [stone]
+      note: "APIs + SDKs (POS, Android, Online)"
+
+    - name: XP Developer Portal
+      url: https://developer.xpinc.com/
+      coverage: [xp]
+      note: "Acesso restrito a parceiros/AAIs"
+
+    - name: Open Finance Brasil
+      url: https://openfinancebrasil.org.br/
+      coverage: [all]
+      note: "Specs oficiais FAPI/BACEN"
+
+  # ── Gaps (nao encontrado) ─────────────────────────────────────────
+  gaps:
+    - domain: "Stone API"
+      gap: "Nenhuma lib Python/Node.js open-source para Stone Online API"
+      recommendation: "Implementar client proprio com requests/fetch"
+
+    - domain: "XP API"
+      gap: "Nenhuma lib open-source para API XP — acesso restrito"
+      recommendation: "Implementar client proprio apos obter credenciais de parceiro"
+
+    - domain: "Multi-bank unified client"
+      gap: "Nao existe lib que unifique todos os 4 bancos"
+      recommendation: "Usar data-normalizer agent para unificacao em runtime"
+
+# ── Quick Wins ──────────────────────────────────────────────────────
+quick_wins:
+  - tool: "Postman Collections (Sicoob)"
+    action: "Importar e usar para testes rapidos antes de codificar"
+    effort: "5 minutos"
+
+  - tool: "bancointer-python"
+    action: "pip install e usar como base para integracao Inter"
+    effort: "30 minutos"
+
+  - tool: "bancos-brasileiros (npm)"
+    action: "Lookup de codigos ISPB para transferencias externas"
+    effort: "5 minutos"

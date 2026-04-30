@@ -1,0 +1,304 @@
+# Veto Conditions Consolidadas — SpeechTherapy Squad
+# Todas as condicoes de veto dos 7 agentes, organizadas por severidade
+# Updated: 2026-03-13
+# Total: 32 condicoes extraidas de 7 agentes + 10 tasks
+
+metadata:
+  version: "1.0.0"
+  total_agents: 7
+  total_veto_conditions: 32
+  source: "Extraido dos arquivos de agents/ e tasks/"
+
+severity_legend:
+  NON-NEGOTIABLE: "BLOCK — interrompe execucao imediatamente, sem excecao"
+  MUST: "WARN — alerta obrigatorio, requer acao antes de prosseguir"
+  SHOULD: "REDIRECT — redireciona para agente ou fluxo correto"
+
+# ============================================================
+# ORCHESTRATOR
+# ============================================================
+
+orchestrator:
+  agent: speechtherapy-chief
+  name: "Vox"
+
+  veto_conditions:
+    - id: ST_VOX_V001
+      severity: NON-NEGOTIABLE
+      condition: "Prescricao de exercicios vocais sem avaliacao T0 concluida"
+      action: "BLOCK + redirecionar para mara-behlau obrigatoriamente"
+      agent_source: speechtherapy-chief
+
+    - id: ST_VOX_V002
+      severity: NON-NEGOTIABLE
+      condition: "Sinal de alarme presente (hemoptise, disfagia, rouquidao > 3 semanas, dor intensa laringea)"
+      action: "BLOCK imediato + encaminhamento para laringologista / otorrinolaringologista"
+      agent_source: speechtherapy-chief
+
+    - id: ST_VOX_V003
+      severity: MUST
+      condition: "Roteamento para T2 sem conclusao de T1 sem justificativa clinica"
+      action: "WARN + solicitar confirmacao antes de prosseguir"
+      agent_source: speechtherapy-chief
+
+    - id: ST_VOX_V004
+      severity: MUST
+      condition: "Promessa de cura ou recuperacao em prazo garantido"
+      action: "BLOCK + reformular com linguagem de probabilidade clinica"
+      agent_source: speechtherapy-chief
+
+# ============================================================
+# TIER 0 — DIAGNOSTICO & CIENCIA VOCAL
+# ============================================================
+
+tier_0:
+  agents:
+
+    - agent: ingo-titze
+      name: "Ingo Titze"
+      veto_conditions:
+        - id: ST_IT_V001
+          severity: NON-NEGOTIABLE
+          condition: "Fonacao forcada contra resistencia sem postura SOVT adequada"
+          action: "BLOCK + redirecionar para protocolo SOVT com explicacao do mecanismo fisico"
+          agent_source: ingo-titze
+
+        - id: ST_IT_V002
+          severity: NON-NEGOTIABLE
+          condition: "Aumentar intensidade vocal para superar falha vocal (quebra de registro, onset dificil)"
+          action: "BLOCK + explicar mecanismo (PTP, colisao, dano ao cover) + redirecionar para SOVT"
+          agent_source: ingo-titze
+
+        - id: ST_IT_V003
+          severity: MUST
+          condition: "Repouso vocal absoluto como primeira linha quando SOVT em baixa intensidade e indicado"
+          action: "WARN + substituir por SOVT em piano dynamic — mantém neuroplasticidade motora"
+          agent_source: ingo-titze
+
+        - id: ST_IT_V004
+          severity: MUST
+          condition: "Diagnostico clinico de patologia organica fora do escopo de ciencia vocal"
+          action: "BLOCK + encaminhar para @mara-behlau ou laringologista"
+          agent_source: ingo-titze
+
+        - id: ST_IT_V005
+          severity: SHOULD
+          condition: "Prescricao de SOVT sem avaliar dose vocal (frequencia x amplitude x tempo)"
+          action: "REDIRECT + recalcular dose vocal antes de prescrever"
+          agent_source: ingo-titze
+
+    - agent: mara-behlau
+      name: "Mara Behlau"
+      veto_conditions:
+        - id: ST_MB_V001
+          severity: NON-NEGOTIABLE
+          condition: "Exercicios vocais sem avaliacao clinica completa (anamnese + perceptivo-auditiva)"
+          action: "BLOCK + 'Primeiro avaliar, depois intervir. A sequencia protege a voz.'"
+          agent_source: mara-behlau
+
+        - id: ST_MB_V002
+          severity: NON-NEGOTIABLE
+          condition: "Ignorar secrecao nasal ativa ao planejar terapia vocal"
+          action: "BLOCK + protocolo nasal obrigatorio antes de qualquer exercicio vocal"
+          agent_source: mara-behlau
+
+        - id: ST_MB_V003
+          severity: NON-NEGOTIABLE
+          condition: "Rouquidao persistente > 3 semanas sem encaminhamento para laringoscopia"
+          action: "BLOCK + encaminhamento para laringologista obrigatorio"
+          agent_source: mara-behlau
+
+        - id: ST_MB_V004
+          severity: MUST
+          condition: "Exercicio vocal prescrito antes de checagem de hidratacao e higiene basica"
+          action: "WARN + verificar hidratacao (2L/dia) e higiene vocal antes de prosseguir"
+          agent_source: mara-behlau
+
+        - id: ST_MB_V005
+          severity: MUST
+          condition: "Prescricao de medicamento ou indicacao de cirurgia (fora do escopo fono)"
+          action: "BLOCK + encaminhar para dominio medico"
+          agent_source: mara-behlau
+
+        - id: ST_MB_V006
+          severity: SHOULD
+          condition: "Terminologia vaga tipo 'descanse um pouco' em vez de protocolo preciso"
+          action: "REDIRECT + substituir por protocolo com tempo, frequencia e criterio de progressao"
+          agent_source: mara-behlau
+
+# ============================================================
+# TIER 1 — REABILITACAO CORE
+# ============================================================
+
+tier_1:
+  agents:
+
+    - agent: joseph-stemple
+      name: "Joseph Stemple"
+      veto_conditions:
+        - id: ST_JS_V001
+          severity: NON-NEGOTIABLE
+          condition: "Dor durante qualquer exercicio VFE — dor na garganta, pescoço ou laringe"
+          action: "BLOCK IMEDIATO + interromper todos os exercicios + encaminhar para laringologista"
+          agent_source: joseph-stemple
+
+        - id: ST_JS_V002
+          severity: NON-NEGOTIABLE
+          condition: "Exercicio Power (sustentacao de notas C-D-E-F-G) antes de completar Warm-Up, Stretch e Contract"
+          action: "BLOCK + a ordem Warm-Up → Stretch → Contract → Power e fisiologicamente obrigatoria"
+          agent_source: joseph-stemple
+
+        - id: ST_JS_V003
+          severity: NON-NEGOTIABLE
+          condition: "Sangramento associado a uso vocal (hemorragia vocal)"
+          action: "EMERGENCIA + parar imediatamente + encaminhar para ORL urgente"
+          agent_source: joseph-stemple
+
+        - id: ST_JS_V004
+          severity: MUST
+          condition: "VFE prescrito sem historia clinica completa (perfil vocal, queixas, duracao)"
+          action: "WARN + coletar historia minima antes de qualquer prescricao"
+          agent_source: joseph-stemple
+
+        - id: ST_JS_V005
+          severity: MUST
+          condition: "Lesao organica suspeita sem clearance laringoscopico"
+          action: "WARN + exigir avaliacao laringoscopica antes de iniciar VFE"
+          agent_source: joseph-stemple
+
+        - id: ST_JS_V006
+          severity: SHOULD
+          condition: "Paciente quer mais de 2 repeticoes por sessao para progredir mais rapido"
+          action: "REDIRECT + explicar principio de recuperacao: 2x cada, 2x ao dia e o protocolo validado"
+          agent_source: joseph-stemple
+
+    - agent: katherine-verdolini
+      name: "Katherine Verdolini Abbott"
+      veto_conditions:
+        - id: ST_KV_V001
+          severity: NON-NEGOTIABLE
+          condition: "Dor ou desconforto laringeo durante qualquer exercicio LMRVT"
+          action: "BLOCK IMEDIATO + parar + encaminhar para laringologista antes de retomar"
+          agent_source: katherine-verdolini
+
+        - id: ST_KV_V002
+          severity: NON-NEGOTIABLE
+          condition: "Aumento de volume/loudness durante exercicios LMRVT (aumenta colisao em nodulos)"
+          action: "BLOCK + volume e inimigo em nodulos — trabalhar eficiencia de ressonancia, nao loudness"
+          agent_source: katherine-verdolini
+
+        - id: ST_KV_V003
+          severity: NON-NEGOTIABLE
+          condition: "LMRVT iniciado sem laringoscopia confirmando diagnostico (especialmente nodulos)"
+          action: "BLOCK + exigir laringoscopia documentada antes de iniciar protocolo"
+          agent_source: katherine-verdolini
+
+        - id: ST_KV_V004
+          severity: MUST
+          condition: "Pular sessoes do protocolo LMRVT de 8 sessoes (progressao motora obrigatoria)"
+          action: "WARN + objetivos de cada sessao sao progressao motora — nao podem ser pulados"
+          agent_source: katherine-verdolini
+
+        - id: ST_KV_V005
+          severity: MUST
+          condition: "LMRVT aplicado em paralisia vocal unilateral, polipo, cisto ou sulco vocal"
+          action: "BLOCK + LMRVT validado para nodulos e hiperfuncao — outras patologias tem indicacoes diferentes"
+          agent_source: katherine-verdolini
+
+# ============================================================
+# TIER 2 — ESPECIALIZACAO AVANCADA
+# ============================================================
+
+tier_2:
+  agents:
+
+    - agent: jackie-gartner-schmidt
+      name: "Jackie Gartner-Schmidt"
+      veto_conditions:
+        - id: ST_JG_V001
+          severity: NON-NEGOTIABLE
+          condition: "Paciente em repouso vocal prescrito (completo ou modificado)"
+          action: "BLOCK + nao usar CTT ou trabalho vocal conversacional. Coordenar com medico"
+          agent_source: jackie-gartner-schmidt
+
+        - id: ST_JG_V002
+          severity: NON-NEGOTIABLE
+          condition: "Hemorragia vocal ativa suspeitada ou confirmada"
+          action: "BLOCK imediato + cessar todo uso vocal + encaminhar para laringologista"
+          agent_source: jackie-gartner-schmidt
+
+        - id: ST_JG_V003
+          severity: SHOULD
+          condition: "Paciente recusa abordagem conversacional e quer apenas drill repetitivo"
+          action: "REDIRECT + explicar racional do CTT. Se recusa persistir, documentar e avaliar handoff"
+          agent_source: jackie-gartner-schmidt
+
+    - agent: jacob-lieberman
+      name: "Jacob Lieberman"
+      veto_conditions:
+        - id: ST_JL_V001
+          severity: NON-NEGOTIABLE
+          condition: "Inflamacao laringea aguda, infeccao ativa ou tecido pos-cirurgico recente"
+          action: "BLOCK + nenhuma terapia manual. Encaminhar para laringologista. Clearance medico obrigatorio"
+          agent_source: jacob-lieberman
+
+        - id: ST_JL_V002
+          severity: NON-NEGOTIABLE
+          condition: "Sopro carotideo, instabilidade cervical (AR, fusao previa) ou anticoagulacao"
+          action: "BLOCK + terapia manual na regiao laringea/cervical contraindicada. Consultar medico"
+          agent_source: jacob-lieberman
+
+        - id: ST_JL_V003
+          severity: NON-NEGOTIABLE
+          condition: "Paciente em distress emocional, dissociado ou em crise ativa durante sessao"
+          action: "BLOCK + pausar terapia manual + mudar para suporte psicoterapeutico. Nao prosseguir com tecnica fisica"
+          agent_source: jacob-lieberman
+
+        - id: ST_JL_V004
+          severity: MUST
+          condition: "Massagem circumlaringea solicitada sem avaliacao de palpacao (Lieberman Protocol) concluida"
+          action: "WARN + avaliacao precede tratamento. Protocolo Lieberman obrigatorio antes de selecao de tecnica manual"
+          agent_source: jacob-lieberman
+
+# ============================================================
+# CROSS-CUTTING SAFETY VETOS (aplicaveis a TODOS os agentes)
+# ============================================================
+
+cross_cutting:
+  safety_vetos:
+    - id: ST_SAFETY_001
+      severity: NON-NEGOTIABLE
+      condition: "Sangue durante ou apos exercicio vocal / fonacao (hemoptise vocal)"
+      action: "EMERGENCIA + parar TODA atividade vocal + encaminhar URGENTE para laringologista"
+      applies_to: ALL_AGENTS
+
+    - id: ST_SAFETY_002
+      severity: NON-NEGOTIABLE
+      condition: "Dor intensa ou crescente na regiao laringea durante qualquer procedimento"
+      action: "BLOCK IMEDIATO + interromper procedimento + encaminhar para avaliacao medica"
+      applies_to: ALL_AGENTS
+
+    - id: ST_SAFETY_003
+      severity: NON-NEGOTIABLE
+      condition: "Piora de nodulos ou lesao vocal confirmada apos protocolo (worsening)"
+      action: "BLOCK + interromper protocolo atual + reavaliacao laringoscopica + mudanca de protocolo"
+      applies_to: ALL_AGENTS
+
+    - id: ST_SAFETY_004
+      severity: NON-NEGOTIABLE
+      condition: "Disfagia associada a queixa vocal — investigacao neurologica obrigatoria"
+      action: "BLOCK + encaminhamento neurologico + nao iniciar reabilitacao vocal isolada"
+      applies_to: ALL_AGENTS
+
+    - id: ST_SAFETY_005
+      severity: NON-NEGOTIABLE
+      condition: "Afonia subita em jovem saudavel sem causa identificada"
+      action: "BLOCK + avaliar componente psicogenico + encaminhamento laringologista"
+      applies_to: ALL_AGENTS
+
+gate_enforcement:
+  strict_mode: true
+  allow_override: false
+  override_requires: "speechtherapy-chief explicit approval"
+  log_gate_decisions: true
+  notify_on_block: true

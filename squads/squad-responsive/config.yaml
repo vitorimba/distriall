@@ -1,0 +1,112 @@
+squad:
+  name: squad-responsive
+  title: "Responsive Design & Multi-Device Optimization Squad"
+  version: "1.0.1"
+  description: "Elite squad that audits, optimizes, and validates responsiveness across all device sizes"
+  domain: "responsive-design"
+  slashPrefix: "squad-responsive"
+  keywords: [responsive, mobile, tablet, desktop, ultrawide, breakpoints, css, layout, fluid, media-queries, container-queries]
+
+  workspace_integration:
+    level: none
+
+  breakpoints:
+    mobile-small: 320px
+    mobile: 480px
+    tablet: 768px
+    tablet-landscape: 1024px
+    desktop: 1280px
+    desktop-large: 1440px
+    hd: 1920px
+    qhd: 2560px
+    ultrawide: 3440px
+
+  agents:
+    - id: responsive-chief
+      name: Rex
+      tier: orchestrator
+      file: agents/responsive-chief.md
+    - id: responsive-auditor
+      name: Scout
+      tier: 0
+      file: agents/responsive-auditor.md
+    - id: mobile-first-architect
+      name: Flux
+      tier: 1
+      file: agents/mobile-first-architect.md
+    - id: css-layout-engineer
+      name: Grid
+      tier: 1
+      file: agents/css-layout-engineer.md
+    - id: fluid-design-tokenizer
+      name: Token
+      tier: 2
+      file: agents/fluid-design-tokenizer.md
+    - id: responsive-media-specialist
+      name: Media
+      tier: 2
+      file: agents/responsive-media-specialist.md
+    - id: cross-device-qa
+      name: Pixel
+      tier: 3
+      file: agents/cross-device-qa.md
+
+  minds:
+    - name: Ahmad Shadeed
+      framework: Defensive CSS
+      agents: [responsive-auditor, cross-device-qa]
+    - name: Brad Frost
+      framework: Atomic Design
+      agents: [responsive-auditor]
+    - name: Andy Bell
+      framework: CUBE CSS + Every Layout
+      agents: [mobile-first-architect]
+    - name: Luke Wroblewski
+      framework: Mobile First
+      agents: [mobile-first-architect]
+    - name: Rachel Andrew
+      framework: CSS Grid/Subgrid
+      agents: [css-layout-engineer]
+    - name: Stephanie Eckles
+      framework: ModernCSS + SmolCSS
+      agents: [css-layout-engineer]
+    - name: Adam Argyle
+      framework: Open Props + GUI Challenges
+      agents: [fluid-design-tokenizer]
+    - name: Utopia (Gilyead & Mudford)
+      framework: Fluid Type & Space
+      agents: [fluid-design-tokenizer]
+    - name: Jason Grigsby
+      framework: Responsive Images
+      agents: [responsive-media-specialist]
+    - name: Addy Osmani
+      framework: Performance per Device
+      agents: [responsive-media-specialist]
+    - name: Harry Roberts
+      framework: ITCSS + CSS Guidelines
+      agents: [cross-device-qa]
+
+  workflows:
+    - name: wf-responsive-complete
+      file: workflows/wf-responsive-complete.yaml
+      description: Full responsive optimization pipeline (audit->plan->fix->optimize->test->report)
+
+  tasks:
+    - responsive-audit.md
+    - create-fix-plan.md
+    - implement-fixes.md
+    - fluid-tokens-setup.md
+    - optimize-media.md
+    - cross-device-test.md
+
+  templates:
+    - audit-report-tmpl.md
+    - fix-plan-tmpl.md
+    - responsive-audit-report-tmpl.md
+    - media-audit-report-tmpl.md
+    - token-audit-report-tmpl.md
+
+  checklists:
+    - responsive-audit-checklist.md
+    - breakpoint-coverage-checklist.md
+    - cross-device-test-checklist.md

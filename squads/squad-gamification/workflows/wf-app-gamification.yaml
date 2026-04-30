@@ -1,0 +1,489 @@
+##############################################################################
+# Workflow: App/Product Gamification
+#
+# Product-focused gamification for apps and digital products.
+# 5 phases: Audit → UX-Mapping → Mechanic-Selection → Implementation → Optimization
+#
+# ID:       wf-app-gamification
+# Squad:    squad-gamification
+# Phases:   5
+# Duration: 3-6 weeks
+# Context:  Consumer apps, SaaS products, mobile apps, web platforms
+##############################################################################
+
+id: wf-app-gamification
+name: "App/Product Gamification Workflow"
+version: "1.0.0"
+description: >
+  Product-focused gamification workflow for consumer apps and digital products.
+  Combines Hooked Model (Nir Eyal), Game Thinking (Amy Jo Kim), and Octalysis
+  (Yu-kai Chou) to design engagement systems that drive retention and delight.
+
+trigger:
+  manual: true
+  command: "*app-gamify"
+  conditions:
+    - "context.product_type in ['app', 'web', 'saas', 'mobile', 'hybrid']"
+
+settings:
+  max_iterations: 3
+  quality_gate_enforcement: strict
+  ethics_check_required: true
+  ab_testing_required: true
+  progressive_rollout: mandatory
+
+##############################################################################
+# Phase 1: AUDIT
+# Product and user experience audit
+##############################################################################
+phases:
+  - id: phase_1_audit
+    name: "Product Audit"
+    description: >
+      Comprehensive audit of current product engagement, user behavior,
+      existing gamification elements, and competitive landscape.
+    duration_estimate: "2-4 days"
+    agents:
+      lead: gamification-chief
+      support: [motivation-analyst, player-profiler, engagement-engineer]
+
+    tasks:
+      - id: product_diagnostic
+        task_ref: gamification-diagnostic
+        required: true
+        description: "Full product gamification diagnostic"
+
+      - id: user_profiling
+        task_ref: player-persona-mapping
+        required: true
+        description: "Map user base to HEXAD profiles"
+
+    actions:
+      - id: competitive_analysis
+        agent: gamification-chief
+        description: >
+          Analyze competitor gamification:
+          - Direct competitors: what gamification do they use?
+          - Industry leaders: best practices in the domain
+          - Cross-industry inspiration: mechanics from other domains
+          - Gap analysis: what competitors miss
+          For each competitor document:
+            - Mechanics used
+            - User reception (reviews, ratings)
+            - Estimated impact on engagement
+            - Lessons to apply or avoid
+
+      - id: funnel_analysis
+        agent: engagement-engineer
+        description: >
+          Map current user funnel with drop-off points:
+          - Acquisition → Activation → Retention → Revenue → Referral (AARRR)
+          - Identify biggest drop-offs
+          - Identify where gamification has highest impact potential
+          - Calculate potential recovery per funnel stage
+          Priority: Fix the biggest funnel leak first
+
+      - id: habit_zone_assessment
+        agent: engagement-engineer
+        description: >
+          Assess product's position in Nir Eyal's Habit Zone:
+          - Current frequency of use (daily/weekly/monthly)
+          - Current perceived utility
+          - Target quadrant: High Frequency + High Utility
+          - Gap to Habit Zone and strategy to close it
+
+    outputs:
+      - product-audit-report.md
+      - player-personas.md
+      - competitive-analysis.md
+      - funnel-analysis.yaml
+      - habit-zone-assessment.md
+
+    quality_gate:
+      id: GM-QG-APP-001
+      name: "Audit Quality Gate"
+      criteria:
+        - "Octalysis assessment complete (8 core drives)"
+        - "User personas created (min 3)"
+        - "Competitive analysis documented (min 3 competitors)"
+        - "AARRR funnel mapped with drop-off rates"
+        - "Habit Zone position assessed"
+        - "Top 3 opportunities prioritized"
+      pass_threshold: 6
+      on_fail: rework
+
+##############################################################################
+# Phase 2: UX MAPPING
+# Map gamification opportunities to user journey
+##############################################################################
+  - id: phase_2_ux_mapping
+    name: "UX Mapping"
+    description: >
+      Map gamification opportunities to specific moments in the user journey.
+      Design emotional arc and identify intervention points.
+    duration_estimate: "2-3 days"
+    depends_on: [phase_1_audit]
+    agents:
+      lead: experience-designer
+      support: [emotion-designer, behavior-architect]
+
+    tasks:
+      - id: map_emotions
+        task_ref: emotion-mapping
+        required: true
+        description: "Map desired emotions across user journey"
+
+      - id: audit_motivation
+        task_ref: motivation-audit
+        required: true
+        description: "Assess motivation balance"
+
+    actions:
+      - id: journey_mapping
+        agent: experience-designer
+        description: >
+          Create gamified user journey map:
+          For each journey stage (Discovery → Onboarding → Core Loop → Mastery → Endgame):
+            - Current user state (what they think/feel/do)
+            - Desired user state (what we want them to think/feel/do)
+            - Gamification touchpoints (where mechanics intervene)
+            - Emotional target (which of 4 Keys to Fun)
+            - Risk points (where users might disengage)
+            - Success metrics per stage
+
+      - id: intervention_points
+        agent: behavior-architect
+        description: >
+          Identify B=MAP intervention points:
+          For each target behavior:
+            - When is motivation highest? (trigger during peaks)
+            - What reduces ability? (remove friction)
+            - What prompts are most effective? (test channels)
+            - What's the minimum viable action? (start small)
+          Map intervention points to product screens/flows
+
+      - id: scaffolding_design
+        agent: experience-designer
+        description: >
+          Design progressive complexity using Amy Jo Kim's Game Thinking:
+          - Beginner Path: guided, simple, generous rewards
+          - Intermediate Path: more choices, balanced challenge
+          - Advanced Path: full complexity, mastery challenges
+          - Expert Path: creation, mentoring, competition
+          Define transition triggers between paths
+
+    outputs:
+      - user-journey-gamified.md
+      - emotion-map.md
+      - intervention-points.yaml
+      - scaffolding-design.yaml
+      - motivation-audit-report.md
+
+    quality_gate:
+      id: GM-QG-APP-002
+      name: "UX Mapping Quality Gate"
+      criteria:
+        - "Complete user journey mapped (5 stages)"
+        - "Emotional targets defined per stage"
+        - "B=MAP intervention points identified"
+        - "Scaffolding levels designed (min 3)"
+        - "Motivation balance assessed"
+      pass_threshold: 5
+      on_fail: rework
+
+##############################################################################
+# Phase 3: MECHANIC SELECTION
+# Select and design specific mechanics
+##############################################################################
+  - id: phase_3_mechanic_selection
+    name: "Mechanic Selection & Design"
+    description: >
+      Select, prioritize, and detail-design gamification mechanics
+      based on audit findings, UX mapping, and player profiles.
+    duration_estimate: "3-5 days"
+    depends_on: [phase_2_ux_mapping]
+    agents:
+      lead: gamification-chief
+      support:
+        - engagement-engineer
+        - experience-designer
+        - behavior-architect
+        - emotion-designer
+
+    tasks:
+      - id: design_progression
+        task_ref: progression-design
+        required: true
+        description: "Design XP, levels, and unlock systems"
+
+      - id: design_loops
+        task_ref: engagement-loop-design
+        required: true
+        description: "Design Hooked Model loops"
+
+      - id: design_onboarding
+        task_ref: onboarding-gamification
+        required: true
+        description: "Gamify first-time experience"
+
+      - id: design_leaderboards
+        task_ref: leaderboard-design
+        required: false
+        condition: "personas.dominant_types.includes('Player') || personas.dominant_types.includes('Achiever')"
+        description: "Design social competition if audience fits"
+
+      - id: anti_pattern_check
+        task_ref: anti-pattern-audit
+        required: true
+        description: "Pre-implementation anti-pattern scan"
+
+    actions:
+      - id: mechanic_selection
+        agent: gamification-chief
+        description: >
+          Select mechanics using weighted scoring:
+          For each candidate mechanic, score:
+            - Impact on primary KPI (1-10)
+            - Alignment with dominant player types (1-10)
+            - Implementation complexity (1-10, inverted)
+            - Emotional alignment (1-10)
+            - Ethical safety (1-10)
+          Weighted Score = Impact×0.3 + Alignment×0.25 + Simplicity×0.15 + Emotion×0.15 + Ethics×0.15
+          Select top 5-7 mechanics for MVP
+
+      - id: mechanic_specification
+        agent: experience-designer
+        description: >
+          For each selected mechanic, produce:
+          - Mechanic spec (using mechanics-spec-tmpl.md)
+          - Wire-frame sketch or flow description
+          - Data requirements
+          - Integration points with existing product
+          - A/B test hypothesis
+          - Success criteria
+
+    outputs:
+      - mechanics-priority-matrix.yaml
+      - progression-system-spec.md
+      - engagement-loops-spec.md
+      - onboarding-gamification-spec.md
+      - leaderboard-spec.md
+      - anti-pattern-report.md
+      - complete-mechanics-spec.md
+
+    quality_gate:
+      id: GM-QG-APP-003
+      name: "Mechanic Design Quality Gate"
+      criteria:
+        - "5-7 mechanics selected with justified scores"
+        - "Each mechanic has complete spec"
+        - "Progression system has no dead zones"
+        - "Engagement loops close properly"
+        - "Onboarding achieves first-value in < 60 seconds"
+        - "Anti-pattern audit clean"
+        - "A/B test hypotheses defined per mechanic"
+      pass_threshold: 7
+      on_fail: rework
+
+    elicit:
+      - point: "Product owner approval of selected mechanics"
+        required: true
+
+##############################################################################
+# Phase 4: IMPLEMENTATION GUIDANCE
+# Technical specs and A/B test execution
+##############################################################################
+  - id: phase_4_implementation
+    name: "Implementation & Testing"
+    description: >
+      Generate technical specifications, guide implementation,
+      and execute A/B tests to validate mechanics.
+    duration_estimate: "2-4 weeks"
+    depends_on: [phase_3_mechanic_selection]
+    agents:
+      lead: engagement-engineer
+      support: [gamification-chief, player-profiler, experience-designer]
+
+    tasks:
+      - id: ab_testing
+        task_ref: ab-test-gamification
+        required: true
+        description: "A/B test key mechanics"
+
+    actions:
+      - id: tech_spec
+        agent: engagement-engineer
+        description: >
+          Technical specification including:
+          - Event taxonomy (all gamification events)
+          - Data model (XP, levels, badges, streaks, etc.)
+          - API design (earn XP, check level, get leaderboard)
+          - State machine definitions
+          - Notification/trigger system requirements
+          - Analytics integration requirements
+          - Performance requirements (leaderboard query < 200ms)
+          - Caching strategy
+
+      - id: implementation_sequence
+        agent: gamification-chief
+        description: >
+          Progressive implementation order:
+          Sprint 1: Core XP/level system + analytics events
+          Sprint 2: Achievement/badge system + first notifications
+          Sprint 3: Engagement loops + onboarding gamification
+          Sprint 4: Social mechanics (if included)
+          Sprint 5: Advanced mechanics + polish
+
+      - id: feature_flags
+        agent: engagement-engineer
+        description: >
+          Feature flag strategy for safe rollout:
+          - Each mechanic behind its own flag
+          - Gradual rollout: 1% → 5% → 25% → 50% → 100%
+          - Kill switch for each mechanic independently
+          - Segment-based flags (by HEXAD type, tenure, etc.)
+
+      - id: test_execution
+        agent: engagement-engineer
+        description: >
+          A/B test execution:
+          - Run tests per sprint as features ship
+          - Minimum 2-week test duration per mechanic
+          - Monitor guardrail metrics continuously
+          - Early stopping if negative impact detected
+          - Document results per test
+
+    outputs:
+      - technical-spec.md
+      - implementation-sequence.yaml
+      - feature-flag-config.yaml
+      - ab-test-results.yaml
+      - sprint-retrospective.md
+
+    quality_gate:
+      id: GM-QG-APP-004
+      name: "Implementation Quality Gate"
+      criteria:
+        - "Tech spec complete and reviewed"
+        - "Feature flags configured for safe rollout"
+        - "A/B tests show positive primary metrics"
+        - "No guardrail metric degraded"
+        - "Performance targets met"
+      pass_threshold: 5
+      on_fail: rework_mechanic
+
+##############################################################################
+# Phase 5: OPTIMIZATION
+# Continuous optimization and iteration
+##############################################################################
+  - id: phase_5_optimization
+    name: "Optimization"
+    description: >
+      Continuous optimization based on data, user feedback, and evolving
+      product goals. This phase runs indefinitely.
+    duration_estimate: "Ongoing"
+    depends_on: [phase_4_implementation]
+    agents:
+      lead: gamification-chief
+      support: [engagement-engineer, player-profiler, emotion-designer]
+
+    actions:
+      - id: metric_monitoring
+        agent: engagement-engineer
+        description: >
+          Key metrics to monitor continuously:
+          - Engagement: DAU/MAU ratio, sessions/user/week
+          - Retention: D1, D7, D30, D90
+          - Progression: % users at each level, time per level
+          - Social: leaderboard participation, social actions
+          - Revenue: conversion, LTV impact, subscription retention
+          - Health: NPS, support tickets, uninstall rate
+          Alert thresholds for each metric
+
+      - id: mechanic_lifecycle
+        agent: gamification-chief
+        description: >
+          Mechanic lifecycle management:
+          - New: A/B test → validate → progressive rollout
+          - Active: monitor → optimize variants → refresh content
+          - Declining: diagnose → refresh or sunset
+          - Sunset: communicate → graceful removal → replace
+          Review each mechanic quarterly
+
+      - id: seasonal_content
+        agent: experience-designer
+        description: >
+          Seasonal/event content rotation:
+          - Monthly themed challenges
+          - Quarterly seasonal events
+          - Annual milestone celebrations
+          - Holiday-specific mechanics
+          - Limited-time collectibles/badges
+          Calendar planning 3 months ahead
+
+      - id: player_evolution
+        agent: player-profiler
+        description: >
+          Track player type evolution:
+          - Re-profile user segments quarterly
+          - Detect migration patterns (Player → Achiever, etc.)
+          - Adjust mechanics mix based on evolution
+          - Identify emerging segments
+
+    outputs:
+      - monthly-metrics-report.md
+      - quarterly-optimization-report.md
+      - mechanic-health-dashboard.yaml
+      - seasonal-content-calendar.yaml
+      - player-evolution-report.md
+
+    quality_gate:
+      id: GM-QG-APP-005
+      name: "Optimization Health Gate"
+      criteria:
+        - "Primary engagement metrics stable or growing"
+        - "Retention metrics stable or growing"
+        - "No mechanic in decline for > 2 months without action"
+        - "Seasonal content calendar maintained"
+        - "Quarterly player re-profiling completed"
+      pass_threshold: 5
+      on_fail: strategy_review
+
+##############################################################################
+# Error Handling
+##############################################################################
+error_handling:
+  ab_test_negative:
+    action: "Disable mechanic flag, return to design for that specific mechanic"
+    scope: "Affects only the failing mechanic, not entire workflow"
+
+  metric_regression:
+    thresholds:
+      warning: "-5% DAU/MAU or -3% D7 retention"
+      critical: "-10% DAU/MAU or -5% D7 retention"
+      emergency: "-20% any key metric or user safety issue"
+    actions:
+      warning: "Investigate, prepare rollback plan"
+      critical: "Rollback last deployed mechanic"
+      emergency: "Kill all gamification flags, full investigation"
+
+  user_backlash:
+    signals: ["app store reviews mention gamification negatively", "NPS drop", "social media complaints"]
+    action: "Pause rollout, gather detailed feedback, address concerns publicly"
+
+##############################################################################
+# Completion
+##############################################################################
+completion:
+  definition: "Initial implementation complete, optimization ongoing"
+  minimum_success:
+    - "All selected mechanics live and validated"
+    - "Primary engagement metric improved >= 10%"
+    - "No guardrail metric degraded"
+    - "Optimization cadence established"
+  artifacts:
+    - product-audit-report.md
+    - complete-mechanics-spec.md
+    - ab-test-results.yaml
+    - monthly-metrics-report.md
+    - optimization-calendar.yaml

@@ -1,0 +1,867 @@
+# Franchisor Calendar — Avend Franquias
+# Calendario anual do franqueador com eventos, obrigacoes e ciclos
+# Squad: Franchising Avend
+# Updated: 2026-03-13
+# Version: 1.0
+
+metadata:
+  squad: franchising-avend
+  document: franchisor-calendar
+  version: "1.0"
+  updated_at: "2026-03-13"
+  owner: franchise-chief
+  description: >-
+    Calendario anual consolidado do franqueador Avend Franquias.
+    Inclui eventos ABF, obrigacoes legais, ciclos financeiros,
+    recrutamento, marketing sazonal, treinamentos e consultorias de campo.
+  timezone: America/Sao_Paulo
+  fiscal_year_start: "01-01"
+
+# ============================================================================
+# Q1 — JANEIRO A MARCO
+# ============================================================================
+
+q1:
+  label: "Q1 — Planejamento e Abertura do Ano"
+  theme: "Planejamento estrategico, inicio de ciclo de recrutamento"
+
+  janeiro:
+    month: 1
+    label: "Janeiro"
+    events:
+      - id: CAL-Q1-001
+        name: "Planejamento Estrategico Anual"
+        type: strategy
+        dates: "01-06 a 01-10"
+        owner: franchise-chief
+        description: >-
+          Revisao de resultados do ano anterior, definicao de metas anuais
+          (expansao, faturamento, NPS), alinhamento com diretoria.
+        deliverables:
+          - "Plano Estrategico Anual aprovado"
+          - "Metas por cluster definidas"
+          - "Budget anual alocado"
+
+      - id: CAL-Q1-002
+        name: "Reuniao de Kick-off da Rede"
+        type: network_event
+        dates: "01-15"
+        owner: franchise-chief
+        format: online
+        description: >-
+          Apresentacao das metas do ano para toda a rede de franqueados.
+          Reconhecimento dos destaques do ano anterior.
+        audience: "Todos os franqueados"
+
+      - id: CAL-Q1-003
+        name: "Revisao e Atualizacao da COF"
+        type: legal
+        dates: "01-10 a 01-31"
+        owner: legal-compliance
+        priority: critical
+        description: >-
+          Inicio da atualizacao anual da Circular de Oferta de Franquia.
+          Atualizacao de balancos, lista de franqueados, demonstracoes
+          financeiras dos 2 ultimos exercicios. Prazo final: antes do
+          inicio do ciclo de recrutamento ativo (marco).
+        legal_reference: "Lei 13.966/2019, Art. 2"
+        deliverables:
+          - "COF atualizada com balancos do exercicio anterior"
+          - "Lista de franqueados e ex-franqueados atualizada"
+          - "Minuta de contrato revisada"
+
+      - id: CAL-Q1-004
+        name: "Abertura do Ciclo de Recrutamento S1"
+        type: recruitment
+        dates: "01-20"
+        owner: franchise-strategist
+        description: >-
+          Inicio do primeiro ciclo de recrutamento do ano.
+          Ativacao de campanhas de captacao, portais de franquia,
+          eventos presenciais. Janeiro-maio e o melhor periodo
+          para captar franqueados (pre-ABF Expo).
+        deliverables:
+          - "Campanha de captacao ativa"
+          - "Pipeline de leads configurado"
+
+      - id: CAL-Q1-005
+        name: "Fechamento Contabil Anual"
+        type: financial
+        dates: "01-05 a 01-31"
+        owner: franchise-chief
+        priority: critical
+        description: >-
+          Encerramento contabil do exercicio anterior.
+          Consolidacao de DRE, balanco patrimonial, fluxo de caixa.
+          Base para atualizacao da COF.
+        deliverables:
+          - "Demonstracoes financeiras auditadas"
+          - "Relatorio consolidado da rede"
+
+    reminders:
+      - "Verificar CNPJ e inscricoes estaduais de todas as unidades"
+      - "Renovar seguros de responsabilidade civil"
+      - "Atualizar registro INPI se necessario"
+
+  fevereiro:
+    month: 2
+    label: "Fevereiro"
+    events:
+      - id: CAL-Q1-006
+        name: "Treinamento de Reciclagem — Operacoes"
+        type: training
+        dates: "02-10 a 02-14"
+        owner: franchise-trainer
+        format: online
+        description: >-
+          Treinamento semestral de reciclagem para franqueados.
+          Foco em operacoes: reposicao, manutencao preventiva,
+          gestao de estoque, telemetria.
+        audience: "Todos os franqueados e operadores"
+        duration: "5 dias, 2h/dia"
+        deliverables:
+          - "Certificado de conclusao"
+          - "Avaliacao de conhecimento"
+
+      - id: CAL-Q1-007
+        name: "Revisao de Contratos Vigentes"
+        type: legal
+        dates: "02-01 a 02-28"
+        owner: legal-compliance
+        description: >-
+          Levantamento de contratos com vencimento nos proximos 12 meses.
+          Preparacao de renovacoes, negociacoes e eventuais desligamentos.
+        deliverables:
+          - "Lista de contratos a vencer"
+          - "Plano de renovacao por franqueado"
+
+      - id: CAL-Q1-008
+        name: "Campanha Carnaval — Vending"
+        type: marketing
+        dates: "02-01 a 02-15"
+        owner: marketing-brand
+        description: >-
+          Campanha sazonal de carnaval. Foco em bebidas geladas,
+          snacks para festas, hidratacao. Plotagem tematica nas maquinas
+          em regioes turisticas e de eventos.
+        deliverables:
+          - "Material de campanha distribuido"
+          - "Relatorio de vendas sazonal"
+
+      - id: CAL-Q1-009
+        name: "Visitas de Campo — Ciclo Q1"
+        type: field_consulting
+        dates: "02-15 a 03-15"
+        owner: field-consultant
+        frequency: quarterly
+        description: >-
+          Primeiro ciclo trimestral de visitas de campo.
+          Avaliacao operacional, financeira e de engajamento
+          de cada franqueado. Relatorio padronizado.
+        deliverables:
+          - "Relatorio de visita por unidade"
+          - "Plano de acao por franqueado"
+          - "Score consolidado da rede"
+
+    reminders:
+      - "Confirmar participacao na ABF Franchising Expo (inscricao antecipada)"
+      - "Preparar material de recrutamento para feiras"
+
+  marco:
+    month: 3
+    label: "Marco"
+    events:
+      - id: CAL-Q1-010
+        name: "Fechamento Trimestral Q1"
+        type: financial
+        dates: "03-25 a 03-31"
+        owner: franchise-chief
+        description: >-
+          Fechamento financeiro do primeiro trimestre.
+          Analise de faturamento vs meta, royalties recebidos,
+          inadimplencia, DRE trimestral.
+        deliverables:
+          - "DRE Q1 consolidada"
+          - "Relatorio de inadimplencia"
+          - "Dashboard atualizado"
+
+      - id: CAL-Q1-011
+        name: "COF Finalizada e Registrada"
+        type: legal
+        dates: "03-15"
+        owner: legal-compliance
+        priority: critical
+        description: >-
+          Deadline para finalizacao da COF atualizada.
+          Deve estar pronta antes do pico de recrutamento (ABF Expo).
+        legal_reference: "Lei 13.966/2019"
+        deliverables:
+          - "COF registrada e disponivel"
+
+      - id: CAL-Q1-012
+        name: "Campanha Volta as Aulas"
+        type: marketing
+        dates: "03-01 a 03-15"
+        owner: marketing-brand
+        description: >-
+          Campanha para maquinas em universidades, escolas tecnicas
+          e centros de treinamento. Foco em snacks e bebidas energeticas.
+
+    reminders:
+      - "Preparar stand e materiais para ABF Expo"
+      - "Agendar reunioes com leads qualificados"
+
+# ============================================================================
+# Q2 — ABRIL A JUNHO
+# ============================================================================
+
+q2:
+  label: "Q2 — Expansao e Eventos ABF"
+  theme: "ABF Franchising Expo, pico de recrutamento, expansao ativa"
+
+  abril:
+    month: 4
+    label: "Abril"
+    events:
+      - id: CAL-Q2-001
+        name: "Preparacao ABF Franchising Expo"
+        type: abf_event
+        dates: "04-01 a 04-15"
+        owner: franchise-strategist
+        description: >-
+          Preparacao final para a maior feira de franquias do mundo.
+          Stand, materiais, equipe de vendas, agenda de reunioes,
+          pitch de recrutamento.
+        deliverables:
+          - "Stand configurado"
+          - "Equipe de atendimento treinada"
+          - "Material de vendas atualizado"
+          - "Agenda de reunioes pre-agendadas"
+
+      - id: CAL-Q2-002
+        name: "Declaracao IRPJ/CSLL — Trimestral"
+        type: legal
+        dates: "04-30"
+        owner: legal-compliance
+        priority: high
+        description: >-
+          Prazo para declaracao de IRPJ e CSLL trimestral
+          (regime de lucro presumido ou real).
+        legal_reference: "RFB"
+
+      - id: CAL-Q2-003
+        name: "Campanha Pascoa — Vending"
+        type: marketing
+        dates: "04-01 a 04-20"
+        owner: marketing-brand
+        description: >-
+          Campanha sazonal de Pascoa. Chocolates, snacks tematicos.
+          Oportunidade para testar novos SKUs.
+
+    reminders:
+      - "Confirmar logistica do stand ABF Expo"
+      - "Treinar equipe de recrutamento"
+
+  maio:
+    month: 5
+    label: "Maio"
+    events:
+      - id: CAL-Q2-004
+        name: "ABF Franchising Expo"
+        type: abf_event
+        dates: "05-07 a 05-10"
+        owner: franchise-strategist
+        priority: critical
+        location: "Sao Paulo Expo, SP"
+        description: >-
+          Maior feira de franquias do mundo. Presenca obrigatoria
+          para captacao de franqueados, networking, benchmarking
+          e posicionamento da marca Avend.
+        deliverables:
+          - "Leads captados e qualificados"
+          - "Relatorio pos-evento"
+          - "Follow-up em ate 48h"
+        kpis:
+          - "Numero de leads captados"
+          - "Taxa de conversao pos-feira"
+          - "Custo por lead"
+
+      - id: CAL-Q2-005
+        name: "Dia das Maes — Campanha Vending"
+        type: marketing
+        dates: "05-01 a 05-12"
+        owner: marketing-brand
+        description: >-
+          Campanha para shoppings e locais de alto fluxo.
+          Cross-sell com parceiros de presentes.
+
+      - id: CAL-Q2-006
+        name: "Visitas de Campo — Ciclo Q2"
+        type: field_consulting
+        dates: "05-15 a 06-15"
+        owner: field-consultant
+        frequency: quarterly
+        description: >-
+          Segundo ciclo trimestral de visitas de campo.
+
+    reminders:
+      - "Follow-up com leads da ABF Expo"
+      - "Avaliar ROI da participacao na feira"
+
+  junho:
+    month: 6
+    label: "Junho"
+    events:
+      - id: CAL-Q2-007
+        name: "Fechamento Trimestral Q2"
+        type: financial
+        dates: "06-25 a 06-30"
+        owner: franchise-chief
+        description: >-
+          Fechamento financeiro do segundo trimestre.
+          Revisao de metas semestrais, analise mid-year.
+        deliverables:
+          - "DRE Q2 consolidada"
+          - "Relatorio semestral da rede"
+          - "Revisao de metas"
+
+      - id: CAL-Q2-008
+        name: "Campanha Festa Junina — Vending"
+        type: marketing
+        dates: "06-01 a 06-30"
+        owner: marketing-brand
+        description: >-
+          Campanha junina. Pipoca, amendoim, doces tipicos
+          em maquinas de snacks. Plotagem tematica.
+
+      - id: CAL-Q2-009
+        name: "Revisao Semestral de Performance"
+        type: strategy
+        dates: "06-20 a 06-30"
+        owner: franchise-chief
+        description: >-
+          Analise completa de performance da rede no primeiro semestre.
+          Comparativo com metas, ajustes de estrategia para S2.
+        deliverables:
+          - "Relatorio de performance S1"
+          - "Plano de acao S2"
+          - "Ranking de franqueados"
+
+      - id: CAL-Q2-010
+        name: "Convencao ABF Regional"
+        type: abf_event
+        dates: "06-15 a 06-17"
+        owner: franchise-strategist
+        description: >-
+          Eventos regionais da ABF. Networking com franqueadores
+          locais, palestras sobre tendencias do setor.
+        location: "Regional — varies"
+
+    reminders:
+      - "Avaliar necessidade de ajuste na COF mid-year"
+      - "Planejar Convencao da Rede (Q3)"
+
+# ============================================================================
+# Q3 — JULHO A SETEMBRO
+# ============================================================================
+
+q3:
+  label: "Q3 — Convencao da Rede e Consolidacao"
+  theme: "Convencao de franqueados, treinamento S2, consolidacao"
+
+  julho:
+    month: 7
+    label: "Julho"
+    events:
+      - id: CAL-Q3-001
+        name: "Abertura do Ciclo de Recrutamento S2"
+        type: recruitment
+        dates: "07-01"
+        owner: franchise-strategist
+        description: >-
+          Segundo ciclo de recrutamento do ano. Foco em leads
+          gerados na ABF Expo e indicacoes da rede existente.
+          Julho-outubro e bom periodo para fechamento antes do
+          fim do ano fiscal.
+
+      - id: CAL-Q3-002
+        name: "Declaracao IRPJ/CSLL — Trimestral"
+        type: legal
+        dates: "07-31"
+        owner: legal-compliance
+        priority: high
+
+      - id: CAL-Q3-003
+        name: "Campanha Ferias de Julho — Vending"
+        type: marketing
+        dates: "07-01 a 07-31"
+        owner: marketing-brand
+        description: >-
+          Campanha de ferias escolares. Maquinas em shoppings,
+          parques, aeroportos e rodoviarias com maior demanda.
+
+      - id: CAL-Q3-004
+        name: "Planejamento da Convencao da Rede"
+        type: network_event
+        dates: "07-01 a 07-31"
+        owner: franchise-chief
+        description: >-
+          Organizacao logistica e de conteudo da Convencao Anual
+          da Rede Avend. Definicao de local, programacao, palestrantes,
+          premiacoes.
+
+    reminders:
+      - "Enviar save-the-date da Convencao para franqueados"
+      - "Iniciar coleta de dados para premiacao"
+
+  agosto:
+    month: 8
+    label: "Agosto"
+    events:
+      - id: CAL-Q3-005
+        name: "Treinamento de Reciclagem S2 — Gestao"
+        type: training
+        dates: "08-11 a 08-15"
+        owner: franchise-trainer
+        format: online
+        description: >-
+          Segundo treinamento semestral. Foco em gestao financeira,
+          leitura de DRE, controle de custos, gestao de pessoas.
+        audience: "Todos os franqueados"
+        duration: "5 dias, 2h/dia"
+
+      - id: CAL-Q3-006
+        name: "Visitas de Campo — Ciclo Q3"
+        type: field_consulting
+        dates: "08-15 a 09-15"
+        owner: field-consultant
+        frequency: quarterly
+
+      - id: CAL-Q3-007
+        name: "Dia dos Pais — Campanha Vending"
+        type: marketing
+        dates: "08-01 a 08-10"
+        owner: marketing-brand
+
+      - id: CAL-Q3-008
+        name: "ABF Awards — Selo de Excelencia"
+        type: abf_event
+        dates: "08-20"
+        owner: franchise-chief
+        priority: high
+        description: >-
+          Premiacao da ABF que reconhece as melhores redes de franquias.
+          Selo de Excelencia em Franchising avaliado por satisfacao
+          dos franqueados. Fundamental para credibilidade da marca.
+        deliverables:
+          - "Participacao na pesquisa ABF"
+          - "Plano de melhoria baseado em resultados"
+
+    reminders:
+      - "Coletar pesquisa de satisfacao para ABF Awards"
+      - "Confirmar agenda da Convencao"
+
+  setembro:
+    month: 9
+    label: "Setembro"
+    events:
+      - id: CAL-Q3-009
+        name: "Convencao Anual da Rede Avend"
+        type: network_event
+        dates: "09-18 a 09-20"
+        owner: franchise-chief
+        priority: critical
+        location: "A definir"
+        format: presencial
+        description: >-
+          Principal evento da rede. 2-3 dias de imersao com todos
+          os franqueados. Apresentacao de resultados, lancamentos,
+          treinamentos, premiacoes, networking.
+        agenda:
+          dia_1:
+            - "Abertura pelo fundador Guilherme Alvares"
+            - "Apresentacao de resultados S1"
+            - "Painel: Tendencias em vending 2026-2027"
+            - "Jantar de confraternizacao"
+          dia_2:
+            - "Workshops por tema (operacoes, marketing, financeiro)"
+            - "Cases de sucesso — franqueados destaque"
+            - "Lancamento de novos produtos/servicos"
+            - "Premiacao anual de franqueados"
+          dia_3:
+            - "Planejamento colaborativo S2"
+            - "Q&A aberto com diretoria"
+            - "Encerramento e proximos passos"
+        deliverables:
+          - "Pesquisa de satisfacao pos-evento"
+          - "Ata com decisoes e compromissos"
+          - "Fotos e videos para marketing"
+
+      - id: CAL-Q3-010
+        name: "Fechamento Trimestral Q3"
+        type: financial
+        dates: "09-25 a 09-30"
+        owner: franchise-chief
+
+      - id: CAL-Q3-011
+        name: "Premiacao de Franqueados"
+        type: network_event
+        dates: "09-19"
+        owner: franchise-chief
+        description: >-
+          Premiacao durante a Convencao. Categorias: melhor faturamento,
+          melhor NPS, maior crescimento, excelencia operacional,
+          franqueado revelacao.
+        categories:
+          - "Melhor Faturamento Absoluto"
+          - "Maior Crescimento YoY"
+          - "Melhor NPS Local"
+          - "Excelencia Operacional"
+          - "Franqueado Revelacao"
+          - "Melhor Uptime de Maquinas"
+
+    reminders:
+      - "Iniciar planejamento orcamentario do proximo ano"
+      - "Avaliar resultados do ciclo de recrutamento S2"
+
+# ============================================================================
+# Q4 — OUTUBRO A DEZEMBRO
+# ============================================================================
+
+q4:
+  label: "Q4 — Fechamento e Planejamento"
+  theme: "Fechamento anual, auditoria, planejamento do proximo ano"
+
+  outubro:
+    month: 10
+    label: "Outubro"
+    events:
+      - id: CAL-Q4-001
+        name: "Planejamento Orcamentario Proximo Ano"
+        type: financial
+        dates: "10-01 a 10-31"
+        owner: franchise-chief
+        description: >-
+          Elaboracao do orcamento do proximo ano fiscal.
+          Investimentos em expansao, marketing, tecnologia,
+          treinamento, equipe interna.
+        deliverables:
+          - "Budget draft aprovado"
+          - "Plano de expansao com metas"
+          - "Plano de investimento em tecnologia"
+
+      - id: CAL-Q4-002
+        name: "Declaracao IRPJ/CSLL — Trimestral"
+        type: legal
+        dates: "10-31"
+        owner: legal-compliance
+        priority: high
+
+      - id: CAL-Q4-003
+        name: "Dia das Criancas — Campanha Vending"
+        type: marketing
+        dates: "10-01 a 10-12"
+        owner: marketing-brand
+        description: >-
+          Campanha para maquinas em shoppings e areas infantis.
+          Mix especial de snacks e bebidas para publico infantil.
+
+      - id: CAL-Q4-004
+        name: "Campanha Outubro Rosa — Vending Saude"
+        type: marketing
+        dates: "10-01 a 10-31"
+        owner: marketing-brand
+        description: >-
+          Campanha de conscientizacao. Plotagem tematica, parte
+          da receita para instituicoes. Branding com proposito.
+
+      - id: CAL-Q4-005
+        name: "Fechamento Ciclo Recrutamento S2"
+        type: recruitment
+        dates: "10-31"
+        owner: franchise-strategist
+        description: >-
+          Encerramento do segundo ciclo de recrutamento.
+          Analise de conversao, custo de aquisicao, perfil
+          dos novos franqueados.
+        deliverables:
+          - "Relatorio de recrutamento anual"
+          - "Pipeline para proximo ano"
+
+    reminders:
+      - "Iniciar processo de auditoria anual"
+      - "Agendar visitas de campo Q4"
+
+  novembro:
+    month: 11
+    label: "Novembro"
+    events:
+      - id: CAL-Q4-006
+        name: "Visitas de Campo — Ciclo Q4"
+        type: field_consulting
+        dates: "11-01 a 11-30"
+        owner: field-consultant
+        frequency: quarterly
+        description: >-
+          Ultimo ciclo trimestral de visitas. Avaliacao final
+          do ano, preparacao para o periodo de festas.
+
+      - id: CAL-Q4-007
+        name: "Black Friday — Campanha Vending"
+        type: marketing
+        dates: "11-20 a 11-30"
+        owner: marketing-brand
+        priority: high
+        description: >-
+          Maior campanha de vendas do ano para vending.
+          Promocoes especiais, combos, aumento de estoque
+          em pontos de alto fluxo.
+        deliverables:
+          - "Plano de estoque reforçado"
+          - "Material promocional distribuido"
+          - "Relatorio de vendas Black Friday"
+
+      - id: CAL-Q4-008
+        name: "Auditoria Anual da Rede"
+        type: financial
+        dates: "11-01 a 11-30"
+        owner: franchise-chief
+        priority: critical
+        description: >-
+          Auditoria anual completa. Verificacao de compliance,
+          financeiro, operacional. Base para relatorio anual
+          e atualizacao da COF do proximo ano.
+        deliverables:
+          - "Relatorio de auditoria"
+          - "Lista de nao-conformidades"
+          - "Plano de correcao"
+
+      - id: CAL-Q4-009
+        name: "Campanha Novembro Azul"
+        type: marketing
+        dates: "11-01 a 11-30"
+        owner: marketing-brand
+        description: >-
+          Campanha de conscientizacao masculina.
+          Plotagem tematica e parcerias.
+
+    reminders:
+      - "Preparar estoque para dezembro (festas)"
+      - "Enviar pesquisa de satisfacao anual aos franqueados"
+
+  dezembro:
+    month: 12
+    label: "Dezembro"
+    events:
+      - id: CAL-Q4-010
+        name: "Fechamento Trimestral Q4 e Anual"
+        type: financial
+        dates: "12-20 a 12-31"
+        owner: franchise-chief
+        priority: critical
+        description: >-
+          Fechamento financeiro do Q4 e consolidacao anual.
+          Apuracao de resultados, distribuicao de premios,
+          provisoes para o proximo exercicio.
+        deliverables:
+          - "DRE Q4 e anual consolidada"
+          - "Balanco patrimonial"
+          - "Fluxo de caixa anual"
+          - "Relatorio anual da rede"
+
+      - id: CAL-Q4-011
+        name: "Campanha Natal e Ano Novo — Vending"
+        type: marketing
+        dates: "12-01 a 12-31"
+        owner: marketing-brand
+        priority: high
+        description: >-
+          Campanha de fim de ano. Maior periodo de vendas em
+          locais de alto fluxo (shoppings, aeroportos, rodoviarias).
+          Estoque reforçado, mix festivo.
+
+      - id: CAL-Q4-012
+        name: "Pesquisa de Satisfacao Anual — Franqueados"
+        type: network_event
+        dates: "12-01 a 12-15"
+        owner: franchise-chief
+        description: >-
+          Pesquisa anual de satisfacao NPS com todos os franqueados.
+          Base para o Selo de Excelencia ABF e melhoria continua.
+        deliverables:
+          - "Resultado NPS da rede"
+          - "Relatorio de pontos de melhoria"
+          - "Plano de acao para proximo ano"
+
+      - id: CAL-Q4-013
+        name: "Confraternizacao de Fim de Ano"
+        type: network_event
+        dates: "12-20"
+        owner: franchise-chief
+        format: online
+        description: >-
+          Evento online de encerramento do ano. Agradecimento,
+          preview do proximo ano, sorteios.
+
+      - id: CAL-Q4-014
+        name: "CNPJ e Inscricoes — Verificacao Anual"
+        type: legal
+        dates: "12-01 a 12-15"
+        owner: legal-compliance
+        description: >-
+          Verificacao de regularidade de CNPJ de todas as unidades.
+          Certidoes negativas, alvaras, licencas sanitarias.
+        deliverables:
+          - "Check-list de regularidade por unidade"
+          - "Lista de pendencias para resolucao em janeiro"
+
+      - id: CAL-Q4-015
+        name: "Definicao de Metas do Proximo Ano"
+        type: strategy
+        dates: "12-15 a 12-20"
+        owner: franchise-chief
+        description: >-
+          Com base nos resultados anuais e auditoria, definir
+          metas para o proximo exercicio por cluster e unidade.
+
+    reminders:
+      - "Garantir cobertura operacional no recesso"
+      - "Enviar comunicado de fim de ano para a rede"
+      - "Iniciar revisao da COF para o proximo ano"
+
+# ============================================================================
+# RECURRING EVENTS — Eventos Recorrentes
+# ============================================================================
+
+recurring:
+  label: "Eventos Recorrentes"
+  description: "Eventos que se repetem em frequencia fixa ao longo do ano"
+
+  monthly:
+    - id: REC-001
+      name: "Reuniao Mensal de Performance"
+      type: strategy
+      frequency: monthly
+      day: "Primeira segunda-feira do mes"
+      owner: franchise-chief
+      description: >-
+        Analise de KPIs mensais: faturamento, inadimplencia,
+        NPS, churn, novos franqueados, uptime de maquinas.
+      duration: "2h"
+
+    - id: REC-002
+      name: "Cobranca de Royalties"
+      type: financial
+      frequency: monthly
+      day: "Dia 10"
+      owner: franchise-chief
+      description: >-
+        Fechamento e cobranca de royalties mensais.
+        Gestao de inadimplencia e follow-up.
+
+    - id: REC-003
+      name: "Newsletter da Rede"
+      type: marketing
+      frequency: monthly
+      day: "Dia 15"
+      owner: marketing-brand
+      description: >-
+        Comunicacao mensal para todos os franqueados.
+        Novidades, dicas operacionais, ranking, campanhas.
+
+  quarterly:
+    - id: REC-004
+      name: "Visitas de Campo"
+      type: field_consulting
+      frequency: quarterly
+      months: [2, 5, 8, 11]
+      owner: field-consultant
+      description: "Ciclo trimestral de consultoria de campo"
+
+    - id: REC-005
+      name: "Fechamento Financeiro Trimestral"
+      type: financial
+      frequency: quarterly
+      months: [3, 6, 9, 12]
+      owner: franchise-chief
+
+    - id: REC-006
+      name: "Comite de Franqueados"
+      type: network_event
+      frequency: quarterly
+      owner: franchise-chief
+      description: >-
+        Reuniao com comite consultivo de franqueados (5-7 representantes).
+        Pauta: feedback, sugestoes, problemas, co-criacao.
+
+  biannual:
+    - id: REC-007
+      name: "Treinamento de Reciclagem"
+      type: training
+      frequency: biannual
+      months: [2, 8]
+      owner: franchise-trainer
+      description: "Treinamento semestral — S1 operacoes, S2 gestao"
+
+    - id: REC-008
+      name: "Ciclo de Recrutamento"
+      type: recruitment
+      frequency: biannual
+      periods:
+        s1: "Janeiro a Maio (pre-ABF Expo)"
+        s2: "Julho a Outubro (pos-ABF Expo)"
+      owner: franchise-strategist
+
+  annual:
+    - id: REC-009
+      name: "Atualizacao da COF"
+      type: legal
+      frequency: annual
+      period: "Janeiro a Marco"
+      owner: legal-compliance
+      priority: critical
+
+    - id: REC-010
+      name: "Convencao Anual da Rede"
+      type: network_event
+      frequency: annual
+      month: 9
+      owner: franchise-chief
+      priority: critical
+
+    - id: REC-011
+      name: "Auditoria Anual"
+      type: financial
+      frequency: annual
+      month: 11
+      owner: franchise-chief
+      priority: critical
+
+    - id: REC-012
+      name: "Planejamento Estrategico"
+      type: strategy
+      frequency: annual
+      month: 1
+      owner: franchise-chief
+
+    - id: REC-013
+      name: "ABF Franchising Expo"
+      type: abf_event
+      frequency: annual
+      month: 5
+      location: "Sao Paulo Expo"
+      priority: critical
+
+    - id: REC-014
+      name: "ABF Awards"
+      type: abf_event
+      frequency: annual
+      month: 8
+      priority: high
+
+    - id: REC-015
+      name: "Pesquisa NPS Anual"
+      type: network_event
+      frequency: annual
+      month: 12
+      owner: franchise-chief

@@ -1,0 +1,301 @@
+# Baseline Registry — Squad Franchising Avend
+# Golden baselines for agent quality, framework adherence, and voice accuracy.
+# Version: 1.0.0
+
+metadata:
+  squad: squad-franchising-avend
+  version: 1.0.0
+  created: 2026-03-13
+  evaluation_scale: 1-5 (1=poor, 5=excellent)
+  minimum_passing_score: 3.5
+  target_score: 4.0
+
+agents:
+
+  - agent_ref: "@franchise-strategist"
+    mind: mark-siebert
+    baselines:
+      response_quality:
+        target: 4.2
+        minimum: 3.5
+        dimensions:
+          accuracy: 4.5  # Must correctly apply 12 Criteria
+          completeness: 4.0  # Covers all relevant feasibility factors
+          actionability: 4.0  # Provides clear next steps
+          depth: 4.2  # Goes beyond surface-level analysis
+      framework_adherence:
+        target: 4.5
+        minimum: 4.0
+        dimensions:
+          twelve_criteria_usage: 4.5  # Consistently references and applies 12 Criteria
+          data_driven_approach: 4.5  # Demands data before conclusions
+          feasibility_rigor: 4.5  # Blocks premature franchise launches
+      voice_accuracy:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.0  # Analytical, direct, consultant-like
+          vocabulary_usage: 4.0  # Uses franchise feasibility terminology
+          signature_patterns: 3.8  # Recognizable Siebert-style reasoning
+    smoke_test_ids: [ST-1.1, ST-1.2, ST-1.3, ST-1.4, ST-1.5]
+
+  - agent_ref: "@systems-architect"
+    mind: michael-gerber
+    baselines:
+      response_quality:
+        target: 4.3
+        minimum: 3.5
+        dimensions:
+          accuracy: 4.5  # Correct E-Myth principles
+          completeness: 4.0  # Addresses all three personas
+          actionability: 4.2  # Clear systemization steps
+          depth: 4.5  # Philosophical depth with practical application
+      framework_adherence:
+        target: 4.5
+        minimum: 4.0
+        dimensions:
+          franchise_prototype_usage: 4.5  # Consistently applies Franchise Prototype
+          iqo_cycle: 4.0  # Innovation-Quantification-Orchestration applied
+          systems_over_people: 4.5  # Always redirects to systems solutions
+      voice_accuracy:
+        target: 4.3
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.5  # Philosophical, storytelling, parable-driven
+          vocabulary_usage: 4.0  # E-Myth specific terminology
+          signature_patterns: 4.3  # "Work ON not IN" and archetype references
+    smoke_test_ids: [ST-2.1, ST-2.2, ST-2.3, ST-2.4, ST-2.5]
+
+  - agent_ref: "@franchise-legal-br"
+    mind: marcelo-cherto
+    baselines:
+      response_quality:
+        target: 4.5
+        minimum: 4.0
+        dimensions:
+          accuracy: 4.8  # Legal accuracy is critical — must be precise
+          completeness: 4.5  # All legal requirements covered
+          actionability: 4.0  # Clear compliance steps
+          depth: 4.5  # Deep Brazilian law knowledge
+      framework_adherence:
+        target: 4.8
+        minimum: 4.5
+        dimensions:
+          lei_13966_compliance: 4.8  # Must reference correct law provisions
+          cof_requirements: 4.8  # All 23 items awareness
+          brazilian_market_context: 4.5  # Brazil-specific considerations
+      voice_accuracy:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.0  # Authoritative, pragmatic, Brazilian-rooted
+          vocabulary_usage: 4.5  # Legal terminology in Portuguese
+          signature_patterns: 3.8  # Cherto-style directness
+    smoke_test_ids: [ST-3.1, ST-3.2, ST-3.3, ST-3.4, ST-3.5]
+
+  - agent_ref: "@franchise-operations"
+    mind: michael-seid
+    baselines:
+      response_quality:
+        target: 4.2
+        minimum: 3.5
+        dimensions:
+          accuracy: 4.5  # Correct operations principles
+          completeness: 4.0  # Covers all operational dimensions
+          actionability: 4.2  # Practical implementation guidance
+          depth: 4.0  # Sufficient operational detail
+      framework_adherence:
+        target: 4.3
+        minimum: 3.8
+        dimensions:
+          msa_model_usage: 4.5  # References MSA Development Model
+          multi_unit_awareness: 4.0  # Distinguishes multi-unit dynamics
+          support_infrastructure: 4.5  # Emphasizes support before growth
+      voice_accuracy:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.0  # Methodical, operations-focused
+          vocabulary_usage: 4.0  # Operations and compliance terminology
+          signature_patterns: 3.8  # Process discipline emphasis
+    smoke_test_ids: [ST-4.1, ST-4.2, ST-4.3, ST-4.4, ST-4.5]
+
+  - agent_ref: "@field-operations-br"
+    mind: adir-ribeiro
+    baselines:
+      response_quality:
+        target: 4.2
+        minimum: 3.5
+        dimensions:
+          accuracy: 4.5  # Correct field consulting principles
+          completeness: 4.0  # All 4 pillars addressed when relevant
+          actionability: 4.5  # Very practical, hands-on guidance
+          depth: 4.0  # Sufficient operational detail
+      framework_adherence:
+        target: 4.5
+        minimum: 4.0
+        dimensions:
+          four_pillars_usage: 4.5  # Consistently applies 4 Pillars
+          visit_methodology: 4.0  # Structured visit approach
+          franchisee_maturity_model: 4.0  # Stage-appropriate support
+      voice_accuracy:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.0  # Hands-on, warm but methodical
+          vocabulary_usage: 4.0  # Brazilian franchise field terminology
+          signature_patterns: 3.8  # Consultant-as-partner framing
+    smoke_test_ids: [ST-5.1, ST-5.2, ST-5.3, ST-5.4, ST-5.5]
+
+  - agent_ref: "@franchise-sales"
+    mind: joe-mathews
+    baselines:
+      response_quality:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          accuracy: 4.0  # Correct lifecycle and sales principles
+          completeness: 4.0  # Covers sales process comprehensively
+          actionability: 4.5  # Strong action orientation
+          depth: 3.8  # Practical over theoretical
+      framework_adherence:
+        target: 4.2
+        minimum: 3.8
+        dimensions:
+          lifecycle_model_usage: 4.5  # Maps to correct lifecycle stage
+          tipping_point_awareness: 4.0  # Identifies tipping point dynamics
+          sales_process_structure: 4.0  # Structured pipeline approach
+      voice_accuracy:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.0  # Energetic, sales-savvy, street-smart
+          vocabulary_usage: 3.8  # Sales and lifecycle terminology
+          signature_patterns: 3.8  # Tipping point and lifecycle framing
+    smoke_test_ids: [ST-6.1, ST-6.2, ST-6.3, ST-6.4, ST-6.5]
+
+  - agent_ref: "@franchise-lifecycle-br"
+    mind: ana-vecchi
+    baselines:
+      response_quality:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          accuracy: 4.2  # Correct lifecycle stage identification
+          completeness: 4.0  # Multi-factor analysis
+          actionability: 4.0  # Strategic recommendations
+          depth: 4.2  # Lifecycle depth with Brazilian context
+      framework_adherence:
+        target: 4.3
+        minimum: 3.8
+        dimensions:
+          lifecycle_stage_mapping: 4.5  # Accurately maps to lifecycle stage
+          reinvention_methodology: 4.0  # Structured reinvention approach
+          same_store_diagnostic: 4.0  # Uses same-store sales as key metric
+      voice_accuracy:
+        target: 3.8
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.0  # Strategic, lifecycle-oriented
+          vocabulary_usage: 3.8  # Brazilian lifecycle terminology
+          signature_patterns: 3.5  # Lifecycle anticipation framing
+    smoke_test_ids: [ST-7.1, ST-7.2, ST-7.3, ST-7.4, ST-7.5]
+
+  - agent_ref: "@franchise-relationships"
+    mind: greg-nathan
+    baselines:
+      response_quality:
+        target: 4.3
+        minimum: 3.5
+        dimensions:
+          accuracy: 4.5  # Correct relationship psychology
+          completeness: 4.0  # Multi-dimensional relationship analysis
+          actionability: 4.0  # Practical relationship interventions
+          depth: 4.5  # Psychological depth
+      framework_adherence:
+        target: 4.5
+        minimum: 4.0
+        dimensions:
+          seven_stages_usage: 4.5  # Correctly identifies relationship stage
+          e_factor_application: 4.5  # Uses E-Factor as diagnostic
+          ace_survey_awareness: 4.0  # Recommends ACE for measurement
+      voice_accuracy:
+        target: 4.2
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.2  # Psychologically informed, empathetic
+          vocabulary_usage: 4.0  # Relationship psychology terminology
+          signature_patterns: 4.0  # Stage-based diagnosis pattern
+    smoke_test_ids: [ST-8.1, ST-8.2, ST-8.3, ST-8.4, ST-8.5]
+
+  - agent_ref: "@franchise-legal"
+    mind: andrew-sherman
+    baselines:
+      response_quality:
+        target: 4.3
+        minimum: 3.8
+        dimensions:
+          accuracy: 4.8  # Legal accuracy is paramount
+          completeness: 4.5  # Comprehensive legal coverage
+          actionability: 4.0  # Clear legal steps
+          depth: 4.5  # Deep legal analysis
+      framework_adherence:
+        target: 4.5
+        minimum: 4.0
+        dimensions:
+          fdd_compliance: 4.8  # FDD/FTC Rule accuracy
+          ip_protection_layers: 4.5  # Multi-layer IP strategy
+          franchise_vs_license: 4.5  # Clear model distinction
+      voice_accuracy:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.0  # Legally precise, strategically minded
+          vocabulary_usage: 4.5  # Legal franchise terminology
+          signature_patterns: 3.8  # Risk-aware legal framing
+    smoke_test_ids: [ST-9.1, ST-9.2, ST-9.3, ST-9.4, ST-9.5]
+
+  - agent_ref: "@franchise-manuals"
+    mind: penny-hopkinson
+    baselines:
+      response_quality:
+        target: 4.0
+        minimum: 3.5
+        dimensions:
+          accuracy: 4.2  # Correct documentation methodology
+          completeness: 4.0  # Full documentation lifecycle
+          actionability: 4.5  # Highly practical guidance
+          depth: 3.8  # Sufficient methodology detail
+      framework_adherence:
+        target: 4.3
+        minimum: 3.8
+        dimensions:
+          three_step_usage: 4.5  # Consistently applies Manual Magic 3-Step
+          modular_structure: 4.0  # Recommends modular approach
+          visual_priority: 4.0  # Prioritizes visual over text
+      voice_accuracy:
+        target: 3.8
+        minimum: 3.5
+        dimensions:
+          tone_match: 4.0  # Practical, encouraging, detail-oriented
+          vocabulary_usage: 3.8  # Documentation methodology terms
+          signature_patterns: 3.5  # 3-Step and usability focus
+    smoke_test_ids: [ST-10.1, ST-10.2, ST-10.3, ST-10.4, ST-10.5]
+
+# Evaluation Protocol
+evaluation:
+  frequency: per_sprint
+  method: automated_smoke_test_execution
+  scoring:
+    - Each smoke test produces scores for response_quality, framework_adherence, voice_accuracy
+    - Agent score = average across 5 smoke tests per dimension
+    - Squad score = average across all 10 agents
+  thresholds:
+    passing: 3.5  # Minimum to be considered functional
+    target: 4.0  # Expected production quality
+    excellent: 4.5  # Exceeds expectations
+  actions:
+    below_minimum: "Agent requires retraining — mind file review and heuristic update"
+    below_target: "Agent needs tuning — review failing smoke tests and adjust"
+    at_target: "Agent performing as expected — maintain current configuration"
+    above_excellent: "Agent exceeding expectations — document patterns for other agents"

@@ -1,0 +1,119 @@
+name: speechtherapy
+version: "1.0.0"
+slash_prefix: "speechtherapy"
+title: "Speech Therapy Squad - Vocal Rehabilitation by Elite Minds"
+description: |
+  Squad de fonoterapia com 7 agentes especializados: 1 orchestrador + 6 baseados em
+  elite minds reais da ciencia vocal e fonoaudiologia. Cobre avaliacao vocal, exercicios
+  funcionais (VFE), terapia de voz ressonante (LMRVT), SOVT, terapia conversacional (CTT),
+  terapia manual laringea, e higiene vocal. Projetado para reabilitacao de nodulos vocais
+  com protocolo de 12 semanas.
+author: "AIOS Team"
+icon: "🗣️"
+type: specialist
+entry_agent: speechtherapy-chief
+independence: true
+
+tier_system:
+  orchestrator:
+    agent: speechtherapy-chief
+  tier_0_diagnosis:
+    description: "Entry point - science foundation and clinical assessment"
+    agents:
+      - ingo-titze      # Voice Science, SOVT
+      - mara-behlau     # Clinical Fono, Vocal Hygiene
+  tier_1_rehabilitation:
+    description: "Core rehabilitation exercises and therapy"
+    agents:
+      - joseph-stemple        # Vocal Function Exercises
+      - katherine-verdolini   # Resonant Voice Therapy (LMRVT)
+  tier_2_specialists:
+    description: "Specialized techniques for specific needs"
+    agents:
+      - jackie-gartner-schmidt  # Conversation Training (CTT)
+      - jacob-lieberman         # Manual Therapy (MTD)
+
+agents:
+  - speechtherapy-chief
+  - ingo-titze
+  - mara-behlau
+  - joseph-stemple
+  - katherine-verdolini
+  - jackie-gartner-schmidt
+  - jacob-lieberman
+
+tasks:
+  - vocal-assessment
+  - sovt-protocol
+  - vfe-program
+  - resonant-voice-therapy
+  - vocal-hygiene-plan
+  - nodule-rehabilitation
+  - singer-return-protocol
+  - nasal-irrigation-protocol
+  - manual-therapy-assessment
+  - conversation-training
+
+workflows:
+  - nodule-recovery-complete
+
+checklists:
+  - vocal-hygiene-checklist
+  - session-progress-checklist
+
+governance:
+  version: "1.0.0-pro"
+  veto_conditions:
+    file: "config/veto-conditions.yaml"
+    total: 32
+    enforcement: strict
+  quality_gates:
+    file: "config/quality-gates.yaml"
+    total: 8
+    strict_mode: true
+    allow_override: false
+  heuristics:
+    file: "config/heuristics.yaml"
+    total: 42
+  state_file: ".state.json"
+  changelog: "CHANGELOG.md"
+
+testing:
+  smoke_tests:
+    enabled: true
+    agents_with_tests:
+      - ingo-titze
+      - mara-behlau
+      - joseph-stemple
+      - katherine-verdolini
+      - jackie-gartner-schmidt
+      - jacob-lieberman
+  quality_gate_validation:
+    enabled: true
+    gates:
+      - ST-QG-001
+      - ST-QG-002
+      - ST-QG-003
+      - ST-QG-004
+      - ST-QG-005
+      - ST-QG-006
+      - ST-QG-007
+      - ST-QG-008
+  veto_enforcement:
+    enabled: true
+    strict_mode: true
+
+scripts:
+  validate: "node scripts/validate-squad.js"
+  test: "node scripts/run-smoke-tests.js"
+  audit: "node scripts/audit-governance.js"
+
+tags:
+  - speech-therapy
+  - voice-rehabilitation
+  - vocal-nodules
+  - fonoaudiologia
+  - singers
+  - SOVT
+  - VFE
+  - LMRVT

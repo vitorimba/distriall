@@ -1,0 +1,429 @@
+##############################################################################
+# Game Mechanics Catalog — 55+ Mechanics
+# Squad: squad-gamification
+# Usage: Reference for mechanic selection during gamification design
+##############################################################################
+
+categories:
+  progression:
+    description: "Mechanics that create a sense of advancement"
+    mechanics:
+      - id: MC-001
+        name: "Experience Points (XP)"
+        description: "Cumulative numeric reward for actions that contributes to leveling"
+        core_drive: [CD2, CD4]
+        hexad_fit: [Achiever, Player]
+        complexity: low
+        when_to_use: "Always — foundational mechanic for any progression system"
+        when_to_avoid: "If actions are not meaningfully differentiated in value"
+        examples: ["Duolingo XP", "LinkedIn profile strength", "StackOverflow reputation"]
+
+      - id: MC-002
+        name: "Levels"
+        description: "Hierarchical tiers reached by accumulating XP"
+        core_drive: [CD2]
+        hexad_fit: [Achiever, Player]
+        complexity: low
+        when_to_use: "When long-term progression is desired"
+        when_to_avoid: "If there aren't enough meaningful unlocks to justify levels"
+        examples: ["Duolingo levels", "Pokémon trainer levels"]
+
+      - id: MC-003
+        name: "Progress Bars"
+        description: "Visual indicator of completion toward a goal"
+        core_drive: [CD2, CD8]
+        hexad_fit: [Achiever, Player]
+        complexity: low
+        when_to_use: "Always — universal motivator for goal completion"
+        when_to_avoid: "Never a bad choice; avoid only if too many bars clutter the UI"
+        examples: ["LinkedIn profile completion", "Kickstarter funding bar"]
+
+      - id: MC-004
+        name: "Skill Trees"
+        description: "Branching progression paths with specialization choices"
+        core_drive: [CD2, CD3]
+        hexad_fit: [Achiever, Free Spirit]
+        complexity: high
+        when_to_use: "When multiple competencies exist and autonomy is valued"
+        when_to_avoid: "Simple products with linear progression"
+        examples: ["Codecademy career paths", "RPG talent trees"]
+
+      - id: MC-005
+        name: "Milestones"
+        description: "Significant achievement markers at key progression points"
+        core_drive: [CD2]
+        hexad_fit: [Achiever]
+        complexity: low
+        when_to_use: "At natural progression breakpoints to celebrate progress"
+        when_to_avoid: "If milestones are too frequent (cheapens value)"
+        examples: ["GitHub contribution milestones", "Fitbit step milestones"]
+
+      - id: MC-006
+        name: "Prestige/Reset"
+        description: "Optional reset to level 1 with permanent bonuses and status markers"
+        core_drive: [CD2, CD6]
+        hexad_fit: [Achiever, Player]
+        complexity: high
+        when_to_use: "When endgame content is limited; extends replayability"
+        when_to_avoid: "If users would lose meaningful investments"
+        examples: ["Call of Duty Prestige", "Seasonal rank resets"]
+
+  achievement:
+    description: "Mechanics that recognize specific accomplishments"
+    mechanics:
+      - id: MC-010
+        name: "Badges"
+        description: "Visual symbols earned for specific accomplishments"
+        core_drive: [CD2, CD4]
+        hexad_fit: [Achiever, Player]
+        complexity: low
+        when_to_use: "To recognize meaningful accomplishments and signal competence"
+        when_to_avoid: "If badges are given for trivial actions (badge inflation)"
+        examples: ["Foursquare/Swarm badges", "Credly certifications", "Boy Scout merit badges"]
+
+      - id: MC-011
+        name: "Achievements/Trophies"
+        description: "Hidden or visible goals that reward specific behaviors"
+        core_drive: [CD2, CD7]
+        hexad_fit: [Achiever, Free Spirit]
+        complexity: medium
+        when_to_use: "To encourage exploration and diverse behavior"
+        when_to_avoid: "If too many achievements create overwhelm"
+        examples: ["Steam achievements", "Xbox achievements", "Google Maps Local Guide"]
+
+      - id: MC-012
+        name: "Certificates"
+        description: "Formal recognition of competency completion"
+        core_drive: [CD2, CD5]
+        hexad_fit: [Achiever]
+        complexity: low
+        when_to_use: "Learning/training contexts where formal recognition matters"
+        when_to_avoid: "If certification doesn't represent real competence"
+        examples: ["Coursera certificates", "AWS certifications", "LinkedIn skill assessments"]
+
+      - id: MC-013
+        name: "Titles/Ranks"
+        description: "Status labels that change with progression"
+        core_drive: [CD2, CD5]
+        hexad_fit: [Achiever, Player]
+        complexity: low
+        when_to_use: "When social status recognition motivates the audience"
+        when_to_avoid: "If hierarchy creates negative power dynamics"
+        examples: ["Reddit flair", "Discord roles", "Military ranks"]
+
+  reward:
+    description: "Mechanics that provide value in exchange for behavior"
+    mechanics:
+      - id: MC-020
+        name: "Points/Coins"
+        description: "Spendable currency earned through actions"
+        core_drive: [CD4, CD2]
+        hexad_fit: [Player]
+        complexity: medium
+        when_to_use: "When a virtual economy adds meaningful choices"
+        when_to_avoid: "If points have nothing to spend on"
+        examples: ["Starbucks Stars", "Reddit coins", "airline miles"]
+
+      - id: MC-021
+        name: "Variable Rewards (Mystery Boxes)"
+        description: "Random rewards with varying rarity and value"
+        core_drive: [CD7]
+        hexad_fit: [Player, Free Spirit]
+        complexity: medium
+        when_to_use: "To add excitement and unpredictability"
+        when_to_avoid: "If it feels like gambling; never with real money for random outcomes"
+        examples: ["Loot boxes (ethical version)", "Duolingo chest rewards"]
+
+      - id: MC-022
+        name: "Daily Rewards/Login Bonuses"
+        description: "Rewards for returning each day, escalating over consecutive days"
+        core_drive: [CD4, CD8]
+        hexad_fit: [Player]
+        complexity: low
+        when_to_use: "To establish daily engagement habit"
+        when_to_avoid: "If it creates guilt/anxiety for missing days"
+        examples: ["Mobile game daily rewards", "Snapchat streaks"]
+
+      - id: MC-023
+        name: "Lotteries/Raffles"
+        description: "Chance-based rewards for participation"
+        core_drive: [CD7]
+        hexad_fit: [Player]
+        complexity: low
+        when_to_use: "Short-term engagement boost for specific campaigns"
+        when_to_avoid: "As primary engagement mechanic; ethically questionable if frequent"
+        examples: ["Spin-the-wheel promotions", "Monthly prize draws"]
+
+      - id: MC-024
+        name: "Unlockables"
+        description: "Content, features, or cosmetics gated behind progression"
+        core_drive: [CD2, CD6]
+        hexad_fit: [Achiever, Free Spirit]
+        complexity: medium
+        when_to_use: "To create anticipation and reward progression"
+        when_to_avoid: "If core functionality is locked behind excessive grind"
+        examples: ["Smartphone theme unlocks", "Notion template unlocks"]
+
+  social:
+    description: "Mechanics leveraging social dynamics"
+    mechanics:
+      - id: MC-030
+        name: "Leaderboards"
+        description: "Ranked display of participants by performance metric"
+        core_drive: [CD5, CD2]
+        hexad_fit: [Player, Achiever]
+        complexity: medium
+        when_to_use: "When competitive audience exists and fair comparison possible"
+        when_to_avoid: "If it demotivates 90% of users; always use relative positioning"
+        examples: ["Fitbit friends leaderboard", "Salesforce performance boards"]
+
+      - id: MC-031
+        name: "Teams/Guilds"
+        description: "Player-formed groups with shared goals and identity"
+        core_drive: [CD5, CD1]
+        hexad_fit: [Socialiser, Philanthropist]
+        complexity: high
+        when_to_use: "When collaboration amplifies value; social products"
+        when_to_avoid: "If team formation feels forced or creates free-rider problems"
+        examples: ["Habitica parties", "Peloton teams", "Slack channels"]
+
+      - id: MC-032
+        name: "Gifting"
+        description: "Ability to send items, points, or recognition to others"
+        core_drive: [CD5]
+        hexad_fit: [Philanthropist, Socialiser]
+        complexity: low
+        when_to_use: "To foster generosity and social bonds"
+        when_to_avoid: "If it creates obligation or transactional expectations"
+        examples: ["Reddit awards", "Starbucks gift cards", "peer recognition platforms"]
+
+      - id: MC-033
+        name: "Social Discovery"
+        description: "Seeing what friends/peers are doing within the system"
+        core_drive: [CD5, CD7]
+        hexad_fit: [Socialiser]
+        complexity: medium
+        when_to_use: "When social proof drives engagement"
+        when_to_avoid: "If privacy is a concern; always make visibility configurable"
+        examples: ["Spotify friend activity", "Strava feed", "Goodreads updates"]
+
+      - id: MC-034
+        name: "Mentoring/Coaching"
+        description: "Experienced users helping newcomers with recognition"
+        core_drive: [CD1, CD5]
+        hexad_fit: [Philanthropist]
+        complexity: medium
+        when_to_use: "To retain experienced users and accelerate newcomer onboarding"
+        when_to_avoid: "If mentoring quality cannot be ensured"
+        examples: ["StackOverflow mentorship", "coding bootcamp pairing"]
+
+      - id: MC-035
+        name: "Peer Recognition"
+        description: "Users can publicly acknowledge others' contributions"
+        core_drive: [CD5, CD2]
+        hexad_fit: [Socialiser, Philanthropist]
+        complexity: low
+        when_to_use: "Enterprise, community platforms; builds positive culture"
+        when_to_avoid: "If it becomes performative or clique-based"
+        examples: ["Slack kudos", "Bonusly", "LinkedIn endorsements"]
+
+      - id: MC-036
+        name: "Co-op Challenges"
+        description: "Challenges requiring collaboration to complete"
+        core_drive: [CD5, CD1]
+        hexad_fit: [Socialiser, Philanthropist]
+        complexity: high
+        when_to_use: "To encourage teamwork and shared achievement"
+        when_to_avoid: "If individual contribution cannot be tracked"
+        examples: ["Habitat for Humanity build events", "Wikipedia edit-a-thons"]
+
+  challenge:
+    description: "Mechanics that create goals and tests"
+    mechanics:
+      - id: MC-040
+        name: "Quests/Missions"
+        description: "Goal-oriented tasks with clear objectives and rewards"
+        core_drive: [CD1, CD2]
+        hexad_fit: [Achiever, Free Spirit]
+        complexity: medium
+        when_to_use: "To guide behavior toward specific outcomes"
+        when_to_avoid: "If quest feels like a chore or busywork"
+        examples: ["Duolingo daily quest", "Fitbit adventures", "Google Maps contributions"]
+
+      - id: MC-041
+        name: "Streaks"
+        description: "Consecutive-period engagement counter with escalating value"
+        core_drive: [CD8, CD2]
+        hexad_fit: [Achiever, Player]
+        complexity: low
+        when_to_use: "To build daily habits"
+        when_to_avoid: "If breaking streak causes excessive anxiety; always provide freeze option"
+        examples: ["Duolingo streaks", "Snapchat streaks", "GitHub contribution graph"]
+
+      - id: MC-042
+        name: "Time-Limited Events"
+        description: "Events available for limited duration with exclusive rewards"
+        core_drive: [CD6, CD7]
+        hexad_fit: [Player, Achiever]
+        complexity: medium
+        when_to_use: "To create urgency and freshness"
+        when_to_avoid: "If FOMO becomes primary motivation; always have regular content too"
+        examples: ["Fortnite seasons", "Pokémon Go community days"]
+
+      - id: MC-043
+        name: "Boss Battles"
+        description: "High-difficulty challenges at progression milestones"
+        core_drive: [CD2]
+        hexad_fit: [Achiever]
+        complexity: medium
+        when_to_use: "At skill/knowledge milestones to validate mastery"
+        when_to_avoid: "If failure is not recoverable"
+        examples: ["Duolingo checkpoint tests", "certification exams"]
+
+      - id: MC-044
+        name: "Daily/Weekly Challenges"
+        description: "Rotating short-term goals that refresh regularly"
+        core_drive: [CD2, CD7]
+        hexad_fit: [Achiever, Player]
+        complexity: low
+        when_to_use: "Always — prevents stagnation and provides fresh goals"
+        when_to_avoid: "If challenges are repetitive or too numerous"
+        examples: ["Fortnite daily quests", "Apple Watch activity challenges"]
+
+      - id: MC-045
+        name: "Puzzles/Brain Teasers"
+        description: "Cognitive challenges requiring problem-solving"
+        core_drive: [CD3, CD2]
+        hexad_fit: [Achiever, Free Spirit]
+        complexity: medium
+        when_to_use: "Learning contexts, cognitive engagement products"
+        when_to_avoid: "If puzzle difficulty is not adaptive"
+        examples: ["Wordle", "NYT crosswords", "coding challenges"]
+
+  narrative:
+    description: "Mechanics using story and meaning"
+    mechanics:
+      - id: MC-050
+        name: "Story/Narrative Arc"
+        description: "Overarching story that contextualizes user actions"
+        core_drive: [CD1]
+        hexad_fit: [Philanthropist, Free Spirit]
+        complexity: high
+        when_to_use: "When meaning and purpose drive your audience"
+        when_to_avoid: "If narrative feels forced or irrelevant to the product"
+        examples: ["Zombies Run!", "Duolingo stories", "Habitica quest lines"]
+
+      - id: MC-051
+        name: "Avatars/Characters"
+        description: "Visual representation of the user in the system"
+        core_drive: [CD3, CD4]
+        hexad_fit: [Free Spirit]
+        complexity: medium
+        when_to_use: "When self-expression and identity matter"
+        when_to_avoid: "If audience is professional/enterprise (may feel childish)"
+        examples: ["Xbox avatars", "Bitmoji", "Habitica characters"]
+
+      - id: MC-052
+        name: "Easter Eggs"
+        description: "Hidden rewards or content discoverable through exploration"
+        core_drive: [CD7, CD3]
+        hexad_fit: [Free Spirit, Disruptor]
+        complexity: low
+        when_to_use: "To reward curiosity and create shareable moments"
+        when_to_avoid: "If core functionality depends on finding them"
+        examples: ["Google Easter eggs", "Konami code implementations"]
+
+  collection:
+    description: "Mechanics based on gathering and ownership"
+    mechanics:
+      - id: MC-060
+        name: "Collections/Sets"
+        description: "Groups of items that reward completionism"
+        core_drive: [CD4, CD6]
+        hexad_fit: [Achiever, Player]
+        complexity: medium
+        when_to_use: "When items can be meaningfully grouped and displayed"
+        when_to_avoid: "If collection is infinite with no completion possible"
+        examples: ["Pokémon collection", "Sticker albums", "stamp collecting apps"]
+
+      - id: MC-061
+        name: "Customization"
+        description: "Ability to personalize appearance, settings, or environment"
+        core_drive: [CD3, CD4]
+        hexad_fit: [Free Spirit]
+        complexity: medium
+        when_to_use: "When self-expression enhances the experience"
+        when_to_avoid: "If too many options cause decision paralysis"
+        examples: ["Profile customization", "theme selection", "workspace personalization"]
+
+      - id: MC-062
+        name: "Virtual Goods/Items"
+        description: "Digital items with perceived value within the system"
+        core_drive: [CD4]
+        hexad_fit: [Player, Free Spirit]
+        complexity: medium
+        when_to_use: "When items can be earned, traded, or displayed meaningfully"
+        when_to_avoid: "If items have no functional or display value"
+        examples: ["Fortnite skins", "virtual stickers", "profile frames"]
+
+  feedback:
+    description: "Mechanics providing information about performance"
+    mechanics:
+      - id: MC-070
+        name: "Countdown Timers"
+        description: "Visual timer creating urgency for action"
+        core_drive: [CD6, CD8]
+        hexad_fit: [Player]
+        complexity: low
+        when_to_use: "For time-limited events where urgency is honest"
+        when_to_avoid: "If creating artificial urgency (dark pattern)"
+        examples: ["Flash sale timers", "quiz time limits"]
+
+      - id: MC-071
+        name: "Combo/Multiplier"
+        description: "Bonus that increases with consecutive successful actions"
+        core_drive: [CD2]
+        hexad_fit: [Achiever]
+        complexity: low
+        when_to_use: "To reward sustained quality/speed"
+        when_to_avoid: "If it penalizes careful, thoughtful behavior"
+        examples: ["Guitar Hero combo", "typing speed multipliers"]
+
+      - id: MC-072
+        name: "Notifications/Nudges"
+        description: "Contextual prompts to encourage specific behaviors"
+        core_drive: [CD7]
+        hexad_fit: [Player]
+        complexity: low
+        when_to_use: "To trigger engagement at optimal moments"
+        when_to_avoid: "If overused (notification fatigue); always respect user preferences"
+        examples: ["Duolingo reminders", "Apple Watch stand reminders"]
+
+      - id: MC-073
+        name: "Personal Best Tracking"
+        description: "Record and display user's best performance per activity"
+        core_drive: [CD2]
+        hexad_fit: [Achiever]
+        complexity: low
+        when_to_use: "Always — universal motivator for self-improvement"
+        when_to_avoid: "Never a bad choice"
+        examples: ["Strava personal records", "typing speed records"]
+
+##############################################################################
+# Quick Reference Matrix
+##############################################################################
+quick_reference:
+  by_core_drive:
+    CD1_epic_meaning: [MC-050, MC-040, MC-031, MC-036, MC-034]
+    CD2_accomplishment: [MC-001, MC-002, MC-005, MC-010, MC-040, MC-043, MC-073]
+    CD3_creativity: [MC-004, MC-061, MC-051, MC-045, MC-052]
+    CD4_ownership: [MC-020, MC-060, MC-062, MC-010]
+    CD5_social: [MC-030, MC-031, MC-032, MC-033, MC-034, MC-035, MC-036]
+    CD6_scarcity: [MC-042, MC-024, MC-070, MC-006]
+    CD7_unpredictability: [MC-021, MC-052, MC-044, MC-072]
+    CD8_loss: [MC-041, MC-003, MC-070, MC-022]
+
+  by_complexity:
+    low: [MC-001, MC-002, MC-003, MC-005, MC-010, MC-022, MC-023, MC-032, MC-035, MC-041, MC-044, MC-052, MC-070, MC-071, MC-072, MC-073]
+    medium: [MC-004, MC-020, MC-021, MC-024, MC-030, MC-033, MC-034, MC-040, MC-042, MC-043, MC-045, MC-051, MC-060, MC-061, MC-062]
+    high: [MC-006, MC-031, MC-036, MC-050]

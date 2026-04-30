@@ -1,0 +1,302 @@
+workflow:
+  id: wf-sync-prepare-allprojects
+  name: "Prepare All Projects for Sync"
+  version: "1.0.0"
+  type: preparation
+  orchestrator: "@squad-chief"
+  icon: "\U0001F6E1"
+  command: "*sync-prepare [--projects all|{name,name}] [--skip-commit] [--dry-run]"
+
+  purpose: |
+    Preparar TODOS os projetos para receber sync do template AIOX.
+    Resolve os 3 warnings que o sync-template detecta:
+    1. CLAUDE.md sem markers → instala markers
+    2. Uncommitted changes → auto-commit antes do sync
+    3. Artefatos locais não mapeados → gera local-registry.yaml
+
+    DEVE rodar ANTES do *sync-template. Sem prepare, sync pode:
+    - Sobrescrever conteúdo local do CLAUDE.md (sem markers)
+    - Perder mudanças não commitadas (sem commit prévio)
+    - Deletar rules/hooks/commands locais (sem registry)
+
+  description: |
+    Workflow de 3 fases que varre todos os projetos e prepara cada um:
+    MARKERS → COMMIT → LOCAL REGISTRY
+    Idempotente — pode rodar múltiplas vezes sem efeito colateral.
+
+  metadata:
+    elicit: false
+    confirmation_required: false
+    estimated_duration: "3-7 min (16 projetos)"
+    idempotent: true
+    prerequisite_of: "wf-sync-template"
+
+  config_file: ".aiox/sync-config.yaml"
+  config_resolution: |
+    Paths resolved from: CLI flags > .aiox/sync-config.yaml > defaults.
+    First-time: cp .aiox/sync-config.template.yaml .aiox/sync-config.yaml && edit paths.
+
+  inputs:
+    - field: projects_base
+      type: string
+      required: false
+      default: "from .aiox/sync-config.yaml → projects_base"
+
+    - field: template_path
+      type: string
+      required: false
+      default: "from .aiox/sync-config.yaml → template_path"
+
+    - field: projects
+      type: string
+      required: false
+      default: "all"
+      description: "'all' ou lista de projetos separados por vírgula"
+
+    - field: skip_commit
+      type: boolean
+      required: false
+      default: false
+      description: "Se true, pula o auto-commit (fase 2)"
+
+    - field: dry_run
+      type: boolean
+      required: false
+      default: false
+      description: "Se true, mostra o que faria sem executar"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           STATE MACHINE
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  state_machine:
+    states:
+      - init
+      - install_markers
+      - auto_commit
+      - build_local_registry
+      - report
+      - complete
+      - failed
+    transitions:
+      - {trigger: start, source: init, dest: install_markers}
+      - {trigger: markers_complete, source: install_markers, dest: auto_commit}
+      - {trigger: markers_failed, source: install_markers, dest: failed}
+      - {trigger: commit_complete, source: auto_commit, dest: build_local_registry}
+      - {trigger: commit_skipped, source: auto_commit, dest: build_local_registry, condition: "skip_commit == true"}
+      - {trigger: commit_failed, source: auto_commit, dest: failed}
+      - {trigger: registry_complete, source: build_local_registry, dest: report}
+      - {trigger: registry_failed, source: build_local_registry, dest: failed}
+      - {trigger: report_complete, source: report, dest: complete}
+      - {trigger: fail, source: "*", dest: failed}
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           SEQUENCE
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  sequence:
+
+    # ─── FASE 1: Install CLAUDE.md Markers ──────────────────────────────────────
+
+    - step: install_markers
+      id: install_markers
+      phase: 1
+      phase_name: "Install CLAUDE.md Markers"
+      agent: "@squad-chief"
+      task_ref: sync-prepare-markers.md
+      inputs:
+        projects_base: "{projects_base}"
+        template_path: "{template_path}"
+      outputs:
+        - markers_result
+      duration_estimate: "2 min"
+      checkpoint:
+        criteria: "Todos os projetos com .claude/ têm CLAUDE.md com markers"
+        blocking: true
+      notes: |
+        Para CADA projeto:
+        - Sem CLAUDE.md → copiar template + append PROJECT markers
+        - Com CLAUDE.md sem markers → migrar conteúdo atual para PROJECT section
+        - Com markers → skip (idempotente)
+
+        RESULTADO ESPERADO:
+        - 100% dos projetos com .claude/ têm markers TEMPLATE + PROJECT
+        - Conteúdo original preservado na section PROJECT
+        - Nenhum conteúdo perdido
+
+    # ─── FASE 2: Auto-Commit Uncommitted Changes ───────────────────────────────
+
+    - step: auto_commit
+      id: auto_commit
+      phase: 2
+      phase_name: "Auto-Commit .claude/ Changes"
+      agent: "@squad-chief"
+      task_ref: sync-prepare-commit.md
+      skip_condition: "skip_commit == true"
+      inputs:
+        projects_base: "{projects_base}"
+      outputs:
+        - commit_result
+      duration_estimate: "2 min"
+      checkpoint:
+        criteria: "Zero uncommitted changes em .claude/ em projetos com git"
+        blocking: false
+      veto_conditions:
+        - id: AC_001
+          check: "Tentativa de git push"
+          action: "BLOCK — commit LOCAL only, NUNCA push"
+        - id: AC_002
+          check: "Tentativa de commitar fora de .claude/"
+          action: "BLOCK — scope é APENAS .claude/"
+      notes: |
+        Para CADA projeto com git + uncommitted em .claude/:
+        - git add .claude/
+        - git commit -m "chore: pre-sync snapshot of .claude/ config"
+        - NUNCA git push
+
+        Para projetos sem git → skip
+        Para projetos sem uncommitted → skip
+
+        RESULTADO ESPERADO:
+        - Mudanças preservadas no git history
+        - Dev pode recuperar via git log a qualquer momento
+        - Zero push — dev decide quando publicar
+
+    # ─── FASE 3: Build Local Registry ───────────────────────────────────────────
+
+    - step: build_local_registry
+      id: build_local_registry
+      phase: 3
+      phase_name: "Build Local Artifact Registry"
+      agent: "@squad-chief"
+      task_ref: sync-prepare-local-registry.md
+      inputs:
+        projects_base: "{projects_base}"
+        template_path: "{template_path}"
+      outputs:
+        - local_registry_result
+      duration_estimate: "3 min"
+      checkpoint:
+        criteria: "Todos os projetos com .claude/ têm .aiox/local-registry.yaml"
+        blocking: true
+      notes: |
+        Para CADA projeto:
+        - Comparar rules/hooks/commands/squads do projeto vs template
+        - O que existe no projeto mas NÃO no template = LOCAL
+        - Gerar .aiox/local-registry.yaml listando todos artefatos locais
+
+        RESULTADO ESPERADO:
+        - sync-template-execute usa o registry pra gerar --exclude no rsync
+        - Artefatos locais NUNCA são deletados pelo sync
+        - Registry regenerado a cada execução (source of truth fresh)
+
+    # ─── REPORT ─────────────────────────────────────────────────────────────────
+
+    - step: report
+      id: report
+      phase: 4
+      phase_name: "Preparation Report"
+      agent: "@squad-chief"
+      action: generate_report
+      inputs:
+        markers_result: "{markers_result}"
+        commit_result: "{commit_result}"
+        local_registry_result: "{local_registry_result}"
+      outputs:
+        - prepare_report
+      duration_estimate: "1 min"
+      notes: |
+        Gerar relatório consolidado:
+
+        ════════════════════════════════════════
+        SYNC PREPARE — ALL PROJECTS
+        ════════════════════════════════════════
+
+        Phase 1: CLAUDE.md Markers
+          Created: N | Migrated: N | Skipped: N
+
+        Phase 2: Auto-Commit
+          Committed: N | Clean: N | No git: N
+
+        Phase 3: Local Registry
+          Registries: N | Total local artifacts: N
+
+        Per-project:
+        ┌────────────────┬─────────┬────────┬──────────┐
+        │ Project        │ Markers │ Commit │ Local    │
+        │────────────────│─────────│────────│──────────│
+        │ avend          │ MIGRATED│ CLEAN  │ 0 local  │
+        │ bmpro          │ MIGRATED│ 18 files│ 14 local │
+        │ church         │ CREATED │ NO GIT │ 0 local  │
+        └────────────────┴─────────┴────────┴──────────┘
+
+        STATUS: READY FOR *sync-template
+        ════════════════════════════════════════
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           QUALITY GATES
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  quality_gates:
+    - id: QG-PREP-001
+      phase: install_markers
+      type: automated
+      severity: blocking
+      description: "100% dos projetos com .claude/ têm CLAUDE.md com markers"
+
+    - id: QG-PREP-002
+      phase: auto_commit
+      type: automated
+      severity: advisory
+      description: "Zero uncommitted em .claude/ (projetos com git)"
+
+    - id: QG-PREP-003
+      phase: build_local_registry
+      type: automated
+      severity: blocking
+      description: "Todos os projetos têm .aiox/local-registry.yaml"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           VETO CONDITIONS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  veto_conditions:
+    - id: PREP_VC_001
+      condition: "Template CLAUDE.md não existe"
+      action: BLOCK
+
+    - id: PREP_VC_002
+      condition: "Tentativa de git push durante auto-commit"
+      action: BLOCK
+
+    - id: PREP_VC_003
+      condition: "Tentativa de commitar arquivos fora de .claude/"
+      action: BLOCK
+
+    - id: PREP_VC_004
+      condition: "Markers instalados mas conteúdo original do projeto PERDIDO"
+      action: BLOCK + rollback
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           INTEGRATION WITH SYNC-TEMPLATE
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  integration:
+    called_by: "wf-sync-template.yaml (fase preflight)"
+    standalone_command: "*sync-prepare"
+    prerequisite_of: "*sync-template"
+    recommendation: |
+      SEMPRE rodar *sync-prepare ANTES de *sync-template.
+      O sync-template DEVE verificar na preflight se prepare foi executado:
+      - Checar se projetos têm CLAUDE.md markers
+      - Checar se projetos têm .aiox/local-registry.yaml
+      - Se não têm → WARN "Rode *sync-prepare primeiro"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  #                           OUTPUTS
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  outputs:
+    - name: prepare_report
+      path: "outputs/sync-reports/prepare-{date}.md"
+      description: "Relatório de preparação"

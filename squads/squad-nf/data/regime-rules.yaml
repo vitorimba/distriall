@@ -1,0 +1,395 @@
+# =============================================================================
+# Regime Rules — Tax Rules by Regime
+# Squad: squad-nf
+# Structure: regime, csts, rates, obligations, notes
+# =============================================================================
+
+regime_rules:
+  # ---------------------------------------------------------------------------
+  # MEI — Microempreendedor Individual
+  # ---------------------------------------------------------------------------
+  - regime: mei
+    crt: 4
+    display_name: "MEI — Microempreendedor Individual"
+    faturamento_limite: 81000  # R$/ano
+    employees_max: 1
+
+    csosn_allowed:
+      - code: "102"
+        description: "Tributada sem permissao de credito"
+        when: "Venda padrao MEI"
+      - code: "300"
+        description: "Imune"
+        when: "Operacao imune (raro para MEI)"
+      - code: "400"
+        description: "Nao tributada"
+        when: "Operacao nao tributada"
+      - code: "500"
+        description: "ICMS cobrado anteriormente por ST"
+        when: "Revenda de produto com ST"
+
+    rates:
+      das_mensal:
+        comercio: 71.60       # INSS + ICMS
+        servico: 75.60        # INSS + ISS
+        comercio_servico: 76.60  # INSS + ICMS + ISS
+      icms: 1.00              # Fixo no DAS
+      iss: 5.00               # Fixo no DAS
+
+    nf_rules:
+      obrigatoria_pj: true
+      obrigatoria_pf: false
+      modelo_permitido: [55, 65]
+
+    obligations:
+      - name: "DAS"
+        frequency: "mensal"
+        deadline: "dia 20"
+      - name: "DASN-SIMEI"
+        frequency: "anual"
+        deadline: "31 de maio"
+
+    notes: "MEI nao destaca impostos na NF. CRT=4. Nao gera credito ICMS."
+
+  # ---------------------------------------------------------------------------
+  # SIMPLES NACIONAL
+  # ---------------------------------------------------------------------------
+  - regime: simples
+    crt: 1
+    display_name: "Simples Nacional"
+    faturamento_limite: 4800000  # R$/ano
+
+    csosn_allowed:
+      - code: "101"
+        description: "Tributada com permissao de credito"
+        when: "Venda para contribuinte ICMS que pode aproveitar credito"
+      - code: "102"
+        description: "Tributada sem permissao de credito"
+        when: "Venda para consumidor final ou nao contribuinte"
+      - code: "103"
+        description: "Isencao do ICMS para faixa de receita bruta"
+        when: "Microempresa com receita ate sublimite estadual"
+      - code: "201"
+        description: "Tributada com permissao de credito e com ST"
+        when: "Venda com ST e credito permitido"
+      - code: "202"
+        description: "Tributada sem permissao de credito e com ST"
+        when: "Venda com ST sem credito"
+      - code: "203"
+        description: "Isencao do ICMS para faixa e com ST"
+        when: "Isento do ICMS proprio mas com ST"
+      - code: "300"
+        description: "Imune"
+        when: "Operacao imune (ex: exportacao)"
+      - code: "400"
+        description: "Nao tributada"
+        when: "Operacao nao tributada pelo ICMS"
+      - code: "500"
+        description: "ICMS cobrado anteriormente por ST ou antecipacao"
+        when: "Revenda de mercadoria com ST ja recolhida"
+      - code: "900"
+        description: "Outros"
+        when: "Situacoes nao enquadradas nos anteriores"
+
+    anexos:
+      - anexo: "I"
+        atividade: "Comercio"
+        faixas:
+          - faixa: 1
+            receita_ate: 180000
+            aliquota: 4.00
+            deducao: 0
+          - faixa: 2
+            receita_ate: 360000
+            aliquota: 7.30
+            deducao: 5940
+          - faixa: 3
+            receita_ate: 720000
+            aliquota: 9.50
+            deducao: 13860
+          - faixa: 4
+            receita_ate: 1800000
+            aliquota: 10.70
+            deducao: 22500
+          - faixa: 5
+            receita_ate: 3600000
+            aliquota: 14.30
+            deducao: 87300
+          - faixa: 6
+            receita_ate: 4800000
+            aliquota: 19.00
+            deducao: 378000
+
+      - anexo: "II"
+        atividade: "Industria"
+        faixas:
+          - faixa: 1
+            receita_ate: 180000
+            aliquota: 4.50
+            deducao: 0
+          - faixa: 2
+            receita_ate: 360000
+            aliquota: 7.80
+            deducao: 5940
+          - faixa: 3
+            receita_ate: 720000
+            aliquota: 10.00
+            deducao: 13860
+          - faixa: 4
+            receita_ate: 1800000
+            aliquota: 11.20
+            deducao: 22500
+          - faixa: 5
+            receita_ate: 3600000
+            aliquota: 14.70
+            deducao: 87300
+          - faixa: 6
+            receita_ate: 4800000
+            aliquota: 30.00
+            deducao: 540000
+
+      - anexo: "III"
+        atividade: "Servicos (geral)"
+        faixas:
+          - faixa: 1
+            receita_ate: 180000
+            aliquota: 6.00
+            deducao: 0
+          - faixa: 2
+            receita_ate: 360000
+            aliquota: 11.20
+            deducao: 9360
+          - faixa: 3
+            receita_ate: 720000
+            aliquota: 13.50
+            deducao: 17640
+          - faixa: 4
+            receita_ate: 1800000
+            aliquota: 16.00
+            deducao: 35640
+          - faixa: 5
+            receita_ate: 3600000
+            aliquota: 21.00
+            deducao: 125640
+          - faixa: 6
+            receita_ate: 4800000
+            aliquota: 33.00
+            deducao: 648000
+
+      - anexo: "IV"
+        atividade: "Servicos (construcao, vigilancia, limpeza, advocacia)"
+        faixas:
+          - faixa: 1
+            receita_ate: 180000
+            aliquota: 4.50
+            deducao: 0
+          - faixa: 2
+            receita_ate: 360000
+            aliquota: 9.00
+            deducao: 8100
+          - faixa: 3
+            receita_ate: 720000
+            aliquota: 10.20
+            deducao: 12420
+          - faixa: 4
+            receita_ate: 1800000
+            aliquota: 14.00
+            deducao: 39780
+          - faixa: 5
+            receita_ate: 3600000
+            aliquota: 22.00
+            deducao: 183780
+          - faixa: 6
+            receita_ate: 4800000
+            aliquota: 33.00
+            deducao: 828000
+        notes: "Anexo IV NAO inclui CPP no DAS — recolher INSS patronal separado (20%)"
+
+      - anexo: "V"
+        atividade: "Servicos (tecnologia, engenharia, publicidade)"
+        faixas:
+          - faixa: 1
+            receita_ate: 180000
+            aliquota: 15.50
+            deducao: 0
+          - faixa: 2
+            receita_ate: 360000
+            aliquota: 18.00
+            deducao: 4500
+          - faixa: 3
+            receita_ate: 720000
+            aliquota: 19.50
+            deducao: 9900
+          - faixa: 4
+            receita_ate: 1800000
+            aliquota: 20.50
+            deducao: 17100
+          - faixa: 5
+            receita_ate: 3600000
+            aliquota: 23.00
+            deducao: 62100
+          - faixa: 6
+            receita_ate: 4800000
+            aliquota: 30.50
+            deducao: 540000
+        notes: "Se Fator R >= 28%, tributa pelo Anexo III (mais vantajoso)"
+
+    fator_r:
+      description: "Fator R = Folha 12 meses / Receita 12 meses"
+      threshold: 0.28
+      effect: "Se >= 28%, empresas do Anexo V tributam pelo Anexo III"
+
+    aliquota_efetiva_formula: "(RBT12 * AliqNom - PD) / RBT12"
+
+    obligations:
+      - name: "DAS"
+        frequency: "mensal"
+        deadline: "dia 20"
+      - name: "DEFIS"
+        frequency: "anual"
+        deadline: "31 de marco"
+      - name: "DESTDA"
+        frequency: "mensal"
+        deadline: "dia 28"
+        notes: "Declaracao de ST, DIFAL e antecipacao"
+
+    notes: "Aliquota efetiva = (RBT12 * Aliq - Deducao) / RBT12. Credito ICMS na NF = aliquota ICMS dentro da aliquota efetiva."
+
+  # ---------------------------------------------------------------------------
+  # LUCRO PRESUMIDO
+  # ---------------------------------------------------------------------------
+  - regime: presumido
+    crt: 3
+    display_name: "Lucro Presumido"
+    faturamento_limite: 78000000  # R$/ano
+
+    cst_icms:
+      - code: "00"
+        description: "Tributada integralmente"
+        when: "Operacao normal com ICMS"
+      - code: "10"
+        description: "Tributada com ST"
+        when: "Operacao com Substituicao Tributaria"
+      - code: "20"
+        description: "Com reducao de base de calculo"
+        when: "Beneficio fiscal de reducao de BC"
+      - code: "40"
+        description: "Isenta"
+        when: "Operacao isenta de ICMS"
+      - code: "41"
+        description: "Nao tributada"
+        when: "Operacao fora da incidencia do ICMS"
+      - code: "50"
+        description: "Suspensao"
+        when: "ICMS suspenso (ex: remessa para industrializacao)"
+      - code: "51"
+        description: "Diferimento"
+        when: "ICMS diferido (recolhimento adiado)"
+      - code: "60"
+        description: "ICMS cobrado anteriormente por ST"
+        when: "Revenda de mercadoria com ST ja paga"
+      - code: "70"
+        description: "Com reducao de BC e ST"
+        when: "Reducao de BC + ST"
+      - code: "90"
+        description: "Outros"
+        when: "Situacoes nao enquadradas"
+
+    rates:
+      pis: 0.65               # Cumulativo
+      cofins: 3.00             # Cumulativo
+      irpj_base_comercio: 8    # % sobre faturamento
+      irpj_base_servico: 32    # % sobre faturamento
+      irpj_aliquota: 15        # % sobre base presumida
+      irpj_adicional: 10       # % sobre excedente de R$60k/trimestre
+      csll_base_comercio: 12
+      csll_base_servico: 32
+      csll_aliquota: 9
+
+    pis_cofins:
+      regime: "cumulativo"
+      credito: false
+      cst_pis: "01"            # Operacao tributavel — base aliquota
+      cst_cofins: "01"
+
+    obligations:
+      - name: "DCTF"
+        frequency: "mensal"
+        deadline: "15o dia util do 2o mes seguinte"
+      - name: "EFD Contribuicoes"
+        frequency: "mensal"
+        deadline: "10o dia util do 2o mes seguinte"
+      - name: "SPED Fiscal"
+        frequency: "mensal"
+        deadline: "dia 20 do mes seguinte"
+        notes: "Obrigatorio para contribuintes ICMS"
+      - name: "IRPJ/CSLL"
+        frequency: "trimestral"
+        deadline: "ultimo dia util do mes seguinte ao trimestre"
+      - name: "ECF"
+        frequency: "anual"
+        deadline: "ultimo dia util de julho"
+
+    notes: "PIS/COFINS cumulativo (sem creditos). IRPJ/CSLL trimestral sobre base presumida."
+
+  # ---------------------------------------------------------------------------
+  # LUCRO REAL
+  # ---------------------------------------------------------------------------
+  - regime: real
+    crt: 3
+    display_name: "Lucro Real"
+    faturamento_limite: null   # Sem limite (obrigatorio acima de R$78M)
+
+    cst_icms: "Mesmos CSTs do Lucro Presumido (00-90)"
+
+    rates:
+      pis: 1.65               # Nao-cumulativo
+      cofins: 7.60             # Nao-cumulativo
+      irpj_aliquota: 15
+      irpj_adicional: 10       # Sobre excedente de R$20k/mes
+      csll_aliquota: 9
+
+    pis_cofins:
+      regime: "nao_cumulativo"
+      credito: true
+      cst_saida: "01"          # Operacao tributavel
+      cst_entrada_com_credito: "50"   # Com direito a credito
+      cst_entrada_sem_credito: "70"   # Sem direito a credito
+      cst_nao_tributada: "06"
+      cst_isenta: "04"
+      creditable_inputs:
+        - "Bens para revenda"
+        - "Insumos utilizados na producao"
+        - "Energia eletrica"
+        - "Alugueis de PJ"
+        - "Depreciacao de maquinas"
+        - "Frete sobre compras"
+      non_creditable:
+        - "Mao de obra (salarios)"
+        - "Compras de PF"
+        - "Bens do ativo (depreciar)"
+
+    obligations:
+      - name: "DCTF"
+        frequency: "mensal"
+        deadline: "15o dia util do 2o mes seguinte"
+      - name: "EFD Contribuicoes"
+        frequency: "mensal"
+        deadline: "10o dia util do 2o mes seguinte"
+      - name: "SPED Fiscal"
+        frequency: "mensal"
+        deadline: "dia 20 do mes seguinte"
+      - name: "ECF"
+        frequency: "anual"
+        deadline: "ultimo dia util de julho"
+      - name: "ECD (SPED Contabil)"
+        frequency: "anual"
+        deadline: "ultimo dia util de maio"
+      - name: "IRPJ/CSLL"
+        frequency: "trimestral ou mensal (estimativa)"
+        deadline: "ultimo dia util do mes seguinte"
+      - name: "LALUR/LACS"
+        frequency: "anual"
+        deadline: "Entregue via ECF"
+
+    notes: "PIS/COFINS nao-cumulativo com creditos. IRPJ trimestral ou mensal por estimativa. Obrigatorio para faturamento > R$78M, instituicoes financeiras, e empresas com lucro do exterior."

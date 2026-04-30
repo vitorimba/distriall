@@ -1,0 +1,277 @@
+# ============================================================================
+# Tool Reference — Squad FastSystem
+# ============================================================================
+# Ferramentas organizadas por camada e funcao
+# ============================================================================
+
+version: 1.0.0
+
+# ============================================================================
+# Profiling & Diagnostics
+# ============================================================================
+profiling:
+  - name: perf
+    category: CPU Profiling
+    platform: Linux
+    description: "Linux performance events — CPU profiling, cache analysis, tracing"
+    use_cases:
+      - "CPU flame graph generation"
+      - "Cache miss analysis"
+      - "Context switch monitoring"
+    commands:
+      record: "perf record -g -p <PID> -- sleep 30"
+      report: "perf report"
+      flame: "perf script | stackcollapse-perf.pl | flamegraph.pl > fg.svg"
+
+  - name: bpftrace
+    category: System Tracing
+    platform: Linux
+    description: "eBPF-based tracing — kernel and userspace"
+    use_cases:
+      - "Syscall latency analysis"
+      - "I/O tracing"
+      - "Network packet analysis"
+
+  - name: strace
+    category: System Call Tracing
+    platform: Linux
+    description: "Trace system calls made by a process"
+    use_cases:
+      - "Debug I/O issues"
+      - "Identify slow syscalls"
+      - "File access patterns"
+    commands:
+      basic: "strace -p <PID> -c"
+      latency: "strace -p <PID> -T -e trace=read,write"
+
+  - name: vmstat
+    category: Memory & CPU
+    platform: Linux
+    description: "Virtual memory statistics"
+    commands:
+      continuous: "vmstat 1 10"
+      summary: "vmstat -s"
+
+  - name: iostat
+    category: Disk I/O
+    platform: Linux
+    description: "I/O statistics for devices"
+    commands:
+      extended: "iostat -xz 1 10"
+
+  - name: sar
+    category: System Activity
+    platform: Linux
+    description: "System activity reporter — CPU, memory, disk, network"
+    commands:
+      cpu: "sar -u 1 10"
+      memory: "sar -r 1 10"
+      disk: "sar -d 1 10"
+      network: "sar -n DEV 1 10"
+
+# ============================================================================
+# Monitoring & Observability
+# ============================================================================
+monitoring:
+  - name: Prometheus
+    category: Metrics Collection
+    description: "Time-series metrics collection and alerting"
+    use_cases:
+      - "Infrastructure metrics"
+      - "Application metrics"
+      - "Alerting rules"
+
+  - name: Grafana
+    category: Visualization
+    description: "Metrics visualization and dashboarding"
+    use_cases:
+      - "Performance dashboards"
+      - "Alert visualization"
+      - "Capacity planning"
+
+  - name: Jaeger
+    category: Distributed Tracing
+    description: "Open-source distributed tracing"
+    use_cases:
+      - "Request flow visualization"
+      - "Latency breakdown"
+      - "Service dependency mapping"
+
+  - name: OpenTelemetry
+    category: Observability Framework
+    description: "Vendor-neutral observability framework"
+    use_cases:
+      - "Unified traces, metrics, logs"
+      - "Auto-instrumentation"
+      - "Context propagation"
+
+  - name: Datadog
+    category: APM
+    description: "Full-stack application performance monitoring"
+    use_cases:
+      - "APM traces"
+      - "Infrastructure monitoring"
+      - "Log management"
+
+# ============================================================================
+# Load Testing
+# ============================================================================
+load_testing:
+  - name: k6
+    category: Load Testing
+    description: "Modern load testing tool — JavaScript scripting"
+    use_cases:
+      - "Load tests"
+      - "Stress tests"
+      - "Soak tests"
+      - "Spike tests"
+    commands:
+      run: "k6 run script.js"
+      cloud: "k6 cloud script.js"
+
+  - name: Gatling
+    category: Load Testing
+    description: "High-performance load testing — Scala-based"
+    use_cases:
+      - "High-throughput load tests"
+      - "Complex user journeys"
+
+  - name: Artillery
+    category: Load Testing
+    description: "Cloud-scale load testing — YAML config"
+    use_cases:
+      - "Quick load tests"
+      - "CI/CD integration"
+
+  - name: autocannon
+    category: HTTP Benchmarking
+    description: "Fast HTTP benchmarking tool — Node.js"
+    use_cases:
+      - "Quick endpoint benchmarks"
+      - "Throughput measurement"
+    commands:
+      basic: "autocannon -c 100 -d 30 http://localhost:3000/api"
+
+# ============================================================================
+# Frontend Performance
+# ============================================================================
+frontend:
+  - name: Lighthouse
+    category: Web Audit
+    description: "Automated web performance auditing"
+    use_cases:
+      - "Core Web Vitals measurement"
+      - "Accessibility audit"
+      - "SEO audit"
+      - "Best practices"
+    commands:
+      cli: "lighthouse https://example.com --output=json,html"
+      ci: "npx lhci autorun"
+
+  - name: WebPageTest
+    category: Real Browser Testing
+    description: "Real browser performance testing from multiple locations"
+    use_cases:
+      - "Waterfall analysis"
+      - "Multi-location testing"
+      - "Video comparison"
+
+  - name: Bundle Analyzer
+    category: Bundle Analysis
+    description: "Webpack bundle composition visualization"
+    commands:
+      webpack: "npx webpack-bundle-analyzer stats.json"
+
+  - name: Source Map Explorer
+    category: Bundle Analysis
+    description: "Analyze bundle with source maps"
+    commands:
+      run: "npx source-map-explorer bundle.js"
+
+  - name: Bundlephobia
+    category: Package Size
+    description: "Check npm package size impact"
+    url: "https://bundlephobia.com"
+
+# ============================================================================
+# Database
+# ============================================================================
+database:
+  - name: pg_stat_statements
+    category: Query Statistics
+    description: "PostgreSQL query performance statistics"
+    use_cases:
+      - "Top queries by time"
+      - "Query frequency analysis"
+      - "Performance regression detection"
+
+  - name: EXPLAIN ANALYZE
+    category: Query Plan
+    description: "PostgreSQL execution plan analysis"
+    use_cases:
+      - "Query optimization"
+      - "Index validation"
+      - "Join strategy analysis"
+
+  - name: pgbadger
+    category: Log Analysis
+    description: "PostgreSQL log analyzer"
+    use_cases:
+      - "Slow query analysis"
+      - "Connection patterns"
+      - "Error analysis"
+
+  - name: pganalyze
+    category: PostgreSQL Insights
+    description: "Automated PostgreSQL performance insights"
+    use_cases:
+      - "Index recommendations"
+      - "Query optimization"
+      - "Wait event analysis"
+
+  - name: PgBouncer
+    category: Connection Pooling
+    description: "Lightweight PostgreSQL connection pooler"
+    use_cases:
+      - "Connection pooling"
+      - "Connection limiting"
+      - "Query routing"
+
+# ============================================================================
+# Caching
+# ============================================================================
+caching:
+  - name: Redis
+    category: In-Memory Store
+    description: "In-memory data structure store"
+    use_cases:
+      - "Application caching"
+      - "Session storage"
+      - "Rate limiting"
+      - "Pub/Sub"
+    commands:
+      info: "redis-cli INFO"
+      monitor: "redis-cli MONITOR"
+      slowlog: "redis-cli SLOWLOG GET 10"
+
+  - name: Redis Benchmark
+    category: Cache Benchmarking
+    description: "Redis performance benchmarking tool"
+    commands:
+      run: "redis-benchmark -q -n 100000"
+
+  - name: Varnish
+    category: HTTP Cache
+    description: "HTTP accelerator and caching reverse proxy"
+    use_cases:
+      - "Full page caching"
+      - "API response caching"
+      - "Edge Side Includes (ESI)"
+
+  - name: Cloudflare
+    category: CDN
+    description: "CDN and edge computing platform"
+    use_cases:
+      - "Static asset caching"
+      - "DDoS protection"
+      - "Edge functions"

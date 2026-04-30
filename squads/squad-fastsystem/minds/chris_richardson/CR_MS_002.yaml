@@ -1,0 +1,17 @@
+id: CR_MS_002
+name: "Saga Pattern for Distributed Transactions"
+mind: chris_richardson
+source: "Microservices Patterns (2018) — Chapter 4"
+domain: microservices
+description: >
+  Use sagas ao inves de transacoes distribuidas. Sagas sao
+  sequencias de transacoes locais com compensacao para rollback.
+applies_when:
+  - "Operacao que precisa atualizar multiplos servicos"
+  - "Avaliando consistencia entre servicos"
+action: >
+  Implementar choreography (event-driven) ou orchestration
+  saga com compensacao para cada step. Evitar 2PC (two-phase
+  commit) que e lento e fragil.
+severity: high
+confidence: 0.85

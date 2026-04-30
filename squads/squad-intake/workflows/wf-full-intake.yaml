@@ -1,0 +1,193 @@
+# ═══════════════════════════════════════════════════════════════════════
+# Workflow: Full Client Intake
+# Squad: squad-intake
+# Version: 1.0.0
+# ═══════════════════════════════════════════════════════════════════════
+
+workflow:
+  name: wf-full-intake
+  display_name: "Full Client Intake Pipeline"
+  version: "1.0.0"
+  description: |
+    Fluxo completo de intake para novos clientes.
+    7 fases: Preparação → Reunião → Briefing → Análise → Follow-up → Classificação → Handoff
+
+  trigger: "*new-intake {client}"
+  estimated_duration: "3-7 dias"
+  entry_points:
+    - full: "Todas as 7 fases (reunião + briefing)"
+    - quick: "Fases 3-7 (só briefing, sem reunião)"
+
+phases:
+  - phase: 1
+    name: "Preparação da Reunião"
+    agent: "intake-chief"
+    delegated_to: ["donna-weber", "rob-fitzpatrick"]
+    task: "prepare-meeting"
+    description: |
+      Preparar roteiro de reunião personalizado e email de boas-vindas.
+      Donna Weber: processo estruturado (Embark)
+      Rob Fitzpatrick: perguntas Mom Test (sem viés)
+    inputs:
+      - client_name: string
+      - industry: string
+      - project_type_hint: string (optional)
+      - meeting_date: string
+    outputs:
+      - "docs/intake/{client}/roteiro-reuniao.md"
+      - "docs/intake/{client}/welcome-email.md"
+    checkpoint:
+      blocking: true
+      check: "Roteiro gerado com pelo menos 15 perguntas distribuídas em 5 blocos"
+    veto_conditions:
+      - "Roteiro contém perguntas que violam Mom Test (opinião sobre ideia)"
+      - "Falta bloco de Restrições ou Sucesso"
+
+  - phase: 2
+    name: "Reunião / Discovery"
+    agent: "intake-chief"
+    delegated_to: ["rob-fitzpatrick", "indi-young", "blair-enns"]
+    task: "conduct-discovery"
+    description: |
+      Guia para conduzir a reunião usando técnicas dos 3 especialistas.
+      Rob Fitzpatrick: perguntas factuais (Mom Test)
+      Indi Young: escuta profunda (Mental Models)
+      Blair Enns: diagnóstico de expert (Win Without Pitching)
+    inputs:
+      - meeting_notes: text (notas da reunião)
+      - roteiro_path: string
+    outputs:
+      - "docs/intake/{client}/discovery-notes.md"
+      - "docs/intake/{client}/qualification-score.md"
+    checkpoint:
+      blocking: true
+      check: "Notas processadas com fatos separados de bad data"
+    veto_conditions:
+      - "Qualification score < 10/20 (não é fit)"
+      - "Decisor não identificado"
+
+  - phase: 3
+    name: "Geração do Briefing"
+    agent: "intake-chief"
+    delegated_to: ["alan-weiss", "donna-weber"]
+    task: "generate-briefing"
+    description: |
+      Gerar questionário personalizado baseado na reunião.
+      Alan Weiss: estrutura de Objetivos/Medidas/Valor
+      Donna Weber: humanização e experiência do cliente
+    inputs:
+      - discovery_notes_path: string
+      - project_type: string
+      - industry: string
+    outputs:
+      - "docs/intake/{client}/briefing.md"
+      - "docs/intake/{client}/briefing-email.md"
+    checkpoint:
+      blocking: true
+      check: "Briefing personalizado com seções adaptadas ao tipo de projeto"
+    veto_conditions:
+      - "Briefing genérico (não reflete notas da reunião)"
+      - "Mais de 50 perguntas (cliente abandona)"
+      - "Falta seção de Objetivos e Métricas de Sucesso"
+
+  - phase: 4
+    name: "Análise de Respostas"
+    agent: "intake-chief"
+    delegated_to: ["erika-hall", "alan-weiss"]
+    task: "analyze-responses"
+    description: |
+      Analisar respostas do briefing.
+      Erika Hall: análise pragmática, detecção de inconsistências e vieses
+      Alan Weiss: validação de objetivos e valor
+    inputs:
+      - briefing_responses_path: string
+    outputs:
+      - "docs/intake/{client}/analysis-report.md"
+    checkpoint:
+      blocking: true
+      check: "Análise inclui completude + consistência + gaps + insights"
+    veto_conditions:
+      - "Completude < 60% sem follow-up agendado"
+      - "Gap CRITICAL não endereçado"
+
+  - phase: 5
+    name: "Follow-up"
+    agent: "intake-chief"
+    delegated_to: ["rob-fitzpatrick"]
+    task: "detect-gaps"
+    description: |
+      Gerar perguntas de follow-up para gaps detectados.
+      Rob Fitzpatrick: perguntas factuais para fechar gaps
+    inputs:
+      - analysis_report_path: string
+    outputs:
+      - "docs/intake/{client}/followup-questions.md"
+    checkpoint:
+      blocking: false
+      check: "Follow-up cobre todos os gaps CRITICAL"
+    skip_if: "Completude >= 90% e zero gaps CRITICAL"
+
+  - phase: 6
+    name: "Classificação do Projeto"
+    agent: "intake-chief"
+    task: "classify-project"
+    description: |
+      Classificar tipo, complexidade e riscos do projeto
+      baseado em todos os dados coletados.
+    inputs:
+      - all_intake_data: object
+    outputs:
+      - "docs/intake/{client}/project-classification.md"
+    checkpoint:
+      blocking: true
+      check: "Projeto classificado com tipo, complexidade e riscos"
+
+  - phase: 7
+    name: "Relatório & Handoff"
+    agent: "intake-chief"
+    delegated_to: ["donna-weber"]
+    task: "generate-intake-report"
+    description: |
+      Consolidar tudo em relatório final e preparar handoff.
+      Donna Weber: handoff estruturado (fase Expand)
+    inputs:
+      - all_intake_artifacts: object
+    outputs:
+      - "docs/intake/{client}/intake-report.md"
+      - "docs/intake/{client}/handoff-summary.md"
+    checkpoint:
+      blocking: true
+      check: "Relatório completo com score de completude >= 85%"
+    veto_conditions:
+      - "Score de completude < 70%"
+      - "Gaps CRITICAL pendentes"
+
+  handoff:
+    to: "squad-pm:discovery-session"
+    artifact: "docs/intake/{client}/intake-report.md"
+    context: "Intake completo, pronto para discovery e PRD"
+
+quality_gates:
+  - gate: "QG-INT-001"
+    name: "Intake Completeness"
+    phase: 7
+    check: "Score de completude >= 85%"
+    blocking: true
+
+  - gate: "QG-INT-002"
+    name: "No Critical Gaps"
+    phase: 7
+    check: "Zero gaps CRITICAL pendentes"
+    blocking: true
+
+  - gate: "QG-INT-003"
+    name: "Objectives Validated"
+    phase: 4
+    check: "Objetivos são outcomes mensuráveis (não deliverables)"
+    blocking: true
+
+  - gate: "QG-INT-004"
+    name: "Client Qualified"
+    phase: 2
+    check: "Qualification score >= 10/20"
+    blocking: true

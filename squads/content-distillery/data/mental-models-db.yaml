@@ -1,0 +1,50 @@
+# Mental Models Database
+#
+# Purpose: Reference database of mental models used by the model-identifier agent
+# (Shane Parrish / Farnam Street methodology).
+#
+# Usage: The model-identifier agent matches frameworks found in content against
+# this database to classify, label, and cross-reference mental models.
+#
+# Methodology: Based on Shane Parrish's mental models taxonomy with categories
+# spanning multiple disciplines (physics, biology, economics, psychology, etc.).
+#
+# Maintained by: model-identifier / knowledge-architect agents
+# Last updated: TODO — fill on first real update
+
+models:
+  # TODO: Populate with real mental models from Farnam Street and other sources.
+  # Each entry follows the structure below.
+
+  - name: "TODO_model_name"
+    category: "TODO"  # e.g., thinking | economics | biology | physics | psychology | systems | numeracy | microeconomics | military | human_nature
+    description: "TODO — concise explanation of the model"
+    key_insight: "TODO — the core idea in one sentence"
+    examples:
+      - context: "TODO — situation where this model applies"
+        application: "TODO — how the model is applied"
+    related_models:
+      - "TODO — name of related model 1"
+    common_misapplications:
+      - "TODO — frequent mistake when using this model"
+    source: "TODO — original thinker or domain"
+    tags:
+      - "TODO"
+
+  # EXAMPLE (remove or replace with real data):
+  # - name: "inversion"
+  #   category: "thinking"
+  #   description: "Instead of thinking about how to achieve a goal, think about what would guarantee failure and avoid those things"
+  #   key_insight: "Avoiding stupidity is easier than seeking brilliance"
+  #   examples:
+  #     - context: "Product launch planning"
+  #       application: "List all ways the launch could fail, then design safeguards for each"
+  #   related_models:
+  #     - "second_order_thinking"
+  #     - "pre_mortem"
+  #   common_misapplications:
+  #     - "Using inversion alone without also thinking forward — both are needed"
+  #   source: "Carl Jacobi / Charlie Munger"
+  #   tags:
+  #     - "decision_making"
+  #     - "problem_solving"

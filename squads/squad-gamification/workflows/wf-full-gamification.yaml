@@ -1,0 +1,499 @@
+##############################################################################
+# Workflow: Full Gamification — End-to-End
+#
+# Complete gamification workflow from diagnostic through launch.
+# 7 phases covering the entire gamification lifecycle.
+#
+# ID:       wf-full-gamification
+# Squad:    squad-gamification
+# Phases:   7
+# Duration: 4-8 weeks (varies by scope)
+# Entry:    Diagnostic phase (always required)
+##############################################################################
+
+id: wf-full-gamification
+name: "Full Gamification Workflow"
+version: "1.0.0"
+description: >
+  End-to-end gamification workflow covering all phases from initial
+  diagnostic through launch and optimization. Uses all 9 squad agents
+  across 7 sequential phases with quality gates between each.
+
+trigger:
+  manual: true
+  command: "*gamify"
+  entry_task: gamification-diagnostic
+
+settings:
+  max_iterations: 3           # Max rework cycles per phase
+  quality_gate_enforcement: strict
+  ethics_check_required: true
+  anti_pattern_scan: every_phase
+  documentation_required: true
+
+##############################################################################
+# Phase 1: DIAGNOSTIC
+# Understand current state, identify opportunities
+##############################################################################
+phases:
+  - id: phase_1_diagnostic
+    name: "Diagnostic"
+    description: "Complete audit of current gamification state and opportunity identification"
+    duration_estimate: "2-4 hours"
+    agents:
+      lead: gamification-chief
+      support: [motivation-analyst, player-profiler]
+
+    tasks:
+      - id: run_diagnostic
+        task_ref: gamification-diagnostic
+        required: true
+        description: "Execute full gamification diagnostic (T0 entry point)"
+
+    outputs:
+      - gamification-diagnostic-report.md
+      - opportunity-map.yaml
+      - recommended-workflow-path.md
+
+    quality_gate:
+      id: GM-QG-001
+      name: "Diagnostic Quality Gate"
+      criteria:
+        - "All 8 Octalysis Core Drives assessed"
+        - "HEXAD distribution estimated"
+        - "Minimum 3 opportunities identified"
+        - "Anti-patterns checked"
+        - "Baseline metrics documented"
+        - "Workflow recommendation justified"
+      pass_threshold: 6  # all 6 criteria must pass
+      on_fail: rework
+      max_rework: 2
+
+    elicit:
+      - point: "Confirm diagnostic findings with stakeholders"
+        required: true
+      - point: "Approve recommended workflow path"
+        required: true
+
+##############################################################################
+# Phase 2: PLAYER PROFILING
+# Deep understanding of user motivations and types
+##############################################################################
+  - id: phase_2_profiling
+    name: "Player Profiling"
+    description: "Map users to HEXAD types and Octalysis core drives"
+    duration_estimate: "2-4 hours"
+    depends_on: [phase_1_diagnostic]
+    agents:
+      lead: player-profiler
+      support: [motivation-analyst, behavior-architect]
+
+    tasks:
+      - id: map_personas
+        task_ref: player-persona-mapping
+        required: true
+        description: "Create player personas with HEXAD/Octalysis profiles"
+
+      - id: audit_motivation
+        task_ref: motivation-audit
+        required: true
+        description: "Analyze intrinsic/extrinsic motivation balance"
+
+    outputs:
+      - player-personas.md
+      - hexad-distribution.yaml
+      - persona-mechanics-map.yaml
+      - motivation-audit-report.md
+      - motivation-balance-map.yaml
+
+    quality_gate:
+      id: GM-QG-002
+      name: "Player Profiling Quality Gate"
+      criteria:
+        - "Minimum 3 personas covering 80%+ of user base"
+        - "All 6 HEXAD types evaluated"
+        - "Persona-mechanic alignment matrix complete"
+        - "Motivation balance assessed (intrinsic vs extrinsic)"
+        - "Segmentation strategy recommended"
+      pass_threshold: 5
+      on_fail: rework
+      max_rework: 2
+
+##############################################################################
+# Phase 3: STRATEGY
+# Define gamification strategy aligned with business goals
+##############################################################################
+  - id: phase_3_strategy
+    name: "Strategy"
+    description: "Define gamification strategy with framework selection and mechanics prioritization"
+    duration_estimate: "3-5 hours"
+    depends_on: [phase_2_profiling]
+    agents:
+      lead: gamification-chief
+      support: [enterprise-strategist, motivation-analyst, experience-designer]
+
+    tasks:
+      - id: emotion_mapping
+        task_ref: emotion-mapping
+        required: true
+        description: "Map desired emotions to mechanics using 4 Keys to Fun"
+
+      - id: enterprise_plan
+        task_ref: enterprise-gamification-plan
+        required: false
+        condition: "context.product_type == 'enterprise'"
+        description: "Enterprise strategy if corporate context"
+
+    actions:
+      - id: select_frameworks
+        agent: gamification-chief
+        description: >
+          Select primary and secondary frameworks based on context:
+          - Consumer app → Hooked Model + Game Thinking
+          - Enterprise → 6D Framework + Octalysis
+          - Education → Gamification of Learning + 4 Keys
+          - Health/Fitness → B=MAP + Octalysis
+          - Social platform → HEXAD + Game Thinking
+
+      - id: prioritize_mechanics
+        agent: gamification-chief
+        description: >
+          Prioritize mechanics using ICE framework:
+          Impact (1-10) × Confidence (1-10) × Ease (1-10)
+          Select top 5-7 mechanics for initial implementation.
+
+      - id: define_kpis
+        agent: enterprise-strategist
+        description: >
+          Define success KPIs per mechanic:
+          - Primary metric (what the mechanic should improve)
+          - Secondary metrics (side effects to monitor)
+          - Guardrail metrics (must not degrade)
+
+    outputs:
+      - gamification-strategy.md
+      - mechanics-priority-list.yaml
+      - kpi-framework.yaml
+      - emotion-map.md
+
+    quality_gate:
+      id: GM-QG-003
+      name: "Strategy Quality Gate"
+      criteria:
+        - "Strategy aligned with business objectives"
+        - "Mechanics prioritized with ICE scores"
+        - "KPIs defined per mechanic"
+        - "Emotion mapping complete"
+        - "Framework selection justified"
+        - "Ethics pre-check passed"
+      pass_threshold: 6
+      on_fail: rework
+      max_rework: 2
+
+    elicit:
+      - point: "Stakeholder approval of strategy and prioritized mechanics"
+        required: true
+
+##############################################################################
+# Phase 4: DESIGN
+# Detailed design of selected mechanics
+##############################################################################
+  - id: phase_4_design
+    name: "Design"
+    description: "Detailed design of all selected gamification mechanics"
+    duration_estimate: "4-8 hours"
+    depends_on: [phase_3_strategy]
+    agents:
+      lead: experience-designer
+      support:
+        - engagement-engineer
+        - behavior-architect
+        - emotion-designer
+        - learning-designer
+
+    tasks:
+      - id: design_progression
+        task_ref: progression-design
+        required: true
+        description: "Design XP curves, levels, and unlock systems"
+
+      - id: design_engagement_loops
+        task_ref: engagement-loop-design
+        required: true
+        description: "Design Hook model loops"
+
+      - id: design_leaderboards
+        task_ref: leaderboard-design
+        required: false
+        condition: "mechanics.includes('leaderboard')"
+        description: "Design social competition mechanics"
+
+      - id: design_onboarding
+        task_ref: onboarding-gamification
+        required: true
+        description: "Gamify first-time user experience"
+
+      - id: design_learning
+        task_ref: learning-gamification
+        required: false
+        condition: "context.product_type == 'education'"
+        description: "Learning-specific gamification"
+
+    outputs:
+      - progression-system-spec.md
+      - engagement-loops-spec.md
+      - leaderboard-spec.md
+      - onboarding-gamification-spec.md
+      - learning-gamification-spec.md
+      - complete-mechanics-spec.md
+
+    quality_gate:
+      id: GM-QG-004
+      name: "Design Quality Gate"
+      criteria:
+        - "All prioritized mechanics fully specified"
+        - "Progression system balanced (no dead zones)"
+        - "Engagement loops close properly (investment loads trigger)"
+        - "Onboarding gamified (time-to-first-value < 60s)"
+        - "Emotional journey mapped"
+        - "Anti-pattern audit passed"
+        - "Accessibility requirements met"
+      pass_threshold: 7
+      on_fail: rework
+      max_rework: 3
+
+##############################################################################
+# Phase 5: BUILD GUIDANCE
+# Technical specifications for development
+##############################################################################
+  - id: phase_5_build
+    name: "Build Guidance"
+    description: "Generate technical specifications and implementation guidance"
+    duration_estimate: "2-4 hours"
+    depends_on: [phase_4_design]
+    agents:
+      lead: gamification-chief
+      support: [engagement-engineer, experience-designer]
+
+    actions:
+      - id: generate_tech_spec
+        agent: gamification-chief
+        description: >
+          Translate design specs into technical requirements:
+          - Data models (XP, levels, badges, streaks)
+          - API endpoints needed
+          - Event tracking requirements
+          - State machine definitions
+          - Cache/performance considerations
+
+      - id: define_implementation_order
+        agent: gamification-chief
+        description: >
+          Sequence implementation for progressive rollout:
+          1. Core progression system (XP, levels)
+          2. Achievement/badge system
+          3. Engagement loops (triggers, notifications)
+          4. Social mechanics (leaderboards, teams)
+          5. Advanced mechanics (seasonal, narrative)
+
+      - id: create_test_plan
+        agent: engagement-engineer
+        description: >
+          Define test plan including:
+          - Unit tests for scoring algorithms
+          - Integration tests for event tracking
+          - A/B test plan for each mechanic
+          - Load testing for leaderboard calculations
+          - Accessibility testing plan
+
+    outputs:
+      - technical-spec.md
+      - implementation-sequence.yaml
+      - test-plan.md
+      - data-model.yaml
+
+    quality_gate:
+      id: GM-QG-005
+      name: "Build Readiness Gate"
+      criteria:
+        - "Technical specs complete and implementable"
+        - "Data models defined"
+        - "Implementation sequence logical"
+        - "Test plan covers all mechanics"
+        - "Performance requirements specified"
+      pass_threshold: 5
+      on_fail: rework
+      max_rework: 2
+
+##############################################################################
+# Phase 6: TEST
+# A/B testing and validation
+##############################################################################
+  - id: phase_6_test
+    name: "Test & Validate"
+    description: "A/B test mechanics, validate emotional impact, audit for anti-patterns"
+    duration_estimate: "2-4 weeks"
+    depends_on: [phase_5_build]
+    agents:
+      lead: engagement-engineer
+      support: [player-profiler, gamification-chief, emotion-designer]
+
+    tasks:
+      - id: run_ab_tests
+        task_ref: ab-test-gamification
+        required: true
+        description: "Execute A/B tests for key mechanics"
+
+      - id: run_anti_pattern_audit
+        task_ref: anti-pattern-audit
+        required: true
+        description: "Final anti-pattern scan before launch"
+
+    actions:
+      - id: emotion_validation
+        agent: emotion-designer
+        description: >
+          Validate emotional responses through:
+          - User surveys (emotional self-report)
+          - Behavioral proxy analysis (session time, return rate)
+          - Qualitative feedback analysis
+          - 4 Keys to Fun alignment check
+
+      - id: persona_validation
+        agent: player-profiler
+        description: >
+          Validate per-persona impact:
+          - Did each persona segment respond as predicted?
+          - Are there unexpected negative segments?
+          - Adjust persona-mechanic alignment if needed
+
+    outputs:
+      - ab-test-results.yaml
+      - anti-pattern-audit-report.md
+      - emotion-validation-report.md
+      - persona-impact-analysis.md
+      - final-recommendations.md
+
+    quality_gate:
+      id: GM-QG-006
+      name: "Launch Readiness Gate"
+      criteria:
+        - "A/B tests show positive primary metrics"
+        - "No guardrail metrics degraded"
+        - "Anti-pattern audit passed (zero critical)"
+        - "Emotional validation positive"
+        - "Per-persona analysis shows no harmed segments"
+        - "Ethics checklist passed"
+      pass_threshold: 6
+      on_fail: rework_phase_4  # return to design
+      max_rework: 2
+
+    elicit:
+      - point: "Stakeholder review of test results and launch decision"
+        required: true
+
+##############################################################################
+# Phase 7: LAUNCH & OPTIMIZE
+# Progressive rollout and continuous optimization
+##############################################################################
+  - id: phase_7_launch
+    name: "Launch & Optimize"
+    description: "Progressive rollout with monitoring and continuous optimization"
+    duration_estimate: "Ongoing"
+    depends_on: [phase_6_test]
+    agents:
+      lead: gamification-chief
+      support: [engagement-engineer, player-profiler, enterprise-strategist]
+
+    actions:
+      - id: progressive_rollout
+        agent: gamification-chief
+        description: >
+          Rollout strategy:
+          - Phase 1: 10% of users (canary)
+          - Phase 2: 25% of users (early adopters)
+          - Phase 3: 50% of users (mainstream)
+          - Phase 4: 100% of users (full rollout)
+          Each phase requires metric validation before proceeding.
+
+      - id: monitoring_setup
+        agent: engagement-engineer
+        description: >
+          Configure monitoring for:
+          - Real-time engagement metrics dashboard
+          - Anomaly detection for negative trends
+          - A/B test continuation for optimization
+          - User feedback collection pipeline
+          - Monthly gamification health report
+
+      - id: optimization_cadence
+        agent: gamification-chief
+        description: >
+          Establish ongoing optimization:
+          - Weekly: metric review, quick adjustments
+          - Monthly: A/B test new variants, seasonal content
+          - Quarterly: full gamification audit, strategy review
+          - Annually: major system evolution, framework reassessment
+
+      - id: roi_report
+        agent: enterprise-strategist
+        description: "Generate ROI report using roi-report-tmpl.md"
+
+    outputs:
+      - rollout-plan.yaml
+      - monitoring-dashboard-config.yaml
+      - optimization-calendar.yaml
+      - roi-report.md
+
+    quality_gate:
+      id: GM-QG-007
+      name: "Post-Launch Quality Gate"
+      criteria:
+        - "Canary metrics positive (10% rollout)"
+        - "No regression in guardrail metrics"
+        - "User feedback sentiment positive"
+        - "Monitoring dashboard operational"
+        - "Optimization cadence established"
+      pass_threshold: 5
+      on_fail: pause_rollout
+      max_rework: 3
+
+##############################################################################
+# Error Handling
+##############################################################################
+error_handling:
+  phase_failure:
+    action: "Return to previous phase with specific feedback"
+    max_retries: 2
+    escalation: "gamification-chief makes final decision"
+
+  metric_degradation:
+    action: "Pause rollout, investigate root cause"
+    severity_thresholds:
+      warning: "-5% on any guardrail metric"
+      critical: "-10% on any guardrail metric"
+      emergency: "-20% or user harm detected"
+
+  stakeholder_rejection:
+    action: "Return to strategy phase with stakeholder feedback"
+    max_cycles: 2
+    escalation: "Executive review"
+
+##############################################################################
+# Completion Criteria
+##############################################################################
+completion:
+  required:
+    - "All 7 phases completed"
+    - "All quality gates passed"
+    - "Anti-pattern audit clean"
+    - "ROI report generated"
+    - "Monitoring operational"
+  artifacts:
+    - gamification-diagnostic-report.md
+    - player-personas.md
+    - gamification-strategy.md
+    - complete-mechanics-spec.md
+    - ab-test-results.yaml
+    - roi-report.md
+    - optimization-calendar.yaml

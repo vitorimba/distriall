@@ -1,0 +1,258 @@
+##############################################################################
+# Consolidated Heuristics — Squad Gamification
+# 22 heuristics for gamification design decisions
+##############################################################################
+
+heuristics:
+
+  # =========================================================================
+  # MOTIVATION HEURISTICS
+  # =========================================================================
+  - id: H-GM-001
+    name: "White Hat First"
+    source: "Yu-kai Chou (Octalysis)"
+    description: >
+      Always establish White Hat motivation (Epic Meaning, Accomplishment,
+      Creativity) before layering Black Hat urgency (Scarcity, Unpredictability,
+      Loss). White Hat creates sustainable engagement; Black Hat creates
+      short-term urgency but long-term burnout.
+    rule: "White Hat / Black Hat ratio should be 1.5-2.5"
+    applies_to: [motivation-analyst, gamification-chief]
+
+  - id: H-GM-002
+    name: "Intrinsic Bootstrap"
+    source: "Deci & Ryan (SDT)"
+    description: >
+      Use extrinsic rewards to bootstrap engagement for behaviors lacking
+      intrinsic motivation, then gradually reduce extrinsic and increase
+      intrinsic elements. Never add controlling extrinsic rewards to
+      already intrinsically motivated behaviors.
+    rule: "Extrinsic rewards decrease as user develops intrinsic motivation"
+    applies_to: [motivation-analyst, engagement-engineer]
+
+  - id: H-GM-003
+    name: "Autonomy Preservation"
+    source: "Deci & Ryan (SDT), Andrzej Marczewski"
+    description: >
+      Preserve user autonomy in all gamification design. Offer choices,
+      allow opt-out, support multiple paths, and never make gamification
+      mandatory. Autonomy is the most fragile of the three SDT needs.
+    rule: "Every gamification feature has an opt-out or alternative path"
+    applies_to: [all_agents]
+
+  # =========================================================================
+  # BEHAVIOR HEURISTICS
+  # =========================================================================
+  - id: H-GM-004
+    name: "Simplify the Action"
+    source: "BJ Fogg (B=MAP)"
+    description: >
+      When designing for behavior change, focus on making the action
+      simpler rather than increasing motivation. Simplification is more
+      reliable and scalable than motivation boosting.
+    rule: "Target action should be completable in < 30 seconds for initial behaviors"
+    applies_to: [behavior-architect, engagement-engineer]
+
+  - id: H-GM-005
+    name: "Trigger at Peak"
+    source: "BJ Fogg (B=MAP)"
+    description: >
+      Deliver prompts when motivation is naturally high. Don't waste
+      triggers during motivation troughs — they'll be ineffective and
+      annoying. Map motivation waves and time triggers accordingly.
+    rule: "Schedule external triggers during known high-motivation windows"
+    applies_to: [behavior-architect, engagement-engineer]
+
+  - id: H-GM-006
+    name: "Celebrate Immediately"
+    source: "BJ Fogg (Tiny Habits)"
+    description: >
+      Provide immediate positive feedback after desired behavior.
+      Celebration wires the behavior to positive emotion, accelerating
+      habit formation. Delayed rewards are 10x less effective.
+    rule: "Feedback within 300ms of action completion"
+    applies_to: [behavior-architect, experience-designer]
+
+  # =========================================================================
+  # ENGAGEMENT HEURISTICS
+  # =========================================================================
+  - id: H-GM-007
+    name: "Close the Loop"
+    source: "Nir Eyal (Hooked)"
+    description: >
+      Every engagement loop must close: investment must load the next
+      trigger. If investment doesn't create conditions for re-engagement,
+      the loop is broken and the user will drift away.
+    rule: "Verify: Does the user's investment make the product better for their next visit?"
+    applies_to: [engagement-engineer]
+
+  - id: H-GM-008
+    name: "Variable Over Fixed"
+    source: "Nir Eyal (Hooked), B.F. Skinner"
+    description: >
+      Variable reward schedules (unpredictable timing/amount) create
+      stronger habit formation than fixed schedules. Use variable ratio
+      for core rewards, but ensure minimum baseline is always earned.
+    rule: "Core rewards use variable ratio schedule with guaranteed minimum"
+    applies_to: [engagement-engineer]
+
+  - id: H-GM-009
+    name: "Internal Trigger Transition"
+    source: "Nir Eyal (Hooked)"
+    description: >
+      Design with the goal of transitioning from external triggers (notifications)
+      to internal triggers (emotions, routines). A product that needs
+      perpetual external triggers has not formed a habit.
+    rule: "Reduce external trigger frequency as user tenure increases"
+    applies_to: [engagement-engineer]
+
+  # =========================================================================
+  # PLAYER HEURISTICS
+  # =========================================================================
+  - id: H-GM-010
+    name: "Multi-Type Design"
+    source: "Andrzej Marczewski (HEXAD)"
+    description: >
+      Design for at least 3 HEXAD types. Single-type design (usually
+      Player+Achiever) alienates 50-70% of the user base. Always include
+      mechanics for Socialisers and at least one other intrinsic type.
+    rule: "Mechanic mix must serve at least 3 dominant HEXAD types"
+    applies_to: [player-profiler, gamification-chief]
+
+  - id: H-GM-011
+    name: "Player Before Mechanics"
+    source: "Amy Jo Kim (Game Thinking)"
+    description: >
+      Understand your players before selecting mechanics. Never start
+      with "we need a leaderboard." Start with "who are our users and
+      what motivates them?" The mechanic selection follows naturally.
+    rule: "Player profiling must precede mechanic selection"
+    applies_to: [player-profiler, gamification-chief]
+
+  # =========================================================================
+  # EXPERIENCE HEURISTICS
+  # =========================================================================
+  - id: H-GM-012
+    name: "Flow Channel"
+    source: "Csikszentmihalyi (Flow Theory)"
+    description: >
+      Maintain challenge-skill balance throughout the player journey.
+      Too easy → boredom → disengagement. Too hard → frustration → churn.
+      Adaptive difficulty is the gold standard.
+    rule: "Target 60-75% success rate for core activities"
+    applies_to: [experience-designer, learning-designer]
+
+  - id: H-GM-013
+    name: "Progressive Disclosure"
+    source: "Amy Jo Kim (Game Thinking)"
+    description: >
+      Don't show all gamification mechanics at once. Introduce
+      progressively as the user advances. Onboarding should be simple;
+      complexity builds over time.
+    rule: "Max 2 new mechanics introduced per level-up in early game"
+    applies_to: [experience-designer]
+
+  - id: H-GM-014
+    name: "Meaningful Choices"
+    source: "Jesse Schell (Lens of Meaningful Choices)"
+    description: >
+      Choices in gamification should have consequences the player can
+      understand and care about. Fake choices (all paths lead to same
+      outcome) are worse than no choice at all.
+    rule: "Every choice point has visibly different outcomes"
+    applies_to: [experience-designer, emotion-designer]
+
+  # =========================================================================
+  # EMOTION HEURISTICS
+  # =========================================================================
+  - id: H-GM-015
+    name: "Four Keys Balance"
+    source: "Nicole Lazzaro (4 Keys to Fun)"
+    description: >
+      A complete gamification experience should include at least 2 of the
+      4 Keys to Fun. Hard Fun alone is exhausting. Easy Fun alone is
+      shallow. People Fun alone excludes introverts. Serious Fun alone
+      lacks excitement.
+    rule: "Include at least 2 of: Hard Fun, Easy Fun, People Fun, Serious Fun"
+    applies_to: [emotion-designer]
+
+  - id: H-GM-016
+    name: "Emotional Safety Net"
+    source: "Nicole Lazzaro, Jesse Schell"
+    description: >
+      Every negative emotional risk in the design must have a safeguard.
+      If frustration is possible, hints must be available. If shame is
+      possible, privacy must be an option. Design for the worst case.
+    rule: "Every risk emotion has a documented safeguard mechanic"
+    applies_to: [emotion-designer, gamification-chief]
+
+  # =========================================================================
+  # ENTERPRISE HEURISTICS
+  # =========================================================================
+  - id: H-GM-017
+    name: "Pilot Before Scale"
+    source: "Kevin Werbach (6D Framework)"
+    description: >
+      Never deploy enterprise gamification organization-wide without
+      a pilot. Pilot with 50-100 people for 4-6 weeks minimum with
+      a control group. Scale only after pilot success criteria met.
+    rule: "4-6 week pilot with control group before scale"
+    applies_to: [enterprise-strategist]
+
+  - id: H-GM-018
+    name: "Outcomes Over Activity"
+    source: "Kevin Werbach, Gamification Ethics"
+    description: >
+      In enterprise contexts, gamify outcomes (tasks completed, skills
+      learned) not activity (time logged, keys pressed). Activity
+      tracking feels like surveillance; outcome tracking feels like
+      recognition.
+    rule: "Enterprise metrics track results, not process"
+    applies_to: [enterprise-strategist]
+
+  # =========================================================================
+  # LEARNING HEURISTICS
+  # =========================================================================
+  - id: H-GM-019
+    name: "Learning First, Mechanics Second"
+    source: "Karl Kapp (Gamification of Learning)"
+    description: >
+      In educational gamification, if engagement increases but learning
+      doesn't, the gamification has failed. Mechanics must serve learning
+      objectives. If a mechanic distracts from learning, remove it.
+    rule: "Primary success metric is learning outcome, not engagement"
+    applies_to: [learning-designer]
+
+  - id: H-GM-020
+    name: "Safe Failure"
+    source: "Karl Kapp, Carol Dweck (Growth Mindset)"
+    description: >
+      In learning contexts, failure must be safe, informative, and
+      encourage retry. Never permanently punish wrong answers. Frame
+      mistakes as learning data, not personal failure.
+    rule: "Wrong answers provide instructional feedback, never permanent penalty"
+    applies_to: [learning-designer]
+
+  # =========================================================================
+  # META HEURISTICS
+  # =========================================================================
+  - id: H-GM-021
+    name: "Ethics Before Engagement"
+    source: "Marczewski (Ethical Gamification)"
+    description: >
+      When ethical concerns and engagement goals conflict, ethics wins.
+      A dark pattern that boosts DAU by 20% is not worth the user harm
+      and long-term brand damage. Build for trust.
+    rule: "If ethical checklist fails, mechanic is blocked regardless of projected metrics"
+    applies_to: [all_agents]
+
+  - id: H-GM-022
+    name: "Measure What Matters"
+    source: "Kevin Werbach, General"
+    description: >
+      Gamification success is measured by behavior change and business
+      outcomes, not by gamification vanity metrics (badges earned, XP
+      distributed). If the target behavior isn't changing, the
+      gamification isn't working — regardless of how many badges exist.
+    rule: "Primary KPI is always the target behavior, never the mechanic metric"
+    applies_to: [gamification-chief, engagement-engineer]

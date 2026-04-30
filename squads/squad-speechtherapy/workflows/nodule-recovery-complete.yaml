@@ -1,0 +1,970 @@
+# =============================================================================
+# Nodule Recovery Complete Workflow
+# =============================================================================
+# Squad: squad-speechtherapy
+# Target: Singer with vocal nodules + nasal secretion
+# Duration: 12 weeks (4 phases)
+# Goal: Full nodule resolution and return to singing
+# =============================================================================
+
+workflow:
+  id: nodule-recovery-complete
+  name: "Complete 12-Week Nodule Recovery for Singers"
+  version: "1.0.0"
+  squad: squad-speechtherapy
+  description: >
+    Comprehensive rehabilitation workflow for a singer presenting with bilateral
+    vocal nodules and nasal secretion. Structured in 4 progressive phases over
+    12 weeks, from assessment and vocal rest through active rehabilitation to
+    return-to-singing clearance. Each phase includes specific agent assignments,
+    checkpoints, veto conditions, and handoff protocols.
+
+  patient_profile:
+    condition: "Bilateral vocal nodules"
+    comorbidity: "Nasal secretion / post-nasal drip"
+    occupation: "Singer (professional/semi-professional)"
+    timeline: "12 weeks target"
+    risk_factors:
+      - "Vocal overuse (singing + speaking)"
+      - "Nasal secretion contributing to throat clearing habit"
+      - "Possible laryngopharyngeal reflux (LPR)"
+
+  # ---------------------------------------------------------------------------
+  # Agent Roster
+  # ---------------------------------------------------------------------------
+  agents:
+    orchestrator:
+      id: speechtherapy-chief
+      role: "Clinical Orchestrator"
+      tier: orchestrator
+      responsibilities:
+        - "Overall treatment plan coordination"
+        - "Phase transition decisions"
+        - "Veto enforcement"
+        - "Inter-agent communication"
+        - "Patient progress synthesis"
+
+    tier_0:
+      - id: ingo-titze
+        role: "SOVT Specialist"
+        tier: T0
+        specialty: "Semi-Occluded Vocal Tract exercises"
+        primary_phases: [1, 2, 4]
+        techniques:
+          - "Straw phonation (narrow/wide)"
+          - "Lip trills"
+          - "Humming (nasal resonance)"
+          - "Water resistance therapy"
+          - "Cup bubble"
+
+      - id: mara-behlau
+        role: "SBFa Assessment Specialist"
+        tier: T0
+        specialty: "Voice assessment and Brazilian speech therapy protocols"
+        primary_phases: [1, 4]
+        techniques:
+          - "CAPE-V assessment"
+          - "VHI administration"
+          - "Acoustic analysis (jitter, shimmer, HNR)"
+          - "Vocal hygiene education"
+          - "SBFa clinical protocols"
+
+    tier_1:
+      - id: joseph-stemple
+        role: "VFE Specialist"
+        tier: T1
+        specialty: "Vocal Function Exercises"
+        primary_phases: [2]
+        techniques:
+          - "Warm-up: sustained /i/ on musical note"
+          - "Stretching: glide up on 'knoll'"
+          - "Contracting: glide down on 'knoll'"
+          - "Power: sustained /o/ on musical notes"
+          - "Progressive duration targets"
+
+      - id: katherine-verdolini
+        role: "LMRVT Specialist"
+        tier: T1
+        specialty: "Lessac-Madsen Resonant Voice Therapy"
+        primary_phases: [2, 3]
+        techniques:
+          - "Basic resonant voice production"
+          - "Chant-talk transitions"
+          - "Conversational resonant voice"
+          - "Advanced resonance in singing context"
+          - "Proprioceptive feedback training"
+
+    tier_2:
+      - id: jackie-gartner-schmidt
+        role: "CTT Motor Learning Specialist"
+        tier: T2
+        specialty: "Conversation Training Therapy / Motor learning"
+        primary_phases: [3, 4]
+        techniques:
+          - "Motor learning principles for voice"
+          - "Variable practice schedules"
+          - "Transfer tasks (conversation → singing)"
+          - "Singing readiness assessment"
+          - "Performance simulation"
+
+      - id: jacob-lieberman
+        role: "Manual Therapy Specialist"
+        tier: T2
+        specialty: "Laryngeal manual therapy"
+        primary_phases: [3]
+        techniques:
+          - "Circumlaryngeal massage"
+          - "Laryngeal reposturing"
+          - "Hyoid bone mobilization"
+          - "Suprahyoid muscle release"
+          - "Thyrohyoid space assessment"
+
+  # ---------------------------------------------------------------------------
+  # Phase 1: Assessment + Vocal Rest + Nasal Management + Education
+  # Weeks 1-3
+  # ---------------------------------------------------------------------------
+  phases:
+    - id: phase_1
+      name: "Assessment, Vocal Rest & Nasal Management"
+      weeks: "1-3"
+      duration_weeks: 3
+      sessions_per_week: 2
+      total_sessions: 6
+      goals:
+        - "Complete comprehensive voice assessment"
+        - "Establish baseline acoustic and perceptual measures"
+        - "Implement structured vocal rest protocol"
+        - "Begin nasal irrigation to manage secretion"
+        - "Educate patient on vocal hygiene"
+        - "Introduce gentle SOVT as vocal rest alternative"
+        - "Rule out or manage LPR"
+
+      steps:
+        - step: 1
+          week: 1
+          session: 1
+          agent: speechtherapy-chief
+          action: "Initial intake and treatment planning"
+          details:
+            - "Review ENT/laryngoscopy findings"
+            - "Confirm nodule location, size, staging"
+            - "Review patient history (singing habits, vocal load)"
+            - "Assess nasal secretion severity and triggers"
+            - "Set treatment timeline expectations"
+            - "Explain 4-phase recovery plan"
+          handoff:
+            to: mara-behlau
+            artifact: "intake-summary"
+            includes:
+              - "ENT report summary"
+              - "Patient history"
+              - "Nasal secretion assessment"
+              - "Initial treatment goals"
+
+        - step: 2
+          week: 1
+          session: 1-2
+          agent: mara-behlau
+          action: "Comprehensive voice assessment (SBFa protocol)"
+          details:
+            - "Administer Voice Handicap Index (VHI-30)"
+            - "Record CAPE-V perceptual evaluation"
+            - "Perform acoustic analysis:"
+            - "  - Fundamental frequency (F0) range"
+            - "  - Jitter (local, RAP)"
+            - "  - Shimmer (local, APQ)"
+            - "  - Harmonics-to-Noise Ratio (HNR)"
+            - "  - Maximum Phonation Time (MPT)"
+            - "  - s/z ratio"
+            - "Record voice samples (sustained vowels + connected speech + singing)"
+            - "Assess breathing pattern (clavicular vs diaphragmatic)"
+            - "Evaluate speaking fundamental frequency vs singing range"
+            - "Document current singing repertoire demands"
+            - "Prescribe vocal hygiene protocol"
+            - "Prescribe nasal irrigation protocol (saline, morning + evening)"
+            - "Refer for LPR evaluation if symptoms present"
+          outputs:
+            - "baseline-assessment.json"
+            - "vhi-score.json"
+            - "cape-v-scores.json"
+            - "acoustic-measures.json"
+            - "vocal-hygiene-prescription.md"
+            - "nasal-irrigation-protocol.md"
+          handoff:
+            to: ingo-titze
+            artifact: "assessment-complete"
+            includes:
+              - "All baseline measures"
+              - "Patient vocal demands profile"
+              - "Current vocal capacity"
+
+        - step: 3
+          week: 1-2
+          session: 2-3
+          agent: ingo-titze
+          action: "Baseline SOVT introduction (gentle protocol)"
+          details:
+            - "Assess patient tolerance for SOVT"
+            - "Introduce straw phonation (wide straw first)"
+            - "  - 5mm straw, comfortable pitch, 30 seconds"
+            - "  - Monitor for pain or strain"
+            - "Introduce gentle humming"
+            - "  - Closed mouth, nasal resonance focus"
+            - "  - 20-second sustained hums"
+            - "Introduce lip trills (if tolerated)"
+            - "  - Light airflow, no pushing"
+            - "  - 15-second sustained trills"
+            - "Establish SOVT as 'vocal rest activity'"
+            - "  - Patient uses SOVT instead of silence during rest"
+            - "  - 3x daily, 5 minutes each"
+            - "Document baseline SOVT tolerance"
+            - "Set Week 3 targets for SOVT duration/range"
+          outputs:
+            - "sovt-baseline-tolerance.json"
+            - "sovt-home-program-phase1.md"
+          veto_check:
+            condition: "Pain or discomfort during any SOVT exercise"
+            action: "Stop exercise, reduce intensity, reassess in 48h"
+            escalate_to: speechtherapy-chief
+
+        - step: 4
+          week: 2-3
+          session: 3-6
+          agent: mara-behlau
+          action: "Vocal hygiene education and compliance monitoring"
+          details:
+            - "Review vocal hygiene checklist adherence"
+            - "Verify nasal irrigation compliance (2x daily)"
+            - "Monitor hydration tracking (2-3L/day target)"
+            - "Assess throat clearing frequency (should decrease)"
+            - "Evaluate sleep and reflux management"
+            - "Adjust vocal rest parameters based on patient lifestyle"
+            - "Re-administer VHI at Week 3 for early comparison"
+          outputs:
+            - "hygiene-compliance-week2.json"
+            - "hygiene-compliance-week3.json"
+            - "vhi-week3.json"
+
+        - step: 5
+          week: 3
+          session: 6
+          agent: ingo-titze
+          action: "SOVT progress check and Phase 2 readiness"
+          details:
+            - "Measure SOVT tolerance improvement"
+            - "Test narrow straw (3mm) tolerance"
+            - "Assess pitch range during SOVT"
+            - "Verify absence of pain/strain during exercises"
+            - "Document progress from baseline"
+          outputs:
+            - "sovt-progress-week3.json"
+            - "phase2-readiness-sovt.json"
+
+      checkpoint:
+        id: checkpoint_phase1
+        name: "Phase 1 Gate: Assessment Complete, Baseline Established"
+        week: 3
+        evaluator: speechtherapy-chief
+        criteria:
+          - id: cp1_assessment
+            description: "Comprehensive assessment documented with all baseline measures"
+            required: true
+          - id: cp1_vhi
+            description: "VHI baseline and Week 3 scores recorded"
+            required: true
+          - id: cp1_acoustic
+            description: "Acoustic measures (jitter, shimmer, HNR, MPT) documented"
+            required: true
+          - id: cp1_sovt
+            description: "Patient tolerates basic SOVT (wide straw, humming) without pain"
+            required: true
+          - id: cp1_hygiene
+            description: "Vocal hygiene compliance >= 70%"
+            required: true
+          - id: cp1_nasal
+            description: "Nasal irrigation established, secretion improving"
+            required: false
+          - id: cp1_lpr
+            description: "LPR ruled out or management initiated"
+            required: false
+        decision:
+          pass: "All required criteria met. Proceed to Phase 2."
+          fail: "Extend Phase 1 by 1 week. Address failing criteria."
+          escalate: "If patient cannot tolerate any SOVT, consult ENT for re-evaluation."
+
+      veto_conditions:
+        - id: veto_p1_pain
+          trigger: "Patient reports pain during any exercise"
+          action: "Immediate exercise cessation. 48h rest. Reassess."
+          authority: speechtherapy-chief
+        - id: veto_p1_worsening
+          trigger: "Voice quality deteriorating (VHI increase > 10 points)"
+          action: "Halt all exercises. ENT re-evaluation within 1 week."
+          authority: speechtherapy-chief
+        - id: veto_p1_bleeding
+          trigger: "Any report of hemoptysis or blood in sputum"
+          action: "EMERGENCY. Stop all exercises. Immediate ENT referral."
+          authority: speechtherapy-chief
+
+  # ---------------------------------------------------------------------------
+  # Phase 2: Active Rehabilitation - SOVT + VFE + LMRVT
+  # Weeks 4-6
+  # ---------------------------------------------------------------------------
+    - id: phase_2
+      name: "Active Rehabilitation: SOVT + VFE + LMRVT"
+      weeks: "4-6"
+      duration_weeks: 3
+      sessions_per_week: 3
+      total_sessions: 9
+      goals:
+        - "Progress SOVT to intermediate level"
+        - "Introduce and establish VFE routine"
+        - "Begin LMRVT resonant voice production"
+        - "Observe initial nodule reduction"
+        - "Improve voice quality measures"
+        - "Maintain nasal irrigation and hygiene"
+
+      steps:
+        - step: 1
+          week: 4
+          agent: ingo-titze
+          frequency: "daily home program + 1 session/week supervised"
+          action: "SOVT progression to intermediate"
+          details:
+            - "Progress to narrow straw (3mm)"
+            - "Introduce pitch glides through straw"
+            - "  - Ascending glide, comfortable range"
+            - "  - Descending glide, full range"
+            - "Introduce water resistance therapy"
+            - "  - Straw in 2-4cm water"
+            - "  - Sustained phonation 30-45 seconds"
+            - "Add cup bubble exercises"
+            - "  - Submerged tube, bubble consistency"
+            - "Increase duration: 3x daily, 8 minutes each"
+            - "Introduce pitch variation during SOVT"
+            - "Monitor for strain at higher pitches"
+          outputs:
+            - "sovt-home-program-phase2.md"
+            - "sovt-progress-weekly.json"
+          handoff:
+            to: joseph-stemple
+            artifact: "sovt-status"
+            includes:
+              - "Current SOVT tolerance"
+              - "Pitch range during SOVT"
+              - "Any limitations observed"
+
+        - step: 2
+          week: 4-6
+          agent: joseph-stemple
+          frequency: "4x/week (2 supervised + 2 home)"
+          action: "Vocal Function Exercises introduction and progression"
+          details:
+            - "Week 4 - Introduction:"
+            - "  - Warm-up: sustain /i/ on F above middle C (female) or middle C (male)"
+            - "  - Target: match MPT from baseline"
+            - "  - Stretching: glide from lowest to highest on 'knoll'"
+            - "  - Contracting: glide from highest to lowest on 'knoll'"
+            - "  - Power: sustain /o/ on target pitches (C-D-E-F-G)"
+            - "  - Sets: 2 repetitions of each, 2x daily"
+            - "Week 5 - Progression:"
+            - "  - Increase target duration by 5 seconds"
+            - "  - Add musical scale targets for power exercise"
+            - "  - Monitor pitch accuracy and breath support"
+            - "  - Sets: 2 repetitions of each, 3x daily"
+            - "Week 6 - Consolidation:"
+            - "  - Target MPT improvement >= 20% from baseline"
+            - "  - Full pitch range in stretching/contracting"
+            - "  - Assess exercise quality and consistency"
+            - "  - Document compliance and progress"
+          outputs:
+            - "vfe-baseline-targets.json"
+            - "vfe-progress-week4.json"
+            - "vfe-progress-week5.json"
+            - "vfe-progress-week6.json"
+            - "vfe-home-program.md"
+          veto_check:
+            condition: "Pain during VFE or voice fatigue lasting > 2 hours post-exercise"
+            action: "Reduce sets to 1 rep. If pain persists, pause VFE for 1 week."
+            escalate_to: speechtherapy-chief
+          handoff:
+            to: katherine-verdolini
+            artifact: "vfe-status"
+            includes:
+              - "VFE progress metrics"
+              - "MPT changes"
+              - "Patient tolerance"
+
+        - step: 3
+          week: 4-6
+          agent: katherine-verdolini
+          frequency: "2x/week supervised"
+          action: "LMRVT resonant voice introduction"
+          details:
+            - "Week 4 - Basic Resonant Voice:"
+            - "  - Teach 'resonant voice' concept"
+            - "  - Identify anterior oral vibration sensation"
+            - "  - Practice sustained /m/ with focus on facial buzz"
+            - "  - Transition from /m/ to /ma/, /mi/, /mu/"
+            - "  - Practice basic phrases with resonant placement"
+            - "Week 5 - Chant-Talk:"
+            - "  - Introduce chant-talk pattern"
+            - "  - Practice sentences with chant-like intonation"
+            - "  - Transition chant-talk to natural speech"
+            - "  - Monitor for loss of resonance in conversation"
+            - "Week 6 - Conversational Resonant Voice:"
+            - "  - Practice resonant voice in conversation"
+            - "  - 5-minute sustained conversational practice"
+            - "  - Identify 'loss of resonance' triggers"
+            - "  - Develop self-monitoring strategies"
+            - "  - Assess resonance consistency percentage"
+          outputs:
+            - "lmrvt-progress-weekly.json"
+            - "resonance-consistency-scores.json"
+            - "lmrvt-home-exercises.md"
+          handoff:
+            to: speechtherapy-chief
+            artifact: "lmrvt-status"
+            includes:
+              - "Resonance consistency percentage"
+              - "Chant-talk proficiency"
+              - "Carryover to conversation"
+
+        - step: 4
+          week: 6
+          session: "final session of week 6"
+          agent: mara-behlau
+          action: "Mid-treatment reassessment"
+          details:
+            - "Re-administer VHI-30"
+            - "Repeat acoustic analysis (jitter, shimmer, HNR, MPT)"
+            - "Repeat CAPE-V"
+            - "Compare all measures to Phase 1 baseline"
+            - "Request laryngoscopy if available (nodule status)"
+            - "Assess nasal secretion status"
+            - "Compile mid-treatment progress report"
+          outputs:
+            - "mid-treatment-assessment.json"
+            - "vhi-week6.json"
+            - "acoustic-measures-week6.json"
+            - "cape-v-week6.json"
+            - "progress-comparison-report.md"
+
+      checkpoint:
+        id: checkpoint_phase2
+        name: "Phase 2 Gate: Active Rehabilitation Progress"
+        week: 6
+        evaluator: speechtherapy-chief
+        criteria:
+          - id: cp2_sovt
+            description: "Patient performs intermediate SOVT (narrow straw, water resistance) without pain"
+            required: true
+          - id: cp2_vfe
+            description: "VFE compliance >= 80%, MPT improved >= 15% from baseline"
+            required: true
+          - id: cp2_lmrvt
+            description: "Resonant voice achieved in chant-talk, beginning conversational carryover"
+            required: true
+          - id: cp2_acoustic
+            description: "Acoustic measures improved (jitter/shimmer decreased, HNR increased)"
+            required: true
+          - id: cp2_vhi
+            description: "VHI decreased >= 10 points from baseline"
+            required: false
+          - id: cp2_nodule
+            description: "Nodule reduction observed on laryngoscopy (if performed)"
+            required: false
+          - id: cp2_nasal
+            description: "Nasal secretion well-managed, throat clearing eliminated"
+            required: true
+        decision:
+          pass: "All required criteria met. Proceed to Phase 3."
+          fail: "Extend Phase 2 by 1-2 weeks. Focus on failing criteria."
+          escalate: "If no acoustic improvement, ENT consultation for possible surgery discussion."
+
+      veto_conditions:
+        - id: veto_p2_pain
+          trigger: "Pain during any exercise"
+          action: "Stop offending exercise. Rest 48h. Reassess technique."
+          authority: speechtherapy-chief
+        - id: veto_p2_regression
+          trigger: "Voice quality worse than Phase 1 baseline"
+          action: "Pause all new exercises. Return to Phase 1 SOVT only. ENT referral."
+          authority: speechtherapy-chief
+        - id: veto_p2_nodule_growth
+          trigger: "Laryngoscopy shows nodule growth"
+          action: "HALT rehabilitation. ENT surgical consultation required."
+          authority: speechtherapy-chief
+
+  # ---------------------------------------------------------------------------
+  # Phase 3: Advanced Rehabilitation + Manual Therapy
+  # Weeks 7-9
+  # ---------------------------------------------------------------------------
+    - id: phase_3
+      name: "Advanced Rehabilitation & Manual Therapy"
+      weeks: "7-9"
+      duration_weeks: 3
+      sessions_per_week: 3
+      total_sessions: 9
+      goals:
+        - "Advance LMRVT to singing-related tasks"
+        - "Address muscle tension dysphonia if present"
+        - "Apply CTT motor learning for voice transfer"
+        - "Achieve significant nodule reduction"
+        - "Restore functional voice for daily use"
+        - "Begin gentle singing exploration"
+
+      steps:
+        - step: 1
+          week: 7-9
+          agent: katherine-verdolini
+          frequency: "2x/week supervised"
+          action: "Advanced LMRVT with singing applications"
+          details:
+            - "Week 7 - Singing Resonance Foundation:"
+            - "  - Apply resonant voice to sustained pitches"
+            - "  - Practice resonant /m/ on musical scale"
+            - "  - Transition from speech resonance to singing resonance"
+            - "  - Focus on passaggio navigation with resonance"
+            - "  - Identify pitch ranges where resonance is lost"
+            - "Week 8 - Singing Phrases:"
+            - "  - Practice simple melodies with resonant placement"
+            - "  - Use patient's repertoire (simplified versions)"
+            - "  - Monitor for pressed phonation at high pitches"
+            - "  - Practice dynamic control (piano to forte) with resonance"
+            - "Week 9 - Integration:"
+            - "  - Full song excerpts with resonant technique"
+            - "  - Assess resonance maintenance in performance context"
+            - "  - Develop performance warm-up incorporating resonance"
+            - "  - Document resonance consistency in singing vs speech"
+          outputs:
+            - "lmrvt-advanced-progress.json"
+            - "singing-resonance-scores.json"
+            - "lmrvt-singing-exercises.md"
+          handoff:
+            to: jacob-lieberman
+            artifact: "lmrvt-singing-status"
+            includes:
+              - "Singing resonance consistency"
+              - "Problem pitch ranges"
+              - "Tension observations during singing"
+
+        - step: 2
+          week: 7-8
+          agent: jacob-lieberman
+          frequency: "1-2x/week if MTD present"
+          action: "Laryngeal manual therapy assessment and treatment"
+          precondition: "Muscle tension dysphonia (MTD) identified or laryngeal tension palpable"
+          details:
+            - "Session 1 - Assessment:"
+            - "  - Palpate laryngeal framework"
+            - "  - Assess thyrohyoid space (normal > 1 finger width)"
+            - "  - Evaluate suprahyoid muscle tension"
+            - "  - Assess laryngeal height (elevated = tension)"
+            - "  - Grade tension: 0 (none) to 3 (severe)"
+            - "  - Determine if MTD is primary or compensatory"
+            - "Manual Therapy Techniques (if indicated):"
+            - "  - Circumlaryngeal massage (CLM)"
+            - "    - Circular kneading of suprahyoid muscles"
+            - "    - 5-10 minutes per session"
+            - "  - Laryngeal reposturing"
+            - "    - Gentle downward pressure on thyroid cartilage"
+            - "    - Combined with phonation"
+            - "  - Hyoid bone mobilization"
+            - "    - Lateral and inferior gliding"
+            - "    - Patient phonates during mobilization"
+            - "  - Suprahyoid muscle stretching"
+            - "    - Head tilt stretches"
+            - "    - Jaw opening with resistance"
+            - "  - Post-treatment voice comparison"
+            - "    - Immediate before/after recording"
+            - "    - Patient self-assessment of effort"
+            - "Self-massage instruction for home:"
+            - "  - Simplified CLM technique"
+            - "  - 2x daily, 3 minutes each"
+            - "  - Before SOVT exercises"
+          outputs:
+            - "manual-therapy-assessment.json"
+            - "mtd-grade.json"
+            - "manual-therapy-progress.json"
+            - "self-massage-guide.md"
+          skip_condition:
+            check: "No MTD or laryngeal tension identified"
+            action: "Skip manual therapy. Reallocate sessions to LMRVT/CTT."
+          veto_check:
+            condition: "Patient reports sharp pain during palpation"
+            action: "Stop. Rule out structural pathology. ENT referral if needed."
+            escalate_to: speechtherapy-chief
+          handoff:
+            to: jackie-gartner-schmidt
+            artifact: "manual-therapy-status"
+            includes:
+              - "MTD grade and treatment response"
+              - "Tension reduction achieved"
+              - "Remaining tension areas"
+
+        - step: 3
+          week: 7-9
+          agent: jackie-gartner-schmidt
+          frequency: "2x/week supervised"
+          action: "CTT motor learning for voice and singing transfer"
+          details:
+            - "Week 7 - Motor Learning Foundations:"
+            - "  - Assess current motor patterns (speech + singing)"
+            - "  - Identify maladaptive compensations"
+            - "  - Establish target voice production (model)"
+            - "  - Introduce blocked practice schedule"
+            - "  - Practice target voice in simple sentences"
+            - "Week 8 - Variable Practice:"
+            - "  - Switch to variable practice schedule"
+            - "  - Practice target voice across contexts:"
+            - "    - Quiet conversation"
+            - "    - Phone call simulation"
+            - "    - Projecting across room"
+            - "    - Simple singing phrases"
+            - "  - Reduce feedback frequency (fading schedule)"
+            - "  - Patient develops self-monitoring"
+            - "Week 9 - Transfer to Singing:"
+            - "  - Conversation-to-singing continuum exercises"
+            - "  - Apply motor learning to singing technique"
+            - "  - Practice random schedule (mixed speech/singing)"
+            - "  - Simulate performance conditions"
+            - "  - Assess automaticity of new voice production"
+          outputs:
+            - "ctt-motor-assessment.json"
+            - "ctt-progress-weekly.json"
+            - "practice-schedule.md"
+            - "transfer-readiness.json"
+          handoff:
+            to: speechtherapy-chief
+            artifact: "ctt-status"
+            includes:
+              - "Motor learning stage achieved"
+              - "Transfer percentage (speech → singing)"
+              - "Automaticity level"
+
+      checkpoint:
+        id: checkpoint_phase3
+        name: "Phase 3 Gate: Advanced Rehabilitation & Singing Readiness"
+        week: 9
+        evaluator: speechtherapy-chief
+        criteria:
+          - id: cp3_lmrvt
+            description: "Resonant voice maintained in singing context >= 70% of time"
+            required: true
+          - id: cp3_mtd
+            description: "MTD resolved or reduced to Grade 0-1 (if applicable)"
+            required: false
+          - id: cp3_ctt
+            description: "Motor learning transfer to singing achieved (variable practice stage)"
+            required: true
+          - id: cp3_voice
+            description: "Functional voice for daily use without fatigue"
+            required: true
+          - id: cp3_nodule
+            description: "Significant nodule reduction confirmed (laryngoscopy recommended)"
+            required: true
+          - id: cp3_acoustic
+            description: "All acoustic measures within functional limits"
+            required: true
+        decision:
+          pass: "All required criteria met. Proceed to Phase 4 (Return to Singing)."
+          fail: "Extend Phase 3 by 2 weeks. Intensify failing areas."
+          escalate: "If nodules unchanged after 9 weeks, multidisciplinary team review."
+
+      veto_conditions:
+        - id: veto_p3_pain_singing
+          trigger: "Pain during singing exercises"
+          action: "Stop singing tasks. Continue speech-level exercises only. Reassess in 1 week."
+          authority: speechtherapy-chief
+        - id: veto_p3_nodule_unchanged
+          trigger: "Nodules show no improvement at Week 9"
+          action: "Extend Phase 3 by 3 weeks maximum. If no change, surgical consultation."
+          authority: speechtherapy-chief
+        - id: veto_p3_fatigue
+          trigger: "Persistent vocal fatigue > 4 hours post-exercise"
+          action: "Reduce exercise load by 50%. Reassess dosage."
+          authority: speechtherapy-chief
+
+  # ---------------------------------------------------------------------------
+  # Phase 4: Return to Singing + Maintenance
+  # Weeks 10-12
+  # ---------------------------------------------------------------------------
+    - id: phase_4
+      name: "Return to Singing & Maintenance Plan"
+      weeks: "10-12"
+      duration_weeks: 3
+      sessions_per_week: 2
+      total_sessions: 6
+      goals:
+        - "Clear patient for return to singing"
+        - "Establish singing warm-up routine"
+        - "Complete final assessment"
+        - "Create long-term maintenance plan"
+        - "Gradual return to performance schedule"
+        - "Discharge with self-management tools"
+
+      steps:
+        - step: 1
+          week: 10-11
+          agent: jackie-gartner-schmidt
+          frequency: "2x/week supervised"
+          action: "Singing readiness assessment and graduated return"
+          details:
+            - "Week 10 - Singing Readiness Battery:"
+            - "  - Pitch range assessment (compare to baseline)"
+            - "  - Dynamic range assessment (pp to ff)"
+            - "  - Sustained singing endurance test"
+            - "    - Sing for 15 minutes, monitor fatigue"
+            - "  - Repertoire difficulty grading"
+            - "    - Grade A: Simple, mid-range, moderate dynamics"
+            - "    - Grade B: Moderate range, varied dynamics"
+            - "    - Grade C: Full range, demanding dynamics"
+            - "  - Begin with Grade A repertoire"
+            - "  - Performance simulation (low stakes)"
+            - "Week 11 - Graduated Return:"
+            - "  - Progress to Grade B repertoire"
+            - "  - 20-minute singing sessions"
+            - "  - Monitor post-singing voice quality"
+            - "  - Practice set list building (30 min target)"
+            - "  - Introduce performance warm-up routine"
+            - "  - Rehearsal simulation with rest breaks"
+          outputs:
+            - "singing-readiness-assessment.json"
+            - "graduated-return-plan.md"
+            - "performance-warm-up-routine.md"
+          handoff:
+            to: ingo-titze
+            artifact: "singing-readiness-status"
+            includes:
+              - "Singing readiness scores"
+              - "Current repertoire grade"
+              - "Endurance metrics"
+
+        - step: 2
+          week: 10-12
+          agent: ingo-titze
+          frequency: "embedded in every session"
+          action: "SOVT warm-up routine for singing"
+          details:
+            - "Design personalized SOVT warm-up:"
+            - "  1. Straw phonation (3mm), 2 minutes"
+            - "     - Start mid-range, expand up and down"
+            - "  2. Water resistance with pitch glides, 2 minutes"
+            - "     - Full range ascending and descending"
+            - "  3. Lip trills on scales, 2 minutes"
+            - "     - Major scale, ascending and descending"
+            - "  4. Humming with resonance focus, 1 minute"
+            - "     - Transition to open vowels"
+            - "  5. SOVT cool-down post-singing, 3 minutes"
+            - "     - Wide straw, comfortable pitch, decreasing effort"
+            - "Total warm-up: 7 minutes"
+            - "Total cool-down: 3 minutes"
+            - "Patient practices independently Week 11-12"
+          outputs:
+            - "sovt-warmup-routine-final.md"
+            - "sovt-cooldown-routine.md"
+
+        - step: 3
+          week: 12
+          session: "second to last"
+          agent: mara-behlau
+          action: "Final comprehensive assessment"
+          details:
+            - "Administer VHI-30 (final)"
+            - "Repeat full acoustic analysis"
+            - "  - F0 range, jitter, shimmer, HNR, MPT"
+            - "Repeat CAPE-V"
+            - "Compare all measures: baseline → Week 6 → Week 12"
+            - "Request final laryngoscopy (nodule status)"
+            - "Compile final progress report"
+            - "Generate comparative graphs and trend analysis"
+            - "Assessment for singing clearance"
+          outputs:
+            - "final-assessment.json"
+            - "vhi-week12.json"
+            - "acoustic-measures-week12.json"
+            - "cape-v-week12.json"
+            - "progress-trend-analysis.json"
+            - "final-progress-report.md"
+          handoff:
+            to: speechtherapy-chief
+            artifact: "final-assessment-complete"
+            includes:
+              - "All final measures"
+              - "Trend analysis"
+              - "Clearance recommendation"
+
+        - step: 4
+          week: 12
+          session: "final"
+          agent: speechtherapy-chief
+          action: "Discharge and maintenance plan"
+          details:
+            - "Review final assessment with patient"
+            - "Singing clearance decision:"
+            - "  - CLEARED: Nodules resolved, voice functional, safe to sing"
+            - "  - CONDITIONAL: Nodules reduced, cleared with restrictions"
+            - "  - NOT CLEARED: Nodules persistent, extend treatment"
+            - "Maintenance plan components:"
+            - "  - Daily SOVT warm-up before singing (7 min)"
+            - "  - SOVT cool-down after singing (3 min)"
+            - "  - VFE maintenance: 1x daily"
+            - "  - Vocal hygiene protocol (permanent)"
+            - "  - Nasal irrigation as needed"
+            - "  - Monthly self-check (VHI, MPT, effort scale)"
+            - "  - Follow-up laryngoscopy at 3 months"
+            - "  - Red flags requiring immediate consultation"
+            - "Graduated return to performance schedule:"
+            - "  - Month 1 post-discharge: max 30 min singing/day"
+            - "  - Month 2: max 45 min singing/day"
+            - "  - Month 3: max 60 min singing/day"
+            - "  - Month 4+: full schedule with warm-up/cool-down"
+            - "Provide written discharge packet"
+          outputs:
+            - "clearance-decision.json"
+            - "maintenance-plan.md"
+            - "discharge-packet.md"
+            - "return-to-singing-schedule.md"
+            - "red-flags-guide.md"
+
+      checkpoint:
+        id: checkpoint_phase4
+        name: "Phase 4 Gate: Discharge & Singing Clearance"
+        week: 12
+        evaluator: speechtherapy-chief
+        criteria:
+          - id: cp4_nodule
+            description: "Nodules resolved or significantly reduced (ENT confirmation)"
+            required: true
+          - id: cp4_voice
+            description: "Voice quality within normal limits (CAPE-V all parameters <= 1)"
+            required: true
+          - id: cp4_vhi
+            description: "VHI <= 20 (mild or no handicap)"
+            required: true
+          - id: cp4_acoustic
+            description: "Acoustic measures within normative ranges"
+            required: true
+          - id: cp4_singing
+            description: "Singing readiness battery passed (Grade B repertoire minimum)"
+            required: true
+          - id: cp4_maintenance
+            description: "Patient demonstrates SOVT warm-up/cool-down independently"
+            required: true
+          - id: cp4_compliance
+            description: "Patient understands and accepts maintenance plan"
+            required: true
+        decision:
+          pass: "CLEARED for singing. Discharge with maintenance plan."
+          conditional: "Cleared with restrictions. Follow-up in 4 weeks."
+          fail: "NOT CLEARED. Extend Phase 3-4 by 4 weeks."
+
+      veto_conditions:
+        - id: veto_p4_nodule_persist
+          trigger: "Nodules not resolved at Week 12 (final laryngoscopy)"
+          action: "Do NOT clear for full singing. Extend Phase 3 protocol 4 more weeks."
+          authority: speechtherapy-chief
+        - id: veto_p4_singing_pain
+          trigger: "Pain during singing readiness assessment"
+          action: "NOT cleared. Return to Phase 3 exercises. Re-evaluate in 2 weeks."
+          authority: speechtherapy-chief
+        - id: veto_p4_vhi_high
+          trigger: "VHI > 30 at final assessment"
+          action: "NOT cleared. Investigate persistent handicap. Consider additional therapy."
+          authority: speechtherapy-chief
+
+  # ---------------------------------------------------------------------------
+  # Global Handoff Protocol
+  # ---------------------------------------------------------------------------
+  handoff_protocol:
+    format: "structured artifact"
+    required_fields:
+      - "from_agent"
+      - "to_agent"
+      - "phase"
+      - "week"
+      - "patient_status_summary"
+      - "exercise_compliance"
+      - "current_measures"
+      - "concerns"
+      - "next_action"
+    storage: "squad-speechtherapy/data/handoffs/"
+    retention: "entire treatment duration + 6 months"
+
+  # ---------------------------------------------------------------------------
+  # Global Veto Escalation Chain
+  # ---------------------------------------------------------------------------
+  escalation_chain:
+    level_1:
+      handler: speechtherapy-chief
+      scope: "Exercise modifications, intensity adjustments"
+    level_2:
+      handler: "speechtherapy-chief + treating agent"
+      scope: "Phase regression, treatment plan modification"
+    level_3:
+      handler: "ENT physician (external)"
+      scope: "Nodule growth, bleeding, surgical consideration"
+      trigger: "Any structural concern beyond rehabilitation scope"
+
+  # ---------------------------------------------------------------------------
+  # Treatment Parameters
+  # ---------------------------------------------------------------------------
+  parameters:
+    max_total_weeks: 16
+    max_phase_extension_weeks: 4
+    min_sessions_before_reassessment: 3
+    laryngoscopy_schedule:
+      - "Baseline (pre-treatment)"
+      - "Week 6 (mid-treatment, optional)"
+      - "Week 9 (Phase 3 gate, recommended)"
+      - "Week 12 (final, required)"
+      - "3 months post-discharge (follow-up)"
+    vhi_schedule:
+      - "Baseline"
+      - "Week 3"
+      - "Week 6"
+      - "Week 9"
+      - "Week 12"
+    acoustic_analysis_schedule:
+      - "Baseline"
+      - "Week 6"
+      - "Week 12"
+    compliance_threshold:
+      minimum: 0.70
+      target: 0.85
+      excellent: 0.95
+
+  # ---------------------------------------------------------------------------
+  # Outcome Metrics
+  # ---------------------------------------------------------------------------
+  outcome_metrics:
+    primary:
+      - metric: "Nodule resolution"
+        target: "Complete resolution or significant reduction"
+        measure: "Laryngoscopy"
+      - metric: "Voice Handicap Index"
+        target: "VHI <= 20"
+        measure: "VHI-30 questionnaire"
+      - metric: "Maximum Phonation Time"
+        target: ">= 20 seconds"
+        measure: "Sustained /a/"
+    secondary:
+      - metric: "Jitter"
+        target: "< 1.04%"
+        measure: "Acoustic analysis"
+      - metric: "Shimmer"
+        target: "< 3.81%"
+        measure: "Acoustic analysis"
+      - metric: "HNR"
+        target: "> 20 dB"
+        measure: "Acoustic analysis"
+      - metric: "CAPE-V Overall Severity"
+        target: "<= 10/100"
+        measure: "Perceptual evaluation"
+      - metric: "Singing endurance"
+        target: ">= 30 minutes without fatigue"
+        measure: "Singing readiness battery"
+      - metric: "Throat clearing frequency"
+        target: "0 episodes/day"
+        measure: "Patient log"

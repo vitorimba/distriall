@@ -1,0 +1,215 @@
+# WORKFLOW: Create System Prompt for AI Agent
+# Full 8-phase pipeline from diagnosis to production readiness
+# Version: 1.0.0
+
+workflow-id: wf-create-system-prompt
+name: Create System Prompt
+version: 1.0.0
+estimated-time: 30-60 minutes
+complexity: medium-high
+orchestrator: "@prompt-chief"
+
+description: |
+  Complete pipeline to create a production-ready system prompt for any AI agent.
+  8 phases, each handled by a specialist agent. Produces a structured, secure,
+  and evaluated system prompt ready for deployment.
+
+inputs:
+  - name: agent_type
+    type: string
+    required: true
+    description: "Type of agent (sales, support, service, onboarding, collections, triage)"
+  - name: business_context
+    type: string
+    required: true
+    description: "Business/product the agent serves"
+  - name: target_audience
+    type: string
+    required: true
+    description: "Who interacts with the agent"
+  - name: scenarios
+    type: array
+    required: true
+    description: "3-5 key scenarios the agent must handle"
+
+outputs:
+  primary:
+    - name: "system_prompt"
+      format: "markdown"
+      description: "Complete, production-ready system prompt"
+  artifacts:
+    - "Technique diagnosis report"
+    - "Architecture specification"
+    - "Character specification"
+    - "CO-STAR structured prompt"
+    - "Principles validation report"
+    - "Security audit report"
+    - "Evaluation report"
+    - "Production readiness report"
+
+phases:
+  - id: PHASE-1
+    name: "Diagnose Techniques"
+    agent: "@elvis-saravia"
+    mandatory: true
+    description: |
+      Analyze agent type and scenarios. Recommend optimal prompting
+      techniques from the 58-technique taxonomy.
+    input: "agent_type, scenarios"
+    output: "Technique stack with rationale"
+    checkpoint:
+      criteria:
+        - "Technique stack defined with priorities"
+        - "Each technique has 'when to use' context"
+        - "Avoided techniques listed"
+      veto_conditions:
+        - "No Role Prompting recommended → VETO (always required)"
+        - "No examples recommended → VETO (always required for agents)"
+
+  - id: PHASE-2
+    name: "Design Architecture"
+    agent: "@lilian-weng"
+    mandatory: true
+    description: |
+      Design agent architecture: planning capabilities, memory strategy,
+      tool integrations. The structural blueprint.
+    input: "agent_type, business_context, tools_available"
+    output: "Architecture specification (planning + memory + tools)"
+    checkpoint:
+      criteria:
+        - "Conversation flow defined with phases"
+        - "Memory strategy specified (short-term + long-term)"
+        - "Tool integrations documented with triggers"
+
+  - id: PHASE-3
+    name: "Design Character"
+    agent: "@amanda-askell"
+    mandatory: true
+    description: |
+      Create the agent's character: identity, values, tone dimensions,
+      empathy calibration, anti-persona.
+    input: "agent_type, target_audience, brand_voice"
+    output: "Character specification"
+    checkpoint:
+      criteria:
+        - "Identity core defined"
+        - "Values hierarchy with conflict resolution"
+        - "Tone dimensions calibrated (6 dimensions)"
+        - "Empathy patterns for key scenarios"
+        - "Anti-persona defined"
+      veto_conditions:
+        - "No values defined → VETO"
+        - "No empathy for customer-facing agent → VETO"
+
+  - id: PHASE-4
+    name: "Structure with CO-STAR"
+    agent: "@sheila-teo"
+    mandatory: true
+    description: |
+      Organize all previous outputs into CO-STAR structure.
+      Ensure every element is covered.
+    input: "technique_stack, architecture, character"
+    output: "CO-STAR structured system prompt"
+    checkpoint:
+      criteria:
+        - "All 6 CO-STAR elements present"
+        - "No element is empty or vague"
+
+  - id: PHASE-5
+    name: "Validate Principles"
+    agent: "@james-phoenix"
+    mandatory: true
+    description: |
+      Validate against Five Principles of Prompting.
+      Enhance any missing principles.
+    input: "co_star_prompt"
+    output: "Principles-validated prompt"
+    checkpoint:
+      criteria:
+        - "All 5 principles score >= 7/10"
+      veto_conditions:
+        - "Principle 3 (Examples) < 5/10 → VETO (needs few-shot)"
+
+  - id: PHASE-6
+    name: "Add Security"
+    agent: "@simon-willison"
+    mandatory: true
+    description: |
+      Add security layers: prompt injection prevention, guardrails,
+      behavioral boundaries, data protection.
+    input: "validated_prompt"
+    output: "Security-hardened prompt"
+    checkpoint:
+      criteria:
+        - "Prompt injection defense present"
+        - "Data protection rules defined"
+        - "Behavioral boundaries cannot be overridden"
+        - "Lethal trifecta checked"
+      veto_conditions:
+        - "No injection defense → VETO"
+        - "Lethal trifecta present without safeguards → VETO"
+
+  - id: PHASE-7
+    name: "Evaluate"
+    agent: "@sander-schulhoff"
+    mandatory: true
+    description: |
+      Test the prompt: smoke tests, adversarial testing, consistency check.
+      Score against research-backed criteria.
+    input: "secure_prompt"
+    output: "Evaluation report with score"
+    checkpoint:
+      criteria:
+        - "Smoke test: 3/3 scenarios pass"
+        - "Adversarial test: no critical vulnerabilities"
+        - "Overall score >= 7/10"
+      veto_conditions:
+        - "Adversarial test failure → BLOCK, return to Phase 6"
+        - "Overall score < 5 → REBUILD from Phase 1"
+
+  - id: PHASE-8
+    name: "Production Check"
+    agent: "@chip-huyen"
+    mandatory: true
+    description: |
+      Final production readiness: token efficiency, cost estimation,
+      evaluation strategy, monitoring plan.
+    input: "evaluated_prompt"
+    output: "Production-ready prompt + deployment guide"
+    checkpoint:
+      criteria:
+        - "Token usage within thresholds"
+        - "Cost per conversation estimated"
+        - "Evaluation metrics defined"
+        - "Monitoring plan created"
+
+final_output:
+  format: markdown
+  template: |
+    # System Prompt: {agent_name}
+
+    ## Metadata
+    - Agent Type: {agent_type}
+    - Created: {date}
+    - Techniques: {technique_stack}
+    - Quality Score: {score}/10
+    - Cost/Conversation: ${cost}
+
+    ## The Prompt
+    {final_system_prompt}
+
+    ## Deployment Guide
+    - Model: {recommended_model}
+    - Context strategy: {context_management}
+    - Monitoring: {monitoring_plan}
+    - Evaluation: {eval_metrics}
+
+execution_rules:
+  always:
+    - "Execute phases in order — each builds on the previous"
+    - "All phases are mandatory for the first prompt creation"
+    - "Quick iterations can skip phases 1-2 if architecture hasn't changed"
+  never:
+    - "Skip security (Phase 6) — non-negotiable"
+    - "Ship without evaluation (Phase 7)"
+    - "Deploy without monitoring plan (Phase 8)"

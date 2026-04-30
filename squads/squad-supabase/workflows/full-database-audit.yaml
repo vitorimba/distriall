@@ -1,0 +1,303 @@
+workflow:
+  id: full-database-audit
+  name: "Full Database Audit"
+  version: "1.0.0"
+  description: "Auditoria completa de um projeto Supabase — schema, performance, segurança, data quality e automação"
+  trigger: "*audit"
+  estimated_duration: "30-60 min"
+  mode: incremental
+
+  # ═══════════════════════════════════════════
+  # PHASE 1: DISCOVERY & DIAGNOSIS
+  # ═══════════════════════════════════════════
+  phases:
+    - id: phase_1
+      name: "Discovery & Diagnosis"
+      agent: diagnostician
+      mode: audit
+      duration: "10-15 min"
+
+      steps:
+        - id: 1.1
+          name: "Collect Project Info"
+          action: "Gather Supabase project URL, project ref, and connection details"
+          elicit: true
+          output: "project_context.yaml"
+
+        - id: 1.2
+          name: "Schema Discovery"
+          action: "Map all tables, columns, types, relationships, constraints"
+          queries:
+            - "SELECT table_name, column_name, data_type, is_nullable FROM information_schema.columns WHERE table_schema = 'public'"
+            - "SELECT conname, conrelid::regclass, confrelid::regclass FROM pg_constraint WHERE contype = 'f'"
+          output: "schema_map.json"
+
+        - id: 1.3
+          name: "Extension Inventory"
+          action: "List all enabled extensions and their versions"
+          query: "SELECT extname, extversion FROM pg_extension"
+          output: "extensions.json"
+
+        - id: 1.4
+          name: "Function & Trigger Inventory"
+          action: "Map all custom functions, triggers, and policies"
+          queries:
+            - "SELECT routine_name, routine_type FROM information_schema.routines WHERE routine_schema = 'public'"
+            - "SELECT trigger_name, event_object_table, action_timing, event_manipulation FROM information_schema.triggers"
+          output: "functions_triggers.json"
+
+        - id: 1.5
+          name: "Initial Health Score"
+          action: "Calculate preliminary health score based on discovery"
+          output: "initial_health_score.json"
+
+      checkpoint:
+        id: CP-1
+        name: "Discovery Complete"
+        gate: QG-002
+        criteria:
+          - schema_mapped: true
+          - tables_count_known: true
+          - extensions_listed: true
+        on_pass: "Proceed to Phase 2"
+        on_fail: "Cannot audit — connection or permissions issue"
+
+    # ═══════════════════════════════════════════
+    # PHASE 2: PERFORMANCE ANALYSIS
+    # ═══════════════════════════════════════════
+    - id: phase_2
+      name: "Performance Analysis"
+      agent: optimizer
+      duration: "5-10 min"
+
+      steps:
+        - id: 2.1
+          name: "Slow Query Analysis"
+          action: "Query pg_stat_statements for top 10 slowest queries"
+          query: "SELECT query, calls, mean_exec_time, total_exec_time FROM pg_stat_statements ORDER BY mean_exec_time DESC LIMIT 10"
+          output: "slow_queries.json"
+
+        - id: 2.2
+          name: "Index Audit"
+          action: "Find missing indexes, unused indexes, duplicate indexes"
+          queries:
+            - "Missing: tables with sequential scans on large tables"
+            - "Unused: pg_stat_user_indexes WHERE idx_scan = 0"
+            - "Duplicate: indexes with same column set"
+          output: "index_audit.json"
+
+        - id: 2.3
+          name: "Table Bloat Check"
+          action: "Check for table and index bloat, VACUUM status"
+          query: "SELECT relname, n_dead_tup, last_vacuum, last_autovacuum FROM pg_stat_user_tables"
+          output: "bloat_report.json"
+
+        - id: 2.4
+          name: "Connection Pool Status"
+          action: "Check Supavisor pool utilization"
+          output: "connection_status.json"
+
+        - id: 2.5
+          name: "Performance Score"
+          action: "Calculate performance score with recommendations"
+          output: "performance_score.json"
+
+      checkpoint:
+        id: CP-2
+        name: "Performance Analyzed"
+        criteria:
+          - slow_queries_identified: true
+          - index_audit_complete: true
+          - bloat_checked: true
+
+    # ═══════════════════════════════════════════
+    # PHASE 3: SECURITY REVIEW
+    # ═══════════════════════════════════════════
+    - id: phase_3
+      name: "Security Review"
+      agent: guardian
+      duration: "5-10 min"
+
+      steps:
+        - id: 3.1
+          name: "RLS Coverage Audit"
+          action: "Check RLS enabled status for ALL public tables"
+          query: "SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public'"
+          output: "rls_coverage.json"
+
+        - id: 3.2
+          name: "Policy Analysis"
+          action: "Review all RLS policies for correctness and performance"
+          query: "SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual, with_check FROM pg_policies"
+          output: "policies_analysis.json"
+
+        - id: 3.3
+          name: "Role & Permission Audit"
+          action: "Map all roles and their permissions"
+          queries:
+            - "SELECT grantee, table_name, privilege_type FROM information_schema.table_privileges WHERE table_schema = 'public'"
+            - "Check service_role vs anon vs authenticated permissions"
+          output: "permissions_matrix.json"
+
+        - id: 3.4
+          name: "SECURITY DEFINER Functions"
+          action: "Identify functions with SECURITY DEFINER and assess risk"
+          query: "SELECT proname, prosecdef FROM pg_proc WHERE pronamespace = 'public'::regnamespace AND prosecdef = true"
+          output: "security_definer_audit.json"
+
+        - id: 3.5
+          name: "Security Score"
+          action: "Calculate security score with critical findings"
+          output: "security_score.json"
+
+      checkpoint:
+        id: CP-3
+        name: "Security Reviewed"
+        gate: QG-004
+        criteria:
+          - rls_coverage_checked: true
+          - policies_reviewed: true
+          - permissions_audited: true
+        on_fail: "CRITICAL: Security issues found — must be addressed before other optimizations"
+
+    # ═══════════════════════════════════════════
+    # PHASE 4: DATA QUALITY ANALYSIS
+    # ═══════════════════════════════════════════
+    - id: phase_4
+      name: "Data Quality Analysis"
+      agent: analyst
+      duration: "5-10 min"
+
+      steps:
+        - id: 4.1
+          name: "NULL Analysis"
+          action: "Check NULL counts and patterns across all tables"
+          output: "null_analysis.json"
+
+        - id: 4.2
+          name: "Orphan Records"
+          action: "Find records with broken foreign key references"
+          output: "orphan_records.json"
+
+        - id: 4.3
+          name: "Duplicate Detection"
+          action: "Find potential duplicates based on unique constraints and common patterns"
+          output: "duplicates.json"
+
+        - id: 4.4
+          name: "Normalization Assessment"
+          action: "Assess normalization level (1NF → BCNF) for each table"
+          output: "normalization.json"
+
+        - id: 4.5
+          name: "Data Type Audit"
+          action: "Check for misused data types (VARCHAR abuse, wrong numeric types)"
+          output: "type_audit.json"
+
+        - id: 4.6
+          name: "Data Quality Score"
+          action: "Calculate DQ score across 6 dimensions"
+          output: "data_quality_score.json"
+
+      checkpoint:
+        id: CP-4
+        name: "Data Quality Analyzed"
+        criteria:
+          - null_analysis_complete: true
+          - orphans_checked: true
+          - normalization_assessed: true
+
+    # ═══════════════════════════════════════════
+    # PHASE 5: AUTOMATION ASSESSMENT
+    # ═══════════════════════════════════════════
+    - id: phase_5
+      name: "Automation Assessment"
+      agent: automator
+      duration: "3-5 min"
+
+      steps:
+        - id: 5.1
+          name: "Current Automation Inventory"
+          action: "List all pg_cron jobs, triggers, webhooks, edge functions"
+          output: "automation_inventory.json"
+
+        - id: 5.2
+          name: "Automation Opportunities"
+          action: "Identify manual processes that could be automated"
+          output: "automation_opportunities.json"
+
+        - id: 5.3
+          name: "Automation Score"
+          action: "Calculate automation maturity score"
+          output: "automation_score.json"
+
+      checkpoint:
+        id: CP-5
+        name: "Automation Assessed"
+        criteria:
+          - inventory_complete: true
+          - opportunities_identified: true
+
+    # ═══════════════════════════════════════════
+    # PHASE 6: REPORT & RECOMMENDATIONS
+    # ═══════════════════════════════════════════
+    - id: phase_6
+      name: "Consolidated Report"
+      agent: supabase-chief
+      duration: "5 min"
+
+      steps:
+        - id: 6.1
+          name: "Consolidate Scores"
+          action: "Merge all phase scores into overall health score"
+          output: "consolidated_scores.json"
+
+        - id: 6.2
+          name: "Priority Recommendations"
+          action: "Rank all findings by severity and impact"
+          output: "priority_recommendations.json"
+
+        - id: 6.3
+          name: "Generate Audit Report"
+          action: "Generate full audit report using audit-report-tmpl.md"
+          template: "audit-report-tmpl.md"
+          output: "AUDIT-REPORT.md"
+
+        - id: 6.4
+          name: "Present to User"
+          action: "Present executive summary with actionable next steps"
+          elicit: true
+
+      checkpoint:
+        id: CP-6
+        name: "Audit Complete"
+        gate: QG-005
+        criteria:
+          - all_phases_complete: true
+          - report_generated: true
+          - recommendations_prioritized: true
+
+  # ═══════════════════════════════════════════
+  # SCORING
+  # ═══════════════════════════════════════════
+  scoring:
+    overall_health:
+      components:
+        - performance: 0.25
+        - security: 0.30
+        - data_quality: 0.25
+        - automation: 0.10
+        - schema_design: 0.10
+      grades:
+        - range: "9-10"
+          label: "Excellent"
+          color: "green"
+        - range: "7-8.9"
+          label: "Good"
+          color: "blue"
+        - range: "5-6.9"
+          label: "Needs Improvement"
+          color: "yellow"
+        - range: "0-4.9"
+          label: "Critical"
+          color: "red"

@@ -1,0 +1,386 @@
+workflow:
+  id: project-migration
+  name: "Supabase Project Migration"
+  version: "1.0.0"
+  description: "Migração completa e segura de um projeto Supabase para outro — schema, dados, auth, storage, functions e RLS"
+  trigger: "*migrate"
+  estimated_duration: "1-4 hours (depends on data volume)"
+  mode: incremental
+  safety_level: destructive
+
+  prerequisites:
+    - source_project_access: "Admin access to source Supabase project"
+    - destination_project_access: "Admin access to destination Supabase project"
+    - backup_verified: "Source backup confirmed"
+    - downtime_window: "Agreed maintenance window"
+
+  # ═══════════════════════════════════════════
+  # PHASE 1: ASSESSMENT
+  # ═══════════════════════════════════════════
+  phases:
+    - id: phase_1
+      name: "Migration Assessment"
+      agents: [diagnostician, migrator]
+      duration: "15-30 min"
+
+      steps:
+        - id: 1.1
+          name: "Source Project Scan"
+          agent: diagnostician
+          mode: audit
+          action: "Full audit of source project"
+          output: "source_audit.json"
+
+        - id: 1.2
+          name: "Destination Project Scan"
+          agent: diagnostician
+          mode: health_check
+          action: "Verify destination is clean or document existing state"
+          output: "destination_state.json"
+
+        - id: 1.3
+          name: "Migration Complexity Score"
+          agent: migrator
+          action: "Calculate migration complexity based on source audit"
+          factors:
+            - table_count: "weight: 0.15"
+            - total_rows: "weight: 0.20"
+            - rls_policies: "weight: 0.15"
+            - functions_triggers: "weight: 0.15"
+            - storage_size: "weight: 0.10"
+            - edge_functions: "weight: 0.10"
+            - auth_users: "weight: 0.15"
+          output: "complexity_score.json"
+
+        - id: 1.4
+          name: "Migration Plan"
+          agent: migrator
+          action: "Generate detailed migration plan with estimated times"
+          template: "migration-plan-tmpl.md"
+          elicit: true
+          output: "MIGRATION-PLAN.md"
+
+      checkpoint:
+        id: CP-M1
+        name: "Assessment Complete"
+        gate: QG-003
+        criteria:
+          - source_audited: true
+          - destination_verified: true
+          - complexity_scored: true
+          - plan_approved_by_user: true
+        on_fail: "Cannot proceed without user approval of migration plan"
+
+    # ═══════════════════════════════════════════
+    # PHASE 2: PRE-FLIGHT
+    # ═══════════════════════════════════════════
+    - id: phase_2
+      name: "Pre-Flight Checks"
+      agents: [migrator, guardian]
+      duration: "10-15 min"
+
+      steps:
+        - id: 2.1
+          name: "Backup Source"
+          agent: migrator
+          action: "Create full backup of source database"
+          commands:
+            - "pg_dump --no-owner --no-acl --format=custom source_db > backup.dump"
+          output: "backup_reference.json"
+
+        - id: 2.2
+          name: "Generate Rollback Scripts"
+          agent: migrator
+          action: "Generate rollback scripts for each migration phase"
+          output: "rollback_scripts/"
+
+        - id: 2.3
+          name: "Test Rollback"
+          agent: migrator
+          action: "Dry-run rollback scripts to verify they work"
+          output: "rollback_test_results.json"
+
+        - id: 2.4
+          name: "Security Pre-Check"
+          agent: guardian
+          action: "Verify RLS policies will transfer correctly, document manual adjustments needed"
+          output: "security_migration_plan.json"
+
+        - id: 2.5
+          name: "Generate Migration Scripts"
+          agent: migrator
+          action: "Generate all SQL scripts for migration"
+          scripts:
+            - "01_schema.sql"
+            - "02_data.sql"
+            - "03_functions.sql"
+            - "04_triggers.sql"
+            - "05_rls_policies.sql"
+            - "06_indexes.sql"
+          output: "migration_scripts/"
+
+      checkpoint:
+        id: CP-M2
+        name: "Pre-Flight Complete"
+        gate: QG-006
+        criteria:
+          - backup_created: true
+          - rollback_scripts_generated: true
+          - rollback_tested: true
+          - security_plan_ready: true
+          - migration_scripts_generated: true
+        on_fail: "BLOCK: Pre-flight failed. Fix issues before proceeding."
+
+    # ═══════════════════════════════════════════
+    # PHASE 3: SCHEMA MIGRATION
+    # ═══════════════════════════════════════════
+    - id: phase_3
+      name: "Schema Migration"
+      agent: migrator
+      duration: "5-15 min"
+
+      steps:
+        - id: 3.1
+          name: "Create Types & Enums"
+          action: "Migrate custom types and enums first"
+          script: "01a_types.sql"
+
+        - id: 3.2
+          name: "Create Tables"
+          action: "Migrate table definitions (no data yet)"
+          script: "01b_tables.sql"
+
+        - id: 3.3
+          name: "Create Constraints"
+          action: "Add primary keys, unique constraints, check constraints"
+          script: "01c_constraints.sql"
+          note: "Foreign keys added AFTER data migration to avoid constraint violations during load"
+
+        - id: 3.4
+          name: "Verify Schema"
+          action: "Compare source and destination schemas"
+          validation:
+            - table_count_match: true
+            - column_count_match: true
+            - type_match: true
+
+      checkpoint:
+        id: CP-M3
+        name: "Schema Migrated"
+        criteria:
+          - all_tables_created: true
+          - schema_verified: true
+        on_fail: "Rollback schema changes and investigate"
+
+    # ═══════════════════════════════════════════
+    # PHASE 4: DATA MIGRATION
+    # ═══════════════════════════════════════════
+    - id: phase_4
+      name: "Data Migration"
+      agent: migrator
+      duration: "15 min - 2 hours"
+
+      steps:
+        - id: 4.1
+          name: "Migrate Auth Users"
+          action: "Special handling for auth.users table"
+          note: "Preserves user IDs, password hashes, metadata, email confirmations"
+          script: "02a_auth_users.sql"
+
+        - id: 4.2
+          name: "Migrate Data (ordered by dependencies)"
+          action: "COPY data in dependency order (parent tables first)"
+          script: "02b_data.sql"
+          progress: "Show row count progress per table"
+
+        - id: 4.3
+          name: "Add Foreign Keys"
+          action: "Now safe to add FK constraints"
+          script: "01d_foreign_keys.sql"
+
+        - id: 4.4
+          name: "Verify Data Integrity"
+          action: "Row count comparison, FK validation, sample spot-check"
+          validation:
+            - row_counts_match: true
+            - fk_integrity: true
+            - sample_check: "10 random rows per table"
+
+      checkpoint:
+        id: CP-M4
+        name: "Data Migrated"
+        criteria:
+          - all_data_transferred: true
+          - row_counts_match: true
+          - fk_integrity_verified: true
+        on_fail: "CRITICAL: Data mismatch. Investigate before proceeding."
+
+    # ═══════════════════════════════════════════
+    # PHASE 5: FUNCTIONS, TRIGGERS & RLS
+    # ═══════════════════════════════════════════
+    - id: phase_5
+      name: "Logic Migration"
+      agents: [migrator, guardian]
+      duration: "10-20 min"
+
+      steps:
+        - id: 5.1
+          name: "Migrate Functions"
+          agent: migrator
+          action: "Create all database functions"
+          script: "03_functions.sql"
+
+        - id: 5.2
+          name: "Migrate Triggers"
+          agent: migrator
+          action: "Create all triggers"
+          script: "04_triggers.sql"
+
+        - id: 5.3
+          name: "Migrate RLS Policies"
+          agent: guardian
+          action: "Apply RLS policies with security review"
+          script: "05_rls_policies.sql"
+          validation:
+            - rls_enabled_on_all_public_tables: true
+            - policies_count_match: true
+
+        - id: 5.4
+          name: "Migrate Indexes"
+          agent: migrator
+          action: "Create indexes (last, as they slow down data loading)"
+          script: "06_indexes.sql"
+
+        - id: 5.5
+          name: "Security Verification"
+          agent: guardian
+          action: "Full security audit on destination"
+          validation:
+            - rls_coverage_100: true
+            - policies_functional: true
+            - roles_correct: true
+
+      checkpoint:
+        id: CP-M5
+        name: "Logic Migrated"
+        gate: QG-004
+        criteria:
+          - functions_created: true
+          - triggers_active: true
+          - rls_verified: true
+          - indexes_created: true
+
+    # ═══════════════════════════════════════════
+    # PHASE 6: STORAGE & EDGE FUNCTIONS
+    # ═══════════════════════════════════════════
+    - id: phase_6
+      name: "Services Migration"
+      agents: [migrator, automator]
+      duration: "10-30 min"
+
+      steps:
+        - id: 6.1
+          name: "Migrate Storage Buckets"
+          agent: migrator
+          action: "Create buckets, copy policies, transfer objects via API"
+
+        - id: 6.2
+          name: "Migrate Edge Functions"
+          agent: migrator
+          action: "Copy Edge Function source code and deploy"
+
+        - id: 6.3
+          name: "Migrate Cron Jobs"
+          agent: automator
+          action: "Recreate pg_cron schedules on destination"
+
+        - id: 6.4
+          name: "Migrate Webhooks"
+          agent: automator
+          action: "Recreate database webhooks"
+
+        - id: 6.5
+          name: "Migrate Secrets"
+          agent: migrator
+          action: "Document secrets that need manual transfer"
+          elicit: true
+          note: "Secrets cannot be exported — must be manually re-entered"
+
+      checkpoint:
+        id: CP-M6
+        name: "Services Migrated"
+        criteria:
+          - storage_transferred: true
+          - edge_functions_deployed: true
+          - cron_jobs_recreated: true
+
+    # ═══════════════════════════════════════════
+    # PHASE 7: VALIDATION & CUTOVER
+    # ═══════════════════════════════════════════
+    - id: phase_7
+      name: "Validation & Cutover"
+      agents: [diagnostician, migrator]
+      duration: "10-15 min"
+
+      steps:
+        - id: 7.1
+          name: "Full Health Check on Destination"
+          agent: diagnostician
+          mode: health_check
+          action: "Complete health check on migrated project"
+
+        - id: 7.2
+          name: "Migration Validation Report"
+          agent: migrator
+          action: "Generate final validation report"
+          template: "migration-validation-tmpl.md"
+          output: "MIGRATION-VALIDATION.md"
+
+        - id: 7.3
+          name: "Cutover Decision"
+          agent: migrator
+          elicit: true
+          action: "Present validation results and ask for cutover approval"
+          options:
+            - approve: "Switch to destination project"
+            - hold: "Keep both running, validate further"
+            - rollback: "Abort migration, restore source"
+
+        - id: 7.4
+          name: "Update Connection Strings"
+          agent: migrator
+          action: "Document all connection strings that need updating"
+          elicit: true
+          output: "connection_update_guide.md"
+
+      checkpoint:
+        id: CP-M7
+        name: "Migration Complete"
+        gate: QG-005
+        criteria:
+          - health_check_passed: true
+          - validation_report_generated: true
+          - cutover_decision_made: true
+
+  # ═══════════════════════════════════════════
+  # ROLLBACK PLAN
+  # ═══════════════════════════════════════════
+  rollback:
+    trigger: "Any checkpoint failure OR user request"
+    levels:
+      - level: 1
+        name: "Phase Rollback"
+        action: "Undo last phase using generated rollback scripts"
+        automated: true
+
+      - level: 2
+        name: "Full Rollback"
+        action: "Drop all objects in destination, restore from backup"
+        automated: true
+        command: "pg_restore --clean --if-exists backup.dump"
+
+      - level: 3
+        name: "PITR Recovery"
+        action: "Point-in-Time Recovery via Supabase Dashboard"
+        automated: false
+        requires: "Supabase Pro plan or higher"

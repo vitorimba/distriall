@@ -1,0 +1,14 @@
+{
+  "certified": true,
+  "squad_name": "webapp-defender",
+  "score": 7.9,
+  "verdict": "PASS",
+  "date": "2026-04-13",
+  "timestamp": "2026-04-13T14:00:00.000Z",
+  "workflow": "lifecycle-squad",
+  "mode": "full",
+  "pre_upgrade_score": 4.5,
+  "post_upgrade_score": 7.9,
+  "source_project": "aiox",
+  "pipeline_version": "1.0.0"
+}

@@ -1,0 +1,19 @@
+{
+  "squad": "fitcoach",
+  "version": "1.0.0",
+  "created": "2026-03-11",
+  "last_modified": "2026-03-11",
+  "status": "active",
+  "fidelity_score": 1.0,
+  "total_files": 48,
+  "total_lines": 32573,
+  "agents_count": 19,
+  "tasks_count": 9,
+  "workflows_count": 4,
+  "templates_count": 7,
+  "checklists_count": 5,
+  "minds_count": 10,
+  "tested": false,
+  "observatory_initialized": false,
+  "registered": true
+}

@@ -1,0 +1,265 @@
+# Veto Conditions Consolidadas — Franchising Avend Squad
+# Todas as condicoes de veto organizadas por categoria
+# Updated: 2026-03-13
+# Total: 39 condicoes
+
+metadata:
+  version: "1.0.0-pro"
+  total_agents: 13
+  total_veto_conditions: 39
+  source: "Definicoes de agentes e workflows"
+
+severity_legend:
+  NON-NEGOTIABLE: "BLOCK — interrompe execucao imediatamente, sem excecao"
+  MUST: "WARN — alerta obrigatorio, requer acao antes de prosseguir"
+  SHOULD: "REDIRECT — redireciona para agente ou fluxo correto"
+
+# ============================================================
+# ORCHESTRATOR
+# ============================================================
+
+orchestrator:
+  agent: franchise-chief
+  name: "Franchise Chief"
+
+  veto_conditions:
+    - id: FA_CH_V001
+      severity: NON-NEGOTIABLE
+      condition: "Request que viola Lei 13.966/2019 (ex: pular cooling period, omitir info na COF)"
+      action: "BLOCK + alertar sobre risco juridico + redirecionar para legal-compliance"
+
+    - id: FA_CH_V002
+      severity: MUST
+      condition: "Avancar para fase seguinte do workflow sem checkpoint anterior aprovado"
+      action: "WARN + retornar ao checkpoint pendente + listar itens faltantes"
+
+    - id: FA_CH_V003
+      severity: SHOULD
+      condition: "Request fora do escopo de franchising (ex: operacao de maquina individual)"
+      action: "REDIRECT + informar que o squad trata de franchising, nao operacao unitaria"
+
+# ============================================================
+# TIER 0 — STRATEGY & GOVERNANCE
+# ============================================================
+
+tier_0:
+  agents:
+
+    - agent: franchise-strategist
+      name: "Franchise Strategist"
+      veto_conditions:
+        - id: FA_FS_V001
+          severity: NON-NEGOTIABLE
+          condition: "Decisao de franquear negocio com Franchisability Score < 50/100"
+          action: "BLOCK + listar gaps criticos + recomendar correcoes antes de prosseguir"
+
+        - id: FA_FS_V002
+          severity: MUST
+          condition: "Escalar rede sem resultados validados do piloto"
+          action: "WARN + exigir minimo de 90 dias de piloto com dados antes de escalar"
+
+        - id: FA_FS_V003
+          severity: SHOULD
+          condition: "Expansao sem equipe de suporte dimensionada para a meta"
+          action: "REDIRECT + dimensionar equipe antes de recrutar novos franqueados"
+
+    - agent: legal-compliance
+      name: "Legal Compliance"
+      veto_conditions:
+        - id: FA_LC_V001
+          severity: NON-NEGOTIABLE
+          condition: "COF com omissao de informacao obrigatoria pela Lei 13.966/2019"
+          action: "BLOCK + contrato pode ser anulado judicialmente + completar informacao"
+
+        - id: FA_LC_V002
+          severity: NON-NEGOTIABLE
+          condition: "Assinatura de contrato antes do cooling period de 10 dias"
+          action: "BLOCK + exigencia legal absoluta + reagendar assinatura"
+
+        - id: FA_LC_V003
+          severity: MUST
+          condition: "Contrato sem clausulas essenciais (territorio, rescisao, non-compete)"
+          action: "WARN + revisar contrato com advogado especialista antes de usar"
+
+# ============================================================
+# TIER 1 — OPERATIONS & FINANCE
+# ============================================================
+
+tier_1:
+  agents:
+
+    - agent: financial-modeler
+      name: "Financial Modeler"
+      veto_conditions:
+        - id: FA_FM_V001
+          severity: NON-NEGOTIABLE
+          condition: "Modelo financeiro com margem do franqueado negativa apos royalties"
+          action: "BLOCK + recalcular modelo + ajustar royalties ou custos"
+
+        - id: FA_FM_V002
+          severity: MUST
+          condition: "Apresentar cenario unico sem analise de sensibilidade"
+          action: "WARN + exigir 3 cenarios (pessimista, realista, otimista)"
+
+        - id: FA_FM_V003
+          severity: SHOULD
+          condition: "Estimativa de faturamento apresentada como garantia"
+          action: "REDIRECT + adicionar disclaimers legais obrigatorios"
+
+    - agent: operations-designer
+      name: "Operations Designer"
+      veto_conditions:
+        - id: FA_OD_V001
+          severity: NON-NEGOTIABLE
+          condition: "Go-live de franqueado sem checklist de onboarding 100% completo"
+          action: "BLOCK + listar itens pendentes + resolver antes do go-live"
+
+        - id: FA_OD_V002
+          severity: MUST
+          condition: "Manual de operacoes sem secao de troubleshooting"
+          action: "WARN + manual incompleto gera chamados excessivos de suporte"
+
+        - id: FA_OD_V003
+          severity: SHOULD
+          condition: "Processo operacional critico sem SOP documentado"
+          action: "REDIRECT + documentar SOP antes de treinar franqueados"
+
+    - agent: training-developer
+      name: "Training Developer"
+      veto_conditions:
+        - id: FA_TD_V001
+          severity: NON-NEGOTIABLE
+          condition: "Certificar franqueado reprovado nas avaliacoes (teorica < 70% OU pratica < 80%)"
+          action: "BLOCK + oferecer reforco + nova avaliacao + nao certificar sem aprovacao"
+
+        - id: FA_TD_V002
+          severity: MUST
+          condition: "Treinamento sem componente pratico em campo"
+          action: "WARN + teoria sem pratica gera franqueado inseguro e erros operacionais"
+
+        - id: FA_TD_V003
+          severity: SHOULD
+          condition: "Material de treinamento desatualizado (> 6 meses sem revisao)"
+          action: "REDIRECT + revisar e atualizar materiais antes de usar"
+
+    - agent: network-analyst
+      name: "Network Analyst"
+      veto_conditions:
+        - id: FA_NA_V001
+          severity: NON-NEGOTIABLE
+          condition: "Publicar ranking nominal de franqueados com resultados negativos"
+          action: "BLOCK + dados sensiveis devem ser anonimizados em comunicados publicos"
+
+        - id: FA_NA_V002
+          severity: MUST
+          condition: "Conclusoes baseadas em dados de menos de 70% da rede"
+          action: "WARN + amostra insuficiente + declarar limitacao no relatorio"
+
+        - id: FA_NA_V003
+          severity: SHOULD
+          condition: "Relatorio sem comparativo com periodo anterior"
+          action: "REDIRECT + incluir tendencias para contexto adequado"
+
+# ============================================================
+# TIER 2 — GROWTH & RECRUITMENT
+# ============================================================
+
+tier_2:
+  agents:
+
+    - agent: market-analyst
+      name: "Market Analyst"
+      veto_conditions:
+        - id: FA_MA_V001
+          severity: NON-NEGOTIABLE
+          condition: "Recomendar territorio com mercado saturado (>70% penetracao) sem advertencia"
+          action: "BLOCK + documentar saturacao + recomendar territorio alternativo"
+
+        - id: FA_MA_V002
+          severity: MUST
+          condition: "Analise de territorio sem dados demograficos e de concorrencia"
+          action: "WARN + analise incompleta leva a decisoes de expansao erradas"
+
+        - id: FA_MA_V003
+          severity: SHOULD
+          condition: "Projecao de mercado sem fonte de dados identificada"
+          action: "REDIRECT + citar fontes + usar dados verificaveis"
+
+    - agent: recruitment-specialist
+      name: "Recruitment Specialist"
+      veto_conditions:
+        - id: FA_RS_V001
+          severity: NON-NEGOTIABLE
+          condition: "Aprovar candidato com veto condition ativo (restritivos, capital insuficiente, conflito)"
+          action: "BLOCK + veto conditions sao inegociaveis + rejeitar ou resolver antes"
+
+        - id: FA_RS_V002
+          severity: MUST
+          condition: "Qualificar candidato sem entrevista presencial ou por video"
+          action: "WARN + entrevista e essencial para avaliar perfil comportamental"
+
+        - id: FA_RS_V003
+          severity: SHOULD
+          condition: "Pipeline de candidatos sem metricas de conversao por stage"
+          action: "REDIRECT + implementar tracking de funil para otimizacao"
+
+    - agent: marketing-specialist
+      name: "Marketing Specialist"
+      veto_conditions:
+        - id: FA_MS_V001
+          severity: NON-NEGOTIABLE
+          condition: "Material de marketing com promessa de retorno garantido"
+          action: "BLOCK + pratica ilegal e condenada pela ABF + reformular material"
+
+        - id: FA_MS_V002
+          severity: MUST
+          condition: "Material de recrutamento com valores inconsistentes com a COF"
+          action: "WARN + todos os materiais devem ser consistentes com a COF vigente"
+
+        - id: FA_MS_V003
+          severity: SHOULD
+          condition: "Campanha de recrutamento sem segmentacao de publico-alvo"
+          action: "REDIRECT + definir perfil-alvo antes de investir em midia"
+
+# ============================================================
+# TIER 3 — RELATIONSHIP & SUPPORT
+# ============================================================
+
+tier_3:
+  agents:
+
+    - agent: relationship-manager
+      name: "Relationship Manager"
+      veto_conditions:
+        - id: FA_RM_V001
+          severity: NON-NEGOTIABLE
+          condition: "Encerrar onboarding (90 dias) sem os 3 check-ins realizados"
+          action: "BLOCK + check-ins 30/60/90 sao obrigatorios para todos os novos franqueados"
+
+        - id: FA_RM_V002
+          severity: MUST
+          condition: "Franqueado classificado como 'at risk' sem plano de acao documentado"
+          action: "WARN + todo franqueado at-risk precisa de plano de recuperacao com prazos"
+
+        - id: FA_RM_V003
+          severity: SHOULD
+          condition: "Feedback negativo recorrente (3+ trimestres) sem escalacao para franchise-chief"
+          action: "REDIRECT + escalar para decisao estrategica sobre o franqueado"
+
+    - agent: tech-systems
+      name: "Tech Systems"
+      veto_conditions:
+        - id: FA_TS_V001
+          severity: NON-NEGOTIABLE
+          condition: "Maquina operando sem telemetria por mais de 7 dias"
+          action: "BLOCK + sem telemetria a franqueadora nao tem visibilidade da operacao"
+
+        - id: FA_TS_V002
+          severity: MUST
+          condition: "Maquina aceitando apenas moeda (sem pagamento digital) por mais de 14 dias"
+          action: "WARN + pagamento digital e padrao da rede + corrigir em 7 dias"
+
+        - id: FA_TS_V003
+          severity: SHOULD
+          condition: "Portal do franqueado com dados desatualizados (> 24h)"
+          action: "REDIRECT + verificar integracao e corrigir delay de sincronizacao"

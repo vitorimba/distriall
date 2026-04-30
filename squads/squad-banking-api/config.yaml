@@ -1,0 +1,123 @@
+# ══════════════════════════════════════════════════════════════════
+# Squad Banking API — Integração com APIs Bancárias Brasileiras
+# Connect, extract and normalize data from Brazilian bank APIs
+# ══════════════════════════════════════════════════════════════════
+
+squad:
+  name: squad-banking-api
+  version: 1.0.0
+  icon: "\U0001F3E6"
+  description: >
+    Squad especializado em integração com APIs bancárias brasileiras — autenticação,
+    extração de dados, normalização e troubleshooting. Cobre Banco Inter, Sicoob,
+    Stone e XP Investimentos. Suporte a Open Finance Brasil, OAuth2, mTLS e
+    certificados digitais.
+  type: knowledge-based
+  entry_agent: banking-chief
+  slashPrefix: banking
+
+# ── Agents ─────────────────────────────────────────────────────────
+agents:
+  # Orchestrator
+  - id: banking-chief
+    file: agents/banking-chief.md
+    tier: orchestrator
+    role: Orquestrador de integração bancária — roteia por banco e tipo de operação
+
+  # Tier 0 — Diagnosis & Auth
+  - id: auth-architect
+    file: agents/auth-architect.md
+    tier: 0
+    role: Autenticação bancária (OAuth2, mTLS, certificados, FAPI)
+
+  # Tier 1 — Bank Specialists
+  - id: inter-specialist
+    file: agents/inter-specialist.md
+    tier: 1
+    role: Especialista na API do Banco Inter (Cobrança, Pix, Extrato, Banking)
+
+  - id: sicoob-specialist
+    file: agents/sicoob-specialist.md
+    tier: 1
+    role: Especialista na API do Sicoob (Conta Corrente, Pix, Cobrança V3, Open Finance)
+
+  - id: stone-specialist
+    file: agents/stone-specialist.md
+    tier: 1
+    role: Especialista na API da Stone (Pagamentos, Conciliação, POS SDK)
+
+  - id: xp-specialist
+    file: agents/xp-specialist.md
+    tier: 1
+    role: Especialista na API da XP Inc (Posição, Movimentação, Captação, Open Finance)
+
+  # Tier 2 — Cross-Bank
+  - id: data-normalizer
+    file: agents/data-normalizer.md
+    tier: 2
+    role: Normalização de dados entre bancos diferentes para schema unificado
+
+  - id: integration-debugger
+    file: agents/integration-debugger.md
+    tier: 2
+    role: Troubleshooting de integrações bancárias (erros, timeouts, rejeições)
+
+# ── Tasks ──────────────────────────────────────────────────────────
+tasks:
+  - id: setup-bank-auth
+    file: tasks/setup-bank-auth.md
+    description: Configurar autenticação para um banco específico
+
+  - id: extract-financial-data
+    file: tasks/extract-financial-data.md
+    description: Extrair dados financeiros (extrato, saldo, transações)
+
+  - id: setup-pix-integration
+    file: tasks/setup-pix-integration.md
+    description: Configurar integração Pix (recebimento e envio)
+
+  - id: setup-billing
+    file: tasks/setup-billing.md
+    description: Configurar cobrança (boleto e Pix cobrança)
+
+  - id: debug-integration
+    file: tasks/debug-integration.md
+    description: Diagnosticar e resolver problemas de integração
+
+  - id: normalize-bank-data
+    file: tasks/normalize-bank-data.md
+    description: Criar schema unificado para dados multi-banco
+
+  - id: onboard-new-bank
+    file: tasks/onboard-new-bank.md
+    description: Workflow completo para integrar um novo banco
+
+# ── Workflows ──────────────────────────────────────────────────────
+workflows:
+  - id: wf-onboard-bank
+    file: workflows/wf-onboard-bank.yaml
+    description: Pipeline completo de onboarding de um novo banco (auth → endpoints → test → prod)
+
+  - id: wf-extract-all-banks
+    file: workflows/wf-extract-all-banks.yaml
+    description: Extrair dados de todos os bancos configurados em batch
+
+# ── Checklists ─────────────────────────────────────────────────────
+checklists:
+  - id: pre-production-checklist
+    file: checklists/pre-production-checklist.md
+    description: Checklist antes de ir para produção com uma integração bancária
+
+  - id: security-checklist
+    file: checklists/security-checklist.md
+    description: Checklist de segurança para integração bancária
+
+# ── Data ───────────────────────────────────────────────────────────
+data:
+  - id: bank-endpoints-catalog
+    file: data/bank-endpoints-catalog.yaml
+    description: Catálogo completo de endpoints por banco
+
+  - id: tool-discovery
+    file: data/tool-discovery.yaml
+    description: Ferramentas descobertas para o domínio banking-api

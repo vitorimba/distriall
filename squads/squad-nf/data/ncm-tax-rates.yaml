@@ -1,0 +1,191 @@
+# =============================================================================
+# NCM Tax Rates — Sample Entries (Stub)
+# Squad: squad-nf
+# Reference: TIPI (Tabela de Incidencia do IPI) + BrasilAPI
+# Note: This is a STUB with common NCMs. For production, use BrasilAPI
+#       endpoint: https://brasilapi.com.br/api/ncm/v1/{code}
+# Structure: ncm, description, ipi_rate, icms_treatment, notes
+# =============================================================================
+
+# Fonte oficial para consulta completa: TIPI vigente (Decreto Federal)
+
+ncm_entries:
+  # ---------------------------------------------------------------------------
+  # Alimentos e Bebidas
+  # ---------------------------------------------------------------------------
+  - ncm: "02013000"
+    description: "Carnes desossadas, bovinas, frescas ou refrigeradas"
+    ipi_rate: 0
+    icms_treatment: "Tributado — aliquota interna varia (SP=18%, cesta basica reduzida em alguns estados)"
+    notes: "Cesta basica em muitos estados — verificar reducao de BC"
+
+  - ncm: "04012110"
+    description: "Leite UHT integral"
+    ipi_rate: 0
+    icms_treatment: "Isento ou aliquota reduzida na maioria dos estados (cesta basica)"
+    notes: "Verificar Convenio ICMS 128/94"
+
+  - ncm: "10063021"
+    description: "Arroz beneficiado"
+    ipi_rate: 0
+    icms_treatment: "Cesta basica — isento ou 7% na maioria dos estados"
+    notes: "Item de cesta basica nacional"
+
+  - ncm: "22021000"
+    description: "Agua mineral com gas"
+    ipi_rate: 4
+    icms_treatment: "Tributado — ST em muitos estados (MVA especifica)"
+    notes: "Sujeito a ST conforme Protocolo ICMS"
+
+  - ncm: "22030000"
+    description: "Cerveja de malte"
+    ipi_rate: 6
+    icms_treatment: "Tributado com ST na maioria dos estados (MVA ~140%)"
+    notes: "ST obrigatoria — aliquota ICMS geralmente 25%"
+
+  # ---------------------------------------------------------------------------
+  # Vestuario e Texteis
+  # ---------------------------------------------------------------------------
+  - ncm: "61091000"
+    description: "Camisetas de malha, de algodao"
+    ipi_rate: 0
+    icms_treatment: "Tributado — aliquota interna padrao (17-18%)"
+    notes: "Sem ST na maioria dos estados"
+
+  - ncm: "64039990"
+    description: "Outros calcados com sola de borracha/plastico"
+    ipi_rate: 10
+    icms_treatment: "Tributado — ST em alguns estados"
+    notes: "Verificar CEST e protocolo de ST"
+
+  # ---------------------------------------------------------------------------
+  # Eletronicos e Informatica
+  # ---------------------------------------------------------------------------
+  - ncm: "84713012"
+    description: "Notebook, portatil, peso <= 3,5kg"
+    ipi_rate: 0
+    icms_treatment: "Tributado — aliquota reduzida em alguns estados (Lei do Bem)"
+    notes: "Pode ter isencao IPI conforme decreto. Verificar PPB."
+
+  - ncm: "85171231"
+    description: "Telefones celulares (smartphones)"
+    ipi_rate: 0
+    icms_treatment: "Tributado — ST em muitos estados (MVA ~9-15%)"
+    notes: "IPI zerado por decreto. ST obrigatoria."
+
+  - ncm: "85287200"
+    description: "Aparelhos receptores de televisao, cores, LCD/LED"
+    ipi_rate: 15
+    icms_treatment: "Tributado — aliquota interna padrao"
+    notes: "IPI pode variar por tamanho de tela"
+
+  - ncm: "84715010"
+    description: "Unidade de processamento digital (CPU/desktop)"
+    ipi_rate: 0
+    icms_treatment: "Tributado — aliquota reduzida em alguns estados"
+    notes: "PPB pode garantir isencao IPI"
+
+  # ---------------------------------------------------------------------------
+  # Cosmeticos e Higiene
+  # ---------------------------------------------------------------------------
+  - ncm: "33049910"
+    description: "Cremes de beleza e cremes nutritivos"
+    ipi_rate: 7
+    icms_treatment: "Tributado — ST obrigatoria na maioria dos estados"
+    notes: "CEST 28.004.00. MVA varia por estado."
+
+  - ncm: "33051000"
+    description: "Xampus"
+    ipi_rate: 7
+    icms_treatment: "Tributado — ST obrigatoria"
+    notes: "CEST 28.001.00"
+
+  - ncm: "34011190"
+    description: "Saboes de toucador"
+    ipi_rate: 0
+    icms_treatment: "Tributado — ST em alguns estados"
+    notes: "Pode ter isencao de IPI"
+
+  # ---------------------------------------------------------------------------
+  # Automotivo
+  # ---------------------------------------------------------------------------
+  - ncm: "87032310"
+    description: "Automovel de passageiros, motor 1000-1500cc"
+    ipi_rate: 7
+    icms_treatment: "Tributado 12% interno (operacao com veiculo novo)"
+    notes: "IPI varia por cilindrada e tipo de combustivel"
+
+  - ncm: "40111000"
+    description: "Pneus novos, de borracha, para automoveis"
+    ipi_rate: 5
+    icms_treatment: "ST obrigatoria em todos os estados"
+    notes: "CEST 16.001.00. Convenio ICMS 85/93."
+
+  # ---------------------------------------------------------------------------
+  # Materiais de Construcao
+  # ---------------------------------------------------------------------------
+  - ncm: "69072100"
+    description: "Ladrilhos e placas ceramicas (azulejos)"
+    ipi_rate: 5
+    icms_treatment: "Tributado — ST em varios estados"
+    notes: "CEST 10.004.00"
+
+  - ncm: "72142000"
+    description: "Barras de ferro/aco (vergalhoes)"
+    ipi_rate: 5
+    icms_treatment: "Tributado — aliquota interna padrao"
+    notes: "Materiais de construcao podem ter ST"
+
+  - ncm: "25232900"
+    description: "Cimento Portland"
+    ipi_rate: 4
+    icms_treatment: "ST obrigatoria na maioria dos estados"
+    notes: "CEST 05.001.00"
+
+  # ---------------------------------------------------------------------------
+  # Medicamentos
+  # ---------------------------------------------------------------------------
+  - ncm: "30049099"
+    description: "Outros medicamentos para venda a varejo"
+    ipi_rate: 0
+    icms_treatment: "Tributado — ST obrigatoria. Lista Positiva/Negativa/Neutra CMED."
+    notes: "PMC (Preco Maximo ao Consumidor) define BC-ST. Isencao ICMS em alguns."
+
+  # ---------------------------------------------------------------------------
+  # Combustiveis
+  # ---------------------------------------------------------------------------
+  - ncm: "27101259"
+    description: "Gasolina automotiva"
+    ipi_rate: 0
+    icms_treatment: "Monofasico — ICMS recolhido na refinaria"
+    notes: "Regime monofasico. Aliquota ad rem (R$/litro)."
+
+  - ncm: "27101921"
+    description: "Oleo diesel"
+    ipi_rate: 0
+    icms_treatment: "Monofasico — ICMS recolhido na refinaria"
+    notes: "Regime monofasico. Aliquota ad rem."
+
+  # ---------------------------------------------------------------------------
+  # Embalagens
+  # ---------------------------------------------------------------------------
+  - ncm: "39232190"
+    description: "Sacos de plastico (polietileno)"
+    ipi_rate: 5
+    icms_treatment: "Tributado — aliquota interna padrao"
+    notes: "Sem ST na maioria dos estados"
+
+  - ncm: "48191000"
+    description: "Caixas de papel ou cartao ondulado"
+    ipi_rate: 5
+    icms_treatment: "Tributado — aliquota interna padrao"
+    notes: "Embalagem para transporte"
+
+# =============================================================================
+# Notas Importantes
+# =============================================================================
+# 1. Aliquotas IPI podem mudar por decreto federal (atualizacoes frequentes)
+# 2. Para NCM completo e atualizado, use BrasilAPI: GET /api/ncm/v1/{code}
+# 3. ICMS-ST depende de convenios/protocolos entre estados — verificar vigencia
+# 4. Aliquotas ICMS interestaduais: 4% (importados), 7% (S/SE para N/NE/CO), 12% (demais)
+# 5. Este arquivo e um STUB — nao substitui consulta a TIPI vigente

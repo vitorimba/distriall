@@ -1,0 +1,16 @@
+id: SS_WP_001
+name: "Cache at Closest Layer"
+mind: steve_souders
+source: "High Performance Web Sites (2007)"
+domain: caching
+description: >
+  Cache no nivel mais proximo do usuario que a consistencia
+  permitir. Quanto mais perto do usuario, menor a latencia.
+applies_when:
+  - "Desenhando estrategia de caching"
+  - "Avaliando cache layers"
+action: >
+  Priorize: browser > CDN > API gateway > app cache > DB cache.
+  Cada camada deve ser avaliada por tolerancia a stale data.
+severity: foundational
+confidence: 0.90

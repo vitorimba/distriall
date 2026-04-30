@@ -1,0 +1,746 @@
+workflow:
+  id: "FC-WF-001"
+  name: "Full Client Journey"
+  version: "1.0.0"
+  squad: "fitcoach"
+  type: "client-lifecycle"
+  pattern_prefix: "FC"
+  updated_at: "2026-03-11"
+  description: >-
+    Jornada completa do aluno desde o primeiro contato (intake) ate resultados
+    consolidados com retencao via gamificacao e Hook Model. Orquestra 7 fases
+    sequenciais com checkpoints entre cada uma, garantindo qualidade e
+    continuidade do servico de coaching fitness.
+  trigger: "Novo cliente interessado em coaching fitness entra em contato"
+
+  metadata:
+    elicit: true
+    confirmation_required: true
+    estimated_duration: "Ongoing (lifecycle continuo)"
+    total_phases: 7
+    tasks_involved: 7
+    recurring_phases: [4, 5, 6, 7]
+
+  entry_conditions:
+    - "Novo cliente interessado em coaching fitness"
+    - "Coach com perfil configurado no sistema"
+    - "Canal de comunicacao ativo (WhatsApp/email)"
+
+  exit_conditions:
+    - "Cliente encerra contrato"
+    - "Coach encerra relacao"
+    - "Migracao para outro workflow (ex: competition-prep)"
+
+  agents_involved:
+    - agent: "fitcoach-chief"
+      role: "Orquestrador principal do workflow"
+    - agent: "intake-analyst"
+      role: "Conduz anamnese, classifica cliente e define objetivos SMART"
+    - agent: "training-builder"
+      role: "Gera plano de treino personalizado consultando advisors"
+    - agent: "diet-builder"
+      role: "Gera plano nutricional personalizado consultando advisors"
+    - agent: "automation-engineer"
+      role: "Automacao de comunicacoes, entrega de materiais e scheduling"
+    - agent: "progress-tracker"
+      role: "Processa check-ins semanais e gera reports de tendencia"
+    - agent: "gamification-designer"
+      role: "Design de mecanicas de gamificacao (Octalysis/Yu-kai Chou)"
+    - agent: "retention-engineer"
+      role: "Estrategias de retencao e Hook Model (Nir Eyal)"
+
+  advisors:
+    - name: "hypertrophy-scientist"
+      persona: "Mike Israetel"
+      scope: "Volume, frequencia, hipertrofia"
+    - name: "nutrition-scientist"
+      persona: "Layne Norton"
+      scope: "Macros, refeeds, diet breaks, reverse diet"
+    - name: "periodization-architect"
+      persona: "Tudor Bompa"
+      scope: "Periodizacao de treino"
+    - name: "biomechanics-coach"
+      persona: "Charles Glass"
+      scope: "Selecao de exercicios e biomecanica"
+    - name: "elite-coach"
+      persona: "Matt Jansen"
+      scope: "Intensity techniques e treino de elite"
+    - name: "gamification-designer"
+      persona: "Yu-kai Chou"
+      scope: "Octalysis Framework e core drives"
+    - name: "retention-engineer"
+      persona: "Nir Eyal"
+      scope: "Hook Model e formacao de habitos"
+
+  tools:
+    - "training-plan-generator"
+    - "macro-calculator"
+    - "progress-comparator"
+    - "gamification-engine"
+    - "quality-checker"
+
+  phases:
+    # =====================================================
+    # PHASE 1: INTAKE — Onboarding do Cliente
+    # =====================================================
+    - id: "phase-1"
+      name: "INTAKE — Onboarding do Cliente"
+      agent: "intake-analyst"
+      approval: "coach (human)"
+      task: "tasks/client-intake.md (FC-TASK-001)"
+      duration: "Variable (1-7 days first contact + processing)"
+      inputs:
+        - "Dados do formulario de anamnese"
+        - "Informacoes do canal de comunicacao"
+      steps:
+        - id: "1.1"
+          name: "Primeiro Contato"
+          executor: "automation-engineer"
+          description: >-
+            Cliente entra em contato (Instagram DM, WhatsApp, landing page).
+            Enviar mensagem de boas-vindas automatica, apresentar proposta
+            de trabalho e valores. Se aceitar: prosseguir para anamnese.
+          channels: ["whatsapp", "instagram", "landing_page"]
+          duration: "Variable (1h - 7 days)"
+          tracking:
+            source: "De onde veio o lead"
+            response_time: "Tempo ate primeira resposta"
+            outcome: "accepted|rejected|pending"
+        - id: "1.2"
+          name: "Anamnese Completa"
+          description: >-
+            Enviar formulario de anamnese estruturado.
+            Coletar dados antropometricos, historico, restricoes.
+            Processar e validar dados recebidos.
+        - id: "1.3"
+          name: "Classificacao e Objetivos"
+          description: >-
+            Classificar cliente (beginner/intermediate/advanced/elite).
+            Definir objetivos SMART com metricas e timeline.
+            Calcular baseline metabolico (TDEE, macros iniciais).
+        - id: "1.4"
+          name: "Aprovacao e Routing"
+          description: >-
+            Gerar resumo do intake para o coach.
+            Coach aprova classificacao e objetivos.
+            Definir routing para proxima fase (protocolo padrao, competition prep, etc.).
+      outputs:
+        - "client_profile — Perfil completo do cliente"
+        - "classification_report — Classificacao e score"
+        - "goal_definition — Objetivos SMART"
+        - "routing_decision — Para qual protocolo seguir"
+      checkpoint:
+        id: "CP-1"
+        name: "Intake Complete Gate"
+        type: "blocking"
+        criteria:
+          - "client_profile salvo com todos os campos obrigatorios"
+          - "classification_report com level definido"
+          - "goal_definition no formato SMART"
+          - "routing_decision aprovado pelo coach"
+          - "Sem red flags medicos bloqueantes"
+        veto_conditions:
+          - "Red flags medicos bloqueantes identificados"
+          - "Dados obrigatorios incompletos"
+        on_pass: "Proceed to Phase 2"
+        on_fail: "Return to Phase 1, fix issues"
+      next: "phase-2"
+
+    # =====================================================
+    # PHASE 2: PROTOCOL — Criacao de Treino e Dieta
+    # =====================================================
+    - id: "phase-2"
+      name: "PROTOCOL — Criacao de Treino e Dieta"
+      agent: "training-builder + diet-builder (PARALELO)"
+      tasks:
+        - "tasks/create-training-plan.md (FC-TASK-002)"
+        - "tasks/create-diet-plan.md (FC-TASK-003)"
+      execution_model: "parallel"
+      duration: "1-3 days"
+      inputs:
+        - "classification_report"
+        - "goal_definition"
+        - "metabolic_baseline"
+      steps:
+        - id: "2.1"
+          name: "Geracao Paralela dos Planos"
+          description: >-
+            training-builder gera plano de treino consultando advisors (Israetel, Bompa, Glass, Jansen).
+            diet-builder gera plano nutricional consultando advisors (Norton, Israetel).
+            Ambos recebem os mesmos inputs do intake.
+          executors:
+            training: "training-builder + advisors (Israetel, Bompa, Glass, Jansen)"
+            nutrition: "diet-builder + advisors (Norton, Israetel)"
+        - id: "2.2"
+          name: "Sincronizacao Peri-Workout"
+          executor: "diet-builder"
+          dependency: "Both training_plan and diet_plan must be ready"
+          duration: "5-10 min"
+          description: >-
+            Sincronizar refeicao pre-treino (2-3h antes), pos-treino (within 2h),
+            carboidrato cycling com dias de treino pesado,
+            calorias de dia de treino (+200-400) vs descanso.
+          sync_points:
+            pre_workout_meal:
+              timing: "2-3h before training"
+              macros: "high carb, moderate protein, low fat"
+            post_workout_meal:
+              timing: "within 2h after training"
+              macros: "high carb, high protein, moderate fat"
+            training_day_calories:
+              adjustment: "+200-400 kcal vs rest day"
+            rest_day_calories:
+              adjustment: "-200-400 kcal vs training day"
+        - id: "2.3"
+          name: "Quality Check Integrado"
+          description: >-
+            Executar quality-checker em ambos os planos.
+            Validar consistencia entre treino e nutricao.
+            Verificar que recomendacoes nao se contradizem.
+        - id: "2.4"
+          name: "Revisao do Coach"
+          description: >-
+            Apresentar ambos os planos ao coach.
+            Coach revisa, ajusta e aprova.
+            Registrar modificacoes do coach.
+      outputs:
+        - "training_plan — Plano de treino completo"
+        - "diet_plan — Plano nutricional completo"
+        - "training_plan_pdf + diet_plan_pdf — Versoes para cliente"
+      checkpoint:
+        id: "CP-2"
+        name: "Protocol Complete Gate"
+        type: "blocking"
+        criteria:
+          - "training_plan aprovado pelo coach"
+          - "diet_plan aprovado pelo coach"
+          - "Peri-workout nutrition sincronizado com treino"
+          - "Quality check passed para ambos os planos"
+          - "PDFs gerados com visual profissional"
+        veto_conditions:
+          - "Coach reprovou um dos planos"
+          - "Quality check falhou"
+        on_pass: "Proceed to Phase 3"
+        on_fail: "Return to task with issues, fix and re-submit"
+      next: "phase-3"
+
+    # =====================================================
+    # PHASE 3: DELIVERY — Entrega ao Cliente
+    # =====================================================
+    - id: "phase-3"
+      name: "DELIVERY — Entrega ao Cliente"
+      agent: "automation-engineer"
+      support: "coach (para duvidas complexas)"
+      duration: "1 day"
+      inputs:
+        - "training_plan"
+        - "diet_plan"
+        - "training_plan_pdf"
+        - "diet_plan_pdf"
+      steps:
+        - id: "3.1"
+          name: "Preparacao do Material de Entrega"
+          executor: "automation-engineer"
+          duration: "10-15 min"
+          deliverables:
+            training_package:
+              - "Planilha de treino (PDF)"
+              - "Videos de referencia para cada exercicio"
+              - "Guia de aquecimento e cooldown"
+              - "Glossario (RIR, RPE, tempo, etc.)"
+            nutrition_package:
+              - "Plano alimentar (PDF)"
+              - "Lista de compras semanal"
+              - "Tabela de substituicoes"
+              - "Protocolo de suplementacao"
+              - "Guia de meal prep"
+            onboarding_package:
+              - "Instrucoes de uso da plataforma"
+              - "Como fazer check-in semanal"
+              - "Contatos de suporte"
+              - "FAQ com duvidas frequentes"
+        - id: "3.2"
+          name: "Envio via Canal Preferido"
+          executor: "automation-engineer"
+          timing: "Preferencialmente na segunda-feira de manha"
+          channels:
+            whatsapp:
+              - "Mensagem de saudacao personalizada"
+              - "PDFs de treino e dieta"
+              - "Link para videos de exercicios"
+              - "Instrucoes de check-in"
+            email:
+              - "Email profissional com todos os anexos"
+              - "Welcome kit digital"
+              - "Links uteis e FAQ"
+            app:
+              - "Push notification de novo plano disponivel"
+              - "Plano carregado no app"
+        - id: "3.3"
+          name: "Sessao de Onboarding (Opcional)"
+          description: >-
+            Se coach oferece sessao de onboarding: agendar call de 15-30min,
+            revisar plano com o cliente, responder duvidas, garantir que o
+            cliente entende cada exercicio, alinhar expectativas de resultado.
+        - id: "3.4"
+          name: "Ativar Tracking e Gamificacao"
+          executor: "automation-engineer"
+          actions:
+            - "Configurar scheduler de weekly-checkin"
+            - "Ativar gamification-engine para o cliente"
+            - "Enviar badge 'Plano Ativado'"
+            - "Configurar triggers de notificacao"
+          output: "tracking_activated"
+      outputs:
+        - "Material entregue ao cliente via canal configurado"
+        - "tracking_activated — Tracking e gamificacao ativados"
+      checkpoint:
+        id: "CP-3"
+        name: "Delivery Complete Gate"
+        type: "blocking"
+        criteria:
+          - "Planos entregues ao cliente via canal configurado"
+          - "Cliente confirmou recebimento"
+          - "Tracking automatizado ativado"
+          - "Gamificacao iniciada"
+          - "Proximo check-in agendado"
+        veto_conditions:
+          - "Cliente nao confirmou recebimento apos 48h"
+          - "Tracking nao ativou corretamente"
+        on_pass: "Proceed to Phase 4"
+        on_fail: "Re-send materials, verify channels"
+      next: "phase-4"
+
+    # =====================================================
+    # PHASE 4: TRACKING — Acompanhamento Semanal (RECORRENTE)
+    # =====================================================
+    - id: "phase-4"
+      name: "TRACKING — Acompanhamento Semanal"
+      type: "recurring"
+      agent: "progress-tracker"
+      trigger_agent: "automation-engineer (scheduler semanal)"
+      notification_agent: "automation-engineer"
+      task: "tasks/weekly-checkin.md (FC-TASK-004)"
+      duration: "Weekly cycle (ongoing)"
+      inputs:
+        - "Formulario de check-in semanal preenchido pelo cliente"
+      weekly_cycle:
+        sunday: "Enviar formulario de check-in"
+        monday_tuesday: "Aguardar resposta (timeout 48h)"
+        after_response:
+          - "Processar dados"
+          - "Analisar tendencias"
+          - "Gerar alertas"
+          - "Compilar report para coach"
+          - "Atualizar gamificacao"
+          - "Decisao: manter ou ajustar?"
+      steps:
+        - id: "4.1"
+          name: "Coleta de Dados Semanais"
+          data_required:
+            - "Peso atual (obrigatorio)"
+            - "Aderencia treino e dieta (obrigatorio)"
+            - "Bem-estar, sono, stress (obrigatorio)"
+          data_optional:
+            - "Fotos de progresso"
+            - "Medidas corporais"
+            - "Training log"
+        - id: "4.2"
+          name: "Analise de Tendencias"
+          metrics:
+            - "Media movel de peso (7 dias)"
+            - "Tendencia de aderencia (4 semanas)"
+            - "Recovery score composto"
+            - "Performance (se training log fornecido)"
+        - id: "4.3"
+          name: "Sistema de Alertas"
+          alert_levels:
+            red: "Acao imediata (perda rapida, recovery critico)"
+            yellow: "Atencao (plateau, aderencia caindo)"
+            green: "Informativo (PRs, milestones)"
+        - id: "4.4"
+          name: "Report do Coach"
+          contents:
+            - "Resumo executivo com status geral"
+            - "Metricas detalhadas com tendencias"
+            - "Comparativo de fotos (se disponivel)"
+            - "Recomendacao: manter ou ajustar"
+        - id: "4.5"
+          name: "Gamificacao"
+          actions:
+            - "Processar pontos do check-in"
+            - "Atualizar streaks"
+            - "Verificar achievements desbloqueados"
+            - "Atualizar leaderboard"
+      outputs:
+        - "weekly_report — Report do coach"
+        - "trend_analysis — Tendencias identificadas"
+        - "routing_decision — manter/ajustar/escalar"
+      routing:
+        maintain:
+          condition: "Sem alertas ou apenas verdes"
+          action: "Agendar proximo weekly-checkin"
+          next: "phase-4 (loop)"
+        adjust:
+          condition: "Alertas amarelos ou estagnacao"
+          action: "Trigger Phase 5 (ADJUSTMENT)"
+          next: "phase-5"
+        escalate:
+          condition: "Alertas vermelhos"
+          action: "Notificacao imediata ao coach"
+          next: "phase-5 (urgente)"
+        celebrate:
+          condition: "Milestone ou PR atingido"
+          action: "Enviar celebracao + gamification reward"
+          next: "phase-4 (loop) + Phase 6 integration"
+      checkpoint:
+        id: "CP-4"
+        name: "Weekly Check-in Gate"
+        type: "advisory"
+        recurring: true
+        criteria:
+          - "Check-in processado com sucesso"
+          - "Report do coach gerado e enviado"
+          - "Gamificacao atualizada"
+          - "Routing decision definido"
+        veto_conditions:
+          - "Check-in nao processado por erro tecnico"
+        on_maintain: "Loop back to Phase 4 next week"
+        on_adjust: "Proceed to Phase 5"
+        on_escalate: "Proceed to Phase 5 with urgency flag"
+      next: "phase-5 (condicional)"
+
+    # =====================================================
+    # PHASE 5: ADJUSTMENT — Ajuste de Protocolo (CONDICIONAL)
+    # =====================================================
+    - id: "phase-5"
+      name: "ADJUSTMENT — Ajuste de Protocolo"
+      type: "conditional"
+      agent: "training-builder + diet-builder"
+      advisors_consulted: ["Israetel", "Norton", "Bompa", "Glass"]
+      approval: "coach (human)"
+      task: "tasks/adjust-protocol.md (FC-TASK-005)"
+      duration: "1-2 days"
+      inputs:
+        - "trend_analysis from Phase 4"
+        - "Current training_plan and diet_plan"
+      activation_triggers:
+        - trigger: "Weight Plateau"
+          condition: "Peso estagnado 3+ semanas com aderencia > 80%"
+          urgency: "MEDIUM"
+        - trigger: "Strength Loss"
+          condition: "Regressao em compostos 2+ semanas"
+          urgency: "HIGH"
+        - trigger: "Adherence Decline"
+          condition: "Queda > 10% em 3 semanas"
+          urgency: "MEDIUM"
+        - trigger: "Recovery Compromised"
+          condition: "Recovery score < 5 por 2+ semanas"
+          urgency: "HIGH"
+        - trigger: "Phase Transition"
+          condition: "Mesociclo/fase completado"
+          urgency: "LOW"
+        - trigger: "Coach Request"
+          condition: "Coach solicita ajuste manualmente"
+          urgency: "VARIABLE"
+        - trigger: "Red Alert"
+          condition: "Qualquer alerta vermelho do check-in"
+          urgency: "CRITICAL"
+      steps:
+        - id: "5.1"
+          name: "Diagnostico"
+          description: "Analisar dados de tendencia, identificar tipo de problema/oportunidade, classificar urgencia"
+        - id: "5.2"
+          name: "Consulta aos Advisors"
+          description: >-
+            Treino: Israetel (volume), Glass (exercicios), Bompa (periodizacao).
+            Nutricao: Norton (macros, refeeds, diet breaks).
+        - id: "5.3"
+          name: "Compilar Sugestoes"
+          description: "Gerar adjustment report com justificativas. Priorizar ajustes por impacto."
+        - id: "5.4"
+          name: "Aprovacao do Coach"
+          description: "Coach revisa e aprova/modifica sugestoes. Registrar decisao."
+        - id: "5.5"
+          name: "Aplicar e Notificar"
+          description: "Atualizar planos. Notificar cliente com explicacao das mudancas."
+      outputs:
+        - "adjustment_report — Diagnostico e sugestoes"
+        - "updated_training_plan"
+        - "updated_diet_plan"
+        - "adjustment_history_entry"
+      checkpoint:
+        id: "CP-5"
+        name: "Adjustment Complete Gate"
+        type: "blocking"
+        criteria:
+          - "Ajustes aprovados pelo coach"
+          - "Planos atualizados e salvos"
+          - "Cliente notificado das mudancas"
+          - "Historico de ajuste registrado"
+        veto_conditions:
+          - "Coach nao aprovou os ajustes"
+          - "Cliente nao foi notificado"
+        on_pass: "Return to Phase 4 (tracking loop)"
+        on_rebuild: "Return to Phase 2 (new protocol from scratch)"
+      next: "phase-4 (loop back)"
+
+    # =====================================================
+    # PHASE 6: GAMIFICATION — Engajamento Continuo (INTEGRADO)
+    # =====================================================
+    - id: "phase-6"
+      name: "GAMIFICATION — Engajamento Continuo"
+      type: "integrated-continuous"
+      agent: "gamification-designer"
+      hooks_agent: "retention-engineer"
+      engine: "gamification-engine (tool)"
+      task: "tasks/setup-gamification.md (FC-TASK-007)"
+      duration: "Continuous (always active)"
+      mechanics:
+        points_and_xp:
+          - "Pontos por treino completado"
+          - "Pontos por aderencia a dieta"
+          - "Pontos por check-in"
+          - "Bonus por PRs e milestones"
+          - "XP acumulativo para subir de nivel"
+        streaks:
+          - "Training streak (dias consecutivos)"
+          - "Diet streak (aderencia > 80%)"
+          - "Check-in streak (semanas consecutivas)"
+          - "Streak freeze disponivel (1/semana)"
+        achievements:
+          total: "30+ badges"
+          rarities: ["common", "uncommon", "rare", "epic", "legendary"]
+          visibility: "Badges visiveis no perfil do cliente"
+        challenges:
+          - "Challenges individuais e em grupo"
+          - "Challenges sazonais (Summer Shred, New Year)"
+          - "Leaderboard semanal, mensal, all-time"
+        hook_model_loops:
+          - name: "Check-in de Treino (diario)"
+            cycle: "Trigger -> Action -> Variable Reward -> Investment"
+          - name: "Check-in de Dieta (diario)"
+            cycle: "Trigger -> Action -> Variable Reward -> Investment"
+          - name: "Check-in Semanal (semanal)"
+            cycle: "Trigger -> Action -> Variable Reward -> Investment"
+          - name: "Interacao Comunitaria (diario)"
+            cycle: "Trigger -> Action -> Variable Reward -> Investment"
+      checkpoint:
+        id: "CP-6"
+        name: "Gamification Health Check"
+        type: "advisory"
+        frequency: "monthly"
+        criteria:
+          - "Taxa de engajamento com gamificacao > 50%"
+          - "Streaks ativos para maioria dos clientes"
+          - "Challenges com participacao adequada"
+          - "Hook completion rate > 30%"
+        veto_conditions:
+          - "Engajamento com gamificacao < 20% por 2 meses consecutivos"
+        on_low_engagement: "Review and adjust mechanics"
+        on_high_engagement: "Add new features and challenges"
+
+    # =====================================================
+    # PHASE 7: RETENTION — Retencao e Fidelizacao (CONTINUO)
+    # =====================================================
+    - id: "phase-7"
+      name: "RETENTION — Retencao e Fidelizacao"
+      type: "continuous"
+      agent: "retention-engineer"
+      execution_agent: "automation-engineer"
+      duration: "Continuous (always active)"
+      strategies:
+        hook_model_engagement_loops:
+          - name: "Habito de Treino"
+            trigger_internal: "Horario do treino (habito formado)"
+            action: "Abrir plano, registrar treino"
+            variable_reward: "XP, badges, posicao no leaderboard"
+            investment: "Dados acumulados, historico, streak"
+          - name: "Comunidade"
+            trigger_external: "Notificacao de novo post/challenge"
+            trigger_internal: "Desejo de conexao"
+            action: "Participar, interagir, compartilhar"
+            variable_reward: "Reconhecimento social, badges sociais"
+            investment: "Reputacao, relacoes construidas"
+          - name: "Progresso"
+            trigger: "Check-in semanal ou notificacao de milestone"
+            action: "Ver report, comparar fotos, celebrar"
+            variable_reward: "Visualizar transformacao, badges de progresso"
+            investment: "Portfolio de progresso acumulado"
+        churn_prevention:
+          early_warning_signals:
+            - "Check-in missed por 2 semanas"
+            - "Aderencia < 50% por 3 semanas"
+            - "Sem interacao no grupo por 2 semanas"
+            - "Streak quebrado apos longo periodo"
+          intervention_protocol:
+            week_1_missed:
+              action: "Lembrete automatico carinhoso"
+              executor: "automation-engineer"
+            week_2_missed:
+              action: "Mensagem personalizada do coach"
+              executor: "coach (manual)"
+            week_3_missed:
+              action: "Call do coach para entender situacao"
+              executor: "coach (manual)"
+            week_4_missed:
+              action: "Oferta de pausa (freeze) ao inves de cancelamento"
+              executor: "coach (manual)"
+          re_engagement:
+            - "Welcome back badge ao retornar"
+            - "Plano atualizado sem custo adicional"
+            - "Desafio de re-engajamento de 7 dias"
+            - "Streak restart com bonus XP"
+        upsell_crosssell:
+          - "Competition prep para clientes avancados"
+          - "Produtos digitais (ebooks, cursos)"
+          - "Suplementos (e-commerce integrado)"
+          - "Planos premium com mais acompanhamento"
+          - "Consultoria de grupo com desconto"
+        referral_program:
+          reward_for_referrer:
+            - "Badge: Referral King"
+            - "500 XP bonus"
+            - "Desconto de 10% no proximo mes"
+          reward_for_referred:
+            - "Desconto de 10% no primeiro mes"
+            - "Badge: Indicado por Amigo"
+            - "Fast track no onboarding"
+          tracking:
+            - "Codigo unico por cliente"
+            - "Dashboard de indicacoes"
+            - "Metricas: indicacoes feitas, convertidas, valor gerado"
+      checkpoint:
+        id: "CP-7"
+        name: "Retention Health Check"
+        type: "advisory"
+        frequency: "monthly"
+        criteria:
+          - "Churn rate < 5% mensal"
+          - "NPS score > 50"
+          - "Referral rate > 10%"
+          - "Average lifetime > 6 months"
+          - "Engagement rate > 60%"
+        veto_conditions:
+          - "Churn rate > 10% por 2 meses consecutivos"
+          - "NPS score < 20"
+        on_healthy: "Continue current strategy"
+        on_warning: "Review and adjust retention tactics"
+        on_critical: "Emergency retention meeting with coach"
+
+  # =====================================================
+  # QUALITY GATES
+  # =====================================================
+  quality_gates:
+    - id: "QG-001"
+      name: "Intake to Protocol"
+      transition: "phase-1 -> phase-2"
+      criteria:
+        - "Client profile complete"
+        - "Classification and goals approved by coach"
+    - id: "QG-002"
+      name: "Protocol to Delivery"
+      transition: "phase-2 -> phase-3"
+      criteria:
+        - "Both plans coach-approved and quality-checked"
+    - id: "QG-003"
+      name: "Delivery to Tracking"
+      transition: "phase-3 -> phase-4"
+      criteria:
+        - "Client confirmed receipt, tracking activated"
+    - id: "QG-004"
+      name: "Tracking to Adjustment"
+      transition: "phase-4 -> phase-5 (conditional)"
+      criteria:
+        - "Adjustment trigger detected and validated"
+    - id: "QG-005"
+      name: "Adjustment back to Tracking"
+      transition: "phase-5 -> phase-4"
+      criteria:
+        - "Adjustments approved, applied, client notified"
+
+  # =====================================================
+  # CONFIGURATION
+  # =====================================================
+  configuration:
+    automation:
+      check_in_day: "sunday"
+      check_in_time: "08:00"
+      reminder_intervals: ["12h", "24h"]
+      report_delivery: "tuesday_morning"
+      gamification_update: "after_each_checkin"
+    thresholds:
+      adjustment_trigger_weeks: 3
+      plateau_definition_weeks: 3
+      adherence_warning_percent: 70
+      recovery_warning_score: 5
+      churn_warning_missed_checkins: 2
+    notifications:
+      coach_channel: ["email", "whatsapp"]
+      client_channel: ["whatsapp", "email"]
+      red_alert: "immediate_push"
+      yellow_alert: "include_in_report"
+      green_alert: "celebration_message"
+    gamification:
+      enabled: true
+      leaderboard: true
+      challenges: true
+      hooks: true
+      achievements: true
+      streaks: true
+
+  # =====================================================
+  # ERROR HANDLING
+  # =====================================================
+  error_handling:
+    phase_failure:
+      strategy: "retry + escalate_to_coach"
+      max_retries: 2
+      escalation: "After 2 retries, notify coach for manual intervention"
+    communication_failure:
+      strategy: "fallback_channel"
+      primary: "whatsapp"
+      fallback: "email"
+      last_resort: "Notify coach for direct contact"
+    data_loss:
+      strategy: "backup + recover"
+      backup_frequency: "after_each_checkin"
+      recovery: "Load from last backup"
+    client_unresponsive:
+      strategy: "escalating_outreach"
+      sequence: ["automated_reminder", "coach_message", "coach_call", "freeze_offer"]
+
+  # =====================================================
+  # ESCALATION
+  # =====================================================
+  escalation:
+    on_failure: "Retry phase (max 2), then escalate to coach for manual intervention"
+    on_timeout: "Send automated reminder, then escalate to coach if no response in 48h"
+    on_health_concern: "Immediate coach notification, pause workflow if necessary"
+
+  # =====================================================
+  # SUCCESS METRICS
+  # =====================================================
+  success_metrics:
+    client_satisfaction:
+      nps: "> 50"
+      retention_6_months: "> 70%"
+      referral_rate: "> 10%"
+    results:
+      goal_achievement_rate: "> 60% of clients achieve primary goal"
+      average_progress: "Measurable improvement every 4 weeks"
+    operational:
+      check_in_completion_rate: "> 80%"
+      coach_response_time: "< 24h for reports"
+      adjustment_turnaround: "< 48h from trigger to implementation"
+    engagement:
+      gamification_participation: "> 50% of clients"
+      streak_average: "> 14 days"
+      challenge_participation: "> 30% per challenge"
+
+  tags:
+    - "lifecycle"
+    - "client-journey"
+    - "end-to-end"
+    - "retention"
+    - "gamification"

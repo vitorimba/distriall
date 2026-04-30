@@ -1,0 +1,182 @@
+# =============================================================================
+# Workflow: ERP/Custom System Integration
+# Squad: squad-nf
+# Description: Integrar modulo NF em sistema customizado ou ERP existente
+# =============================================================================
+
+id: wf-erp-integration
+name: "ERP / Custom System NF Integration"
+version: "1.0.0"
+description: >
+  Pipeline para integrar emissao de NF-e em sistemas existentes.
+  Analisa o sistema alvo, projeta o modulo NF, gera schema de banco,
+  endpoints REST, service layer, webhooks e conecta ao provider SEFAZ.
+
+trigger:
+  - manual
+
+inputs:
+  - name: system_type
+    type: enum
+    values: [totvs, omie, bling, shopify, custom_nextjs_supabase, custom_other]
+    required: true
+  - name: system_url
+    type: string
+    required: false
+  - name: auth_method
+    type: enum
+    values: [api_key, oauth2, certificate, basic]
+    default: api_key
+  - name: nf_provider
+    type: enum
+    values: [focus_nfe, nfe_io, enotas, webmania, sefaz_direct]
+    default: focus_nfe
+  - name: features
+    type: array
+    items: [emit, cancel, consult, correct, manifest, webhook, danfe]
+    default: [emit, cancel, consult, webhook, danfe]
+
+states:
+  init:
+    description: "Validar inputs e preparar contexto de integracao"
+    task: setup-erp-integration
+    on_success: analyze-system
+    on_failure: failed
+    actions:
+      - validate_system_type
+      - check_provider_credentials
+      - load_integration_patterns
+
+  analyze-system:
+    description: "Analisar sistema alvo e identificar pontos de integracao"
+    task: analyze-target-system
+    on_success: design-module
+    on_failure: failed
+    actions:
+      - map_existing_entities  # orders, products, customers
+      - identify_hooks_triggers
+      - assess_auth_flow
+      - document_api_surface
+
+  design-module:
+    description: "Projetar modulo NF dentro do sistema"
+    task: design-nf-module
+    on_success: generate-schema
+    on_failure: failed
+    actions:
+      - design_entity_model
+      - design_state_machine
+      - design_error_handling
+      - design_retry_strategy
+      - produce_design_doc  # uses integration-design-tmpl.md
+
+  generate-schema:
+    description: "Gerar schema de banco de dados para NF"
+    task: generate-nf-schema
+    on_success: generate-endpoints
+    on_failure: failed
+    actions:
+      - generate_invoices_table
+      - generate_invoice_items_table
+      - generate_invoice_events_table
+      - generate_rls_policies
+      - generate_indexes
+      - produce_migration_file  # uses migration-tmpl.sql
+
+  generate-endpoints:
+    description: "Gerar endpoints REST/API para operacoes NF"
+    task: generate-nf-endpoints
+    on_success: generate-service
+    on_failure: failed
+    actions:
+      - generate_emit_endpoint
+      - generate_cancel_endpoint
+      - generate_consult_endpoint
+      - generate_correct_endpoint
+      - generate_manifest_endpoint
+      - generate_openapi_spec
+
+  generate-service:
+    description: "Gerar service layer com logica de negocio"
+    task: generate-nf-service
+    on_success: generate-webhooks
+    on_failure: failed
+    actions:
+      - generate_nf_service       # uses nf-module-tmpl.ts
+      - generate_tax_calculator
+      - generate_xml_builder
+      - generate_provider_adapter
+
+  generate-webhooks:
+    description: "Gerar webhooks para eventos SEFAZ"
+    task: generate-nf-webhooks
+    on_success: connect-provider
+    on_failure: failed
+    actions:
+      - generate_webhook_receiver
+      - generate_event_handlers
+      - generate_retry_queue
+      - configure_webhook_url
+
+  connect-provider:
+    description: "Conectar ao provider NF-e (Focus NFe, NFe.io, etc.)"
+    task: connect-nf-provider
+    on_success: test
+    on_failure: failed
+    actions:
+      - configure_provider_credentials
+      - setup_certificate
+      - test_provider_connection
+      - configure_environment  # homologacao/producao
+
+  test:
+    description: "Testar integracao end-to-end em homologacao"
+    task: connect-sefaz
+    on_success: complete
+    on_failure: failed
+    actions:
+      - emit_test_nfe
+      - cancel_test_nfe
+      - consult_test_nfe
+      - test_webhook_reception
+      - validate_danfe_generation
+      - run_integration_tests
+
+  complete:
+    description: "Integracao concluida"
+    task: map-erp-fields
+    terminal: true
+    actions:
+      - generate_integration_report
+      - generate_go_live_checklist
+      - notify_team
+
+  failed:
+    description: "Integracao falhou"
+    task: generate-nf-ui
+    terminal: true
+    actions:
+      - log_error
+      - document_failure_point
+      - suggest_recovery_steps
+
+outputs:
+  - name: integration_package
+    type: object
+    fields:
+      - design_doc
+      - migration_sql
+      - service_files
+      - endpoint_files
+      - webhook_handlers
+      - openapi_spec
+      - test_results
+  - name: go_live_checklist
+    type: object
+    description: "Checklist para ir a producao"
+
+config:
+  test_environment: homologation
+  provider_timeout_ms: 30000
+  webhook_retry_max: 5
+  webhook_retry_delay_ms: 5000

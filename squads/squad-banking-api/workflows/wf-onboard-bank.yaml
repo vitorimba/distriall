@@ -1,0 +1,94 @@
+workflow:
+  id: wf-onboard-bank
+  name: "Onboard New Bank"
+  version: "1.0.0"
+  type: integration
+  orchestrator: banking-chief
+  description: >
+    Pipeline completo para integrar um novo banco.
+    4 fases: auth → endpoints → sandbox test → production deploy.
+
+  inputs:
+    - field: bank
+      type: string
+      required: true
+      enum: [inter, sicoob, stone, xp]
+
+    - field: target_environment
+      type: string
+      required: false
+      default: sandbox
+
+  state_machine:
+    states: [init, auth_setup, endpoint_mapping, sandbox_test, production_deploy, complete, failed]
+    transitions:
+      - {trigger: start, source: init, dest: auth_setup}
+      - {trigger: auth_complete, source: auth_setup, dest: endpoint_mapping}
+      - {trigger: auth_failed, source: auth_setup, dest: failed}
+      - {trigger: mapping_complete, source: endpoint_mapping, dest: sandbox_test}
+      - {trigger: test_complete, source: sandbox_test, dest: production_deploy}
+      - {trigger: test_failed, source: sandbox_test, dest: auth_setup}
+      - {trigger: deploy_complete, source: production_deploy, dest: complete}
+      - {trigger: deploy_failed, source: production_deploy, dest: failed}
+
+  sequence:
+    - step: phase-1
+      id: auth_setup
+      phase: 1
+      phase_name: "Auth Setup"
+      agent: auth-architect
+      task_ref: setup-bank-auth
+      checkpoint:
+        criteria: "Token obtido com sucesso"
+        blocking: true
+      veto:
+        - "Credenciais hardcoded → BLOCK"
+
+    - step: phase-2
+      id: endpoint_mapping
+      phase: 2
+      phase_name: "Endpoint Discovery"
+      agent: "{bank}-specialist"
+      action: "Listar endpoints disponíveis para o banco, identificar escopos necessários"
+      checkpoint:
+        criteria: "Endpoints mapeados e escopos configurados"
+        blocking: true
+
+    - step: phase-3
+      id: sandbox_test
+      phase: 3
+      phase_name: "Sandbox Test"
+      agent: "{bank}-specialist"
+      action: "Testar 3 operações core no sandbox: saldo, extrato, pix/cobrança"
+      checkpoint:
+        criteria: "3 operações retornam 200 OK no sandbox"
+        blocking: true
+      veto:
+        - "Ir para produção sem sandbox test → BLOCK"
+
+    - step: phase-4
+      id: production_deploy
+      phase: 4
+      phase_name: "Production Deploy"
+      agent: "{bank}-specialist"
+      action: "Migrar credenciais para produção, testar com dados reais, ativar monitoramento"
+      checkpoint:
+        criteria: "Operação funcional em produção + monitoramento ativo"
+        blocking: true
+      human_checkpoint: "Credenciais de produção geradas pelo humano"
+
+  quality_gates:
+    - id: QG-ONBOARD-001
+      phase: auth_setup
+      check: "Token válido obtido"
+      blocking: true
+
+    - id: QG-ONBOARD-002
+      phase: sandbox_test
+      check: "3 operações core retornam 200 OK"
+      blocking: true
+
+    - id: QG-ONBOARD-003
+      phase: production_deploy
+      check: "Checklists pre-production + security aprovados"
+      blocking: true

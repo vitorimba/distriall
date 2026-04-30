@@ -1,0 +1,344 @@
+# Supplement Protocols — FitCoach Squad
+# Guia de suplementacao baseado em evidencia cientifica
+# Version: 1.0.0 | Updated: 2026-03-13
+
+# Tiers baseados em nivel de evidencia:
+#   Tier A — Forte evidencia (multiplos RCTs, meta-analises)
+#   Tier B — Evidencia moderada (RCTs menores, resultados consistentes)
+#   Tier C — Evidencia limitada (estudos preliminares, resultados mistos)
+
+# ===========================================================================
+# TIER A — FORTE EVIDENCIA
+# ===========================================================================
+
+tier_a:
+  description: "Suplementos com evidência sólida de eficácia. Recomendados para maioria dos atletas."
+
+  creatine_monohydrate:
+    name: "Creatina Monohidratada"
+    category: performance
+    evidence_level: "A+"
+    mechanism: "Regenera ATP via sistema fosfocreatina. Aumenta PCr intramuscular."
+    benefits:
+      - "Aumento de força (5-10%)"
+      - "Ganho de massa magra (+1-2 kg em 4-12 semanas)"
+      - "Melhora de performance em exercícios de alta intensidade"
+      - "Efeitos neuroprotetores (emergente)"
+    dosage:
+      loading: "20g/dia divididos em 4 doses x 5-7 dias (opcional)"
+      maintenance: "3-5g/dia (5g para >90kg)"
+      timing: "Qualquer horário. Consistência > timing."
+    form: "Monohidratada (Creapure). Outras formas não são superiores."
+    side_effects:
+      - "Retenção hídrica intramuscular (+1-3kg nas primeiras semanas)"
+      - "Não causa dano renal em indivíduos saudáveis"
+    contraindications:
+      - "Doença renal pré-existente (consultar nefrologista)"
+    interactions: []
+    source: "Kreider RB et al. JISSN. 2017;14:18 (position stand)"
+    cost_benefit: "Excelente — barato e altamente eficaz"
+
+  caffeine:
+    name: "Cafeína"
+    category: performance
+    evidence_level: "A+"
+    mechanism: "Antagonista de adenosina. Aumenta alerta, reduz percepção de esforço."
+    benefits:
+      - "Melhora de performance aeróbia e anaeróbia (3-5%)"
+      - "Aumento de força e potência"
+      - "Reduz percepção de esforço (RPE)"
+      - "Leve efeito termogênico"
+    dosage:
+      performance: "3-6 mg/kg, 30-60 min antes do treino"
+      max_daily: "400 mg/dia (recomendação FDA)"
+      tolerance: "Ciclagem 2 semanas off a cada 8-12 semanas para resensibilizar"
+    timing: "30-60 min pré-treino. Evitar após 14h para não afetar sono."
+    forms: "Cápsula anidra (mais precisa), café (variação de dose), pré-treino"
+    side_effects:
+      - "Ansiedade, insônia (dose-dependente)"
+      - "Taquicardia em sensíveis"
+      - "Dependência e tolerância"
+    contraindications:
+      - "Arritmias cardíacas"
+      - "Transtorno de ansiedade severo"
+      - "Gestantes (limitar a 200mg/dia)"
+    interactions:
+      - "Efedrina — risco cardiovascular (PROIBIDO)"
+      - "Adenosina (medicamento) — anula efeito"
+    source: "Guest NS et al. JISSN. 2021;18:1"
+    cost_benefit: "Excelente — muito barato e eficaz"
+
+  whey_protein:
+    name: "Whey Protein"
+    category: nutrition
+    evidence_level: "A"
+    mechanism: "Proteína de rápida absorção, rica em leucina (trigger de MPS)."
+    benefits:
+      - "Conveniência para atingir meta proteica"
+      - "Rápida absorção pós-treino"
+      - "Alto teor de leucina (~11%)"
+      - "Pode auxiliar em saciedade"
+    dosage:
+      per_serving: "25-40g (depende da meta diária)"
+      daily: "1-3 scoops conforme necessidade para completar proteína"
+    forms:
+      concentrate: "70-80% proteína. Mais lactose. Mais barato."
+      isolate: "90%+ proteína. Menos lactose. Melhor para intolerantes."
+      hydrolyzed: "Pré-digerido. Absorção marginalmente mais rápida. Custo alto."
+    timing: "Pós-treino ideal, mas qualquer horário serve para atingir meta"
+    side_effects:
+      - "Desconforto GI em intolerantes à lactose (usar isolado)"
+    contraindications:
+      - "Alergia à proteína do leite"
+    source: "Morton RW et al. Br J Sports Med. 2018;52(6):376-384"
+    cost_benefit: "Bom — custo por grama de proteína competitivo vs comida"
+
+  omega_3:
+    name: "Ômega-3 (EPA/DHA)"
+    category: health
+    evidence_level: "A"
+    mechanism: "Ácidos graxos essenciais. Anti-inflamatório. Integridade de membrana celular."
+    benefits:
+      - "Redução de inflamação sistêmica"
+      - "Saúde cardiovascular"
+      - "Pode auxiliar em recuperação muscular"
+      - "Saúde cerebral e cognitiva"
+      - "Melhora de perfil lipídico (triglicerídeos)"
+    dosage:
+      combined_epa_dha: "2-3g/dia de EPA+DHA combinados"
+      ratio: "EPA:DHA 2:1 para inflamação, 1:1 para saúde geral"
+    timing: "Com refeição gordurosa para absorção"
+    forms: "Óleo de peixe (triglicerídeo > éster etílico), óleo de krill, algas (veganos)"
+    side_effects:
+      - "Eructação com sabor de peixe (reduzir refrigerando cápsulas)"
+      - "Anticoagulante leve em doses altas"
+    contraindications:
+      - "Alergia a frutos do mar (usar forma de algas)"
+      - "Anticoagulantes (consultar médico se >3g/dia)"
+    source: "Philpott JD et al. Eur J Sport Sci. 2019;19(7):886-896"
+    cost_benefit: "Bom — essencial, difícil obter quantidade suficiente via dieta"
+
+# ===========================================================================
+# TIER B — EVIDENCIA MODERADA
+# ===========================================================================
+
+tier_b:
+  description: "Suplementos com evidência promissora. Benefícios consistentes em estudos, mas menos robustos que Tier A."
+
+  beta_alanine:
+    name: "Beta-Alanina"
+    category: performance
+    evidence_level: "B+"
+    mechanism: "Precursor de carnosina intramuscular. Tampona H+ (buffer de acidez)."
+    benefits:
+      - "Melhora performance em exercícios de 1-4 minutos"
+      - "Reduz fadiga em séries de alto rep (15-30 reps)"
+      - "Pode complementar creatina"
+    dosage:
+      daily: "3.2-6.4g/dia divididos em doses de 0.8-1.6g"
+      loading: "4 semanas para saturação de carnosina"
+    timing: "Dividir ao longo do dia (não precisa ser pré-treino)"
+    side_effects:
+      - "Parestesia (formigamento) — inofensivo, dose-dependente"
+    contraindications: []
+    source: "Trexler ET et al. JISSN. 2015;12:30"
+    note: "Mais útil para exercícios com componente glicolítico (supersets, dropsets, alto rep)"
+
+  citrulline_malate:
+    name: "Citrulline Malate"
+    category: performance
+    evidence_level: "B+"
+    mechanism: "Precursor de arginina → NO (óxido nítrico). Melhora fluxo sanguíneo e clearance de amônia."
+    benefits:
+      - "Aumento de reps até falha (+1-3 reps)"
+      - "Melhora de pump/vasodilatação"
+      - "Redução de dor muscular pós-treino"
+    dosage:
+      citrulline_malate: "6-8g, 30-60 min pré-treino"
+      l_citrulline: "3-5g (se forma pura sem malato)"
+    timing: "30-60 min pré-treino"
+    side_effects:
+      - "Desconforto GI em doses altas em jejum"
+    contraindications:
+      - "Uso de PDE5 inhibitors (sildenafil) — potencializa hipotensão"
+    source: "Trexler ET et al. J Strength Cond Res. 2019;33(5)"
+
+  vitamin_d:
+    name: "Vitamina D3"
+    category: health
+    evidence_level: "B+"
+    mechanism: "Pró-hormônio. Regula cálcio, imunidade, expressão gênica, testosterona."
+    benefits:
+      - "Saúde óssea e muscular"
+      - "Imunidade"
+      - "Pode otimizar testosterona quando níveis estão baixos"
+      - "Redução de risco de lesão"
+    dosage:
+      maintenance: "2000-4000 UI/dia"
+      deficiency: "5000-10000 UI/dia por 8-12 semanas (com acompanhamento de 25-OH-D)"
+      optimal_range: "40-60 ng/mL no sangue"
+    timing: "Com refeição gordurosa"
+    forms: "D3 (colecalciferol) > D2 (ergocalciferol)"
+    side_effects:
+      - "Toxicidade em doses >10000 UI/dia crônicas (hipercalcemia)"
+    contraindications:
+      - "Hipercalcemia"
+      - "Sarcoidose"
+    interactions:
+      - "Vitamina K2 — sinergia (direciona cálcio para ossos)"
+    source: "Chiang CM et al. Nutrients. 2017;9(7):659"
+    note: "Maioria da população brasileira tem níveis subótimos. Dosar 25-OH-D no sangue."
+
+  magnesium:
+    name: "Magnésio"
+    category: health
+    evidence_level: "B"
+    mechanism: "Cofator em 300+ reações enzimáticas. Crítico para contração muscular e sono."
+    benefits:
+      - "Qualidade do sono"
+      - "Redução de cãibras"
+      - "Recuperação muscular"
+      - "Pode melhorar performance quando há deficiência"
+    dosage:
+      daily: "200-400mg de magnésio elementar"
+    forms:
+      glycinate: "Melhor para sono e absorção"
+      citrate: "Boa absorção. Pode amolecer fezes."
+      oxide: "Baixa absorção. Evitar."
+      threonate: "Potencial neurológico (Magtein). Mais caro."
+    timing: "Noite (30-60 min antes de dormir) para efeito no sono"
+    side_effects:
+      - "Diarreia em doses altas (especialmente citrato e óxido)"
+    contraindications:
+      - "Insuficiência renal severa"
+    source: "Zhang Y et al. Eur J Clin Nutr. 2017;71(2):280-286"
+
+# ===========================================================================
+# TIER C — EVIDENCIA LIMITADA
+# ===========================================================================
+
+tier_c:
+  description: "Suplementos com evidência preliminar. Podem ter nicho específico, mas não recomendados universalmente."
+
+  hmb:
+    name: "HMB (Beta-Hidroxi Beta-Metilbutirato)"
+    category: performance
+    evidence_level: "C+"
+    mechanism: "Metabólito da leucina. Anti-catabólico."
+    benefits:
+      - "Pode reduzir catabolismo em déficits calóricos extremos"
+      - "Possível benefício para idosos e iniciantes"
+    dosage:
+      daily: "3g/dia divididos em 3 doses"
+      form: "HMB-FA (free acid) pode ser superior a HMB-Ca"
+    when_useful:
+      - "Prep de competição com déficit extremo"
+      - "Idosos em risco de sarcopenia"
+      - "Pós-cirúrgico / imobilização"
+    when_not_useful:
+      - "Atletas intermediários/avançados em manutenção ou bulk"
+    source: "Wilkinson DJ et al. J Cachexia Sarcopenia Muscle. 2018;9(5):780-794"
+    verdict: "Evidência de estudos positivos é controversa (conflitos de interesse)."
+
+  glutamine:
+    name: "L-Glutamina"
+    category: recovery
+    evidence_level: "C"
+    mechanism: "Aminoácido condicionalmente essencial. Combustível de enterócitos e linfócitos."
+    benefits:
+      - "Pode melhorar saúde intestinal (gut barrier)"
+      - "Possível redução de infecções respiratórias em atletas de endurance"
+    dosage:
+      daily: "5-10g/dia"
+    when_useful:
+      - "Atletas de endurance com alto volume"
+      - "Problemas intestinais (leaky gut)"
+      - "Imunossupressão por overtraining"
+    when_not_useful:
+      - "Hipertrofia — proteína suficiente já fornece glutamina"
+      - "Atletas de musculação em geral"
+    source: "Gleeson M. J Nutr. 2008;138(10):2045S-2049S"
+    verdict: "Corpo produz glutamina endogenamente. Suplementação tem benefício marginal para atletas de musculação."
+
+  bcaas:
+    name: "BCAAs (Aminoácidos de Cadeia Ramificada)"
+    category: recovery
+    evidence_level: "C"
+    mechanism: "Leucina + Isoleucina + Valina. Leucina é trigger de MPS via mTOR."
+    benefits:
+      - "Marginal se proteína total já é adequada"
+      - "Possível uso em treino em jejum (substituído por EAAs)"
+    dosage:
+      daily: "5-10g pré ou intra-treino"
+      ratio: "2:1:1 (Leucina:Isoleucina:Valina)"
+    when_useful:
+      - "Treino em jejum (mas EAAs são superiores)"
+      - "Proteína total insuficiente na dieta"
+    when_not_useful:
+      - "Atletas com proteína adequada (>1.6 g/kg)"
+      - "Já toma whey — BCAAs são redundantes"
+    source: "Wolfe RR. JISSN. 2017;14:30"
+    verdict: "BCAAs são inferiores a EAAs e desnecessários com proteína adequada. Dinheiro melhor gasto em whey."
+
+  ashwagandha:
+    name: "Ashwagandha (KSM-66)"
+    category: adaptogen
+    evidence_level: "C+"
+    mechanism: "Adaptógeno. Modula cortisol via eixo HPA."
+    benefits:
+      - "Redução de cortisol (14-32% em estudos)"
+      - "Possível aumento de testosterona (10-15% em deficientes)"
+      - "Melhora de ansiedade e qualidade do sono"
+    dosage:
+      daily: "300-600mg de extrato KSM-66"
+    timing: "Manhã para energia, noite para sono (ou dividir)"
+    side_effects:
+      - "Desconforto GI em alguns indivíduos"
+      - "Pode afetar tireoide (aumentar T4)"
+    contraindications:
+      - "Hipertireoidismo"
+      - "Gravidez"
+      - "Doenças autoimunes"
+    source: "Lopresti AL et al. J Clin Med. 2019;8(8):1228"
+    verdict: "Promissor para stress e cortisol. Mais estudos necessários para performance."
+
+# ===========================================================================
+# STACK RECOMMENDATIONS
+# ===========================================================================
+
+stacks:
+  essential:
+    name: "Stack Essencial (todos os clientes)"
+    supplements:
+      - "Creatina Monohidratada 5g/dia"
+      - "Whey Protein (conforme necessidade)"
+      - "Vitamina D3 2000-4000 UI/dia"
+    monthly_cost_brl: "~R$ 100-150"
+
+  performance:
+    name: "Stack Performance (atletas intermediários+)"
+    supplements:
+      - "Stack Essencial +"
+      - "Cafeína 3-6mg/kg pré-treino"
+      - "Citrulline Malate 6-8g pré-treino"
+      - "Omega-3 2-3g EPA+DHA"
+    monthly_cost_brl: "~R$ 200-300"
+
+  advanced:
+    name: "Stack Avançado (competidores)"
+    supplements:
+      - "Stack Performance +"
+      - "Beta-Alanina 3.2g/dia"
+      - "Magnésio Bisglicinato 200-400mg noite"
+      - "Multivitamínico de qualidade"
+    monthly_cost_brl: "~R$ 350-500"
+
+  cutting:
+    name: "Stack Cutting"
+    supplements:
+      - "Creatina 5g/dia (manter sempre)"
+      - "Whey Isolado (alta proteína, baixa caloria)"
+      - "Cafeína 4-6mg/kg (performance + termogênico leve)"
+      - "Omega-3 3g EPA+DHA (anti-inflamatório)"
+      - "Vitamina D3 4000 UI/dia"
+    notes: "NÃO cortar creatina em cutting. Retenção é intramuscular, não subcutânea."

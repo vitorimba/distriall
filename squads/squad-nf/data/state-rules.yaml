@@ -1,0 +1,239 @@
+# =============================================================================
+# State Rules — ICMS by State
+# Squad: squad-nf
+# Coverage: SP, MG, RJ, RS, BA, PR
+# Structure: state, icms_internal_rate, st_rules, benefits, notes
+# =============================================================================
+
+state_rules:
+  # ---------------------------------------------------------------------------
+  # SAO PAULO (SP)
+  # ---------------------------------------------------------------------------
+  - state: "SP"
+    uf_code: 35
+    icms_internal_rate: 18
+    icms_rates:
+      default: 18
+      essential_goods: 18    # Alimentos, higiene (mantidos em 18%)
+      superfluous: 25        # Bebidas alcoolicas, fumo, armas, perfumaria
+      reduced_7: 7           # Insumos agropecuarios, maquinas industriais
+      reduced_12: 12         # Transporte, comunicacao (alguns servicos)
+      exempt_items:
+        - "Hortifrutigranjeiros (Anexo I RICMS)"
+        - "Medicamentos (lista especifica)"
+        - "Insumos agropecuarios (art. 41 Anexo I)"
+    st_rules:
+      description: "SP possui lista extensa de produtos com ST"
+      mva_update: "Portaria CAT atualiza MVAs periodicamente"
+      key_categories:
+        - "Bebidas (Protocolo ICMS 11/91)"
+        - "Autopecas (Protocolo ICMS 97/10)"
+        - "Cosmeticos (Protocolo ICMS 104/12)"
+        - "Medicamentos (Convenio ICMS 76/94)"
+        - "Materiais de construcao"
+        - "Eletroeletronicos"
+      iva_st_adjustment: true  # IVA-ST Ajustado para operacoes interestaduais
+    benefits:
+      - name: "Reducao BC — Maquinas industriais"
+        type: "reducao_base"
+        percentage: 51.11
+        legislation: "Art. 12 Anexo II RICMS/SP"
+      - name: "Credito outorgado — Transporte"
+        type: "credito_outorgado"
+        percentage: 20
+        legislation: "Art. 11 Anexo III RICMS/SP"
+    gia_required: true
+    gia_deadline: "Dia 15-20 conforme ultimo digito CNPJ"
+    notes: "Maior arrecadacao ICMS do pais. RICMS/SP (Decreto 45.490/2000)."
+
+  # ---------------------------------------------------------------------------
+  # MINAS GERAIS (MG)
+  # ---------------------------------------------------------------------------
+  - state: "MG"
+    uf_code: 31
+    icms_internal_rate: 18
+    icms_rates:
+      default: 18
+      essential_goods: 18
+      superfluous: 25
+      reduced_7: 7
+      reduced_12: 12
+      energy: 30              # Energia eletrica acima de faixa
+      exempt_items:
+        - "Cesta basica (Convenio ICMS 128/94)"
+        - "Medicamentos (itens especificos)"
+    st_rules:
+      description: "MG adota ST com lista propria e protocolos interestaduais"
+      key_categories:
+        - "Bebidas"
+        - "Cosmeticos e perfumaria"
+        - "Autopecas"
+        - "Material de construcao"
+        - "Eletroeletronicos"
+      mva_update: "Resolucao SEF/MG"
+    benefits:
+      - name: "Credito presumido — Industria mineira"
+        type: "credito_presumido"
+        legislation: "RICMS/MG Anexo XII"
+      - name: "Tratamento Tributario Setorial (TTS)"
+        type: "regime_especial"
+        legislation: "Decreto 48.589/2023"
+    gia_required: false
+    dapi_required: true
+    dapi_deadline: "Dia 09 do mes seguinte"
+    notes: "RICMS/MG (Decreto 48.589/2023 — novo regulamento)."
+
+  # ---------------------------------------------------------------------------
+  # RIO DE JANEIRO (RJ)
+  # ---------------------------------------------------------------------------
+  - state: "RJ"
+    uf_code: 33
+    icms_internal_rate: 20
+    icms_rates:
+      default: 20             # Aumentou de 18% para 20% (FECP incluso)
+      fecp: 2                 # Fundo de Combate a Pobreza (incluso nos 20%)
+      superfluous: 27         # 25% + 2% FECP
+      reduced_12: 12
+      energy: 32              # Energia acima de 300kWh
+      exempt_items:
+        - "Cesta basica (itens especificos)"
+    st_rules:
+      description: "RJ aplica ST + FECP sobre MVA"
+      key_categories:
+        - "Bebidas"
+        - "Cosmeticos"
+        - "Material de construcao"
+        - "Autopecas"
+      fecp_st: true           # FECP incide tambem na ST
+    benefits:
+      - name: "RIOLOG — Regime especial industria"
+        type: "regime_especial"
+        legislation: "Decreto 44.498/2013"
+      - name: "Lei de Incentivos Fiscais"
+        type: "reducao_base"
+        legislation: "Lei 6.979/2015"
+    gia_required: false
+    gia_icms_required: true
+    notes: "Aliquota interna 20% (18% + 2% FECP). RICMS/RJ (Decreto 27.427/2000)."
+
+  # ---------------------------------------------------------------------------
+  # RIO GRANDE DO SUL (RS)
+  # ---------------------------------------------------------------------------
+  - state: "RS"
+    uf_code: 43
+    icms_internal_rate: 17
+    icms_rates:
+      default: 17
+      essential_goods: 12     # Cesta basica, medicamentos
+      superfluous: 25         # Bebidas, fumo, armas, cosmeticos
+      reduced_12: 12
+      energy: 30
+      exempt_items:
+        - "Cesta basica (Decreto 37.699/97, Livro I, Art. 23)"
+        - "Hortifrutigranjeiros"
+    st_rules:
+      description: "RS usa ST com MVAs proprias e adesao a protocolos"
+      key_categories:
+        - "Bebidas"
+        - "Cosmeticos"
+        - "Autopecas"
+        - "Material de construcao"
+        - "Medicamentos"
+    benefits:
+      - name: "Fundopem/RS — Investimento industrial"
+        type: "financiamento_imposto"
+        legislation: "Lei 11.916/2003"
+      - name: "Reducao BC cesta basica"
+        type: "reducao_base"
+        percentage: 41.18
+        legislation: "Livro I, Art. 23 RICMS/RS"
+    gia_required: true
+    gia_deadline: "Dia 12 do mes seguinte"
+    notes: "Aliquota 17% (reduzida de 18% em 2022). RICMS/RS (Decreto 37.699/97)."
+
+  # ---------------------------------------------------------------------------
+  # BAHIA (BA)
+  # ---------------------------------------------------------------------------
+  - state: "BA"
+    uf_code: 29
+    icms_internal_rate: 20.5
+    icms_rates:
+      default: 20.5           # 19% + 1.5% FCEP (2024)
+      fcep: 1.5               # Fundo de Combate a Pobreza
+      essential_goods: 12     # Cesta basica
+      superfluous: 28         # 25% + 3% FCEP
+      reduced_7: 7
+      exempt_items:
+        - "Cesta basica (itens listados no RICMS/BA)"
+    st_rules:
+      description: "BA aplica ST com FCEP adicional"
+      key_categories:
+        - "Bebidas"
+        - "Combustiveis"
+        - "Cosmeticos"
+        - "Farinha de trigo"
+      fcep_st: true
+    benefits:
+      - name: "DESENVOLVE — Programa de desenvolvimento"
+        type: "financiamento_imposto"
+        legislation: "Decreto 8.205/2002"
+      - name: "Isencao — Cesta basica"
+        type: "isencao"
+        legislation: "RICMS/BA Art. 14"
+    gia_required: false
+    dma_required: true         # Declaracao e Apuracao Mensal
+    notes: "Aliquota 20.5% (19% + 1.5% FCEP). RICMS/BA (Decreto 13.780/2012)."
+
+  # ---------------------------------------------------------------------------
+  # PARANA (PR)
+  # ---------------------------------------------------------------------------
+  - state: "PR"
+    uf_code: 41
+    icms_internal_rate: 19.5
+    icms_rates:
+      default: 19.5           # 19% + 0.5% FECOP
+      fecop: 0.5              # Fundo Estadual de Combate a Pobreza
+      essential_goods: 12     # Cesta basica
+      superfluous: 27         # 25% + 2% FECOP
+      reduced_7: 7
+      reduced_12: 12
+      exempt_items:
+        - "Cesta basica (RICMS/PR, Anexo VIII)"
+        - "Hortifrutigranjeiros"
+    st_rules:
+      description: "PR aplica ST conforme Anexo X do RICMS"
+      key_categories:
+        - "Bebidas"
+        - "Cosmeticos"
+        - "Autopecas"
+        - "Material de construcao"
+        - "Eletroeletronicos"
+    benefits:
+      - name: "Bom Emprego — Incentivo industrial"
+        type: "financiamento_imposto"
+        legislation: "Lei 14.895/2005"
+      - name: "Reducao BC — Cesta basica"
+        type: "reducao_base"
+        percentage: 41.18
+        legislation: "RICMS/PR, Anexo VIII"
+    gia_required: true
+    gia_deadline: "Dia 12 do mes seguinte"
+    notes: "Aliquota 19.5% (19% + 0.5% FECOP, 2024). RICMS/PR (Decreto 7.871/2017)."
+
+# =============================================================================
+# Aliquotas Interestaduais (fixas, definidas pelo Senado)
+# =============================================================================
+interstate_rates:
+  - from_region: "Sul/Sudeste (exceto ES)"
+    to_region: "Norte/Nordeste/Centro-Oeste/ES"
+    rate: 7
+  - from_region: "Norte/Nordeste/Centro-Oeste/ES"
+    to_region: "Sul/Sudeste (exceto ES)"
+    rate: 12
+  - from_region: "Mesma regiao"
+    to_region: "Mesma regiao"
+    rate: 12
+  - from_region: "Qualquer"
+    to_region: "Qualquer (produto importado)"
+    rate: 4
+    note: "Resolucao 13/2012 — produtos importados ou com conteudo de importacao > 40%"

@@ -1,0 +1,334 @@
+##############################################################################
+# Squad Gamification — Configuration
+# Version: 1.0.0
+# Framework: Synkra AIOX v2.0
+##############################################################################
+
+squad:
+  id: squad-gamification
+  name: "Gamification Squad"
+  version: "1.0.0"
+  description: >
+    Squad especializado em gamificação de sistemas, aplicativos e ambientes
+    corporativos. Combina os frameworks mais relevantes da indústria —
+    Octalysis, B=MAP, Game Thinking, Hooked Model, HEXAD, 6D Framework,
+    Gamification of Learning e 4 Keys to Fun — em um sistema orquestrado
+    de 9 agentes com autoridade delegada.
+  domain: gamification
+  category: engagement
+  maturity: stable
+  created: "2026-03-14"
+  updated: "2026-03-14"
+
+##############################################################################
+# Agents
+##############################################################################
+agents:
+  - id: gamification-chief
+    role: orchestrator
+    persona: "Chief Gamification Officer"
+    description: "Orquestra todos os agentes, decide sequência de execução, resolve conflitos entre frameworks"
+    authority: full
+    delegates_to:
+      - motivation-analyst
+      - behavior-architect
+      - experience-designer
+      - engagement-engineer
+      - player-profiler
+      - enterprise-strategist
+      - learning-designer
+      - emotion-designer
+
+  - id: motivation-analyst
+    role: specialist
+    persona: "Yu-kai Chou"
+    mind: minds/yu-kai-chou
+    framework: "Octalysis"
+    description: "Analisa motivações humanas usando os 8 Core Drives do Octalysis Framework"
+    expertise:
+      - intrinsic-motivation
+      - extrinsic-motivation
+      - core-drives-analysis
+      - white-hat-vs-black-hat
+      - motivation-audit
+
+  - id: behavior-architect
+    role: specialist
+    persona: "BJ Fogg"
+    mind: minds/bj-fogg
+    framework: "B=MAP (Behavior = Motivation × Ability × Prompt)"
+    description: "Projeta comportamentos usando o modelo B=MAP e Tiny Habits"
+    expertise:
+      - behavior-design
+      - habit-formation
+      - prompt-design
+      - ability-chain
+      - motivation-waves
+
+  - id: experience-designer
+    role: specialist
+    persona: "Amy Jo Kim"
+    mind: minds/amy-jo-kim
+    framework: "Game Thinking"
+    description: "Design de experiência usando Game Thinking e Smart Gamification"
+    expertise:
+      - player-journey
+      - skill-building-loops
+      - social-engagement
+      - mastery-paths
+      - game-thinking
+
+  - id: engagement-engineer
+    role: specialist
+    persona: "Nir Eyal"
+    mind: minds/nir-eyal
+    framework: "Hooked Model"
+    description: "Engenharia de engajamento usando o ciclo Trigger→Action→Reward→Investment"
+    expertise:
+      - hook-cycles
+      - variable-rewards
+      - trigger-design
+      - investment-loops
+      - habit-zone
+
+  - id: player-profiler
+    role: specialist
+    persona: "Andrzej Marczewski"
+    mind: minds/andrzej-marczewski
+    framework: "HEXAD User Types"
+    description: "Perfila jogadores usando HEXAD (Philanthropist, Socialiser, Free Spirit, Achiever, Player, Disruptor)"
+    expertise:
+      - user-type-profiling
+      - hexad-mapping
+      - persona-mechanics-alignment
+      - player-segmentation
+      - motivation-profiling
+
+  - id: enterprise-strategist
+    role: specialist
+    persona: "Kevin Werbach"
+    mind: minds/kevin-werbach
+    framework: "6D Framework (Define, Delineate, Describe, Devise, Don't forget, Deploy)"
+    description: "Estratégia de gamificação corporativa com foco em ROI e alinhamento de negócio"
+    expertise:
+      - enterprise-gamification
+      - roi-analysis
+      - business-alignment
+      - organizational-behavior
+      - gamification-strategy
+
+  - id: learning-designer
+    role: specialist
+    persona: "Karl Kapp"
+    mind: minds/karl-kapp
+    framework: "Gamification of Learning and Instruction"
+    description: "Gamificação educacional e de treinamento corporativo"
+    expertise:
+      - learning-gamification
+      - instructional-design
+      - knowledge-retention
+      - training-engagement
+      - assessment-gamification
+
+  - id: emotion-designer
+    role: specialist
+    persona: "Nicole Lazzaro + Jesse Schell"
+    mind:
+      - minds/nicole-lazzaro
+      - minds/jesse-schell
+    framework: "4 Keys to Fun + Lenses of Game Design"
+    description: "Design emocional mapeando mecânicas a estados emocionais desejados"
+    expertise:
+      - emotion-mapping
+      - fun-design
+      - aesthetic-experience
+      - emotional-engagement
+      - game-feel
+
+##############################################################################
+# Tasks
+##############################################################################
+tasks:
+  - id: gamification-diagnostic
+    file: tasks/gamification-diagnostic.md
+    entry_point: true
+    agents: [gamification-chief, motivation-analyst, player-profiler]
+    description: "Auditoria completa de gamificação do sistema/app"
+
+  - id: player-persona-mapping
+    file: tasks/player-persona-mapping.md
+    agents: [player-profiler, motivation-analyst]
+    description: "Mapeamento de tipos de usuário para perfis HEXAD/Octalysis"
+
+  - id: motivation-audit
+    file: tasks/motivation-audit.md
+    agents: [motivation-analyst, behavior-architect]
+    description: "Análise de balanço motivação intrínseca/extrínseca"
+
+  - id: progression-design
+    file: tasks/progression-design.md
+    agents: [experience-designer, engagement-engineer]
+    description: "Design de níveis, curvas de XP, sistemas de desbloqueio"
+
+  - id: engagement-loop-design
+    file: tasks/engagement-loop-design.md
+    agents: [engagement-engineer, behavior-architect]
+    description: "Design de ciclos Hook (trigger→action→reward→investment)"
+
+  - id: leaderboard-design
+    file: tasks/leaderboard-design.md
+    agents: [experience-designer, player-profiler]
+    description: "Design de mecânicas de competição social"
+
+  - id: onboarding-gamification
+    file: tasks/onboarding-gamification.md
+    agents: [behavior-architect, experience-designer]
+    description: "Gamificação da experiência de primeiro uso"
+
+  - id: enterprise-gamification-plan
+    file: tasks/enterprise-gamification-plan.md
+    agents: [enterprise-strategist, motivation-analyst]
+    description: "Estratégia de gamificação corporativa com ROI"
+
+  - id: learning-gamification
+    file: tasks/learning-gamification.md
+    agents: [learning-designer, emotion-designer]
+    description: "Gamificação educacional/treinamento"
+
+  - id: emotion-mapping
+    file: tasks/emotion-mapping.md
+    agents: [emotion-designer, experience-designer]
+    description: "Mapear emoções desejadas para mecânicas (4 Keys to Fun)"
+
+  - id: ab-test-gamification
+    file: tasks/ab-test-gamification.md
+    agents: [engagement-engineer, player-profiler]
+    description: "A/B test de mecânicas de gamificação"
+
+  - id: anti-pattern-audit
+    file: tasks/anti-pattern-audit.md
+    agents: [gamification-chief, motivation-analyst]
+    description: "Detecção de pointsification e dark patterns"
+
+##############################################################################
+# Workflows
+##############################################################################
+workflows:
+  - id: wf-full-gamification
+    file: workflows/wf-full-gamification.yaml
+    phases: 7
+    description: "End-to-end gamification (Diagnostic→Profile→Strategy→Design→Build→Test→Launch)"
+
+  - id: wf-enterprise-gamification
+    file: workflows/wf-enterprise-gamification.yaml
+    phases: 6
+    description: "Enterprise focus (Assessment→Alignment→Design→Pilot→Scale→Monitor)"
+
+  - id: wf-app-gamification
+    file: workflows/wf-app-gamification.yaml
+    phases: 5
+    description: "App/product focus (Audit→UX-Mapping→Mechanic-Selection→Implementation→Optimization)"
+
+  - id: wf-learning-gamification
+    file: workflows/wf-learning-gamification.yaml
+    phases: 5
+    description: "Education focus (Objective-Mapping→Mechanic-Design→Content-Integration→Testing→Iteration)"
+
+##############################################################################
+# Templates
+##############################################################################
+templates:
+  - id: gamification-strategy-tmpl
+    file: templates/gamification-strategy-tmpl.md
+  - id: player-journey-tmpl
+    file: templates/player-journey-tmpl.md
+  - id: mechanics-spec-tmpl
+    file: templates/mechanics-spec-tmpl.md
+  - id: progression-system-tmpl
+    file: templates/progression-system-tmpl.md
+  - id: engagement-loop-tmpl
+    file: templates/engagement-loop-tmpl.md
+  - id: roi-report-tmpl
+    file: templates/roi-report-tmpl.md
+
+##############################################################################
+# Checklists
+##############################################################################
+checklists:
+  - id: gamification-quality-gate
+    file: checklists/gamification-quality-gate.md
+  - id: ethical-gamification
+    file: checklists/ethical-gamification.md
+  - id: ux-gamification
+    file: checklists/ux-gamification.md
+  - id: enterprise-readiness
+    file: checklists/enterprise-readiness.md
+  - id: player-experience
+    file: checklists/player-experience.md
+
+##############################################################################
+# Quality Gates
+##############################################################################
+quality_gates:
+  config: config/quality-gates.yaml
+  count: 8
+  ids: [GM-QG-001, GM-QG-002, GM-QG-003, GM-QG-004, GM-QG-005, GM-QG-006, GM-QG-007, GM-QG-008]
+
+##############################################################################
+# Veto Conditions
+##############################################################################
+veto:
+  config: config/veto-conditions.yaml
+  count: 30
+
+##############################################################################
+# Heuristics
+##############################################################################
+heuristics:
+  config: config/heuristics.yaml
+  count: 20
+
+##############################################################################
+# Dependencies
+##############################################################################
+dependencies:
+  internal:
+    - squad-id: squad-ux
+      reason: "UX integration for gamified interfaces"
+      optional: true
+    - squad-id: squad-analytics
+      reason: "Metrics tracking for gamification KPIs"
+      optional: true
+  external:
+    - name: analytics-platform
+      reason: "Track gamification metrics (engagement, retention, progression)"
+    - name: notification-service
+      reason: "Trigger-based notifications for engagement loops"
+
+##############################################################################
+# Cross-Squad Integration
+##############################################################################
+cross_squad:
+  accepts_from:
+    - squad-id: squad-fitcoach-pro
+      replaces_agent: gamification-designer
+      entry_point: gamification-chief
+      context: "Gamificacao de treinos, streaks, progressao fitness"
+    - squad-id: any
+      entry_point: gamification-chief
+      context: "Qualquer squad que precise de gamificacao em seu dominio"
+  integration_doc: docs/cross-squad-integration.md
+
+##############################################################################
+# Settings
+##############################################################################
+settings:
+  max_concurrent_agents: 4
+  default_workflow: wf-full-gamification
+  entry_task: gamification-diagnostic
+  veto_enforcement: strict
+  quality_gate_enforcement: strict
+  ethics_check: always
+  anti_pattern_detection: enabled
+  context_window_optimization: true
+  handoff_protocol: enabled

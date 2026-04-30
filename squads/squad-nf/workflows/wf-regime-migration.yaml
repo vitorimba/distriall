@@ -1,0 +1,138 @@
+# =============================================================================
+# Workflow: Tax Regime Migration
+# Squad: squad-nf
+# Description: Migracao entre regimes tributarios (Simples, Presumido, Real)
+# =============================================================================
+
+id: wf-regime-migration
+name: "Tax Regime Migration"
+version: "1.0.0"
+description: >
+  Workflow para migracao entre regimes tributarios. Analisa impacto fiscal,
+  atualiza CSTs/CSOSNs, recalcula impostos pendentes e valida conformidade
+  antes da efetivacao.
+
+trigger:
+  - manual
+  - event: "regime.change_requested"
+
+inputs:
+  - name: cnpj
+    type: string
+    required: true
+  - name: regime_atual
+    type: enum
+    values: [mei, simples, presumido, real]
+    required: true
+  - name: regime_novo
+    type: enum
+    values: [mei, simples, presumido, real]
+    required: true
+  - name: data_vigencia
+    type: date
+    required: true
+    description: "Data de inicio do novo regime (geralmente 01/01)"
+  - name: simples_anexo
+    type: enum
+    values: [I, II, III, IV, V]
+    required: false
+    description: "Anexo do Simples Nacional (se aplicavel)"
+
+states:
+  init:
+    description: "Validar parametros e preparar migracao"
+    task: determine-tax-regime
+    on_success: analyze-impact
+    on_failure: failed
+    actions:
+      - validate_regime_transition
+      - load_current_config
+      - check_eligibility  # faturamento, atividade, etc.
+
+  analyze-impact:
+    description: "Analisar impacto fiscal da mudanca de regime"
+    task: regime-change-impact
+    on_success: update-csts
+    on_failure: failed
+    actions:
+      - compare_tax_burden
+      - simulate_last_12_months
+      - identify_affected_operations
+      - calculate_savings_or_increase
+      - generate_impact_report
+
+  update-csts:
+    description: "Atualizar CSTs/CSOSNs conforme novo regime"
+    task: determine-cst
+    on_success: recalculate
+    on_failure: failed
+    actions:
+      - map_cst_to_csosn   # ou vice-versa
+      - update_product_catalog
+      - update_cfop_defaults
+      - update_tax_rules_engine
+
+  recalculate:
+    description: "Recalcular impostos para operacoes em transicao"
+    task: calculate-pis-cofins
+    on_success: validate
+    on_failure: failed
+    actions:
+      - recalculate_pending_invoices
+      - adjust_icms_credit_balance
+      - recalculate_pis_cofins
+      - update_aliquot_tables
+      - handle_icms_st_transition
+
+  validate:
+    description: "Validar configuracao do novo regime"
+    task: validate-obligations
+    on_success: report
+    on_failure: failed
+    actions:
+      - emit_test_nfe  # homologacao
+      - validate_sped_generation
+      - check_obligation_calendar
+      - verify_certificate_compatibility
+
+  report:
+    description: "Gerar relatorio final de migracao"
+    task: prepare-efd
+    on_success: complete
+    on_failure: failed
+    actions:
+      - generate_migration_report
+      - list_manual_actions_required
+      - generate_accountant_checklist
+      - notify_stakeholders
+
+  complete:
+    description: "Migracao concluida"
+    task: monitor-deadlines
+    terminal: true
+    actions:
+      - activate_new_regime
+      - archive_old_config
+      - log_migration
+
+  failed:
+    description: "Migracao falhou"
+    task: monitor-certificates
+    terminal: true
+    actions:
+      - rollback_changes
+      - log_error
+      - notify_operator
+
+outputs:
+  - name: migration_report
+    type: object
+    fields: [impact_analysis, cst_mapping, recalculation_summary, validation_result]
+  - name: manual_actions
+    type: array
+    description: "Acoes manuais necessarias pos-migracao"
+
+config:
+  simulation_months: 12
+  test_environment: homologation
+  rollback_enabled: true

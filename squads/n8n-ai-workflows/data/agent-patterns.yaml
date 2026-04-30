@@ -1,0 +1,333 @@
+# n8n AI Agent Architecture Patterns
+# Source: Pawel Cislo's guide + n8n official docs + Cole Medin/Nate Herk practices
+# Version: 1.0.0
+
+patterns:
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PATTERN 1: SINGLE AGENT
+  # ═══════════════════════════════════════════════════════════════════════════
+  single_agent:
+    name: "Single Agent"
+    id: "N8N-AP-001"
+    complexity: "low"
+    when_to_use:
+      - "Single-purpose task (FAQ, summarization, classification)"
+      - "1-3 tools needed"
+      - "No complex routing required"
+      - "Simple input → output flow"
+    when_not_to_use:
+      - "Multiple distinct intents to handle"
+      - "Need for specialized processing branches"
+      - "Complex multi-step reasoning"
+
+    n8n_nodes:
+      - "Trigger (Webhook/Chat/Schedule)"
+      - "AI Agent Node (with tools)"
+      - "Response Node"
+
+    architecture: |
+      Trigger → AI Agent Node → Response
+                    │
+                    ├── Tool 1 (e.g., HTTP Request)
+                    ├── Tool 2 (e.g., Code Node)
+                    └── Memory (Buffer/Postgres)
+
+    config:
+      model: "gpt-4o-mini or claude-haiku (cost-effective)"
+      memory: "Buffer Window Memory (last 5 messages)"
+      tools: "1-3 maximum"
+      system_prompt: "Focused single-role instruction"
+
+    examples:
+      - "FAQ chatbot for a product"
+      - "Email summarizer"
+      - "Simple scheduling assistant"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PATTERN 2: CHAINED / SEQUENTIAL
+  # ═══════════════════════════════════════════════════════════════════════════
+  chained:
+    name: "Chained Pipeline"
+    id: "N8N-AP-002"
+    complexity: "medium"
+    when_to_use:
+      - "Multi-step processing pipeline"
+      - "Each step transforms data for the next"
+      - "Deterministic flow (no branching)"
+      - "Document processing, data enrichment"
+    when_not_to_use:
+      - "Dynamic routing needed"
+      - "Steps are independent (use parallel instead)"
+
+    n8n_nodes:
+      - "Trigger"
+      - "AI Agent/LLM Node (Step 1)"
+      - "Code/HTTP Node (Transform)"
+      - "AI Agent/LLM Node (Step 2)"
+      - "Output Node"
+
+    architecture: |
+      Trigger → Step 1 (Extract) → Step 2 (Analyze) → Step 3 (Generate) → Output
+                  AI Agent           Code Node           AI Agent
+
+    config:
+      model_per_step: "Match model to step complexity"
+      memory: "Pass context forward via expressions (not chat memory)"
+      error_handling: "Try/catch on each step, rollback on failure"
+
+    examples:
+      - "Document ingestion → analysis → summary → email"
+      - "Lead form → enrichment → qualification → CRM update"
+      - "Audio → transcription → action items → task creation"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PATTERN 3: ROUTER / CLASSIFIER
+  # ═══════════════════════════════════════════════════════════════════════════
+  router:
+    name: "Router / Classifier"
+    id: "N8N-AP-003"
+    complexity: "medium"
+    when_to_use:
+      - "Multiple distinct user intents"
+      - "Each intent needs different processing"
+      - "Customer support with FAQ + orders + complaints"
+      - "3+ distinct processing paths"
+    when_not_to_use:
+      - "Single intent only"
+      - "All paths need same processing"
+
+    n8n_nodes:
+      - "Trigger"
+      - "AI Agent (Classifier)"
+      - "Switch Node (Route)"
+      - "Branch-specific agents/nodes"
+      - "Merge/Response"
+
+    architecture: |
+      Trigger → AI Classifier → Switch Node
+                                    ├── Intent A → Agent A → Response
+                                    ├── Intent B → HTTP + Code → Response
+                                    ├── Intent C → Human Escalation
+                                    └── Fallback → Clarification → Loop
+
+    config:
+      classifier_model: "gpt-4o-mini or haiku (fast + cheap)"
+      classifier_prompt: |
+        Classify the user message into one of these intents:
+        - FAQ: Questions about products/services
+        - ORDER_STATUS: Checking order/delivery status
+        - COMPLAINT: Negative experience or issue
+        - SCHEDULING: Booking or rescheduling
+        - OTHER: Doesn't fit above categories
+        Return ONLY the intent label.
+      branch_models: "Match to branch complexity"
+      memory: "Shared session across branches"
+
+    examples:
+      - "Customer support bot (FAQ + orders + complaints + scheduling)"
+      - "Sales bot (qualification + pricing + demo booking)"
+      - "Internal helpdesk (IT + HR + Finance routing)"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PATTERN 4: ORCHESTRATOR + SUB-AGENTS
+  # ═══════════════════════════════════════════════════════════════════════════
+  orchestrator:
+    name: "Orchestrator + Sub-Agents"
+    id: "N8N-AP-004"
+    complexity: "high"
+    when_to_use:
+      - "Complex multi-step tasks requiring different expertise"
+      - "Main agent needs to delegate and synthesize"
+      - "5+ tools would overwhelm a single agent"
+      - "Need for planning → execution → verification cycle"
+    when_not_to_use:
+      - "Simple routing (use Router pattern)"
+      - "Sequential processing (use Chained pattern)"
+      - "< 3 distinct capabilities needed"
+
+    n8n_nodes:
+      - "Trigger"
+      - "AI Agent (Orchestrator) with sub-workflows as tools"
+      - "Sub-workflow 1 (Agent A)"
+      - "Sub-workflow 2 (Agent B)"
+      - "Merge/Synthesis"
+      - "Response"
+
+    architecture: |
+      Trigger → Orchestrator Agent
+                    │
+                    ├── Tool: Sub-workflow "Research Agent"
+                    ├── Tool: Sub-workflow "Writing Agent"
+                    ├── Tool: Sub-workflow "Review Agent"
+                    ├── Tool: HTTP Request (external APIs)
+                    └── Tool: Code Node (data processing)
+                    │
+                    → Synthesize results → Response
+
+    config:
+      orchestrator_model: "gpt-4o or claude-sonnet (needs reasoning)"
+      sub_agent_models: "gpt-4o-mini for most sub-tasks"
+      memory: "Orchestrator has full memory; sub-agents get context per call"
+      communication: "Sub-workflows called as tools, return structured output"
+
+    examples:
+      - "Content creation (research → write → edit → publish)"
+      - "Lead processing (enrich → qualify → personalize → outreach)"
+      - "Report generation (data collection → analysis → visualization → summary)"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PATTERN 5: AGENTIC RAG
+  # ═══════════════════════════════════════════════════════════════════════════
+  agentic_rag:
+    name: "Agentic RAG"
+    id: "N8N-AP-005"
+    complexity: "high"
+    when_to_use:
+      - "Agent needs domain-specific knowledge"
+      - "Knowledge base exceeds what fits in system prompt"
+      - "Need for cited, accurate responses"
+      - "FAQ with hundreds of articles/docs"
+    when_not_to_use:
+      - "Knowledge fits in system prompt (< 4000 tokens)"
+      - "Real-time data needed (use API instead)"
+      - "No knowledge base exists yet"
+
+    n8n_nodes:
+      - "Trigger"
+      - "AI Agent Node"
+      - "Vector Store Tool (Qdrant/Supabase/Pinecone)"
+      - "Embedding Node (OpenAI/Cohere)"
+      - "Optional: Web Search Tool"
+      - "Response"
+
+    architecture: |
+      [Ingestion Pipeline - runs separately]
+      Documents → Splitter → Embeddings → Vector Store
+
+      [Query Pipeline - real-time]
+      Trigger → AI Agent
+                  │
+                  ├── Tool: Vector Store Retriever
+                  ├── Tool: Web Search (fallback)
+                  ├── Tool: SQL Query (structured data)
+                  └── Memory: Postgres Chat Memory
+                  │
+                  → Cited Response with sources
+
+    config:
+      agent_model: "gpt-4o (needs reasoning for tool selection)"
+      embedding_model: "text-embedding-3-small (cost-effective)"
+      vector_store: "Qdrant (self-hosted) or Supabase (managed)"
+      chunk_size: "500-1000 tokens"
+      chunk_overlap: "50-100 tokens"
+      top_k: "3-5 results"
+      memory: "Postgres Chat Memory (persistent)"
+      system_prompt_includes: |
+        - Always cite sources
+        - If unsure, say so
+        - Use retrieval tool before answering domain questions
+
+    examples:
+      - "Product support with documentation RAG"
+      - "Legal document Q&A"
+      - "Internal wiki chatbot"
+      - "Course/training assistant"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PATTERN SELECTION DECISION TREE
+# ═══════════════════════════════════════════════════════════════════════════
+
+selection_decision_tree: |
+  START
+  │
+  ├── How many distinct user intents?
+  │   ├── 1 intent → How much knowledge needed?
+  │   │   ├── Fits in prompt → SINGLE AGENT
+  │   │   └── Needs knowledge base → AGENTIC RAG
+  │   │
+  │   ├── 2-4 intents → ROUTER
+  │   │
+  │   └── 5+ intents or complex multi-step → ORCHESTRATOR
+  │
+  ├── Is it a sequential pipeline (no user interaction)?
+  │   └── Yes → CHAINED
+  │
+  └── Need to delegate to specialized sub-agents?
+      └── Yes → ORCHESTRATOR
+
+# ═══════════════════════════════════════════════════════════════════════════
+# USE CASE → PATTERN MAPPING
+# ═══════════════════════════════════════════════════════════════════════════
+
+use_case_mapping:
+  customer_support:
+    recommended: "router"
+    reasoning: "Multiple intents (FAQ, orders, complaints) need different handling"
+    enhanced_with: "agentic_rag (for FAQ branch)"
+
+  sales_qualification:
+    recommended: "orchestrator"
+    reasoning: "Multi-step: enrich → qualify → schedule → follow-up"
+    enhanced_with: "router (for initial intent classification)"
+
+  scheduling_assistant:
+    recommended: "single_agent"
+    reasoning: "Single purpose with calendar API tool"
+    enhanced_with: "chained (if includes pre/post processing)"
+
+  document_processing:
+    recommended: "chained"
+    reasoning: "Sequential: ingest → analyze → extract → output"
+
+  knowledge_base_qa:
+    recommended: "agentic_rag"
+    reasoning: "Domain knowledge exceeds prompt limits"
+
+  multi_channel_support:
+    recommended: "orchestrator"
+    reasoning: "Channel-specific sub-agents + shared knowledge"
+
+  lead_nurturing:
+    recommended: "chained"
+    reasoning: "Sequential: capture → enrich → score → route → nurture"
+
+  voice_agent:
+    recommended: "single_agent"
+    reasoning: "Real-time requirement, minimal latency"
+    enhanced_with: "router (for complex voice menus)"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODEL SELECTION GUIDE
+# ═══════════════════════════════════════════════════════════════════════════
+
+model_guide:
+  routing_classification:
+    recommended: ["gpt-4o-mini", "claude-haiku-4-5"]
+    cost: "$"
+    latency: "fast"
+    use_for: "Intent classification, simple routing, yes/no decisions"
+
+  general_conversation:
+    recommended: ["gpt-4o-mini", "claude-sonnet-4-6"]
+    cost: "$$"
+    latency: "moderate"
+    use_for: "FAQ responses, simple Q&A, formatting"
+
+  complex_reasoning:
+    recommended: ["gpt-4o", "claude-sonnet-4-6"]
+    cost: "$$$"
+    latency: "moderate"
+    use_for: "Multi-step reasoning, qualification, analysis"
+
+  creative_generation:
+    recommended: ["gpt-4o", "claude-opus-4-6"]
+    cost: "$$$$"
+    latency: "slow"
+    use_for: "Content creation, personalized outreach, complex synthesis"
+
+  embeddings:
+    recommended: ["text-embedding-3-small", "text-embedding-3-large"]
+    cost: "$"
+    latency: "fast"
+    use_for: "Vector store ingestion and retrieval"

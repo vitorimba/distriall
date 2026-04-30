@@ -1,0 +1,635 @@
+# Franchisee Onboarding Workflow — Avend Franquias
+# Workflow para onboarding completo de novo franqueado
+# 3 fases: Screening & Approval, Setup, Launch & Support
+# Updated: 2026-03-13
+
+id: franchisee-onboarding
+name: "Franchisee Onboarding — Onboarding de Novo Franqueado"
+version: "1.0.0"
+squad: franchising-avend
+description: >-
+  Workflow completo para integrar um novo franqueado a rede Avend,
+  desde a triagem inicial ate o acompanhamento pos-lancamento.
+  Garante que cada novo franqueado receba o suporte necessario para
+  atingir o breakeven no prazo projetado.
+
+trigger: "*onboard-franchisee"
+execution_mode: sequential
+estimated_duration: "45-75 dias"
+total_phases: 3
+
+# ============================================================================
+# PREREQUISITES
+# ============================================================================
+
+prerequisites:
+  - "Candidato aprovado no pipeline de recrutamento"
+  - "COF entregue e cooling period cumprido (10 dias minimo)"
+  - "Territorio validado e disponivel"
+  - "Modelo financeiro apresentado e aceito pelo candidato"
+
+# ============================================================================
+# PHASE 1: SCREENING & APPROVAL — Triagem e Aprovacao
+# ============================================================================
+
+phases:
+  - id: phase_1_screening
+    name: "Screening & Approval — Triagem e Aprovacao"
+    description: >-
+      Avaliacao completa do candidato a franqueado: perfil financeiro,
+      comportamental, geografico e de disponibilidade.
+    duration: "7-14 dias"
+    agents:
+      - recruitment-specialist
+      - financial-modeler
+      - franchise-strategist
+
+    steps:
+      # --- Step 1.1: Perfil Financeiro ---
+      - id: step_1_1
+        name: "Analise do Perfil Financeiro"
+        agent: financial-modeler
+        execution_mode: hybrid
+        description: >-
+          Validar capacidade financeira do candidato para investir
+          e sustentar a operacao ate o breakeven.
+        inputs:
+          - "Declaracao de patrimonio do candidato"
+          - "Comprovante de renda/patrimonio"
+          - "Fontes de financiamento (se aplicavel)"
+        outputs:
+          - "analise-financeira-{candidato}.md"
+        checks:
+          - "Capital disponivel >= investimento total + capital de giro 3 meses"
+          - "Fonte de recursos comprovada e licita"
+          - "Sem dependencia de 100% de financiamento"
+          - "Capacidade de manter-se sem renda da franquia por 6 meses"
+        scoring:
+          - criteria: "Capital proprio >= 70% do investimento"
+            points: 10
+          - criteria: "Capital proprio >= 50% do investimento"
+            points: 7
+          - criteria: "Capital proprio >= 30% do investimento"
+            points: 4
+          - criteria: "Capital proprio < 30% do investimento"
+            points: 0
+        min_score: 4
+        veto_if:
+          - "Capital total insuficiente para investimento + capital de giro"
+          - "Candidato com restritivos em bureau de credito (SPC/Serasa)"
+          - "100% do investimento via emprestimo sem garantias"
+
+      # --- Step 1.2: Perfil Comportamental ---
+      - id: step_1_2
+        name: "Avaliacao Comportamental"
+        agent: recruitment-specialist
+        execution_mode: hybrid
+        description: >-
+          Avaliar perfil empreendedor, capacidade de gestao e
+          alinhamento cultural com a Avend.
+        inputs:
+          - "Entrevista estruturada (roteiro padrao)"
+          - "Questionario comportamental"
+          - "Referencias profissionais"
+        outputs:
+          - "perfil-comportamental-{candidato}.md"
+        assessment_dimensions:
+          - dimension: "Perfil Empreendedor"
+            weight: 25
+            indicators:
+              - "Experiencia anterior com negocio proprio"
+              - "Tolerancia a risco"
+              - "Proatividade e autonomia"
+              - "Resiliencia"
+          - dimension: "Capacidade de Gestao"
+            weight: 25
+            indicators:
+              - "Experiencia em gestao de equipe"
+              - "Conhecimento financeiro basico"
+              - "Organizacao e planejamento"
+              - "Experiencia com metas e KPIs"
+          - dimension: "Alinhamento Cultural"
+            weight: 20
+            indicators:
+              - "Valores compativeis com a Avend"
+              - "Disposicao para seguir padrao da rede"
+              - "Postura colaborativa"
+              - "Integridade e transparencia"
+          - dimension: "Dedicacao e Disponibilidade"
+            weight: 15
+            indicators:
+              - "Disponibilidade para dedicacao integral ou parcial minima"
+              - "Flexibilidade de horarios (abastecimento pode ser noturno)"
+              - "Residencia proxima ao territorio"
+              - "Sem conflitos de interesse"
+          - dimension: "Afinidade com o Segmento"
+            weight: 15
+            indicators:
+              - "Conhecimento do mercado de vending"
+              - "Interesse genuino no setor"
+              - "Visao de longo prazo"
+              - "Disposicao para aprender"
+        checks:
+          - "Score geral minimo de 60/100"
+          - "Nenhuma dimensao com score zero"
+          - "Entrevista presencial ou por video realizada"
+          - "Pelo menos 2 referencias checadas"
+        veto_if:
+          - "Score comportamental abaixo de 40/100"
+          - "Historico de conflito grave com franqueadoras anteriores"
+          - "Indisponibilidade para cumprir carga horaria minima"
+          - "Conflito de interesse direto (concorrente ativo)"
+
+      # --- Step 1.3: Validacao Geografica ---
+      - id: step_1_3
+        name: "Validacao do Territorio"
+        agent: recruitment-specialist
+        execution_mode: agent
+        description: >-
+          Validar que o territorio pretendido esta disponivel e
+          tem potencial compativel com o modelo.
+        inputs:
+          - "mapa-territorial.md"
+          - "Localizacao pretendida pelo candidato"
+          - "Dados demograficos da regiao"
+        outputs:
+          - "validacao-territorio-{regiao}.md"
+        territory_checks:
+          - "Territorio nao conflita com franqueado existente"
+          - "Populacao minima de 100k habitantes"
+          - "Pontos de venda potenciais identificados (min 10)"
+          - "Logistica de distribuicao viavel"
+          - "Concorrencia mapeada e sustentavel"
+        checks:
+          - "Territorio confirmado como disponivel"
+          - "Potencial de pelo menos 10 maquinas"
+          - "Distancia de centro de distribuicao <= 200km"
+        veto_if:
+          - "Territorio ja atribuido a outro franqueado"
+          - "Potencial de mercado inferior a 5 maquinas"
+          - "Regiao com restricoes legais para vending"
+
+      # --- Step 1.4: Decisao de Aprovacao ---
+      - id: step_1_4
+        name: "Decisao de Aprovacao do Candidato"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        depends_on:
+          - step_1_1
+          - step_1_2
+          - step_1_3
+        description: >-
+          Consolidar as 3 analises e tomar decisao final de aprovacao.
+        inputs:
+          - "analise-financeira-{candidato}.md"
+          - "perfil-comportamental-{candidato}.md"
+          - "validacao-territorio-{regiao}.md"
+        outputs:
+          - "decisao-candidato-{nome}.md"
+          - "perfil-franqueado-{nome}.md (se aprovado)"
+        template: "templates/franchisee-profile-tmpl.md"
+        decision_matrix:
+          approved:
+            - "Score financeiro >= 7 E comportamental >= 60 E territorio valido"
+          conditional:
+            - "Score financeiro >= 4 E comportamental >= 50 E territorio valido"
+            - "Condicoes especificas listadas para cumprimento"
+          rejected:
+            - "Qualquer veto condition ativa"
+            - "Score financeiro < 4"
+            - "Score comportamental < 40"
+            - "Territorio invalido sem alternativa"
+        checks:
+          - "Todas as 3 analises completas"
+          - "Decisao documentada com justificativa"
+          - "Se aprovado: proximo passo agendado"
+          - "Se rejeitado: feedback construtivo preparado"
+        veto_if:
+          - "Aprovacao sem analise financeira completa"
+          - "Aprovacao com veto condition ativa nao resolvida"
+
+# ============================================================================
+# PHASE 2: SETUP — Configuracao e Preparacao
+# ============================================================================
+
+  - id: phase_2_setup
+    name: "Setup — Configuracao e Preparacao"
+    description: >-
+      Preparar tudo para o lancamento: contrato, treinamento,
+      equipamentos, instalacao e sistemas.
+    duration: "21-45 dias"
+    depends_on: phase_1_screening
+    agents:
+      - legal-compliance
+      - training-developer
+      - operations-designer
+      - tech-systems
+
+    steps:
+      # --- Step 2.1: Contrato e Documentacao ---
+      - id: step_2_1
+        name: "Assinatura de Contrato e Documentacao"
+        agent: legal-compliance
+        execution_mode: hybrid
+        description: >-
+          Formalizar a relacao contratual e coletar toda a documentacao
+          necessaria.
+        inputs:
+          - "decisao-candidato-{nome}.md"
+          - "contrato-franquia-modelo.md"
+          - "Documentos do candidato"
+        outputs:
+          - "contrato-assinado-{nome}.md"
+          - "protocolo-documentacao.md"
+        contract_steps:
+          - step: "Entrega formal da COF"
+            timing: "Dia 0"
+            legal: "Protocolar entrega com assinatura do candidato"
+          - step: "Cooling period"
+            timing: "Dia 0-10"
+            legal: "10 dias minimos obrigatorios (Lei 13.966/2019)"
+          - step: "Reuniao de esclarecimento de duvidas"
+            timing: "Dia 5-8"
+            legal: "Registrar perguntas e respostas"
+          - step: "Assinatura do contrato"
+            timing: "Dia 10+"
+            legal: "Duas vias, com testemunhas"
+          - step: "Pagamento da taxa de franquia"
+            timing: "Dia da assinatura"
+            legal: "Emissao de nota fiscal"
+          - step: "Registro no cartorio (se aplicavel)"
+            timing: "Dia 11-15"
+            legal: "Opcional mas recomendado"
+        documents_required:
+          - "RG e CPF do franqueado"
+          - "Comprovante de endereco"
+          - "Contrato social (se PJ)"
+          - "CNPJ (se PJ existente)"
+          - "Certidoes negativas (federal, estadual, municipal)"
+          - "Comprovante de capital disponivel"
+        checks:
+          - "Cooling period de 10 dias cumprido"
+          - "Contrato assinado por ambas as partes"
+          - "Taxa de franquia recebida"
+          - "Toda documentacao do franqueado arquivada"
+        veto_if:
+          - "Assinatura antes do cooling period de 10 dias"
+          - "Pagamento sem emissao de nota fiscal"
+          - "Contrato sem clausulas obrigatorias"
+
+      # --- Step 2.2: Treinamento ---
+      - id: step_2_2
+        name: "Treinamento Completo do Franqueado"
+        agent: training-developer
+        execution_mode: hybrid
+        depends_on: step_2_1
+        description: >-
+          Executar o programa de treinamento completo de 40 horas.
+        inputs:
+          - "programa-treinamento.md"
+          - "Perfil do franqueado"
+          - "Territorio do franqueado"
+        outputs:
+          - "registro-treinamento-{nome}.md"
+          - "certificado-treinamento-{nome}.md"
+        training_execution:
+          week_1:
+            - "Modulo 1: Conhecendo a Avend (4h)"
+            - "Modulo 2: Operacao Tecnica - Teoria (8h)"
+          week_2:
+            - "Modulo 2: Operacao Tecnica - Pratica em Campo (8h)"
+            - "Modulo 3: Comercial e Vendas (8h)"
+          week_3:
+            - "Modulo 4: Gestao do Negocio (8h)"
+            - "Modulo 5: Compliance e Qualidade (4h)"
+          assessments:
+            - type: "Prova Teorica"
+              passing_score: 70
+              timing: "Fim da semana 2"
+            - type: "Avaliacao Pratica"
+              passing_score: 80
+              timing: "Fim da semana 3"
+        checks:
+          - "40 horas de treinamento concluidas"
+          - "Prova teorica >= 70%"
+          - "Avaliacao pratica >= 80%"
+          - "Certificado emitido"
+          - "Franqueado se sente confiante para operar"
+        veto_if:
+          - "Reprovacao em ambas as tentativas da prova teorica"
+          - "Reprovacao na avaliacao pratica"
+          - "Franqueado desistiu durante o treinamento"
+
+      # --- Step 2.3: Equipamentos e Instalacao ---
+      - id: step_2_3
+        name: "Aquisicao de Equipamentos e Instalacao"
+        agent: operations-designer
+        execution_mode: hybrid
+        depends_on: step_2_1
+        description: >-
+          Coordenar a aquisicao, entrega e instalacao das maquinas
+          nos pontos validados.
+        inputs:
+          - "validacao-territorio-{regiao}.md"
+          - "Lista de pontos pre-validados"
+          - "Especificacoes tecnicas das maquinas"
+        outputs:
+          - "ordem-equipamentos-{nome}.md"
+          - "log-instalacao-{nome}.md"
+        equipment_process:
+          - step: "Definicao do mix de maquinas"
+            description: "Tipos e quantidades baseado no territorio"
+          - step: "Pedido de compra/locacao"
+            description: "Via fornecedor homologado"
+            lead_time: "15-30 dias"
+          - step: "Validacao final dos pontos"
+            description: "Visita tecnica + contrato com proprietario do local"
+          - step: "Entrega e instalacao"
+            description: "Equipe tecnica + franqueado presente"
+          - step: "Configuracao de sistemas"
+            description: "Telemetria, pagamento, precificacao"
+          - step: "Teste completo"
+            description: "Vendas-teste, pagamento, conectividade"
+          - step: "Abastecimento inicial"
+            description: "Primeiro carregamento completo"
+        machine_specs:
+          types:
+            - "Snack (salgadinhos, doces, barras)"
+            - "Bebidas (refrigerantes, agua, sucos)"
+            - "Combo (snack + bebida)"
+            - "Cafe e bebidas quentes"
+          payment_methods:
+            - "Moedas e cedulas"
+            - "Cartao de credito/debito (NFC)"
+            - "PIX (QR code)"
+            - "App Avend"
+          telemetry:
+            - "Nivel de estoque em tempo real"
+            - "Vendas por produto/hora"
+            - "Status de funcionamento"
+            - "Alertas de manutencao"
+        checks:
+          - "Maquinas entregues e instaladas"
+          - "Todos os pontos com contrato formalizado"
+          - "Sistemas de pagamento testados"
+          - "Telemetria operacional"
+          - "Abastecimento inicial realizado"
+        veto_if:
+          - "Instalacao em ponto sem contrato formalizado"
+          - "Maquinas sem teste completo de pagamento"
+          - "Telemetria nao configurada"
+
+      # --- Step 2.4: Acesso a Sistemas ---
+      - id: step_2_4
+        name: "Configuracao de Acessos e Sistemas"
+        agent: tech-systems
+        execution_mode: agent
+        depends_on: step_2_1
+        description: >-
+          Configurar todos os acessos do franqueado aos sistemas
+          da rede.
+        inputs:
+          - "Dados do franqueado"
+          - "Lista de sistemas"
+        outputs:
+          - "acessos-configurados-{nome}.md"
+        systems_access:
+          - system: "Portal do Franqueado"
+            description: "Dashboard de vendas, KPIs, relatorios"
+          - system: "Sistema de Telemetria"
+            description: "Monitoramento das maquinas em tempo real"
+          - system: "App de Gestao"
+            description: "Roteiro de abastecimento, estoque, pedidos"
+          - system: "WhatsApp Business (Suporte)"
+            description: "Canal direto com a franqueadora"
+          - system: "Email Corporativo"
+            description: "{nome}@avend.com.br"
+          - system: "Base de Conhecimento"
+            description: "Manuais, videos, FAQs"
+        checks:
+          - "Todos os acessos configurados e testados"
+          - "Franqueado consegue acessar todos os sistemas"
+          - "Senhas alteradas no primeiro acesso"
+          - "Tutorial de uso entregue"
+        veto_if:
+          - "Go-live sem acesso ao sistema de telemetria"
+          - "Go-live sem canal de suporte configurado"
+
+# ============================================================================
+# PHASE 3: LAUNCH & SUPPORT — Lancamento e Acompanhamento
+# ============================================================================
+
+  - id: phase_3_launch
+    name: "Launch & Support — Lancamento e Acompanhamento"
+    description: >-
+      Go-live da operacao do franqueado com acompanhamento intensivo
+      nos primeiros 90 dias (30/60/90).
+    duration: "90 dias"
+    depends_on: phase_2_setup
+    agents:
+      - relationship-manager
+      - operations-designer
+      - franchise-strategist
+
+    steps:
+      # --- Step 3.1: Go-Live ---
+      - id: step_3_1
+        name: "Go-Live Acompanhado"
+        agent: operations-designer
+        execution_mode: hybrid
+        description: >-
+          Primeiro dia de operacao real do franqueado com suporte presencial.
+        inputs:
+          - "log-instalacao-{nome}.md"
+          - "registro-treinamento-{nome}.md"
+        outputs:
+          - "go-live-report-{nome}.md"
+        checklist: "checklists/onboarding-completion-checklist.md"
+        go_live_protocol:
+          pre_launch:
+            - "Checklist de onboarding completo verificado"
+            - "Maquinas 100% abastecidas"
+            - "Sistemas testados e operacionais"
+            - "Material de marketing no local (se aplicavel)"
+          day_1:
+            - "Consultor de campo presente nas primeiras 4 horas"
+            - "Acompanhamento das primeiras vendas"
+            - "Verificacao de todos os meios de pagamento"
+            - "Resolucao de qualquer problema tecnico imediato"
+          day_2_3:
+            - "Consultor disponivel por telefone/WhatsApp"
+            - "Monitoramento remoto via telemetria"
+            - "Call de 15min no fim do dia"
+        checks:
+          - "Todas as maquinas vendendo normalmente"
+          - "Pagamentos processando corretamente"
+          - "Franqueado operando de forma autonoma"
+          - "Nenhum problema critico aberto"
+        veto_if:
+          - "Go-live com maquinas nao operacionais"
+          - "Go-live sem franqueado ter completado treinamento"
+          - "Sistemas de pagamento com falha"
+
+      # --- Step 3.2: Check-in 30 Dias ---
+      - id: step_3_2
+        name: "Check-in 30 Dias"
+        agent: relationship-manager
+        execution_mode: hybrid
+        depends_on: step_3_1
+        description: >-
+          Primeira avaliacao formal da operacao do franqueado.
+        inputs:
+          - "Dados de vendas (30 dias)"
+          - "KPIs operacionais"
+          - "Feedback do franqueado"
+        outputs:
+          - "checkin-30d-{nome}.md"
+        review_areas:
+          financial:
+            - "Faturamento vs projecao"
+            - "Ticket medio"
+            - "Margem bruta"
+            - "Fluxo de caixa"
+          operational:
+            - "Uptime das maquinas"
+            - "Frequencia de abastecimento"
+            - "Mix de produtos (vendas por categoria)"
+            - "Ruptura de estoque"
+          behavioral:
+            - "Seguindo processos do manual"
+            - "Reportando dados corretamente"
+            - "Proatividade na prospecção de novos pontos"
+            - "Relacionamento com proprietarios dos locais"
+          satisfaction:
+            - "NPS do franqueado (0-10)"
+            - "Principais dificuldades"
+            - "Sugestoes de melhoria"
+            - "Nivel de confianca (1-5)"
+        actions:
+          on_track: "Manter acompanhamento semanal"
+          below_target: "Intensificar suporte + plano de acao especifico"
+          critical: "Visita do consultor de campo + revisao do plano"
+        checks:
+          - "Relatorio completo entregue"
+          - "Faturamento >= 70% da projecao"
+          - "NPS >= 7"
+          - "Plano de acao para gaps (se houver)"
+        veto_if:
+          - "Faturamento abaixo de 40% da projecao sem plano de acao"
+          - "Franqueado inadimplente com royalties"
+
+      # --- Step 3.3: Check-in 60 Dias ---
+      - id: step_3_3
+        name: "Check-in 60 Dias"
+        agent: relationship-manager
+        execution_mode: hybrid
+        depends_on: step_3_2
+        description: >-
+          Segunda avaliacao com foco em tendencias e ajustes.
+        inputs:
+          - "checkin-30d-{nome}.md"
+          - "Dados de vendas (60 dias)"
+          - "Acoes tomadas no check-in 30d"
+        outputs:
+          - "checkin-60d-{nome}.md"
+        focus_areas:
+          - "Tendencia de faturamento (crescente, estavel, decrescente)"
+          - "Efetividade das acoes do plano de 30 dias"
+          - "Expansao de pontos de venda (novos locais)"
+          - "Otimizacao de mix de produtos"
+          - "Benchmark com outros franqueados da regiao"
+        checks:
+          - "Tendencia de faturamento estavel ou crescente"
+          - "Acoes do plano de 30d implementadas"
+          - "Pelo menos 1 novo ponto prospectado"
+          - "NPS >= 7"
+        veto_if:
+          - "Tendencia decrescente por 4 semanas consecutivas sem acao"
+          - "Franqueado nao implementou acoes do plano de 30d"
+
+      # --- Step 3.4: Check-in 90 Dias ---
+      - id: step_3_4
+        name: "Check-in 90 Dias — Avaliacao Final de Onboarding"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        depends_on: step_3_3
+        description: >-
+          Avaliacao final do periodo de onboarding. Transicao para
+          acompanhamento regular da rede.
+        inputs:
+          - "checkin-30d-{nome}.md"
+          - "checkin-60d-{nome}.md"
+          - "Dados de vendas (90 dias)"
+        outputs:
+          - "checkin-90d-{nome}.md"
+          - "onboarding-final-report-{nome}.md"
+        final_assessment:
+          metrics:
+            - "Faturamento medio mensal vs projecao"
+            - "Margem liquida do franqueado"
+            - "Pontualidade em royalties"
+            - "Uptime medio das maquinas"
+            - "NPS do franqueado"
+            - "Quantidade de pontos ativos"
+          classification:
+            green:
+              criteria: "Faturamento >= 90% projecao, NPS >= 8, royalties em dia"
+              action: "Transicao para acompanhamento regular"
+            yellow:
+              criteria: "Faturamento 60-90% projecao, NPS 6-8"
+              action: "Plano de intensificacao por mais 60 dias"
+            red:
+              criteria: "Faturamento < 60% projecao ou NPS < 6"
+              action: "Revisao completa + consultor de campo dedicado"
+        transition:
+          to: "Acompanhamento regular da rede"
+          cadence: "Mensal (call) + Trimestral (visita)"
+          next_workflow: "network-health-review"
+        checks:
+          - "90 dias completos de operacao"
+          - "Todos os 3 check-ins realizados"
+          - "Classificacao atribuida (green/yellow/red)"
+          - "Plano de transicao definido"
+        veto_if:
+          - "Encerramento do onboarding sem os 3 check-ins"
+          - "Franqueado classificado como red sem plano de acao"
+
+# ============================================================================
+# GLOBAL VETO CONDITIONS
+# ============================================================================
+
+global_veto_conditions:
+  - id: FO-VETO-001
+    condition: "Onboarding sem contrato assinado"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — contrato e prerequisito absoluto"
+
+  - id: FO-VETO-002
+    condition: "Go-live sem treinamento concluido e aprovado"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — risco operacional e reputacional"
+
+  - id: FO-VETO-003
+    condition: "Pular qualquer check-in (30/60/90)"
+    severity: MUST
+    action: "WARN — reagendar imediatamente, nao pular"
+
+  - id: FO-VETO-004
+    condition: "Franqueado operando sem telemetria configurada"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — sem telemetria nao ha monitoramento da rede"
+
+# ============================================================================
+# METADATA
+# ============================================================================
+
+metadata:
+  total_steps: 12
+  total_checkpoints: 4
+  total_veto_conditions: 16
+  agents_involved: 7
+  templates_used:
+    - "templates/franchisee-profile-tmpl.md"
+  checklists_used:
+    - "checklists/franchisee-qualification-checklist.md"
+    - "checklists/onboarding-completion-checklist.md"

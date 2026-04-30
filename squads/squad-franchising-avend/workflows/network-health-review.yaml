@@ -1,0 +1,525 @@
+# Network Health Review Workflow — Avend Franquias
+# Review trimestral de saude da rede de franqueados
+# 3 fases: Data Collection, Analysis, Action Plan
+# Updated: 2026-03-13
+
+id: network-health-review
+name: "Network Health Review — Review Trimestral da Rede"
+version: "1.0.0"
+squad: franchising-avend
+description: >-
+  Workflow trimestral para avaliar a saude da rede de franqueados Avend.
+  Coleta KPIs, analisa tendencias, benchmarks internos e gera plano de acao
+  para melhoria continua da rede. Executado a cada 90 dias.
+
+trigger: "*network-review"
+execution_mode: sequential
+estimated_duration: "10-15 dias"
+total_phases: 3
+cadence: quarterly
+
+# ============================================================================
+# PREREQUISITES
+# ============================================================================
+
+prerequisites:
+  - "Rede com pelo menos 3 franqueados ativos"
+  - "Dados de vendas/telemetria dos ultimos 90 dias"
+  - "Periodo anterior de review concluido (se nao for o primeiro)"
+
+# ============================================================================
+# PHASE 1: DATA COLLECTION — Coleta de Dados
+# ============================================================================
+
+phases:
+  - id: phase_1_data_collection
+    name: "Data Collection — Coleta de Dados e KPIs"
+    description: >-
+      Coletar todos os dados quantitativos e qualitativos necessarios
+      para a analise de saude da rede.
+    duration: "3-5 dias"
+    agents:
+      - network-analyst
+      - relationship-manager
+      - financial-modeler
+
+    steps:
+      # --- Step 1.1: KPIs Operacionais ---
+      - id: step_1_1
+        name: "Coleta de KPIs Operacionais"
+        agent: network-analyst
+        execution_mode: agent
+        description: >-
+          Extrair KPIs operacionais de todos os franqueados via
+          sistemas de telemetria e relatorios.
+        inputs:
+          - "Sistema de telemetria (dados automaticos)"
+          - "Relatorios mensais dos franqueados"
+          - "Dados de pagamento de royalties"
+        outputs:
+          - "kpis-operacionais-Q{quarter}.md"
+        kpis:
+          revenue:
+            - metric: "Faturamento bruto por franqueado"
+              unit: "R$/mes"
+              benchmark: "R$25k-R$50k"
+            - metric: "Faturamento por maquina"
+              unit: "R$/mes"
+              benchmark: "R$3k-R$8k"
+            - metric: "Ticket medio"
+              unit: "R$"
+              benchmark: "R$5-R$12"
+            - metric: "Vendas por maquina/dia"
+              unit: "transacoes"
+              benchmark: "15-40"
+          operational:
+            - metric: "Uptime medio das maquinas"
+              unit: "%"
+              benchmark: ">95%"
+            - metric: "Frequencia de abastecimento"
+              unit: "dias"
+              benchmark: "2-4 dias"
+            - metric: "Ruptura de estoque"
+              unit: "%"
+              benchmark: "<5%"
+            - metric: "Tempo medio de reparo"
+              unit: "horas"
+              benchmark: "<24h"
+          financial:
+            - metric: "Margem bruta do franqueado"
+              unit: "%"
+              benchmark: ">45%"
+            - metric: "Margem liquida do franqueado"
+              unit: "%"
+              benchmark: ">20%"
+            - metric: "Pontualidade royalties"
+              unit: "%"
+              benchmark: ">95%"
+            - metric: "Inadimplencia"
+              unit: "%"
+              benchmark: "<5%"
+          growth:
+            - metric: "Novos pontos por franqueado/trimestre"
+              unit: "pontos"
+              benchmark: "1-3"
+            - metric: "Maquinas ativas por franqueado"
+              unit: "unidades"
+              benchmark: "5-15"
+            - metric: "Churn de franqueados"
+              unit: "%"
+              benchmark: "<5%/ano"
+        checks:
+          - "Dados de pelo menos 90% dos franqueados coletados"
+          - "Todas as 4 categorias de KPIs cobertas"
+          - "Dados validados (sem outliers nao explicados)"
+        veto_if:
+          - "Dados de menos de 70% da rede coletados"
+          - "Sistema de telemetria offline por mais de 7 dias no periodo"
+
+      # --- Step 1.2: Pesquisa de Satisfacao ---
+      - id: step_1_2
+        name: "Pesquisa de Satisfacao dos Franqueados"
+        agent: relationship-manager
+        execution_mode: hybrid
+        description: >-
+          Aplicar pesquisa estruturada de satisfacao e coletar
+          feedback qualitativo dos franqueados.
+        inputs:
+          - "Questionario padrao de satisfacao"
+          - "Lista de franqueados ativos"
+        outputs:
+          - "pesquisa-satisfacao-Q{quarter}.md"
+        survey_sections:
+          - section: "Satisfacao Geral"
+            questions:
+              - "NPS: De 0 a 10, quanto recomendaria a Avend?"
+              - "CSAT: Satisfacao geral com a franquia (1-5)"
+              - "Expectativa vs realidade (1-5)"
+          - section: "Suporte da Franqueadora"
+            questions:
+              - "Qualidade do suporte tecnico (1-5)"
+              - "Tempo de resposta do suporte (1-5)"
+              - "Qualidade do consultor de campo (1-5)"
+              - "Utilidade dos materiais e treinamentos (1-5)"
+          - section: "Operacao"
+            questions:
+              - "Qualidade das maquinas (1-5)"
+              - "Facilidade de operacao diaria (1-5)"
+              - "Eficiencia da logistica de abastecimento (1-5)"
+              - "Qualidade dos sistemas (telemetria, portal) (1-5)"
+          - section: "Financeiro"
+            questions:
+              - "Satisfacao com o retorno financeiro (1-5)"
+              - "Justica dos royalties (1-5)"
+              - "Transparencia da franqueadora (1-5)"
+          - section: "Aberta"
+            questions:
+              - "O que a Avend faz bem?"
+              - "O que precisa melhorar?"
+              - "Sugestoes para a rede"
+              - "Gostaria de expandir? Se sim, quando?"
+        checks:
+          - "Taxa de resposta >= 80% da rede"
+          - "Todas as secoes respondidas"
+          - "NPS calculado"
+          - "Temas qualitativos categorizados"
+        veto_if:
+          - "Taxa de resposta abaixo de 50%"
+          - "NPS nao calculado"
+
+      # --- Step 1.3: Dados Financeiros Consolidados ---
+      - id: step_1_3
+        name: "Consolidacao Financeira da Rede"
+        agent: financial-modeler
+        execution_mode: agent
+        description: >-
+          Consolidar dados financeiros da rede e da franqueadora.
+        inputs:
+          - "DRE dos franqueados (agregado)"
+          - "Receita de royalties"
+          - "Receita de taxa de franquia"
+          - "Custos operacionais da franqueadora"
+        outputs:
+          - "financeiro-rede-Q{quarter}.md"
+        consolidation:
+          franqueados:
+            - "Faturamento total da rede"
+            - "Faturamento medio por franqueado"
+            - "Distribuicao de faturamento (percentis P25, P50, P75)"
+            - "Franqueados acima/abaixo do breakeven"
+          franqueadora:
+            - "Receita total (royalties + taxas + outras)"
+            - "Custo de suporte a rede"
+            - "Margem da franqueadora"
+            - "CAC (custo de aquisicao de franqueado)"
+            - "LTV do franqueado"
+        checks:
+          - "Dados financeiros de 100% dos franqueados"
+          - "DRE da franqueadora atualizada"
+          - "Benchmark de unit economics atualizado"
+        veto_if:
+          - "Dados financeiros de menos de 80% da rede"
+
+# ============================================================================
+# PHASE 2: ANALYSIS — Diagnostico e Analise
+# ============================================================================
+
+  - id: phase_2_analysis
+    name: "Analysis — Diagnostico e Benchmarking"
+    description: >-
+      Analisar os dados coletados, identificar tendencias, comparar
+      performance entre franqueados e gerar diagnostico.
+    duration: "3-5 dias"
+    depends_on: phase_1_data_collection
+    agents:
+      - network-analyst
+      - franchise-strategist
+      - financial-modeler
+
+    steps:
+      # --- Step 2.1: Benchmarking Interno ---
+      - id: step_2_1
+        name: "Benchmarking Interno da Rede"
+        agent: network-analyst
+        execution_mode: agent
+        description: >-
+          Comparar performance entre franqueados, identificar
+          top performers, underperformers e outliers.
+        inputs:
+          - "kpis-operacionais-Q{quarter}.md"
+          - "financeiro-rede-Q{quarter}.md"
+        outputs:
+          - "benchmarking-interno-Q{quarter}.md"
+        analysis:
+          rankings:
+            - "Top 3 franqueados por faturamento"
+            - "Top 3 por margem liquida"
+            - "Top 3 por crescimento"
+            - "Bottom 3 por faturamento"
+            - "Bottom 3 por uptime"
+          distributions:
+            - "Distribuicao de faturamento (histograma)"
+            - "Distribuicao de margem"
+            - "Curva de maturidade (meses de operacao vs performance)"
+          correlations:
+            - "Localizacao vs faturamento"
+            - "Mix de produtos vs ticket medio"
+            - "Frequencia de abastecimento vs ruptura"
+            - "Quantidade de maquinas vs margem"
+          clusters:
+            - cluster: "Stars"
+              criteria: "Faturamento > P75 E margem > P75"
+              action: "Estudar e replicar praticas"
+            - cluster: "Promising"
+              criteria: "Faturamento > P50 E tendencia crescente"
+              action: "Suporte de aceleracao"
+            - cluster: "Stable"
+              criteria: "Faturamento P25-P75 E margem positiva"
+              action: "Manter acompanhamento padrao"
+            - cluster: "At Risk"
+              criteria: "Faturamento < P25 OU margem negativa"
+              action: "Plano de recuperacao urgente"
+        checks:
+          - "Todos os franqueados classificados em clusters"
+          - "Rankings completos"
+          - "Correlacoes significativas identificadas"
+        veto_if:
+          - "Analise sem classificacao de clusters"
+          - "Rankings sem dados de pelo menos 80% da rede"
+
+      # --- Step 2.2: Analise de Tendencias ---
+      - id: step_2_2
+        name: "Analise de Tendencias e Sazonalidade"
+        agent: network-analyst
+        execution_mode: agent
+        description: >-
+          Comparar com trimestres anteriores e identificar tendencias.
+        inputs:
+          - "kpis-operacionais-Q{quarter}.md"
+          - "Dados de trimestres anteriores"
+        outputs:
+          - "tendencias-Q{quarter}.md"
+        trend_analysis:
+          quarter_over_quarter:
+            - "Variacao de faturamento total da rede"
+            - "Variacao de faturamento medio por maquina"
+            - "Variacao de NPS"
+            - "Variacao de churn"
+            - "Variacao de inadimplencia"
+          seasonality:
+            - "Meses de alta (verao, datas comemorativas)"
+            - "Meses de baixa (inverno, pos-ferias)"
+            - "Impacto em planejamento de estoque"
+          projections:
+            - "Projecao de faturamento proximo trimestre"
+            - "Projecao de crescimento da rede"
+            - "Projecao de necessidade de suporte"
+        checks:
+          - "Comparativo com pelo menos 1 trimestre anterior"
+          - "Tendencias classificadas (crescente, estavel, decrescente)"
+          - "Projecoes para proximo trimestre"
+        veto_if:
+          - "Projecoes sem base em dados reais"
+
+      # --- Step 2.3: Diagnostico Consolidado ---
+      - id: step_2_3
+        name: "Diagnostico Consolidado da Rede"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        depends_on:
+          - step_2_1
+          - step_2_2
+        description: >-
+          Consolidar todas as analises em um diagnostico unico
+          com classificacao de saude da rede.
+        inputs:
+          - "benchmarking-interno-Q{quarter}.md"
+          - "tendencias-Q{quarter}.md"
+          - "pesquisa-satisfacao-Q{quarter}.md"
+          - "financeiro-rede-Q{quarter}.md"
+        outputs:
+          - "diagnostico-rede-Q{quarter}.md"
+        template: "templates/network-health-report-tmpl.md"
+        health_score:
+          dimensions:
+            - dimension: "Performance Financeira"
+              weight: 30
+              indicators:
+                - "Faturamento medio vs benchmark"
+                - "Margem media vs benchmark"
+                - "Inadimplencia"
+            - dimension: "Saude Operacional"
+              weight: 25
+              indicators:
+                - "Uptime medio"
+                - "Ruptura de estoque"
+                - "Tempo medio de reparo"
+            - dimension: "Satisfacao da Rede"
+              weight: 25
+              indicators:
+                - "NPS medio"
+                - "CSAT medio"
+                - "Churn"
+            - dimension: "Crescimento"
+              weight: 20
+              indicators:
+                - "Novos franqueados no trimestre"
+                - "Novos pontos de venda"
+                - "Tendencia de faturamento"
+          classification:
+            excellent: "Score >= 85"
+            healthy: "Score 70-84"
+            attention: "Score 55-69"
+            critical: "Score < 55"
+        checks:
+          - "Health Score calculado"
+          - "Classificacao da rede definida"
+          - "Top 5 pontos fortes identificados"
+          - "Top 5 areas de melhoria identificadas"
+          - "Comparativo com trimestre anterior"
+        veto_if:
+          - "Diagnostico sem dados de satisfacao"
+          - "Diagnostico sem dados financeiros"
+          - "Health Score sem pelo menos 3 dimensoes"
+
+# ============================================================================
+# PHASE 3: ACTION PLAN — Plano de Acao
+# ============================================================================
+
+  - id: phase_3_action_plan
+    name: "Action Plan — Plano de Acao e Melhorias"
+    description: >-
+      Definir plano de acao concreto para o proximo trimestre baseado
+      no diagnostico, com responsaveis, prazos e metricas.
+    duration: "3-5 dias"
+    depends_on: phase_2_analysis
+    agents:
+      - franchise-strategist
+      - relationship-manager
+      - operations-designer
+
+    steps:
+      # --- Step 3.1: Plano de Acao Individual ---
+      - id: step_3_1
+        name: "Planos de Acao por Franqueado (At Risk)"
+        agent: relationship-manager
+        execution_mode: hybrid
+        description: >-
+          Criar plano de acao especifico para cada franqueado
+          classificado como "At Risk".
+        inputs:
+          - "diagnostico-rede-Q{quarter}.md"
+          - "Dados individuais dos franqueados at-risk"
+        outputs:
+          - "plano-acao-{franqueado}.md"
+        action_plan_template:
+          diagnosis: "Resumo dos problemas identificados"
+          root_cause: "Analise de causa raiz"
+          actions:
+            - action: "Descricao da acao"
+              responsible: "Quem executa"
+              deadline: "Prazo"
+              kpi: "Metrica de sucesso"
+              support: "Suporte da franqueadora"
+          review_date: "Data de revisao (30 dias)"
+          escalation: "Criterio para escalacao"
+        checks:
+          - "Plano para 100% dos franqueados at-risk"
+          - "Cada plano com pelo menos 3 acoes concretas"
+          - "Prazos definidos para todas as acoes"
+          - "Reuniao de alinhamento realizada com cada franqueado"
+        veto_if:
+          - "Franqueado at-risk sem plano de acao"
+          - "Plano sem prazo definido"
+
+      # --- Step 3.2: Acoes de Rede ---
+      - id: step_3_2
+        name: "Acoes de Melhoria da Rede"
+        agent: franchise-strategist
+        execution_mode: hybrid
+        description: >-
+          Definir acoes que beneficiam toda a rede baseado nos
+          padroes identificados no diagnostico.
+        inputs:
+          - "diagnostico-rede-Q{quarter}.md"
+          - "tendencias-Q{quarter}.md"
+        outputs:
+          - "acoes-rede-Q{quarter}.md"
+        action_categories:
+          - category: "Quick Wins (30 dias)"
+            description: "Acoes de impacto rapido e baixo esforco"
+            max_actions: 3
+          - category: "Melhorias Operacionais (90 dias)"
+            description: "Otimizacoes de processo e operacao"
+            max_actions: 5
+          - category: "Investimentos Estrategicos (180 dias)"
+            description: "Projetos maiores com impacto de medio prazo"
+            max_actions: 3
+          - category: "Best Practices"
+            description: "Praticas dos top performers para replicar"
+            max_actions: 5
+        checks:
+          - "Pelo menos 1 quick win identificado"
+          - "Acoes priorizadas por impacto x esforco"
+          - "Responsavel definido para cada acao"
+          - "Metricas de sucesso definidas"
+        veto_if:
+          - "Plano de acao vazio (nenhuma acao)"
+          - "Acoes sem responsavel ou prazo"
+
+      # --- Step 3.3: Comunicacao e Alinhamento ---
+      - id: step_3_3
+        name: "Comunicacao dos Resultados a Rede"
+        agent: relationship-manager
+        execution_mode: hybrid
+        depends_on:
+          - step_3_1
+          - step_3_2
+        description: >-
+          Comunicar os resultados da review e o plano de acao
+          para todos os franqueados.
+        inputs:
+          - "diagnostico-rede-Q{quarter}.md"
+          - "acoes-rede-Q{quarter}.md"
+        outputs:
+          - "comunicado-rede-Q{quarter}.md"
+          - "ata-reuniao-rede-Q{quarter}.md"
+        communication_plan:
+          - channel: "Reuniao de Rede (video/presencial)"
+            content:
+              - "Resultados do trimestre (versao consolidada, sem ranking nominal)"
+              - "Benchmarks da rede (percentis)"
+              - "Acoes planejadas para proximo trimestre"
+              - "Reconhecimento de top performers"
+              - "Espaco para perguntas e sugestoes"
+          - channel: "Email/Portal"
+            content:
+              - "Report resumido com KPIs da rede"
+              - "Best practices documentadas"
+              - "Calendario do proximo trimestre"
+          - channel: "Individual (At Risk)"
+            content:
+              - "Reuniao 1:1 com plano de acao especifico"
+              - "Comprometimento mutuo documentado"
+        checks:
+          - "Reuniao de rede realizada"
+          - "Report distribuido para todos"
+          - "Reunioes individuais com at-risk concluidas"
+          - "Proxima data de review agendada"
+        veto_if:
+          - "Resultado divulgado sem reuniao de contextualizacao"
+          - "Ranking nominal exposto publicamente"
+
+# ============================================================================
+# GLOBAL VETO CONDITIONS
+# ============================================================================
+
+global_veto_conditions:
+  - id: NR-VETO-001
+    condition: "Review sem dados de pelo menos 70% da rede"
+    severity: NON-NEGOTIABLE
+    action: "BLOCK — amostra insuficiente para conclusoes"
+
+  - id: NR-VETO-002
+    condition: "Diagnostico sem pesquisa de satisfacao"
+    severity: MUST
+    action: "WARN — dados qualitativos essenciais"
+
+  - id: NR-VETO-003
+    condition: "Plano de acao sem reuniao de alinhamento com a rede"
+    severity: MUST
+    action: "WARN — engajamento da rede depende de comunicacao"
+
+# ============================================================================
+# METADATA
+# ============================================================================
+
+metadata:
+  total_steps: 9
+  total_checkpoints: 0
+  total_veto_conditions: 10
+  agents_involved: 6
+  templates_used:
+    - "templates/network-health-report-tmpl.md"
+  checklists_used: []
+  recurrence: "Cada 90 dias"

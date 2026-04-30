@@ -1,0 +1,118 @@
+# n8n Workflow Optimization Patterns
+# Reference for *optimize-workflow command
+# Version: 1.0.0
+
+patterns:
+
+  cost_reduction:
+    - id: "OPT-COST-001"
+      name: "Model Tiering"
+      description: "Use cheaper models for simple tasks"
+      implementation: |
+        Replace GPT-4o with GPT-4o-mini for:
+        - Intent classification
+        - Routing decisions
+        - Simple formatting
+        - Yes/no decisions
+        Keep GPT-4o only for:
+        - Complex reasoning
+        - Multi-step analysis
+        - Creative generation
+      savings: "60-80%"
+
+    - id: "OPT-COST-002"
+      name: "Prompt Compression"
+      description: "Reduce system prompt token count"
+      implementation: |
+        1. Remove redundant instructions
+        2. Move knowledge to RAG (not prompt)
+        3. Use bullet points instead of paragraphs
+        4. Remove examples that don't add value
+        Target: < 500 tokens for routing, < 1500 for main agent
+      savings: "20-40%"
+
+    - id: "OPT-COST-003"
+      name: "Response Caching"
+      description: "Cache frequent AI responses"
+      implementation: |
+        Add Code node before AI agent:
+        1. Hash the user input
+        2. Check cache (Redis/memory)
+        3. If hit → return cached response
+        4. If miss → call AI → cache response (TTL: 1hr)
+        Best for: FAQ, product info, policies
+      savings: "30-60%"
+
+    - id: "OPT-COST-004"
+      name: "Pre-AI Filtering"
+      description: "Handle simple queries without AI"
+      implementation: |
+        Add Switch/IF node before AI agent:
+        - Exact match keywords → direct response
+        - Simple lookups → database query
+        - Greetings → static response
+        Only route to AI for complex queries
+      savings: "20-50%"
+
+  latency_reduction:
+    - id: "OPT-LAT-001"
+      name: "Parallel Execution"
+      description: "Run independent operations simultaneously"
+      implementation: |
+        Use Split Out → parallel nodes → Merge:
+        - Parallel API calls (enrichment + CRM)
+        - Parallel sub-agent queries
+        - Parallel data fetches
+      improvement: "40-70% faster"
+
+    - id: "OPT-LAT-002"
+      name: "Streaming Responses"
+      description: "Stream AI response instead of waiting for full completion"
+      implementation: |
+        Enable streaming on AI Agent node:
+        - Set stream: true in model config
+        - Use SSE for web chat
+        - WhatsApp: not supported (send full response)
+      improvement: "Perceived 2-3x faster"
+
+    - id: "OPT-LAT-003"
+      name: "Lightweight Router"
+      description: "Ultra-fast first response with routing"
+      implementation: |
+        1. Acknowledge immediately ("Processing your request...")
+        2. Route with GPT-4o-mini (100-200ms)
+        3. Process with appropriate agent
+        4. Send final response
+      improvement: "< 1s first response"
+
+  reliability:
+    - id: "OPT-REL-001"
+      name: "Circuit Breaker Pattern"
+      description: "Stop calling failing services"
+      implementation: |
+        Code node tracks failures per service:
+        - 3 consecutive failures → circuit OPEN (skip for 5min)
+        - After 5min → circuit HALF-OPEN (try 1 request)
+        - Success → circuit CLOSED (normal operation)
+        During OPEN: return cached/fallback response
+
+    - id: "OPT-REL-002"
+      name: "Graceful Degradation"
+      description: "Degrade service quality instead of failing"
+      implementation: |
+        Priority fallback chain:
+        1. Primary AI model (GPT-4o)
+        2. Fallback model (GPT-4o-mini)
+        3. Cached response
+        4. Static FAQ match
+        5. Human handoff
+
+    - id: "OPT-REL-003"
+      name: "Idempotent Processing"
+      description: "Safe to retry without duplicate effects"
+      implementation: |
+        For workflows that modify external state:
+        1. Generate unique request_id
+        2. Check if already processed (DB lookup)
+        3. If processed → return previous result
+        4. If new → process and store result with request_id

@@ -1,0 +1,421 @@
+# ABF Benchmark Metrics by Segment
+# Source: ABF (Associação Brasileira de Franchising) — Relatórios anuais
+# Squad: squad-franchising-avend (Avend Franquias)
+# Última atualização: 2026-03-13
+# Nota: Valores são referências de mercado. Confirmar com relatório ABF vigente.
+
+metadata:
+  source: "ABF — Associação Brasileira de Franchising"
+  reference_year: 2025
+  currency: BRL
+  disclaimer: >
+    Valores baseados em relatórios públicos ABF e pesquisas setoriais.
+    Dados de vending/autoatendimento são parcialmente estimados por ser
+    segmento emergente no franchising brasileiro. Consultar ABVA para
+    dados específicos de vending.
+
+# ============================================================
+# SEGMENTO PRINCIPAL: Vending / Autoatendimento
+# ============================================================
+vending_autoatendimento:
+  description: "Máquinas automáticas de venda (snacks, bebidas, café, etc.)"
+  relevancia_avend: "SEGMENTO DIRETO — principal benchmark"
+
+  investimento:
+    taxa_franquia:
+      min: 10000
+      max: 30000
+      media: 18000
+      avend_posicao: 15000  # R$ 15k — abaixo da média (acessível)
+    investimento_total:
+      min: 25000
+      max: 120000
+      media: 55000
+      avend_posicao: 50000  # R$ 50k — na média
+    capital_giro:
+      min: 5000
+      max: 20000
+      media: 10000
+
+  performance:
+    faturamento_medio_mensal:
+      min: 5000
+      max: 25000
+      media: 12000
+      avend_projecao: 12000
+    ticket_medio:
+      min: 3.50
+      max: 12.00
+      media: 6.50
+    transacoes_dia_por_maquina:
+      min: 15
+      max: 80
+      media: 35
+
+  retorno:
+    prazo_retorno_meses:
+      min: 6
+      max: 24
+      media: 14
+      avend_projecao: 12
+    roi_anual_percentual:
+      min: 30
+      max: 120
+      media: 65
+      avend_projecao: 74
+    margem_bruta_percentual:
+      min: 35
+      max: 65
+      media: 48
+
+  rede:
+    taxa_mortalidade_percentual:
+      ano_1: 8
+      ano_3: 15
+      ano_5: 22
+    crescimento_rede_anual_percentual:
+      media: 18
+      top_quartil: 35
+    satisfacao_franqueado_nps:
+      media: 42
+      top_quartil: 65
+
+  taxas:
+    royalty_percentual:
+      min: 3
+      max: 8
+      media: 5
+    fundo_marketing_percentual:
+      min: 1
+      max: 3
+      media: 2
+
+# ============================================================
+# SEGMENTO COMPARATIVO: Food Service (Alimentação)
+# ============================================================
+food_service:
+  description: "Restaurantes, fast food, cafeterias, açaí, etc."
+  relevancia_avend: "COMPARATIVO — segmento mais maduro em franchising"
+
+  investimento:
+    taxa_franquia:
+      min: 20000
+      max: 80000
+      media: 45000
+    investimento_total:
+      min: 80000
+      max: 500000
+      media: 180000
+    capital_giro:
+      min: 15000
+      max: 60000
+      media: 30000
+
+  performance:
+    faturamento_medio_mensal:
+      min: 30000
+      max: 200000
+      media: 80000
+    ticket_medio:
+      min: 15.00
+      max: 60.00
+      media: 28.00
+
+  retorno:
+    prazo_retorno_meses:
+      min: 12
+      max: 36
+      media: 24
+    roi_anual_percentual:
+      min: 20
+      max: 80
+      media: 40
+    margem_bruta_percentual:
+      min: 55
+      max: 75
+      media: 65
+
+  rede:
+    taxa_mortalidade_percentual:
+      ano_1: 5
+      ano_3: 12
+      ano_5: 20
+    crescimento_rede_anual_percentual:
+      media: 12
+    satisfacao_franqueado_nps:
+      media: 38
+
+  taxas:
+    royalty_percentual:
+      min: 4
+      max: 12
+      media: 6
+    fundo_marketing_percentual:
+      min: 2
+      max: 5
+      media: 3
+
+# ============================================================
+# SEGMENTO COMPARATIVO: Serviços
+# ============================================================
+servicos:
+  description: "Limpeza, manutenção, TI, educação corporativa, etc."
+  relevancia_avend: "COMPARATIVO — investimento similar em alguns nichos"
+
+  investimento:
+    taxa_franquia:
+      min: 10000
+      max: 50000
+      media: 25000
+    investimento_total:
+      min: 20000
+      max: 150000
+      media: 60000
+    capital_giro:
+      min: 5000
+      max: 30000
+      media: 12000
+
+  performance:
+    faturamento_medio_mensal:
+      min: 10000
+      max: 80000
+      media: 35000
+    ticket_medio:
+      varies: true
+      nota: "Ticket varia muito por tipo de serviço"
+
+  retorno:
+    prazo_retorno_meses:
+      min: 8
+      max: 24
+      media: 16
+    roi_anual_percentual:
+      min: 30
+      max: 100
+      media: 55
+    margem_bruta_percentual:
+      min: 40
+      max: 80
+      media: 55
+
+  rede:
+    taxa_mortalidade_percentual:
+      ano_1: 7
+      ano_3: 14
+      ano_5: 20
+    crescimento_rede_anual_percentual:
+      media: 15
+    satisfacao_franqueado_nps:
+      media: 40
+
+  taxas:
+    royalty_percentual:
+      min: 5
+      max: 15
+      media: 8
+    fundo_marketing_percentual:
+      min: 1
+      max: 4
+      media: 2
+
+# ============================================================
+# SEGMENTO COMPARATIVO: Educação
+# ============================================================
+educacao:
+  description: "Escolas de idiomas, cursos profissionalizantes, reforço"
+  relevancia_avend: "REFERÊNCIA — alta maturidade de modelo"
+
+  investimento:
+    taxa_franquia:
+      min: 15000
+      max: 60000
+      media: 35000
+    investimento_total:
+      min: 50000
+      max: 300000
+      media: 120000
+    capital_giro:
+      min: 10000
+      max: 40000
+      media: 20000
+
+  performance:
+    faturamento_medio_mensal:
+      min: 20000
+      max: 120000
+      media: 50000
+
+  retorno:
+    prazo_retorno_meses:
+      min: 12
+      max: 36
+      media: 24
+    roi_anual_percentual:
+      min: 25
+      max: 70
+      media: 42
+    margem_bruta_percentual:
+      min: 50
+      max: 75
+      media: 60
+
+  rede:
+    taxa_mortalidade_percentual:
+      ano_1: 4
+      ano_3: 10
+      ano_5: 18
+    crescimento_rede_anual_percentual:
+      media: 10
+    satisfacao_franqueado_nps:
+      media: 45
+
+  taxas:
+    royalty_percentual:
+      min: 8
+      max: 15
+      media: 12
+    fundo_marketing_percentual:
+      min: 2
+      max: 5
+      media: 3
+
+# ============================================================
+# SEGMENTO COMPARATIVO: Saúde / Beleza / Bem-estar
+# ============================================================
+saude_beleza:
+  description: "Clínicas, estética, farmácias, óticas, academias"
+  relevancia_avend: "REFERÊNCIA — crescimento alto no mercado"
+
+  investimento:
+    taxa_franquia:
+      min: 20000
+      max: 80000
+      media: 40000
+    investimento_total:
+      min: 60000
+      max: 400000
+      media: 150000
+    capital_giro:
+      min: 10000
+      max: 50000
+      media: 25000
+
+  performance:
+    faturamento_medio_mensal:
+      min: 25000
+      max: 150000
+      media: 60000
+
+  retorno:
+    prazo_retorno_meses:
+      min: 12
+      max: 30
+      media: 20
+    roi_anual_percentual:
+      min: 30
+      max: 80
+      media: 50
+    margem_bruta_percentual:
+      min: 50
+      max: 80
+      media: 62
+
+  rede:
+    taxa_mortalidade_percentual:
+      ano_1: 5
+      ano_3: 11
+      ano_5: 18
+    crescimento_rede_anual_percentual:
+      media: 14
+    satisfacao_franqueado_nps:
+      media: 43
+
+  taxas:
+    royalty_percentual:
+      min: 5
+      max: 12
+      media: 7
+    fundo_marketing_percentual:
+      min: 2
+      max: 4
+      media: 2.5
+
+# ============================================================
+# TABELA COMPARATIVA RESUMO
+# ============================================================
+comparativo_resumo:
+  headers:
+    - segmento
+    - investimento_total_medio
+    - faturamento_mensal_medio
+    - prazo_retorno_meses
+    - roi_anual_pct
+    - taxa_mortalidade_5anos_pct
+    - royalty_medio_pct
+
+  data:
+    - segmento: "Vending/Autoatendimento"
+      investimento_total_medio: 55000
+      faturamento_mensal_medio: 12000
+      prazo_retorno_meses: 14
+      roi_anual_pct: 65
+      taxa_mortalidade_5anos_pct: 22
+      royalty_medio_pct: 5
+
+    - segmento: "Food Service"
+      investimento_total_medio: 180000
+      faturamento_mensal_medio: 80000
+      prazo_retorno_meses: 24
+      roi_anual_pct: 40
+      taxa_mortalidade_5anos_pct: 20
+      royalty_medio_pct: 6
+
+    - segmento: "Serviços"
+      investimento_total_medio: 60000
+      faturamento_mensal_medio: 35000
+      prazo_retorno_meses: 16
+      roi_anual_pct: 55
+      taxa_mortalidade_5anos_pct: 20
+      royalty_medio_pct: 8
+
+    - segmento: "Educação"
+      investimento_total_medio: 120000
+      faturamento_mensal_medio: 50000
+      prazo_retorno_meses: 24
+      roi_anual_pct: 42
+      taxa_mortalidade_5anos_pct: 18
+      royalty_medio_pct: 12
+
+    - segmento: "Saúde/Beleza"
+      investimento_total_medio: 150000
+      faturamento_mensal_medio: 60000
+      prazo_retorno_meses: 20
+      roi_anual_pct: 50
+      taxa_mortalidade_5anos_pct: 18
+      royalty_medio_pct: 7
+
+# ============================================================
+# POSICIONAMENTO AVEND vs. MERCADO
+# ============================================================
+posicionamento_avend:
+  vantagens_competitivas:
+    - investimento_acessivel: "R$ 50k — 72% menor que food service"
+    - retorno_rapido: "12 meses — 50% mais rápido que food service"
+    - operacao_simplificada: "Sem equipe, sem ponto comercial fixo"
+    - escalabilidade: "Multi-unidade viável com investimento incremental"
+    - tecnologia: "Telemetria e pagamento digital diferencial"
+
+  desafios_do_segmento:
+    - maturidade: "Vending é segmento emergente no franchising BR"
+    - benchmarks_limitados: "Poucos dados públicos específicos"
+    - educacao_mercado: "Investidor ainda não conhece bem o modelo"
+    - dependencia_ponto: "Performance muito atrelada à localização"
+    - sazonalidade: "Variação por tipo de ponto (corporativo vs. educação)"
+
+  oportunidades:
+    - penetracao_baixa: "Brasil tem ~60k máquinas vs. 5M no Japão"
+    - tendencia_autoatendimento: "Crescimento pós-pandemia"
+    - pagamento_digital: "PIX revolucionou micro-transações"
+    - sustentabilidade: "Menos desperdício vs. food service tradicional"
+    - urbanizacao: "84%+ da população em centros urbanos"

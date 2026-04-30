@@ -1,0 +1,17 @@
+id: SS_WP_002
+name: "Immutable Cache for Hashed Assets"
+mind: steve_souders
+source: "High Performance Web Sites (2007)"
+domain: caching
+description: >
+  Assets com hash no filename devem ter Cache-Control: immutable.
+  O hash garante que o filename muda quando o conteudo muda,
+  permitindo cache agressivo sem risco de stale data.
+applies_when:
+  - "Configurando HTTP caching headers"
+  - "Deployando assets estaticos"
+action: >
+  Configurar Cache-Control: public, max-age=31536000, immutable
+  para assets com content hash (bundle.a1b2c3.js, styles.x7y8z9.css).
+severity: high
+confidence: 0.95

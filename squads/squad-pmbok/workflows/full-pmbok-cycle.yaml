@@ -1,0 +1,134 @@
+# Full PMBOK Cycle Workflow
+# Executa o ciclo completo de planejamento PMBOK com todos os 10 agentes
+name: full-pmbok-cycle
+version: 1.0.0
+description: "Ciclo completo de planejamento de projeto seguindo as 10 areas de conhecimento do PMBOK 7th Edition. Orquestrado pelo PM Chief (Atlas)."
+trigger: manual
+
+# ─────────────────────────────────────────────────────
+# Workflow Steps (Sequential - PMBOK Planning Order)
+# ─────────────────────────────────────────────────────
+steps:
+  - id: step-1
+    name: "Project Charter"
+    agent: integration-manager
+    task: create-project-charter
+    description: "Criar o Termo de Abertura do Projeto"
+    pmbok_process: "4.1 - Develop Project Charter"
+    phase: initiation
+    required: true
+
+  - id: step-2
+    name: "Stakeholder Register"
+    agent: stakeholder-manager
+    task: create-stakeholder-register
+    description: "Identificar e registrar partes interessadas"
+    pmbok_process: "13.1 - Identify Stakeholders"
+    phase: initiation
+    required: true
+    depends_on: [step-1]
+
+  - id: step-3
+    name: "Scope Definition & WBS"
+    agent: scope-manager
+    task: define-scope
+    description: "Definir escopo e criar WBS"
+    pmbok_process: "5.3/5.4 - Define Scope / Create WBS"
+    phase: planning
+    required: true
+    depends_on: [step-1]
+
+  - id: step-4
+    name: "Schedule"
+    agent: schedule-manager
+    task: create-schedule
+    description: "Criar cronograma com caminho critico"
+    pmbok_process: "6.1-6.6 - Schedule Management"
+    phase: planning
+    required: true
+    depends_on: [step-3]
+
+  - id: step-5
+    name: "Cost Estimation & Budget"
+    agent: cost-manager
+    task: estimate-costs
+    description: "Estimar custos e definir orcamento"
+    pmbok_process: "7.1-7.4 - Cost Management"
+    phase: planning
+    required: true
+    depends_on: [step-4]
+
+  - id: step-6
+    name: "Quality Plan"
+    agent: quality-manager
+    task: create-quality-plan
+    description: "Plano de gerenciamento da qualidade"
+    pmbok_process: "8.1 - Plan Quality Management"
+    phase: planning
+    required: true
+    depends_on: [step-3]
+
+  - id: step-7
+    name: "Resource Plan"
+    agent: resource-manager
+    task: create-resource-plan
+    description: "Plano de recursos e matriz RACI"
+    pmbok_process: "9.1-9.2 - Plan Resource Management"
+    phase: planning
+    required: true
+    depends_on: [step-4]
+
+  - id: step-8
+    name: "Communication Plan"
+    agent: communications-manager
+    task: create-communication-plan
+    description: "Plano de comunicacao"
+    pmbok_process: "10.1 - Plan Communications Management"
+    phase: planning
+    required: true
+    depends_on: [step-2]
+
+  - id: step-9
+    name: "Risk Register"
+    agent: risk-manager
+    task: create-risk-register
+    description: "Registro de riscos com analise e respostas"
+    pmbok_process: "11.1-11.5 - Risk Management"
+    phase: planning
+    required: true
+    depends_on: [step-3, step-5]
+
+  - id: step-10
+    name: "Procurement Plan"
+    agent: procurement-manager
+    task: create-procurement-plan
+    description: "Plano de aquisicoes e analise make-or-buy"
+    pmbok_process: "12.1 - Plan Procurement Management"
+    phase: planning
+    required: false
+    depends_on: [step-5]
+
+  - id: step-11
+    name: "Integrated Project Plan"
+    agent: integration-manager
+    task: full-project-plan
+    description: "Consolidar todos os planos subsidiarios no Plano Integrado"
+    pmbok_process: "4.2 - Develop Project Management Plan"
+    phase: planning
+    required: true
+    depends_on: [step-2, step-3, step-4, step-5, step-6, step-7, step-8, step-9]
+
+# ─────────────────────────────────────────────────────
+# Metadata
+# ─────────────────────────────────────────────────────
+metadata:
+  estimated_duration: "60-120 min (depending on project complexity)"
+  difficulty: intermediate
+  pmbok_edition: "7th Edition"
+  process_groups_covered:
+    - Initiating
+    - Planning
+  educational_note: |
+    Este workflow segue a ordem logica do PMBOK para planejamento.
+    Na pratica, muitos processos sao iterativos e podem ocorrer em paralelo.
+    O workflow sequencial ajuda estudantes a entender as dependencias entre areas.

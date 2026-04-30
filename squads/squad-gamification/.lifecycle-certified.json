@@ -1,0 +1,17 @@
+{
+  "certified": true,
+  "squad_name": "squad-gamification",
+  "squad_type": "pro",
+  "score": 9.25,
+  "verdict": "PASS",
+  "date": "2026-04-13",
+  "workflow": "lifecycle-squad",
+  "mode": "full",
+  "pre_upgrade_score": 8.75,
+  "post_upgrade_score": 9.25,
+  "upgrades_applied": [
+    "cross-squad delegation rule in gamification-chief",
+    "cross-squad integration doc (docs/cross-squad-integration.md)",
+    "cross_squad section in config.yaml"
+  ]
+}

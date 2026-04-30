@@ -1,0 +1,55 @@
+workflow:
+  id: wf-extract-all-banks
+  name: "Extract All Banks"
+  version: "1.0.0"
+  type: extraction
+  orchestrator: banking-chief
+  description: "Extrair dados de todos os bancos configurados e normalizar em batch."
+
+  inputs:
+    - field: banks
+      type: list
+      required: true
+      default: [inter, sicoob, stone, xp]
+    - field: data_type
+      type: string
+      required: true
+      enum: [extrato, saldo, transacoes]
+    - field: date_range
+      type: object
+      required: true
+
+  sequence:
+    - step: auth-check
+      phase: 1
+      phase_name: "Verify Auth"
+      agent: auth-architect
+      action: "Verificar que todos os bancos têm auth configurado"
+      checkpoint:
+        criteria: "Todos os bancos com token válido"
+        blocking: true
+
+    - step: extract-per-bank
+      phase: 2
+      phase_name: "Extract Per Bank"
+      agent: "{bank}-specialist"
+      action: "Extrair dados de cada banco sequencialmente"
+      iterate_over: banks
+      checkpoint:
+        criteria: "Dados extraídos de cada banco"
+        blocking: false
+
+    - step: normalize
+      phase: 3
+      phase_name: "Normalize"
+      agent: data-normalizer
+      action: "Aplicar schema unificado a todos os dados extraídos"
+      checkpoint:
+        criteria: "Todos os dados em centavos + ISO 8601"
+        blocking: true
+
+    - step: merge-output
+      phase: 4
+      phase_name: "Merge & Output"
+      agent: data-normalizer
+      action: "Merge dados normalizados e ordenar por data"

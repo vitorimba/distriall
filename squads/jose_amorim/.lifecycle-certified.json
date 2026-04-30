@@ -1,0 +1,11 @@
+{
+  "certified": true,
+  "squad_name": "jose_amorim",
+  "squad_type": "mind",
+  "score": 8.5,
+  "verdict": "PASS",
+  "date": "2026-04-13",
+  "workflow": "lifecycle-squad",
+  "mode": "full",
+  "note": "Installed as mind (DNA Mental persona), not standard squad. Validation adapted for mind structure."
+}

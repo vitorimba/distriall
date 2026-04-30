@@ -1,0 +1,18 @@
+{
+  "squad": "squad-pm",
+  "version": "1.0.0",
+  "certified_at": "2026-04-13T00:00:00.000Z",
+  "lifecycle_workflow": "lifecycle-squad",
+  "mode": "full",
+  "pre_upgrade_score": 9.5,
+  "post_upgrade_score": 9.7,
+  "score_delta": 0.2,
+  "verdict": "PASS",
+  "production_ready": true,
+  "upgrades_applied": 1,
+  "pending_todos": [
+    "tested: false — run real-world validation",
+    "Clarify RICE/MoSCoW usage convention vs squad-clickup-pm"
+  ],
+  "certified_by": "aiox-master (Orion)"
+}

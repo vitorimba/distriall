@@ -1,0 +1,431 @@
+# Heuristicas Consolidadas — Franchising Avend Squad
+# Todas as heuristicas dos 13 agentes
+# Updated: 2026-03-13
+
+metadata:
+  version: "1.0.0-pro"
+  total_heuristics: 33
+  source: "Definicoes de agentes"
+
+heuristics:
+
+  # ============================================================
+  # ORCHESTRATOR — franchise-chief
+  # ============================================================
+
+  - id: HEU-CHIEF-001
+    name: "Compliance First"
+    agent: franchise-chief
+    category: governance
+    trigger: "Qualquer request relacionado a documentacao ou contrato"
+    rule: >
+      QUANDO um request envolve COF, contrato ou documentacao legal
+      ENTAO rotear primeiro para legal-compliance para validacao
+      ANTES de executar qualquer acao operacional.
+      Compliance legal e prerequisito para tudo em franchising.
+
+  - id: HEU-CHIEF-002
+    name: "Phase Gate Enforcement"
+    agent: franchise-chief
+    category: workflow
+    trigger: "Tentativa de avancar fase sem checkpoint"
+    rule: >
+      QUANDO um agente tenta avancar para proxima fase do workflow
+      ENTAO verificar se checkpoint da fase atual foi aprovado.
+      SE nao aprovado ENTAO bloquear e listar itens pendentes.
+      Nenhuma fase pode ser pulada nos workflows do squad.
+
+  - id: HEU-CHIEF-003
+    name: "Escalation Matrix"
+    agent: franchise-chief
+    category: escalation
+    trigger: "Agente nao consegue resolver request"
+    rule: >
+      QUANDO um agente reporta incapacidade:
+      - Dado insuficiente → coletar dado e reenviar
+      - Fora do escopo → rotear para agente correto
+      - Questao legal → SEMPRE escalar para legal-compliance
+      - Questao financeira complexa → escalar para financial-modeler
+      - Insatisfacao de franqueado → escalar para relationship-manager
+
+  # ============================================================
+  # TIER 0 — franchise-strategist
+  # ============================================================
+
+  - id: HEU-STRAT-001
+    name: "Pilot Before Scale"
+    agent: franchise-strategist
+    category: strategy
+    trigger: "Planejamento de expansao"
+    rule: >
+      QUANDO planejando expansao da rede
+      ENTAO SEMPRE validar com piloto antes de escalar.
+      Minimo 3 franqueados piloto por 90 dias.
+      Nao escalar sem dados reais validados.
+
+  - id: HEU-STRAT-002
+    name: "ABF Standards Check"
+    agent: franchise-strategist
+    category: quality
+    trigger: "Qualquer decisao estrategica sobre a rede"
+    rule: >
+      QUANDO tomando decisao estrategica
+      ENTAO verificar alinhamento com melhores praticas ABF.
+      A Avend e associada ABF e deve manter padroes compativeis
+      com o Selo de Excelencia.
+
+  - id: HEU-STRAT-003
+    name: "Support Ratio Check"
+    agent: franchise-strategist
+    category: growth
+    trigger: "Aprovacao de novos franqueados"
+    rule: >
+      QUANDO aprovando novos franqueados
+      ENTAO verificar ratio consultor/franqueado.
+      SE ratio > 1:20 ENTAO contratar antes de aprovar mais.
+      Crescer sem suporte degrada a rede inteira.
+
+  # ============================================================
+  # TIER 0 — legal-compliance
+  # ============================================================
+
+  - id: HEU-LEGAL-001
+    name: "Cooling Period Sacred"
+    agent: legal-compliance
+    category: compliance
+    trigger: "Processo de assinatura de contrato"
+    rule: >
+      QUANDO processo de assinatura em andamento
+      ENTAO verificar que 10 dias se passaram desde entrega da COF.
+      O cooling period e INEGOCIAVEL.
+      Contrato assinado antes do prazo pode ser ANULADO judicialmente.
+
+  - id: HEU-LEGAL-002
+    name: "COF Annual Review"
+    agent: legal-compliance
+    category: compliance
+    trigger: "Inicio de cada ano ou mudanca significativa"
+    rule: >
+      QUANDO novo ano fiscal OU mudanca na rede (novas taxas, mudanca societaria)
+      ENTAO atualizar a COF.
+      COF desatualizada e risco juridico.
+      Incluir balancos do exercicio encerrado.
+
+  - id: HEU-LEGAL-003
+    name: "Employment Risk Monitor"
+    agent: legal-compliance
+    category: risk
+    trigger: "Definicao de obrigacoes do franqueado"
+    rule: >
+      QUANDO definindo obrigacoes contratuais do franqueado
+      ENTAO avaliar risco de subordinacao excessiva.
+      Subordinacao pode configurar vinculo empregaticio (CLT).
+      Franqueado deve ter autonomia de gestao.
+
+  # ============================================================
+  # TIER 1 — financial-modeler
+  # ============================================================
+
+  - id: HEU-FIN-001
+    name: "Three Scenario Rule"
+    agent: financial-modeler
+    category: modeling
+    trigger: "Criacao de qualquer projecao financeira"
+    rule: >
+      QUANDO criando projecao financeira
+      ENTAO SEMPRE apresentar 3 cenarios (pessimista, realista, otimista).
+      NUNCA apresentar cenario unico.
+      Cenario pessimista deve ser viavel (margem positiva).
+
+  - id: HEU-FIN-002
+    name: "Disclaimer Obrigatorio"
+    agent: financial-modeler
+    category: compliance
+    trigger: "Apresentacao de estimativa de faturamento/retorno"
+    rule: >
+      QUANDO apresentando estimativas financeiras
+      ENTAO SEMPRE incluir disclaimer: "estimativa, nao garantia".
+      Promessa de retorno garantido e pratica ilegal e condenada pela ABF.
+
+  - id: HEU-FIN-003
+    name: "Sensitivity First"
+    agent: financial-modeler
+    category: analysis
+    trigger: "Modelo financeiro finalizado"
+    rule: >
+      QUANDO modelo financeiro estiver pronto
+      ENTAO rodar analise de sensibilidade nas variaveis-chave:
+      faturamento (-20%), CMV (+20%), aluguel (+20%).
+      SE cenario pessimista com margem negativa ENTAO revisar modelo.
+
+  # ============================================================
+  # TIER 1 — operations-designer
+  # ============================================================
+
+  - id: HEU-OPS-001
+    name: "SOP Before Training"
+    agent: operations-designer
+    category: process
+    trigger: "Design de processo operacional"
+    rule: >
+      QUANDO processo operacional definido
+      ENTAO documentar SOP antes de incluir no treinamento.
+      Treinar sem SOP gera variacao e inconsistencia na rede.
+
+  - id: HEU-OPS-002
+    name: "Field Test Validation"
+    agent: operations-designer
+    category: quality
+    trigger: "Novo processo ou ajuste de processo"
+    rule: >
+      QUANDO novo processo desenhado
+      ENTAO testar em pelo menos 2 unidades antes de padronizar na rede.
+      Processo nao testado em campo pode ter falhas nao previstas.
+
+  - id: HEU-OPS-003
+    name: "Troubleshooting Coverage"
+    agent: operations-designer
+    category: support
+    trigger: "Atualizacao do manual de operacoes"
+    rule: >
+      QUANDO atualizando manual
+      ENTAO verificar cobertura de troubleshooting.
+      Os 30 problemas mais comuns devem ter solucao documentada.
+      Cada novo problema reportado 3+ vezes deve ser adicionado.
+
+  # ============================================================
+  # TIER 1 — training-developer
+  # ============================================================
+
+  - id: HEU-TRAIN-001
+    name: "Practice Over Theory"
+    agent: training-developer
+    category: pedagogy
+    trigger: "Design de modulo de treinamento"
+    rule: >
+      QUANDO desenhando modulo de treinamento
+      ENTAO garantir pelo menos 40% de componente pratico.
+      Franqueado aprende fazendo, nao assistindo.
+      Avaliacao pratica tem peso maior que teorica.
+
+  - id: HEU-TRAIN-002
+    name: "Retake Policy"
+    agent: training-developer
+    category: assessment
+    trigger: "Franqueado reprovado em avaliacao"
+    rule: >
+      QUANDO franqueado reprovado
+      ENTAO oferecer reforco dirigido nas areas de gap.
+      ENTAO permitir 1 retake em 7 dias.
+      SE reprovado na segunda tentativa ENTAO escalar para franchise-chief.
+
+  - id: HEU-TRAIN-003
+    name: "Ongoing Education"
+    agent: training-developer
+    category: development
+    trigger: "Franqueado ha mais de 6 meses na rede"
+    rule: >
+      QUANDO franqueado completa 6 meses
+      ENTAO oferecer treinamento de reciclagem (4h).
+      Conteudo: novidades, melhores praticas da rede, atualizacoes.
+      Recorrencia: a cada 6 meses.
+
+  # ============================================================
+  # TIER 1 — network-analyst
+  # ============================================================
+
+  - id: HEU-NET-001
+    name: "Cluster-Based Actions"
+    agent: network-analyst
+    category: analysis
+    trigger: "Analise de performance da rede"
+    rule: >
+      QUANDO analisando performance
+      ENTAO SEMPRE classificar franqueados em clusters
+      (Stars, Promising, Stable, At Risk).
+      Acoes devem ser diferenciadas por cluster, nao genericas.
+
+  - id: HEU-NET-002
+    name: "Best Practice Mining"
+    agent: network-analyst
+    category: optimization
+    trigger: "Identificacao de top performers"
+    rule: >
+      QUANDO top performers identificados (Stars)
+      ENTAO analisar o que fazem de diferente.
+      Documentar e propor replicacao para rede.
+      Top performers sao fonte de inovacao bottom-up.
+
+  - id: HEU-NET-003
+    name: "Early Warning System"
+    agent: network-analyst
+    category: risk
+    trigger: "KPI caindo por 3+ semanas consecutivas"
+    rule: >
+      QUANDO KPI de franqueado cai por 3 semanas seguidas
+      ENTAO alertar relationship-manager imediatamente.
+      Nao esperar review trimestral para intervir.
+      Intervencao precoce previne churn.
+
+  # ============================================================
+  # TIER 2 — market-analyst
+  # ============================================================
+
+  - id: HEU-MKT-001
+    name: "Data-Driven Territory"
+    agent: market-analyst
+    category: analysis
+    trigger: "Avaliacao de territorio"
+    rule: >
+      QUANDO avaliando territorio para expansao
+      ENTAO usar dados quantitativos (populacao, PIB, fluxo, concorrencia).
+      NUNCA aprovar territorio apenas por "feeling" ou pedido de candidato.
+      Score minimo de territorio deve ser atingido.
+
+  - id: HEU-MKT-002
+    name: "Cannibalization Check"
+    agent: market-analyst
+    category: risk
+    trigger: "Novo territorio proximo a franqueado existente"
+    rule: >
+      QUANDO novo territorio e adjacente a franqueado existente
+      ENTAO verificar risco de canibalizacao.
+      Distancia minima entre franqueados deve ser respeitada.
+      Consultar franqueado existente antes de aprovar.
+
+  - id: HEU-MKT-003
+    name: "Competition Intelligence"
+    agent: market-analyst
+    category: competitive
+    trigger: "Entrada em novo mercado"
+    rule: >
+      QUANDO mapeando novo territorio
+      ENTAO identificar TODOS os concorrentes diretos e indiretos.
+      Concorrente direto: outra rede de vending.
+      Concorrente indireto: micro-market, conveniencia 24h.
+
+  # ============================================================
+  # TIER 2 — recruitment-specialist
+  # ============================================================
+
+  - id: HEU-REC-001
+    name: "Profile Fit Score"
+    agent: recruitment-specialist
+    category: selection
+    trigger: "Avaliacao de candidato"
+    rule: >
+      QUANDO avaliando candidato
+      ENTAO SEMPRE usar scoring de 4 eixos (financeiro, comportamental,
+      geografico, disponibilidade) com pesos definidos.
+      Decisao baseada em dados, nao impressao subjetiva.
+
+  - id: HEU-REC-002
+    name: "Reference Deep Dive"
+    agent: recruitment-specialist
+    category: due_diligence
+    trigger: "Candidato com experiencia previa em franquias"
+    rule: >
+      QUANDO candidato ja foi franqueado anteriormente
+      ENTAO verificar com a franqueadora anterior (se possivel).
+      Motivo de saida e indicador critico.
+      Conflito com franqueadora anterior e red flag.
+
+  - id: HEU-REC-003
+    name: "Pipeline Velocity"
+    agent: recruitment-specialist
+    category: process
+    trigger: "Candidato parado no pipeline > 14 dias"
+    rule: >
+      QUANDO candidato esta parado em qualquer stage > 14 dias
+      ENTAO follow-up ativo.
+      SE sem resposta em 7 dias apos follow-up ENTAO mover para "inativo".
+      Pipeline saudavel tem velocidade media de 30-45 dias lead-to-close.
+
+  # ============================================================
+  # TIER 2 — marketing-specialist
+  # ============================================================
+
+  - id: HEU-MKTG-001
+    name: "COF Consistency Check"
+    agent: marketing-specialist
+    category: compliance
+    trigger: "Criacao de material de marketing"
+    rule: >
+      QUANDO criando material de recrutamento
+      ENTAO verificar consistencia com COF vigente.
+      Valores, prazos e informacoes devem ser identicos.
+      Material inconsistente gera risco juridico.
+
+  - id: HEU-MKTG-002
+    name: "Funnel Optimization"
+    agent: marketing-specialist
+    category: performance
+    trigger: "Review mensal de marketing"
+    rule: >
+      QUANDO revisando performance de marketing
+      ENTAO analisar funil: CPL, taxa de qualificacao, custo por franqueado assinado.
+      SE CPL > R$500 ENTAO otimizar canais.
+      SE conversao < 5% ENTAO revisar material e segmentacao.
+
+  # ============================================================
+  # TIER 3 — relationship-manager
+  # ============================================================
+
+  - id: HEU-REL-001
+    name: "30-60-90 Sacred"
+    agent: relationship-manager
+    category: onboarding
+    trigger: "Novo franqueado inicia operacao"
+    rule: >
+      QUANDO novo franqueado faz go-live
+      ENTAO OBRIGATORIAMENTE realizar check-ins em 30, 60 e 90 dias.
+      Nenhum check-in pode ser pulado ou adiado mais de 7 dias.
+      Cada check-in gera relatorio documentado.
+
+  - id: HEU-REL-002
+    name: "NPS Action Trigger"
+    agent: relationship-manager
+    category: satisfaction
+    trigger: "NPS individual de franqueado < 7"
+    rule: >
+      QUANDO franqueado responde NPS < 7
+      ENTAO agendar conversa individual em 48h.
+      Entender causa raiz antes de propor solucao.
+      NPS < 5 por 2 trimestres consecutivos = escalacao para franchise-chief.
+
+  - id: HEU-REL-003
+    name: "Recognition Program"
+    agent: relationship-manager
+    category: engagement
+    trigger: "Franqueado atingiu meta ou destaque"
+    rule: >
+      QUANDO franqueado atinge performance excepcional (cluster Stars)
+      ENTAO reconhecer publicamente na reuniao de rede.
+      Reconhecimento positivo melhora NPS e engajamento de toda a rede.
+      Top performers podem ser convidados como mentores.
+
+  # ============================================================
+  # TIER 3 — tech-systems
+  # ============================================================
+
+  - id: HEU-TECH-001
+    name: "Uptime SLA"
+    agent: tech-systems
+    category: operations
+    trigger: "Maquina ou sistema offline"
+    rule: >
+      QUANDO maquina ou sistema fica offline
+      ENTAO alerta automatico para franqueado e suporte.
+      SLA de resolucao: 24h para maquinas, 4h para sistemas centrais.
+      Uptime abaixo de 95% por 30 dias = intervencao tecnica obrigatoria.
+
+  - id: HEU-TECH-002
+    name: "Data Freshness"
+    agent: tech-systems
+    category: data
+    trigger: "Verificacao de dados no portal"
+    rule: >
+      QUANDO dados no portal do franqueado
+      ENTAO devem estar atualizados em tempo real (delay max 1h).
+      Dados desatualizados levam a decisoes erradas de abastecimento.
+      Monitorar latencia de sincronizacao diariamente.

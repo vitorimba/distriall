@@ -1,0 +1,19 @@
+name: prompt-engineering
+version: 1.0.0
+tested: false
+updated_at: "2026-03-31"
+short-title: Prompt Engineering
+description: >-
+  Squad de System Prompts e Prompt Engineering para Agentes de IA.
+  Orchestrator: @prompt-chief (triage, routing, criacao de system prompts).
+  Tier 0: @elvis-saravia (taxonomy de tecnicas), @sander-schulhoff (pesquisa sistematica).
+  Tier 1: @lilian-weng (arquitetura de agentes), @amanda-askell (character design), @simon-willison (agentic patterns).
+  Tier 2: @james-phoenix (Five Principles), @sheila-teo (CO-STAR), @chip-huyen (AI engineering).
+author: Squad Architect
+entry_agent: prompt-chief
+slashPrefix: promptEng
+
+settings:
+  activation:
+    show_greeting: true
+    show_quick_commands: true

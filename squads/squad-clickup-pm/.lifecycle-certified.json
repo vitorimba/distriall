@@ -1,0 +1,14 @@
+{
+  "certified": true,
+  "squad_name": "squad-clickup-pm",
+  "score": 8.5,
+  "verdict": "PASS",
+  "date": "2026-04-13",
+  "timestamp": "2026-04-13T12:00:00.000Z",
+  "workflow": "lifecycle-squad",
+  "mode": "full",
+  "pre_upgrade_score": 6.1,
+  "post_upgrade_score": 8.5,
+  "source_project": "aiox",
+  "pipeline_version": "1.0.0"
+}

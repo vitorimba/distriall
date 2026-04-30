@@ -1,0 +1,230 @@
+# ============================================================================
+# Workflow: Incident Response — Performance
+# ============================================================================
+# Production performance incident response — 6 phases
+# ============================================================================
+
+name: incident-response-performance
+version: 1.0.0
+description: >
+  Resposta a incidentes de performance em producao. Foco em mitigacao
+  rapida, identificacao de root cause e prevencao de recorrencia.
+  Ativado quando o sistema em producao apresenta degradacao significativa.
+
+trigger: "Degradacao de performance em producao detectada"
+estimated_duration: "1-4 hours (mitigation) + 1 day (RCA)"
+severity_levels: [P0, P1, P2]
+
+# ============================================================================
+# Phases
+# ============================================================================
+phases:
+  - id: phase-1-detect-assess
+    name: "Detect & Assess"
+    description: "Confirmar incidente e avaliar impacto"
+    agent: observability-engineer
+    duration: "5-15 min"
+    inputs:
+      - alert_details
+      - dashboards
+    outputs:
+      - incident_confirmed
+      - impact_assessment
+      - severity_level
+    actions:
+      - "Confirmar alerta nao e falso positivo"
+      - "Avaliar impacto: usuarios afetados, revenue impact"
+      - "Classificar severidade (P0/P1/P2)"
+      - "Comunicar stakeholders"
+    checkpoint:
+      name: "Incident Confirmed"
+      criteria:
+        - "Incidente confirmado com evidencia"
+        - "Severidade classificada"
+        - "Stakeholders notificados"
+      decision: "mitigate | false_alarm"
+
+  - id: phase-2-mitigate
+    name: "Mitigate"
+    description: "Acoes imediatas para reduzir impacto"
+    agent: performance-lead
+    duration: "5-30 min"
+    inputs:
+      - impact_assessment
+      - severity_level
+    outputs:
+      - mitigation_actions
+      - impact_reduced
+    actions:
+      - "Escalar recursos se necessario (scale out)"
+      - "Ativar rate limiting se sobrecarga"
+      - "Rollback ultimo deploy se correlacionado"
+      - "Habilitar circuit breakers"
+      - "Redirecionar trafego (failover)"
+      - "Habilitar graceful degradation"
+    checkpoint:
+      name: "Impact Mitigated"
+      criteria:
+        - "Impacto reduzido a nivel aceitavel"
+        - "Sistema estavel (mesmo que degradado)"
+      decision: "continue_rca | monitor"
+
+  - id: phase-3-investigate
+    name: "Investigate Root Cause"
+    description: "Investigacao detalhada da causa raiz"
+    agent: system-profiler
+    duration: "30-120 min"
+    inputs:
+      - incident_timeline
+      - system_metrics
+      - recent_changes
+    outputs:
+      - root_cause_identified
+      - evidence_collected
+      - timeline_reconstructed
+    actions:
+      - "Correlacionar com deploys recentes"
+      - "Analisar metricas de infra (USE method)"
+      - "Verificar slow query log"
+      - "Analisar distributed traces"
+      - "Verificar mudancas de configuracao"
+      - "Investigar dependencias externas"
+    checkpoint:
+      name: "Root Cause Found"
+      criteria:
+        - "Root cause confirmado com evidencia"
+        - "Timeline de eventos reconstruida"
+      decision: "fix | escalate"
+
+  - id: phase-4-fix
+    name: "Permanent Fix"
+    description: "Implementar correcao definitiva"
+    agent: dynamic
+    duration: "1-4 hours"
+    agent_routing:
+      - condition: "root_cause == 'database'"
+        agent: database-optimizer
+      - condition: "root_cause == 'api'"
+        agent: api-performance
+      - condition: "root_cause == 'cache'"
+        agent: caching-specialist
+      - condition: "root_cause == 'infrastructure'"
+        agent: system-profiler
+      - condition: "root_cause == 'frontend'"
+        agent: frontend-performance
+    inputs:
+      - root_cause_identified
+      - evidence_collected
+    outputs:
+      - fix_implemented
+      - fix_verified
+    checkpoint:
+      name: "Fix Applied"
+      criteria:
+        - "Fix implementado e testado"
+        - "Metricas normalizadas"
+        - "Nenhuma regressao"
+      decision: "continue | rollback"
+
+  - id: phase-5-verify
+    name: "Verify & Monitor"
+    description: "Verificar estabilidade pos-fix"
+    agent: observability-engineer
+    duration: "30-60 min"
+    inputs:
+      - fix_implemented
+      - baseline_metrics
+    outputs:
+      - stability_confirmed
+      - monitoring_enhanced
+    actions:
+      - "Monitorar metricas por 30 min"
+      - "Verificar que todas as metricas voltaram ao baseline"
+      - "Adicionar alertas para detectar recorrencia"
+      - "Confirmar que mitigacoes temporarias podem ser removidas"
+    checkpoint:
+      name: "System Stable"
+      criteria:
+        - "Metricas estáveis por 30 min"
+        - "Nenhum alerta ativo"
+        - "Performance dentro do budget"
+      decision: "complete | monitor_longer"
+
+  - id: phase-6-postmortem
+    name: "Postmortem"
+    description: "Documentar incidente e prevenir recorrencia"
+    agent: performance-lead
+    duration: "1-2 hours"
+    inputs:
+      - incident_timeline
+      - root_cause
+      - fix_details
+    outputs:
+      - postmortem_document
+      - prevention_actions
+    actions:
+      - "Documentar timeline completo"
+      - "Root cause analysis (5 Whys)"
+      - "Definir action items preventivos"
+      - "Atualizar runbooks se necessario"
+      - "Adicionar testes de regressao"
+      - "Compartilhar learnings com time"
+
+# ============================================================================
+# Veto Conditions
+# ============================================================================
+veto_conditions:
+  - id: IR-V-001
+    condition: "Fix em producao sem verificacao pos-deploy"
+    severity: BLOCK
+    phase: phase-4-fix
+
+  - id: IR-V-002
+    condition: "Incidente encerrado sem postmortem"
+    severity: WARN
+    phase: phase-6-postmortem
+
+  - id: IR-V-003
+    condition: "Mitigacao sem comunicacao a stakeholders"
+    severity: BLOCK
+    phase: phase-2-mitigate
+
+  - id: IR-V-004
+    condition: "Root cause sem evidencia quantitativa"
+    severity: WARN
+    phase: phase-3-investigate
+
+# ============================================================================
+# Quality Gates
+# ============================================================================
+quality_gates:
+  incident_confirmed:
+    criteria: "Alerta validado, impacto quantificado"
+    blocking: true
+
+  impact_mitigated:
+    criteria: "Sistema estavel, impacto reduzido"
+    blocking: true
+
+  root_cause_confirmed:
+    criteria: "Causa raiz com evidencia"
+    blocking: true
+
+  system_stable:
+    criteria: "Metricas normalizadas por 30+ min"
+    blocking: true
+
+# ============================================================================
+# Agents Involved
+# ============================================================================
+agents_involved:
+  required:
+    - performance-lead
+    - observability-engineer
+    - system-profiler
+  conditional:
+    - database-optimizer
+    - api-performance
+    - caching-specialist
+    - frontend-performance
+    - resilience-engineer

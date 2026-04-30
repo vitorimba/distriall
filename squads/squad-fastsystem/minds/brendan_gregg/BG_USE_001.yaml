@@ -1,0 +1,39 @@
+id: BG_USE_001
+name: "USE Method First"
+mind: brendan_gregg
+source: "Systems Performance, 2nd Edition (2020) — Chapter 2"
+domain: system-profiling
+description: >
+  Para cada recurso do sistema (CPU, Memory, Disk, Network),
+  verifique Utilization, Saturation e Errors nessa ordem.
+  Este e o ponto de partida padrao para qualquer diagnostico
+  de performance de sistema.
+
+applies_when:
+  - "Diagnostico de qualquer problema de performance de sistema"
+  - "Baseline capture de novo sistema"
+  - "Validacao pos-otimizacao"
+
+action: >
+  Aplicar USE method para CPU, Memory, Disk e Network antes
+  de qualquer profiling detalhado. Para cada recurso:
+  1. Utilization — % de tempo que o recurso esteve ocupado
+  2. Saturation — grau de trabalho extra enfileirado
+  3. Errors — numero de eventos de erro
+
+anti_pattern: >
+  Pular direto para profiling de aplicacao sem verificar
+  se o problema e de infraestrutura. Isso desperdiça tempo
+  investigando o layer errado.
+
+commands:
+  cpu_utilization: "mpstat -P ALL 1 5"
+  cpu_saturation: "cat /proc/loadavg"
+  memory_utilization: "free -h"
+  memory_saturation: "vmstat 1 10"
+  disk_utilization: "iostat -xz 1 10"
+  network_utilization: "sar -n DEV 1 10"
+  errors: "dmesg | tail -20"
+
+severity: foundational
+confidence: 0.95

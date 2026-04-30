@@ -1,0 +1,187 @@
+# Common n8n AI Workflow Mistakes
+# Reference for *review-workflow and *optimize-workflow commands
+# Version: 1.0.0
+
+mistakes:
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # ARCHITECTURE MISTAKES
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  architecture:
+    - id: "ARCH-001"
+      name: "God Agent Anti-Pattern"
+      description: "Single AI agent trying to handle everything"
+      severity: "critical"
+      symptom: "Agent with 10+ tools, inconsistent responses, high token usage"
+      fix: "Split into Router + specialized sub-agents"
+      example: |
+        BAD: One agent handles FAQ + orders + complaints + scheduling
+        GOOD: Router classifies intent → specialized agent per intent
+
+    - id: "ARCH-002"
+      name: "Missing Fallback Paths"
+      description: "No alternative path when AI fails"
+      severity: "critical"
+      symptom: "Workflow stops completely on AI error"
+      fix: "Add try/catch with human escalation fallback"
+
+    - id: "ARCH-003"
+      name: "Circular Sub-Agent Calls"
+      description: "Agent A calls Agent B which calls Agent A"
+      severity: "critical"
+      symptom: "Infinite loop, token explosion"
+      fix: "Enforce unidirectional flow, add max-iterations guard"
+
+    - id: "ARCH-004"
+      name: "Over-Engineering v1"
+      description: "Building complex multi-agent system when single agent suffices"
+      severity: "medium"
+      symptom: "Slow development, unnecessary complexity"
+      fix: "Start simple, add complexity only when needed"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # AI CONFIGURATION MISTAKES
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  ai_config:
+    - id: "AI-001"
+      name: "GPT-4o for Everything"
+      description: "Using expensive model for simple tasks"
+      severity: "high"
+      symptom: "High API costs, slow responses for simple routing"
+      fix: "Use GPT-4o-mini/Haiku for routing, GPT-4o for complex reasoning"
+      savings: "60-80% cost reduction"
+
+    - id: "AI-002"
+      name: "Bloated System Prompt"
+      description: "System prompt > 3000 tokens with unnecessary context"
+      severity: "medium"
+      symptom: "Slow first response, high token cost, confused agent"
+      fix: "Trim to essentials. Move knowledge to RAG, not prompt."
+
+    - id: "AI-003"
+      name: "No Output Parsing"
+      description: "Relying on free-form AI output for structured data"
+      severity: "high"
+      symptom: "Downstream nodes break on unexpected format"
+      fix: "Use Structured Output Parser or JSON mode"
+
+    - id: "AI-004"
+      name: "High Temperature for Consistency Tasks"
+      description: "Temperature > 0.5 for classification/routing"
+      severity: "medium"
+      symptom: "Inconsistent classifications for same input"
+      fix: "Temperature 0.1-0.3 for consistency tasks"
+
+    - id: "AI-005"
+      name: "No Memory Strategy"
+      description: "Agent has no memory or wrong memory type"
+      severity: "high"
+      symptom: "Agent forgets context mid-conversation"
+      fix: |
+        - Chat interactions: Postgres Chat Memory (persistent)
+        - Simple flows: Buffer Window Memory (last N messages)
+        - Knowledge-heavy: Vector Store + Chat Memory combo
+
+    - id: "AI-006"
+      name: "Missing Tool Descriptions"
+      description: "Tools connected but not described to the agent"
+      severity: "high"
+      symptom: "Agent doesn't use tools or uses wrong tool"
+      fix: "Each tool needs clear description of WHAT it does and WHEN to use it"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # INTEGRATION MISTAKES
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  integration:
+    - id: "INT-001"
+      name: "No Rate Limiting"
+      description: "External APIs called without rate protection"
+      severity: "critical"
+      symptom: "API bans, 429 errors, service disruption"
+      fix: "Add Code node with counter, respect API limits"
+
+    - id: "INT-002"
+      name: "Hardcoded Credentials"
+      description: "API keys in Code nodes instead of Credential store"
+      severity: "critical"
+      symptom: "Security vulnerability, keys visible in workflow JSON"
+      fix: "Use n8n Credential store for ALL secrets"
+
+    - id: "INT-003"
+      name: "No Webhook Authentication"
+      description: "Webhook trigger accepts any request"
+      severity: "critical"
+      symptom: "Anyone can trigger your workflow"
+      fix: "Add header auth, HMAC validation, or IP whitelist"
+
+    - id: "INT-004"
+      name: "Sequential API Calls"
+      description: "Independent API calls running one after another"
+      severity: "medium"
+      symptom: "Slow workflow execution"
+      fix: "Use Split Out → parallel HTTP Requests → Merge"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # RAG MISTAKES
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  rag:
+    - id: "RAG-001"
+      name: "Wrong Chunk Size"
+      description: "Chunks too large (lose precision) or too small (lose context)"
+      severity: "high"
+      symptom: "Irrelevant or incomplete retrieved context"
+      fix: |
+        - Q&A: 300-500 tokens (precise)
+        - Summarization: 800-1200 tokens (context)
+        - Always: 50-100 token overlap
+
+    - id: "RAG-002"
+      name: "No Metadata on Chunks"
+      description: "Chunks stored without source, date, or section info"
+      severity: "medium"
+      symptom: "Can't filter by source, can't cite properly"
+      fix: "Add source_doc, page_number, section, last_updated to each chunk"
+
+    - id: "RAG-003"
+      name: "No Fallback on Empty Retrieval"
+      description: "Agent hallucinates when vector store returns nothing"
+      severity: "critical"
+      symptom: "Agent makes up answers instead of saying 'I don't know'"
+      fix: "System prompt rule: 'If no relevant docs found, say you don't have that info'"
+
+    - id: "RAG-004"
+      name: "Stale Embeddings"
+      description: "Knowledge base updated but embeddings not re-generated"
+      severity: "high"
+      symptom: "Agent gives outdated information"
+      fix: "Schedule weekly re-ingestion workflow with incremental updates"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # PRODUCTION MISTAKES
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  production:
+    - id: "PROD-001"
+      name: "No Logging/Monitoring"
+      description: "No way to see what's happening in production"
+      severity: "high"
+      symptom: "Issues discovered by users, not by monitoring"
+      fix: "Log to Google Sheets/DB: timestamp, input, output, tokens, cost, errors"
+
+    - id: "PROD-002"
+      name: "No Cost Tracking"
+      description: "No visibility into token/API spend"
+      severity: "medium"
+      symptom: "Surprise bills, can't optimize"
+      fix: "Code node to log model, tokens_in, tokens_out, cost per interaction"
+
+    - id: "PROD-003"
+      name: "No Human Review Process"
+      description: "AI agent deployed without ongoing quality review"
+      severity: "medium"
+      symptom: "Quality degrades over time, no feedback loop"
+      fix: "Sample 10 conversations/week for human review"

@@ -1,0 +1,18 @@
+id: NF_DO_001
+name: "Measure DORA First"
+mind: nicole_forsgren
+source: "Accelerate (2018) — Chapter 2"
+domain: devops
+description: >
+  Meca DORA metrics antes de otimizar. Deployment frequency,
+  lead time, MTTR e change failure rate sao o gold standard
+  de performance de entrega de software.
+applies_when:
+  - "Avaliando performance de entrega"
+  - "Otimizando pipeline CI/CD"
+action: >
+  Coletar as 4 metricas: deployment frequency, lead time for
+  changes, MTTR e change failure rate. Classificar como
+  Elite/High/Medium/Low.
+severity: foundational
+confidence: 0.90

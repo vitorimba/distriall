@@ -1,0 +1,184 @@
+# Quality Gates — Franchising Avend Squad
+# Extraido e expandido do config.yaml principal
+# Updated: 2026-03-13
+
+quality_gates:
+  FA-QG-001:
+    name: "Franchisability Gate"
+    trigger: "Assessment → Formatting"
+    blocking: true
+    description: "Valida que o negocio e franqueavel antes de investir em formatacao"
+    criteria:
+      - "Franchisability Score >= 60/100"
+      - "Nenhum pilar critico abaixo do minimo (Replicabilidade >= 6, Lucratividade >= 7)"
+      - "Modelo financeiro viavel (payback <= 24 meses)"
+      - "Margem do franqueado >= 20% apos royalties"
+      - "Fundador alinhado e comprometido com o processo"
+    veto_if:
+      - "Score geral abaixo de 50/100"
+      - "Replicabilidade abaixo de 5/10"
+      - "Modelo financeiro com payback > 36 meses"
+    agents_responsible:
+      - franchise-strategist
+      - financial-modeler
+    next_gate: FA-QG-002
+
+  FA-QG-002:
+    name: "COF Compliance Gate"
+    trigger: "Draft COF → Approved COF"
+    blocking: true
+    checklist: "checklists/cof-compliance-checklist.md"
+    description: "Valida conformidade da COF com Lei 13.966/2019"
+    criteria:
+      - "Todas as secoes obrigatorias da Lei 13.966/2019 presentes"
+      - "Balancos dos 2 ultimos exercicios incluidos"
+      - "Lista de franqueados atuais e desligados atualizada"
+      - "Pendencias judiciais declaradas (ou declaracao de inexistencia)"
+      - "Valores financeiros consistentes com modelo"
+      - "Revisao juridica por advogado especialista concluida"
+    veto_if:
+      - "Omissao de informacao obrigatoria por lei"
+      - "COF sem revisao juridica"
+      - "Valores inconsistentes entre COF e modelo financeiro"
+      - "Informacoes falsas ou enganosas"
+    agents_responsible:
+      - legal-compliance
+    next_gate: FA-QG-003
+
+  FA-QG-003:
+    name: "Franchisee Qualification Gate"
+    trigger: "Candidato → Aprovado"
+    blocking: true
+    checklist: "checklists/franchisee-qualification-checklist.md"
+    description: "Valida qualificacao do candidato a franqueado"
+    criteria:
+      - "Score geral >= 60/100"
+      - "Score financeiro >= minimo (capital suficiente)"
+      - "Score comportamental >= minimo (perfil adequado)"
+      - "Territorio validado e disponivel"
+      - "Pelo menos 2 referencias verificadas"
+      - "Entrevista presencial ou por video realizada"
+    veto_if:
+      - "Restritivos ativos SPC/Serasa"
+      - "Capital total insuficiente"
+      - "Historico de conflito com franqueadoras"
+      - "Territorio ja atribuido"
+      - "Conflito de interesse (concorrente ativo)"
+    agents_responsible:
+      - recruitment-specialist
+      - financial-modeler
+    next_gate: FA-QG-004
+
+  FA-QG-004:
+    name: "Onboarding Completion Gate"
+    trigger: "Setup → Go-Live"
+    blocking: true
+    checklist: "checklists/onboarding-completion-checklist.md"
+    description: "Valida que onboarding esta completo antes do go-live"
+    criteria:
+      - "Contrato assinado e taxa paga"
+      - "Treinamento de 40h concluido com aprovacao (teorica >= 70%, pratica >= 80%)"
+      - "Maquinas instaladas e testadas"
+      - "Todos os meios de pagamento operacionais"
+      - "Telemetria configurada e transmitindo"
+      - "Abastecimento inicial realizado"
+      - "Acessos a todos os sistemas configurados"
+    veto_if:
+      - "Franqueado nao aprovado no treinamento"
+      - "Maquinas com defeito nao corrigido"
+      - "Telemetria nao operacional"
+      - "Sistemas de pagamento com falha"
+    agents_responsible:
+      - operations-designer
+      - training-developer
+    next_gate: FA-QG-005
+
+  FA-QG-005:
+    name: "Pilot Validation Gate"
+    trigger: "Pilot → Scale"
+    blocking: true
+    description: "Valida resultados do piloto antes de escalar"
+    criteria:
+      - "80%+ franqueados piloto atingiram breakeven em 90 dias"
+      - "NPS medio dos franqueados piloto >= 7"
+      - "Modelo financeiro validado na pratica (receita dentro de +-20%)"
+      - "Processos operacionais estabilizados"
+      - "3 relatorios mensais (30/60/90) completos"
+    veto_if:
+      - "Nenhum franqueado atingiu breakeven em 90 dias"
+      - "NPS medio abaixo de 5"
+      - "Mais de 50% dos franqueados insatisfeitos"
+      - "Relatorios de acompanhamento incompletos"
+    agents_responsible:
+      - franchise-strategist
+      - relationship-manager
+    next_gate: FA-QG-006
+
+  FA-QG-006:
+    name: "Network Health Gate"
+    trigger: "Data Collection → Action Plan"
+    blocking: false
+    severity: WARNING
+    description: "Valida saude da rede antes de definir acoes"
+    criteria:
+      - "Dados de >= 70% da rede coletados"
+      - "Health Score calculado com 4 dimensoes"
+      - "Franqueados classificados em clusters (Stars/Promising/Stable/At Risk)"
+      - "Pesquisa de satisfacao com taxa de resposta >= 80%"
+      - "Comparativo com trimestre anterior disponivel"
+    veto_if:
+      - "Dados de menos de 50% da rede"
+      - "Health Score sem dimensao financeira"
+    agents_responsible:
+      - network-analyst
+      - relationship-manager
+    next_gate: FA-QG-007
+
+  FA-QG-007:
+    name: "Expansion Readiness Gate"
+    trigger: "Planning → Execution"
+    blocking: true
+    description: "Valida que a franqueadora esta pronta para expandir"
+    criteria:
+      - "Equipe de suporte dimensionada para meta"
+      - "Budget de expansao aprovado"
+      - "Territorios mapeados e priorizados (min 10)"
+      - "Pipeline de recrutamento estruturado"
+      - "COF atualizada e vigente"
+      - "Materiais de marketing prontos"
+    veto_if:
+      - "Expansao sem equipe de suporte"
+      - "Budget nao aprovado"
+      - "COF desatualizada ou com pendencias"
+    agents_responsible:
+      - franchise-strategist
+      - market-analyst
+    next_gate: FA-QG-008
+
+  FA-QG-008:
+    name: "Legal Compliance Gate"
+    trigger: "Pre-contrato → Assinatura"
+    blocking: true
+    description: "Valida compliance legal antes de assinatura de contrato"
+    criteria:
+      - "COF entregue com protocolo assinado"
+      - "Cooling period de 10 dias cumprido"
+      - "Contrato revisado por advogado especialista"
+      - "Documentacao do franqueado completa"
+      - "Territorio formalizado no contrato"
+      - "Clausulas obrigatorias presentes"
+    veto_if:
+      - "Assinatura antes do cooling period"
+      - "COF nao entregue formalmente"
+      - "Clausulas abusivas identificadas"
+      - "Contrato sem revisao juridica"
+    agents_responsible:
+      - legal-compliance
+    next_gate: null
+
+gate_enforcement:
+  strict_mode: true
+  allow_override: false
+  override_requires: "franchise-chief explicit approval"
+  log_gate_decisions: true
+  notify_on_block: true

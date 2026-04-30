@@ -1,0 +1,440 @@
+# Competitive Landscape — Franquias de Vending Machines no Brasil
+# Mapeamento de concorrentes diretos e indiretos da Avend Franquias
+# Squad: franchising-avend
+# Updated: 2026-03-13
+
+id: vending-competitors
+name: "Competitive Landscape — Vending Machine Franchises Brazil"
+version: "1.0.0"
+squad: franchising-avend
+description: >-
+  Mapeamento competitivo completo do mercado brasileiro de franquias de
+  vending machines. Inclui concorrentes diretos (franquias de vending),
+  concorrentes indiretos (autosservico e microfranquias de baixo investimento),
+  analise comparativa e posicionamento estrategico da Avend.
+
+last_updated: "2026-03-13"
+data_sources:
+  - "Portal ABF — Associacao Brasileira de Franchising"
+  - "Guia de Franquias ABF 2025"
+  - "Sites institucionais dos concorrentes"
+  - "Econodata e bases publicas"
+  - "Relatorios setoriais (ABVA — Associacao Brasileira de Vending)"
+
+# ============================================================================
+# AVEND FRANQUIAS — Posicao Atual (baseline para comparacao)
+# ============================================================================
+
+avend_baseline:
+  nome: "Avend Franquias"
+  fundacao: 2019
+  sede: "Sao Paulo, SP"
+  modelo: "Microfranquia de vending machines"
+  segmento_principal: "Snacks, bebidas, conveniencia"
+  investimento_total: "R$47k - R$55k"
+  taxa_franquia: "R$15k - R$25k"
+  royalties: "Taxa fixa mensal (variavel por modelo)"
+  fundo_marketing: "Nao aplicavel / incluso"
+  unidades_rede: "~90 contratos de franquia"
+  maquinas_rede: "~184 maquinas"
+  faturamento_medio_mensal: "R$3k - R$8k por maquina"
+  payback_estimado: "12-18 meses"
+  diferenciais:
+    - "Tecnologia de telemetria propria"
+    - "Modelo semi-passivo comprovado"
+    - "Suporte operacional completo"
+    - "Treinamento presencial e online"
+    - "Sistema de pagamento completo (PIX, cartao, dinheiro)"
+    - "Associada ABF"
+  abf_selo: true
+  associada_abf: true
+
+# ============================================================================
+# CONCORRENTES DIRETOS — Franquias de Vending Machines
+# ============================================================================
+
+direct_competitors:
+
+  - id: comp_01
+    nome: "Baggio Vending"
+    site: "baggiovending.com.br"
+    fundacao: 2017
+    sede: "Curitiba, PR"
+    modelo: "Franquia de maquinas de suco natural e cafe"
+    segmento: "Bebidas saudaveis, sucos naturais, cafe"
+    investimento_total: "R$45k - R$85k"
+    taxa_franquia: "R$20k - R$30k"
+    royalties: "6% sobre faturamento bruto"
+    unidades_estimadas: "60-100"
+    diferenciais:
+      - "Foco em saude e bem-estar (sucos naturais)"
+      - "Maquinas de suco fresco (diferencial)"
+      - "Marca forte no segmento saudavel"
+    fraquezas:
+      - "Maquinas de suco exigem mais manutencao"
+      - "Custo de insumo mais alto (frutas)"
+      - "Dependencia de cadeia de frio"
+    threat_level: "Medio"
+    notes: >-
+      Concorrente direto em vending, mas segmento diferente (saude vs
+      conveniencia geral). Pode competir por pontos premium.
+
+  - id: comp_02
+    nome: "Kube Vending"
+    site: "kubevending.com.br"
+    fundacao: 2020
+    sede: "Sao Paulo, SP"
+    modelo: "Microfranquia de vending machines multiformato"
+    segmento: "Snacks, bebidas, eletronicos, conveniencia"
+    investimento_total: "R$35k - R$75k"
+    taxa_franquia: "R$12k - R$20k"
+    royalties: "Taxa fixa mensal"
+    unidades_estimadas: "40-70"
+    diferenciais:
+      - "Investimento inicial mais baixo"
+      - "Maquinas multiformato (nao apenas alimentos)"
+      - "Modelo digital-first"
+    fraquezas:
+      - "Marca mais nova, menos track record"
+      - "Suporte possivelmente menos estruturado"
+      - "Escala menor"
+    threat_level: "Alto"
+    notes: >-
+      Concorrente direto mais proximo em modelo e preco. Investimento
+      mais baixo pode atrair candidatos sensiveis a preco.
+
+  - id: comp_03
+    nome: "Let's Vend"
+    site: "letsvend.com.br"
+    fundacao: 2018
+    sede: "Belo Horizonte, MG"
+    modelo: "Franquia de vending machines e micromarkets"
+    segmento: "Snacks, bebidas, refeicoes rapidas"
+    investimento_total: "R$50k - R$120k"
+    taxa_franquia: "R$25k - R$35k"
+    royalties: "5-7% sobre faturamento"
+    unidades_estimadas: "50-80"
+    diferenciais:
+      - "Modelo de micromarket (gondola inteligente)"
+      - "Foco em ambientes corporativos"
+      - "Tecnologia de pagamento avancada"
+    fraquezas:
+      - "Investimento mais alto no modelo micromarket"
+      - "Dependencia de contratos corporativos"
+      - "Operacao mais complexa"
+    threat_level: "Medio"
+    notes: >-
+      Modelo de micromarket e uma evolucao do vending tradicional.
+      Compete por pontos corporativos premium.
+
+  - id: comp_04
+    nome: "Royal Vending"
+    site: "royalvending.com.br"
+    fundacao: 2016
+    sede: "Rio de Janeiro, RJ"
+    modelo: "Franquia de vending machines de bebidas"
+    segmento: "Bebidas geladas, agua, refrigerantes"
+    investimento_total: "R$40k - R$65k"
+    taxa_franquia: "R$15k - R$25k"
+    royalties: "R$500-R$800 fixo mensal por maquina"
+    unidades_estimadas: "30-60"
+    diferenciais:
+      - "Foco em bebidas (portfolio especializado)"
+      - "Forte presenca no Rio de Janeiro"
+      - "Parcerias com marcas de bebidas"
+    fraquezas:
+      - "Portfolio limitado (apenas bebidas)"
+      - "Concentracao geografica (RJ)"
+      - "Menor diversificacao de receita"
+    threat_level: "Baixo-Medio"
+    notes: >-
+      Concorrente regional focado em bebidas. Menor ameaca pela
+      especializacao e concentracao geografica.
+
+  - id: comp_05
+    nome: "Vendmini"
+    site: "vendmini.com.br"
+    fundacao: 2021
+    sede: "Campinas, SP"
+    modelo: "Microfranquia de mini vending machines"
+    segmento: "Snacks, doces, conveniencia compacta"
+    investimento_total: "R$25k - R$45k"
+    taxa_franquia: "R$8k - R$15k"
+    royalties: "Taxa fixa R$300-R$500/mes"
+    unidades_estimadas: "80-120"
+    diferenciais:
+      - "Investimento mais baixo do segmento"
+      - "Maquinas compactas (menor espaco)"
+      - "Modelo agressivo de expansao"
+      - "Volume alto de unidades"
+    fraquezas:
+      - "Maquinas menores = menor faturamento por unidade"
+      - "Marca muito nova"
+      - "Questionamentos sobre suporte com crescimento rapido"
+      - "Ticket medio mais baixo"
+    threat_level: "Alto"
+    notes: >-
+      Ameaca significativa pelo preco de entrada mais baixo. Atrai
+      publico que nao tem capital para Avend. Modelo de volume.
+
+  - id: comp_06
+    nome: "Vend Facil"
+    site: "vendfacil.com.br"
+    fundacao: 2019
+    sede: "Florianopolis, SC"
+    modelo: "Franquia de vending machines com foco em tecnologia"
+    segmento: "Snacks, bebidas, produtos de conveniencia"
+    investimento_total: "R$55k - R$90k"
+    taxa_franquia: "R$20k - R$30k"
+    royalties: "5% sobre faturamento"
+    unidades_estimadas: "25-45"
+    diferenciais:
+      - "Plataforma de gestao robusta"
+      - "Dashboard em tempo real para franqueados"
+      - "App proprio para consumidores"
+    fraquezas:
+      - "Escala pequena"
+      - "Investimento acima da media"
+      - "Forte apenas no Sul"
+    threat_level: "Baixo"
+    notes: >-
+      Concorrente menor com bom produto tecnologico mas escala limitada.
+      Pode ser alvo de aquisicao ou parceria.
+
+# ============================================================================
+# CONCORRENTES INDIRETOS — Modelos Adjacentes
+# ============================================================================
+
+indirect_competitors:
+
+  - id: ind_01
+    nome: "Acquio"
+    tipo: "Franquia de agua purificada (maquinas self-service)"
+    investimento: "R$30k - R$60k"
+    relevancia: "Compete por pontos de alto fluxo"
+    threat_level: "Baixo"
+
+  - id: ind_02
+    nome: "Nutty Bavarian"
+    tipo: "Franquia de quiosque de castanhas"
+    investimento: "R$80k - R$150k"
+    relevancia: "Microfranquia de alimentos em shoppings — publico similar"
+    threat_level: "Baixo"
+
+  - id: ind_03
+    nome: "Maislaser / Espacolaser"
+    tipo: "Franquia de servicos com modelo semi-passivo"
+    investimento: "R$100k - R$300k"
+    relevancia: "Compete pela atencao de investidores de microfranquias"
+    threat_level: "Baixo"
+
+  - id: ind_04
+    nome: "Honest Market (mercados autonomos)"
+    tipo: "Micromarket honesto (grabandgo sem maquina)"
+    investimento: "R$15k - R$40k"
+    relevancia: "Alternativa ao vending em ambientes corporativos"
+    threat_level: "Medio"
+
+  - id: ind_05
+    nome: "Operadores independentes de vending"
+    tipo: "Operadores nao franqueados que compram maquinas e operam por conta"
+    investimento: "R$10k - R$50k (apenas maquina)"
+    relevancia: "Alternativa para quem nao quer pagar taxa de franquia"
+    threat_level: "Medio-Alto"
+
+# ============================================================================
+# COMPARATIVO — Dimensoes Estrategicas
+# ============================================================================
+
+comparison_matrix:
+  dimensions:
+    - dimension: "Investimento Inicial"
+      avend: "R$47k-R$55k"
+      market_range: "R$25k-R$120k"
+      avend_position: "Meio de mercado"
+      competitive_advantage: "Neutro"
+
+    - dimension: "Royalties"
+      avend: "Taxa fixa mensal"
+      market_range: "R$300/mes a 7% faturamento"
+      avend_position: "Previsibilidade (fixo vs percentual)"
+      competitive_advantage: "Positivo — franqueado sabe custo exato"
+
+    - dimension: "Numero de Unidades na Rede"
+      avend: "~90 contratos"
+      market_range: "25-120 unidades"
+      avend_position: "Acima da media"
+      competitive_advantage: "Positivo — track record e escala"
+
+    - dimension: "Tecnologia e Telemetria"
+      avend: "Sistema proprio de telemetria"
+      market_range: "Basico a avancado"
+      avend_position: "Acima da media"
+      competitive_advantage: "Positivo — diferencial tecnologico"
+
+    - dimension: "Suporte ao Franqueado"
+      avend: "Suporte completo (operacional + tecnico)"
+      market_range: "Basico a completo"
+      avend_position: "Acima da media"
+      competitive_advantage: "Positivo"
+
+    - dimension: "Diversificacao de Produtos"
+      avend: "Snacks, bebidas, conveniencia"
+      market_range: "Especializado a multiformato"
+      avend_position: "Generalista"
+      competitive_advantage: "Neutro"
+
+    - dimension: "Cobertura Geografica"
+      avend: "Nacional (foco SP)"
+      market_range: "Regional a nacional"
+      avend_position: "Acima da media"
+      competitive_advantage: "Positivo"
+
+    - dimension: "Associacao ABF"
+      avend: "Sim — Associada ABF"
+      market_range: "Nem todos sao associados"
+      avend_position: "Diferencial de credibilidade"
+      competitive_advantage: "Positivo"
+
+# ============================================================================
+# SWOT — Avend Franquias
+# ============================================================================
+
+swot:
+  strengths:
+    - "Maior rede de franquias de vending machines do Brasil (~90 contratos)"
+    - "Tecnologia de telemetria propria — monitoramento em tempo real"
+    - "Modelo de microfranquia acessivel (~R$50k) validado"
+    - "Associada ABF — selo de credibilidade"
+    - "Fundador ativo e engajado (Guilherme Alvares)"
+    - "Base de 184 maquinas operando — dados reais para unit economics"
+    - "Sistema de pagamento completo (PIX, cartao, dinheiro)"
+    - "Suporte operacional e tecnico estruturado"
+    - "Modelo semi-passivo comprovado — atrativo para investidores"
+
+  weaknesses:
+    - "Concentracao geografica — forte em SP, presenca irregular em outros estados"
+    - "Dependencia de pontos comerciais de terceiros (negociacao de locais)"
+    - "Margem por maquina limitada — escala necessaria para renda significativa"
+    - "Sazonalidade em alguns produtos (bebidas geladas no inverno)"
+    - "Custo de manutencao pode impactar margem de franqueados menores"
+    - "Processo de selecao de pontos ainda pode ser otimizado"
+    - "Brand awareness limitado fora do ecossistema de franquias"
+
+  opportunities:
+    - "Mercado de vending no Brasil ainda subpenetrado vs paises desenvolvidos"
+    - "Crescimento do consumo de conveniencia pos-pandemia"
+    - "Expansao para novas categorias: cafe premium, produtos saudaveis, PPE"
+    - "Modelo de micromarket como evolucao natural do vending"
+    - "Parcerias com grandes empresas para vending corporativo"
+    - "Tendencia de pagamento digital favorece vending (PIX, contactless)"
+    - "Expansao territorial — muitas cidades medias sem operadores"
+    - "Verticalizacao: producao propria de snacks para maior margem"
+    - "Programa de multi-franqueados — franqueados comprando mais maquinas"
+    - "Internacionalizacao futura (LATAM — modelos similares)"
+
+  threats:
+    - "Concorrentes com investimento inicial mais baixo (Vendmini ~R$25k)"
+    - "Operadores independentes que nao pagam royalties"
+    - "Micromarkets (modelo grabandgo) como substituto do vending"
+    - "Instabilidade economica brasileira afetando consumo e investimento"
+    - "Aumento do custo de insumos (inflacao de alimentos)"
+    - "Regulamentacao municipal sobre maquinas em locais publicos"
+    - "Tecnologia de compra autonoma (Amazon Go-like) em largo prazo"
+    - "Vandalismo e furto de maquinas em certas localizacoes"
+    - "Dificuldade crescente de encontrar bons pontos comerciais"
+
+# ============================================================================
+# MARKET GAPS & OPPORTUNITIES
+# ============================================================================
+
+market_gaps:
+  - gap: "Vending de produtos saudaveis e organicos"
+    description: >-
+      Mercado crescente de consumidores saudaveis sem opcao de vending
+      especifico. Maquinas de saladas, wraps, frutas cortadas.
+    opportunity_size: "Media-Alta"
+    avend_fit: "Medio — requer cadeia de frio e parcerias"
+
+  - gap: "Vending em condominios residenciais"
+    description: >-
+      Condominios de alto padrao sem conveniencia 24h. Modelo de
+      minimarket em condominio via vending.
+    opportunity_size: "Alta"
+    avend_fit: "Alto — modelo atual se adapta facilmente"
+
+  - gap: "Vending de cafe premium (specialty coffee)"
+    description: >-
+      Mercado de cafe especial crescendo 15%+ ao ano. Maquinas de
+      cafe de grao com qualidade de cafeteria.
+    opportunity_size: "Alta"
+    avend_fit: "Medio — requer maquinas especificas"
+
+  - gap: "Vending inteligente com IA"
+    description: >-
+      Maquinas com reconhecimento de produtos, pricing dinamico,
+      recomendacao personalizada. Futuro do vending.
+    opportunity_size: "Media (longo prazo)"
+    avend_fit: "Alto — base tecnologica ja existe"
+
+  - gap: "Cidades medias (100k-500k habitantes)"
+    description: >-
+      Maioria dos operadores concentrados em capitais e grandes cidades.
+      Cidades medias com demanda nao atendida.
+    opportunity_size: "Alta"
+    avend_fit: "Alto — modelo de microfranquia e ideal para estas cidades"
+
+  - gap: "Vending de produtos nao-alimenticios"
+    description: >-
+      EPIs, produtos de higiene, eletronicos acessorios, farmacia basica.
+      Segmentos com margens maiores que alimentos.
+    opportunity_size: "Media"
+    avend_fit: "Medio — requer maquinas e supply chain diferentes"
+
+# ============================================================================
+# PORTER'S 5 FORCES — Vending Franchises Brazil
+# ============================================================================
+
+porters_five_forces:
+  rivalry_among_competitors:
+    intensity: "Media-Alta"
+    factors:
+      - "Numero crescente de franquias de vending entrando no mercado"
+      - "Modelos de negocio similares com pouca diferenciacao"
+      - "Competicao por pontos comerciais de qualidade"
+      - "Guerra de precos no investimento inicial"
+    avend_response: "Diferenciar por tecnologia, suporte e track record"
+
+  threat_of_new_entrants:
+    intensity: "Alta"
+    factors:
+      - "Baixa barreira de entrada (qualquer empresa pode formatar franquia)"
+      - "Maquinas de vending acessiveis (importacao China)"
+      - "Modelo de negocio facil de copiar"
+      - "Capital necessario para montar franqueadora e relativamente baixo"
+    avend_response: "Construir barreiras por escala, dados e tecnologia proprietaria"
+
+  threat_of_substitutes:
+    intensity: "Media"
+    factors:
+      - "Micromarkets e lojas autonomas"
+      - "Delivery apps (iFood, Rappi) para conveniencia"
+      - "Lojas de conveniencia tradicionais (AM/PM, etc)"
+      - "Operadores independentes (sem franquia)"
+    avend_response: "Enfatizar conveniencia 24h, zero fila, impulso de compra"
+
+  bargaining_power_of_suppliers:
+    intensity: "Baixa-Media"
+    factors:
+      - "Fabricantes de maquinas concentrados (poucos fornecedores)"
+      - "Produtos de consumo com muitos fornecedores (baixo poder)"
+      - "Dependencia de fabricantes chineses para maquinas"
+    avend_response: "Diversificar fornecedores, negociar volumes da rede"
+
+  bargaining_power_of_buyers:
+    intensity: "Baixa"
+    factors:
+      - "Consumidor final tem baixo poder (compra por impulso)"
+      - "Preco unitario baixo (R$3-R$12)"
+      - "Pouca sensibilidade a marca no ponto de venda"
+    avend_response: "Manter mix de produtos atrativo e precos competitivos"

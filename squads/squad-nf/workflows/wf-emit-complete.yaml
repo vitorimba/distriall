@@ -1,0 +1,136 @@
+# =============================================================================
+# Workflow: NF-e Full Emission Pipeline
+# Squad: squad-nf
+# Description: Complete lifecycle for emitting a Nota Fiscal Eletronica
+# =============================================================================
+
+id: wf-emit-complete
+name: "NF-e Full Emission Pipeline"
+version: "1.0.0"
+description: >
+  Pipeline completo de emissao de NF-e: classificacao fiscal, calculo de
+  impostos, geracao de XML, assinatura digital, transmissao a SEFAZ,
+  tratamento de rejeicao e armazenamento.
+
+trigger:
+  - manual
+  - api: "/nf/emit"
+  - event: "order.approved"
+
+inputs:
+  - name: order_data
+    type: object
+    required: true
+    description: "Dados do pedido (emitente, destinatario, itens, frete)"
+  - name: environment
+    type: enum
+    values: [production, homologation]
+    default: homologation
+  - name: contingency_mode
+    type: boolean
+    default: false
+
+states:
+  init:
+    description: "Validar inputs e preparar contexto de emissao"
+    task: manage-certificate
+    on_success: classify
+    on_failure: failed
+    actions:
+      - validate_certificate_expiry
+      - validate_emitter_data
+      - set_environment
+
+  classify:
+    description: "Classificar operacao fiscal (CFOP, CST, NCM)"
+    task: determine-cfop
+    on_success: calculate
+    on_failure: failed
+    actions:
+      - determine_cfop
+      - determine_cst_csosn
+      - validate_ncm
+      - determine_nf_model # 55 (NF-e) or 65 (NFC-e)
+
+  calculate:
+    description: "Calcular impostos (ICMS, IPI, PIS, COFINS, ISS)"
+    task: calculate-icms
+    on_success: emit
+    on_failure: failed
+    actions:
+      - calculate_icms
+      - calculate_icms_st  # se aplicavel
+      - calculate_ipi
+      - calculate_pis_cofins
+      - calculate_totals
+      - apply_regime_rules
+
+  emit:
+    description: "Gerar XML, assinar e transmitir a SEFAZ"
+    task: emit-nfe
+    on_success: validate
+    on_failure: handle-rejection
+    actions:
+      - generate_xml
+      - sign_xml  # A1 or A3 certificate
+      - transmit_sefaz
+      - store_protocol
+
+  validate:
+    description: "Validar retorno da SEFAZ e armazenar NF autorizada"
+    task: connect-sefaz
+    on_success: complete
+    on_failure: handle-rejection
+    actions:
+      - parse_sefaz_response
+      - validate_protocol_number
+      - store_authorized_xml
+      - generate_danfe
+      - send_email_recipient
+
+  handle-rejection:
+    description: "Tratar rejeicao da SEFAZ com base no codigo de erro"
+    task: handle-rejection
+    on_success: classify  # retry from classification
+    on_failure: failed
+    max_retries: 3
+    actions:
+      - parse_rejection_code
+      - lookup_fix_procedure
+      - apply_automatic_fix  # se possivel
+      - log_rejection
+
+  complete:
+    description: "Emissao concluida com sucesso"
+    task: download-xml
+    terminal: true
+    actions:
+      - update_order_status
+      - store_xml_archive
+      - emit_webhook_event
+      - log_success
+
+  failed:
+    description: "Pipeline falhou — requer intervencao manual"
+    task: switch-contingency
+    terminal: true
+    actions:
+      - log_error
+      - notify_operator
+      - create_incident
+      - save_partial_state
+
+outputs:
+  - name: nf_authorized
+    type: object
+    fields: [chave_acesso, protocolo, xml_path, danfe_path]
+  - name: rejection_log
+    type: array
+    description: "Historico de rejeicoes (se houver)"
+
+config:
+  timeout_sefaz_ms: 30000
+  max_rejection_retries: 3
+  xml_storage_path: "storage/nf/xml/"
+  danfe_storage_path: "storage/nf/danfe/"
+  contingency_modes: [SCAN, SVC-AN, SVC-RS, EPEC]

@@ -1,0 +1,347 @@
+# ============================================================================
+# Squad FastSystem — Configuration
+# ============================================================================
+# Domain: System Performance & Speed Optimization
+# Version: 1.0.0
+# Standard: AIOX Squad Config v4.0.0-pro
+# ============================================================================
+
+name: squad-fastsystem
+version: 1.0.0
+domain: "System Performance & Speed Optimization"
+description: >
+  Squad especializado em performance de sistemas, otimização de velocidade,
+  análise de gargalos, caching, resiliência e escalabilidade. Cobre todo o
+  stack: frontend, backend, database, infraestrutura e deployment.
+
+entry_agent: fastsystem-chief
+slashPrefix: squad-fastsystem
+
+supported_modes:
+  - DIAGNOSTICAR   # Triage e classificação de problemas de performance
+  - OTIMIZAR       # Aplicar otimizações com baseline medido
+  - AUDITAR        # Audit completo de performance do sistema
+  - PLANEJAR       # Capacity planning e scaling readiness
+  - INCIDENT       # Resposta a incidentes de performance em produção
+
+# ============================================================================
+# Agents
+# ============================================================================
+agents:
+  # --- Orchestrator ---
+  # NOTE: config.yaml v1.0 listed "performance-lead" but actual file is fastsystem-chief.md
+  - id: fastsystem-chief
+    name: "Blaze"
+    tier: orchestrator
+    mind: null
+    role: "FastSystem Chief — orquestra análises, prioriza otimizações, coordena agentes"
+    skills:
+      - system-wide-analysis
+      - optimization-prioritization
+      - cross-layer-correlation
+      - team-coordination
+
+  # --- Tier 0 (Foundation) ---
+  - id: system-profiler
+    name: "Probe"
+    tier: T0
+    mind: brendan_gregg
+    role: "System Profiler — diagnóstico de sistema usando USE method, flame graphs, tracing"
+    skills:
+      - use-method
+      - flame-graphs
+      - kernel-tracing
+      - cpu-profiling
+      - memory-profiling
+      - io-profiling
+
+  - id: observability-engineer
+    name: "Lens"
+    tier: T0
+    mind: charity_majors
+    role: "Observability Engineer — instrumentação, métricas, tracing distribuído, alertas"
+    skills:
+      - distributed-tracing
+      - metrics-design
+      - alerting-strategy
+      - slo-sli-definition
+      - opentelemetry
+
+  # --- Tier 1 (Core) ---
+  - id: web-performance-engineer
+    name: "Pixel"
+    tier: T1
+    mind: addy_osmani
+    role: "Web Performance Engineer — Web Vitals, bundle optimization, rendering, lazy loading"
+    skills:
+      - web-vitals-optimization
+      - bundle-analysis
+      - critical-rendering-path
+      - image-optimization
+      - code-splitting
+
+  - id: database-optimizer
+    name: "Query"
+    tier: T1
+    mind: markus_winand
+    role: "Database Optimizer — query tuning, indexação, EXPLAIN plans, schema optimization"
+    skills:
+      - query-optimization
+      - index-design
+      - explain-plan-analysis
+      - schema-optimization
+      - connection-pooling
+
+  - id: system-architect
+    name: "Flux"
+    tier: T1
+    mind: alex_xu
+    role: "System Architect — arquitetura de sistemas, design de APIs eficientes, escalabilidade"
+    skills:
+      - api-design
+      - system-design
+      - architecture-patterns
+      - scalability-planning
+      - technology-selection
+
+  - id: resilience-engineer
+    name: "Shield"
+    tier: T1
+    mind: michael_nygard
+    role: "Resilience Engineer — circuit breakers, bulkheads, retry patterns, graceful degradation"
+    skills:
+      - circuit-breaker-design
+      - bulkhead-pattern
+      - retry-strategies
+      - graceful-degradation
+      - chaos-engineering
+
+  # --- Tier 2 (Specialist) ---
+  - id: scalability-designer
+    name: "Scale"
+    tier: T2
+    mind: null
+    role: "Scalability Designer — horizontal/vertical scaling, auto-scaling, capacity planning"
+    skills:
+      - horizontal-scaling
+      - auto-scaling-policies
+      - capacity-planning
+      - sharding-strategies
+      - load-balancing
+
+  - id: delivery-accelerator
+    name: "Pipe"
+    tier: T2
+    mind: nicole_forsgren
+    role: "Delivery Accelerator — CI/CD speed, DORA metrics, deployment optimization"
+    skills:
+      - pipeline-optimization
+      - dora-metrics
+      - build-caching
+      - parallel-execution
+      - deployment-strategies
+
+  - id: microservices-optimizer
+    name: "Mesh"
+    tier: T2
+    mind: martin_kleppmann
+    role: "Microservices Optimizer — service mesh, distributed tracing, inter-service communication"
+    skills:
+      - service-mesh-design
+      - inter-service-communication
+      - distributed-patterns
+      - event-driven-architecture
+      - saga-patterns
+
+  # --- Specialist ---
+  - id: caching-specialist
+    name: "Cache"
+    tier: specialist
+    mind: steve_souders
+    role: "Caching Specialist — multi-layer caching, invalidation, CDN, browser cache, Redis"
+    skills:
+      - cache-strategy-design
+      - invalidation-patterns
+      - cdn-configuration
+      - redis-optimization
+      - http-caching
+
+# ============================================================================
+# Quality Gates
+# ============================================================================
+quality_gates:
+  performance-baseline:
+    description: "Baseline de performance estabelecido e documentado"
+    required: true
+    threshold: "p95 response time documented"
+
+  regression-check:
+    description: "Nenhuma regressão de performance introduzida"
+    required: true
+    threshold: "p95 <= baseline + 10%"
+
+  load-test-pass:
+    description: "Testes de carga passaram com métricas dentro do budget"
+    required: true
+    threshold: "error rate < 1%, p99 < budget"
+
+  web-vitals-pass:
+    description: "Core Web Vitals dentro dos targets"
+    required: false
+    threshold: "LCP < 2.5s, FID < 100ms, CLS < 0.1"
+
+  database-optimization:
+    description: "Queries otimizadas, sem full table scans em hot paths"
+    required: true
+    threshold: "No sequential scans on tables > 10K rows in hot paths"
+
+  resilience-validation:
+    description: "Padrões de resiliência implementados e testados"
+    required: false
+    threshold: "Circuit breakers, retries, timeouts configured"
+
+# ============================================================================
+# Routing Rules
+# ============================================================================
+routing_rules:
+  - pattern: "slow|lento|performance|demora"
+    agent: fastsystem-chief
+    priority: high
+
+  - pattern: "query|sql|database|banco|index"
+    agent: database-optimizer
+    priority: high
+
+  - pattern: "frontend|web vitals|lighthouse|lcp|fcp"
+    agent: web-performance-engineer
+    priority: high
+
+  - pattern: "cache|redis|cdn|invalidation"
+    agent: caching-specialist
+    priority: medium
+
+  - pattern: "load test|stress test|carga|k6|gatling"
+    agent: scalability-designer
+    priority: medium
+
+  - pattern: "api|latency|throughput|endpoint|architecture"
+    agent: system-architect
+    priority: medium
+
+  - pattern: "circuit breaker|resilience|bulkhead|retry"
+    agent: resilience-engineer
+    priority: medium
+
+  - pattern: "trace|observability|metrics|alert|slo"
+    agent: observability-engineer
+    priority: medium
+
+  - pattern: "cpu|memory|disk|kernel|flame"
+    agent: system-profiler
+    priority: high
+
+  - pattern: "ci/cd|pipeline|deploy|dora"
+    agent: delivery-accelerator
+    priority: low
+
+  - pattern: "distributed|partition|replication|microservice|service mesh"
+    agent: microservices-optimizer
+    priority: low
+
+  - pattern: "scale|scaling|capacity|horizontal|vertical"
+    agent: scalability-designer
+    priority: medium
+
+# ============================================================================
+# Tools
+# ============================================================================
+tools:
+  profiling:
+    - name: "perf"
+      description: "Linux perf events for CPU profiling"
+    - name: "flamegraph"
+      description: "Flame graph generation from perf data"
+    - name: "strace"
+      description: "System call tracing"
+    - name: "bpftrace"
+      description: "eBPF-based tracing"
+
+  monitoring:
+    - name: "prometheus"
+      description: "Metrics collection and alerting"
+    - name: "grafana"
+      description: "Metrics visualization"
+    - name: "jaeger"
+      description: "Distributed tracing"
+    - name: "opentelemetry"
+      description: "Observability framework"
+
+  load_testing:
+    - name: "k6"
+      description: "Modern load testing tool"
+    - name: "gatling"
+      description: "High-performance load testing"
+    - name: "artillery"
+      description: "Cloud-scale load testing"
+
+  frontend:
+    - name: "lighthouse"
+      description: "Web performance auditing"
+    - name: "webpagetest"
+      description: "Real browser performance testing"
+    - name: "bundleanalyzer"
+      description: "Webpack bundle analysis"
+
+  database:
+    - name: "pganalyze"
+      description: "PostgreSQL performance insights"
+    - name: "explain-analyze"
+      description: "Query execution plan analysis"
+    - name: "pgbadger"
+      description: "PostgreSQL log analysis"
+
+  caching:
+    - name: "redis-cli"
+      description: "Redis management and debugging"
+    - name: "redis-benchmark"
+      description: "Redis performance benchmarking"
+    - name: "varnish"
+      description: "HTTP accelerator / caching proxy"
+
+# ============================================================================
+# Governance
+# ============================================================================
+governance:
+  veto_conditions_file: "config/veto-conditions.yaml"
+  quality_gates_file: "config/quality-gates.yaml"
+  heuristics_file: "config/heuristics.yaml"
+  constitutional_compliance: true
+  article_iv_enforcement: true
+  max_optimization_iterations: 5
+
+# ============================================================================
+# Playbooks
+# ============================================================================
+playbooks:
+  - id: producao-lenta
+    file: "playbooks/producao-lenta.md"
+    trigger: "Sistema em produção ficou lento"
+  - id: migracao-sem-downtime
+    file: "playbooks/migracao-sem-downtime.md"
+    trigger: "Migração sem perda de performance"
+  - id: escalar-10x
+    file: "playbooks/escalar-10x.md"
+    trigger: "Preparar para 10x de tráfego"
+  - id: otimizar-custo-cloud
+    file: "playbooks/otimizar-custo-cloud.md"
+    trigger: "Reduzir custo cloud"
+
+# ============================================================================
+# Data
+# ============================================================================
+data:
+  knowledge_base: "data/fastsystem-kb.md"
+  benchmarks: "data/performance-benchmarks.yaml"
+  patterns: "data/optimization-patterns.yaml"
+  tools: "data/tool-reference.yaml"
+  anti_patterns: "data/anti-patterns-catalog.yaml"

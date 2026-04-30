@@ -1,0 +1,781 @@
+# ============================================================================
+# Pricing Rules — Marketplaces Brasil
+# ============================================================================
+# FONTE ÚNICA DE VERDADE para regras de precificação.
+# Atualizado por: *atualizar-regras (web research em tempo real)
+# Última atualização: 2026-04-07
+# ============================================================================
+
+metadata:
+  version: "1.0.0"
+  last_updated: "2026-04-07"
+  updated_by: "squad-chief (criação inicial)"
+  next_review: "2026-05-07"
+  sources_consulted: 42
+
+# ============================================================================
+# MERCADO LIVRE
+# ============================================================================
+mercado_livre:
+  status: "ATIVO"
+  ultima_mudanca: "2026-03-02"
+  fonte: "https://www.mercadolivre.com.br/ajuda/quanto-custa-vender-um-produto_1338"
+
+  comissao:
+    modelo: "percentual_por_categoria_e_tipo_anuncio"
+    tipos_anuncio:
+      gratis:
+        comissao: "0%"
+        exposicao: "baixa"
+        parcelamento: "não"
+        limite: "sim (quantidade limitada)"
+      classico:
+        comissao_range: "11% a 14%"
+        exposicao: "média"
+        parcelamento: "até 6x (vendedor absorve)"
+      premium:
+        comissao_range: "16% a 19%"
+        exposicao: "máxima"
+        parcelamento: "até 12x (vendedor absorve)"
+
+    por_categoria_classico:
+      celulares_smartphones: "13%"
+      eletronicos: "13%"
+      informatica: "12%"
+      eletrodomesticos: "11%"
+      moda_vestuario: "14%"
+      beleza_cuidado_pessoal: "14%"
+      casa_decoracao: "13%"
+      brinquedos: "14%"
+      automotivo: "12%"
+      esporte_fitness: "13%"
+
+    por_categoria_premium:
+      celulares_smartphones: "18%"
+      eletronicos: "17%"
+      informatica: "16%"
+      eletrodomesticos: "16%"
+      moda_vestuario: "19%"
+      beleza_cuidado_pessoal: "19%"
+      casa_decoracao: "17%"
+      brinquedos: "18%"
+      automotivo: "16%"
+      esporte_fitness: "17%"
+
+  taxa_fixa:
+    modelo: "custo_operacional_variavel"
+    vigencia: "a partir de 2026-03-02"
+    regra_anterior: "R$ 6,00 fixo para produtos < R$ 79"
+    regra_atual: >
+      Custo operacional variável baseado em peso, dimensões da
+      embalagem e cubagem logística. Aplica-se a produtos < R$ 79.
+      Produtos >= R$ 79: sem custo fixo adicional.
+    nota: "Valor exato calculado no Seller Center por SKU"
+
+  frete:
+    mercado_envios_full:
+      tipo: "fulfillment"
+      custo: "variável por peso/dimensão"
+      beneficio: "selo Full, frete mais rápido"
+    frete_gratis:
+      threshold: "R$ 79"
+      regra: "ML subsidia parte do frete para sellers com boa reputação"
+      custo_seller: "parcial (varia por reputação e distância)"
+
+  ads:
+    product_ads:
+      modelo: "CPC"
+      cpc_minimo: "~R$ 0,30"
+    recomendacao_investimento: "5% a 15% do faturamento"
+
+  mensalidade: "não"
+  ciclo_pagamento: "D+14 padrão, antecipação disponível"
+
+  programas_especiais:
+    mercadolider:
+      tipo: "reputação por volume"
+      beneficios: "mais exposição, subsídios de frete, badge"
+    mercado_envios_full:
+      tipo: "fulfillment"
+      beneficios: "entrega rápida, badge Full, maior conversão"
+
+# ============================================================================
+# SHOPEE
+# ============================================================================
+shopee:
+  status: "ATIVO"
+  ultima_mudanca: "2026-03-01"
+  fonte: "https://seller.shopee.com.br/edu/article/26839/Comissao-para-vendedores-CNPJ-e-CPF-em-2026"
+
+  comissao:
+    modelo: "faixas_escalonadas_por_valor"
+    vigencia: "a partir de 2026-03-01"
+
+    mudancas_marco_2026:
+      - "Cap de R$105 REMOVIDO"
+      - "Distinção CPF/CNPJ ELIMINADA (mesma tabela)"
+      - "Frete grátis OBRIGATÓRIO para todos os sellers"
+      - "Toggle de frete grátis eliminado"
+
+    faixas:
+      - faixa: "< R$ 8,00"
+        comissao: "50% do valor do produto"
+        taxa_fixa: "R$ 0"
+        custo_total_exemplo: "Produto R$7 → taxa R$3,50"
+
+      - faixa: "R$ 8,00 a R$ 79,99"
+        comissao: "20%"
+        taxa_fixa: "R$ 4,00"
+        custo_total_exemplo: "Produto R$50 → R$10 + R$4 = R$14 (28%)"
+
+      - faixa: "R$ 80,00 a R$ 99,99"
+        comissao: "14%"
+        taxa_fixa: "R$ 16,00"
+        custo_total_exemplo: "Produto R$90 → R$12,60 + R$16 = R$28,60 (31,8%)"
+
+      - faixa: "R$ 100,00 a R$ 199,99"
+        comissao: "14%"
+        taxa_fixa: "R$ 20,00"
+        custo_total_exemplo: "Produto R$150 → R$21 + R$20 = R$41 (27,3%)"
+
+      - faixa: "R$ 200,00+"
+        comissao: "14%"
+        taxa_fixa: "R$ 26,00"
+        custo_total_exemplo: "Produto R$300 → R$42 + R$26 = R$68 (22,7%)"
+
+    nota: "Sem cap — produtos caros pagam 14% integral sem limite"
+
+  taxa_fixa:
+    modelo: "embutida_nas_faixas"
+    jan_fev_2026: "R$ 7,00 por item (antes R$ 5,00)"
+    marco_2026: "Substituída por faixas escalonadas (R$ 0 a R$ 26)"
+
+  frete:
+    programa_frete_gratis:
+      status: "OBRIGATÓRIO desde março/2026"
+      custo_seller: "incluído nas faixas"
+      regra_anterior: "~6% do valor, toggle opcional"
+    shopee_envios:
+      parceiros: ["Correios", "Jadlog", "Total Express"]
+
+  ads:
+    shopee_ads:
+      modelo: "CPC"
+      cpc_minimo: "~R$ 0,05"
+      tipos: ["Discovery (busca)", "Boost (impulsionamento)"]
+    recomendacao: "5% a 15% do faturamento"
+
+  mensalidade: "não"
+  ciclo_pagamento: "após confirmação de entrega"
+
+  novos_vendedores:
+    beneficio: "comissão reduzida nos primeiros meses"
+    condicao: "cumprimento de métricas de performance"
+
+# ============================================================================
+# AMAZON BRASIL
+# ============================================================================
+amazon_br:
+  status: "ATIVO"
+  ultima_mudanca: "2026-01-01"
+  fonte: "https://venda.amazon.com.br/precos"
+
+  comissao:
+    modelo: "referral_fee_por_categoria"
+    range: "8% a 17%"
+    minimo_por_item: "R$ 1,00"
+
+    por_categoria:
+      eletronicos_computadores: "10% a 13%"
+      celulares_acessorios: "8% a 12%"
+      moda_roupas_sapatos: "15% a 17%"
+      beleza_saude: "12% a 15%"
+      casa_cozinha: "13% a 15%"
+      brinquedos_jogos: "15%"
+      livros: "15%"
+      automotivo: "12%"
+      esportes_ar_livre: "15%"
+      ferramentas: "12% a 15%"
+      alimentos_bebidas: "8% a 15%"
+      pets: "15%"
+
+    regra_eletronicos_acessorios:
+      acima_100: "15% nos primeiros R$100 + 10% no excedente"
+      abaixo_100: "15%"
+
+  taxa_fixa:
+    plano_individual: "R$ 2,00 por item vendido"
+    plano_profissional: "R$ 0,00 por item"
+    closing_fee_midia: "R$ 1,50 a R$ 2,00 (livros, DVDs)"
+
+  planos:
+    individual:
+      mensalidade: "R$ 0"
+      taxa_por_venda: "R$ 2,00"
+      para: "até ~10 vendas/mês"
+    profissional:
+      mensalidade: "R$ 19,00/mês"
+      primeiro_ano: "GRÁTIS para novos sellers"
+      taxa_por_venda: "R$ 0"
+      para: "volume maior"
+
+  frete:
+    fba:
+      tipo: "Fulfillment by Amazon"
+      custo_por_peso:
+        ate_250g: "~R$ 8 a R$ 12"
+        250g_a_1kg: "~R$ 12 a R$ 18"
+        1kg_a_5kg: "~R$ 18 a R$ 30"
+        acima_5kg: "calculado individualmente"
+      armazenamento: "R$/m³ mensal (mais caro Q4)"
+      beneficio: "selo Prime, frete grátis Prime"
+    fbm:
+      tipo: "Fulfilled by Merchant"
+      custo: "vendedor gerencia"
+
+  ads:
+    sponsored_products:
+      modelo: "CPC"
+      cpc_minimo: "~R$ 0,20"
+    sponsored_brands: "CPC (requer marca registrada)"
+    sponsored_display: "CPM/CPC (retargeting)"
+    recomendacao: "5% a 10% do faturamento"
+    meta_acos: "15% a 25%"
+
+  reembolso:
+    regra: "Amazon retém 20% da referral fee como taxa administrativa"
+
+  mensalidade: "R$ 19/mês (Pro) ou grátis (Individual)"
+  ciclo_pagamento: "a cada 14 dias"
+
+# ============================================================================
+# MAGAZINE LUIZA (MAGALU)
+# ============================================================================
+magalu:
+  status: "ATIVO"
+  ultima_mudanca: "2025-H2"
+  fonte: "https://universo.magalu.com/"
+
+  comissao:
+    modelo: "percentual_por_categoria"
+    range: "12% a 20%"
+
+    por_categoria:
+      celulares_smartphones: "16%"
+      eletronicos_audio_video: "18%"
+      informatica: "14%"
+      eletrodomesticos: "15%"
+      moveis_decoracao: "18%"
+      moda_acessorios: "20%"
+      beleza_saude: "18%"
+      esporte_lazer: "18%"
+      brinquedos: "18%"
+      livros: "15%"
+      automotivo: "16%"
+      alimentos: "18%"
+
+  taxa_fixa:
+    valor: "R$ 3,00"
+    condicao: "pedidos acima de R$ 10"
+
+  frete:
+    magalu_entregas:
+      tipo: "fulfillment"
+      beneficio: "badge 'Entregue por Magalu', prazo 1-2 dias em capitais"
+      custo: "por peso/dimensão/destino"
+    envio_proprio: "vendedor usa transportadora própria"
+    parceiros: ["Correios", "Jadlog", "Loggi"]
+    frete_gratis: "campanhas sazonais com subsídio parcial"
+
+  ads:
+    magalu_ads:
+      modelo: "CPC"
+      investimento_minimo: "~R$ 10/dia"
+      formatos: ["Destaque de produto", "Posicionamento premium"]
+
+  mensalidade: "não"
+  taxa_adesao: "não"
+  ciclo_pagamento: "semanal ou mensal (configurável no cadastro)"
+
+  programas_especiais:
+    parceiro_magalu: "Programa para revendedores/influenciadores"
+    aliexpress_integracao: "Cross-border via parceria"
+
+# ============================================================================
+# CASAS BAHIA (GCB)
+# ============================================================================
+casas_bahia:
+  status: "ATIVO"
+  ultima_mudanca: "2026-04-01"
+  fonte: "https://www.casasbahia.com.br/marketplace/"
+
+  comissao:
+    modelo: "percentual_por_categoria"
+    range: "17% a 21%"
+    promocao_encerrada:
+      taxa: "17% flat para todas categorias"
+      vigencia: "até 2026-03-31"
+      status: "ENCERRADA"
+
+    por_categoria:
+      eletronicos: "18,5%"
+      eletrodomesticos: "18,5%"
+      moveis: "20%"
+      moda: "21%"
+      informatica: "18,5%"
+      outros: "19% a 21%"
+
+  taxa_fixa: "não"
+  mensalidade: "não"
+  taxa_cadastro: "não"
+
+  frete:
+    envvias: "fulfillment próprio (tabela por peso/dimensão)"
+    frete_proprio: "vendedor gerencia"
+
+  reembolso:
+    regra: "50% da comissão cobrada em caso de desistência do comprador (7 dias)"
+
+  multi_bandeira:
+    regra: "Cadastro no CB = visibilidade automática em Ponto e Extra.com.br"
+    custo_adicional: "nenhum"
+
+  ciclo_pagamento: "3x por mês"
+
+# ============================================================================
+# AMERICANAS
+# ============================================================================
+americanas:
+  status: "ATIVO"
+  ultima_mudanca: "2025-H2"
+  fonte: "https://info.americanasmarketplace.com.br/taxas-de-comissao"
+
+  comissao:
+    modelo: "percentual_por_departamento"
+    range: "16% a 19%"
+    nota: "percentual personalizado por departamento"
+
+  taxa_fixa: "não"
+  mensalidade: "não"
+  taxa_cadastro: "não"
+
+  frete:
+    americanas_entrega:
+      tipos: ["Correios", "Direct", "Full"]
+      subsidio: "parcial, baseado em peso/preço/rating do seller"
+    americanas_full:
+      taxa_servico: "taxa fixa por item (fulfillment)"
+      beneficio: "seller não gerencia envio"
+
+  repasse:
+    padrao: "quinzenal"
+    semanal:
+      disponivel: true
+      custo_adicional: "+1% na comissão"
+      datas: "4 repasses fixos no mês"
+
+  ciclo_pagamento: "quinzenal (padrão) ou semanal (+1%)"
+
+# ============================================================================
+# SHEIN
+# ============================================================================
+shein:
+  status: "ATIVO"
+  ultima_mudanca: "2026-Q1"
+  fonte: "https://br.shein.com/SHEIN-Commission-Policy-a-1420.html"
+
+  comissao:
+    modelo: "percentual_fixo"
+    taxa: "20%"
+    formula: "(Preço mercadoria - Cupom - Desconto) × 20%"
+    historico:
+      - "2023: 10%"
+      - "2024-01: 16%"
+      - "2025-2026: 20%"
+
+  taxa_fixa:
+    valor: "R$ 5,00 por produto vendido"
+
+  mensalidade: "não"
+  taxa_cadastro: "não"
+
+  frete:
+    sfs:
+      nome: "Shein Fulfillment Service"
+      tipo: "fulfillment"
+      custo: "variável por peso e categoria"
+      centros: "SP (expandindo para outros estados)"
+
+  novos_vendedores:
+    beneficio: "0% comissão"
+    duracao: "30 a 90 dias"
+    requisito: "CNPJ"
+
+  categorias_permitidas:
+    - "Moda"
+    - "Pets"
+    - "Utilidades domésticas"
+    - "Decoração"
+
+  ciclo_pagamento: "semanal"
+  meta_sellers: "50.000 vendedores cadastrados"
+
+# ============================================================================
+# NETSHOES / ZATTINI
+# ============================================================================
+netshoes:
+  status: "ATIVO"
+  ultima_mudanca: "2025-H2"
+  fonte: "https://www.koncili.com/blog/netshoes-marketplace/"
+
+  comissao:
+    modelo: "percentual_negociado"
+    range: "15% a 30%"
+    media: "~20%"
+    maximo_reportado: "até 40% em categorias específicas"
+    nota: "Comissão negociada individualmente por seller e categoria"
+    fatores:
+      - "Categoria do produto"
+      - "Modelo de repasse (normal vs antecipado)"
+      - "Campanhas promocionais ativas"
+
+  taxa_fixa:
+    valor: "R$ 2,49 por pedido"
+    nota_alternativa: "Algumas fontes citam R$ 5,00 para pedidos > R$ 10"
+
+  mensalidade: "não"
+  taxa_cadastro: "não"
+  taxa_desconexao: "não"
+
+  frete:
+    servico_netshoes: "logística integrada (em algumas modalidades elimina comissão)"
+    transportadoras_proprias: "integração disponível"
+
+  marcas:
+    netshoes: "Esportivos, fitness, calçados performance"
+    zattini: "Moda casual, acessórios"
+
+  grupo: "Magazine Luiza"
+  ciclo_pagamento: "quinzenal (dias 5 e 20), via MagaluPay"
+
+  requisitos:
+    - "CNPJ ativo e regular no SINTEGRA"
+    - "Emissão de NF-e obrigatória"
+    - "Conta bancária vinculada ao CNPJ"
+
+# ============================================================================
+# TIKTOK SHOP
+# ============================================================================
+tiktok_shop:
+  status: "ATIVO"
+  ultima_mudanca: "2026-02-01"
+  fonte: "https://www.koncili.com/blog/quanto-custa-taxas-comissao-tiktok-shop/"
+
+  lancamento_brasil: "2025-05-08"
+
+  comissao:
+    modelo: "percentual_fixo"
+    taxa: "6%"
+    base_calculo: "valor do produto após descontos"
+
+  taxa_fixa:
+    valor: "R$ 2,00 por item vendido"
+    isencao: "produtos com preço >= R$ 79"
+    nota: "Implementada fev/2026 (algumas fontes citam R$ 4,00 — verificar Seller Center)"
+
+  taxa_assistencia_frete:
+    taxa: "6% do valor bruto do pedido"
+    maximo: "R$ 50,00 por item"
+    nota: "Custo para participar do programa de frete subsidiado"
+
+  programa_afiliados:
+    comissao_creator: "5% a 30% (definida pelo seller)"
+    faixa_tipica: "8% a 15%"
+    base_calculo: "preço líquido após descontos"
+    impacto: "Custo invisível nas margens — considerar no cálculo"
+
+  custo_total_exemplo:
+    produto_150:
+      comissao: "R$ 9,00 (6%)"
+      taxa_fixa: "R$ 0 (isento, > R$ 79)"
+      assist_frete: "R$ 9,00 (6%)"
+      afiliado: "variável (8-15%)"
+      total_sem_afiliado: "~12%"
+      total_com_afiliado: "~22%"
+
+  mensalidade: "não"
+
+  ads:
+    cpm_medio: "~US$ 6,21"
+    cpc_medio: "~US$ 0,31"
+    ctr_medio: "2,01%"
+    formatos: ["Shopping Ads", "Search Ads"]
+    vs_meta: "CPM 30-50% mais baixo que Meta Ads"
+    investimento:
+      iniciante: "R$ 100-200/dia"
+      escala: "R$ 500-1.000/dia"
+      grandes_marcas: "R$ 2.000+/dia"
+
+  novos_vendedores:
+    comissao: "0%"
+    duracao: "60 dias (ou 90 com Seller Missions)"
+    limite_economia: "R$ 17.000 por CNPJ"
+    subsidio_frete: "até R$ 20 por pedido nos 60 dias"
+
+  ciclo_pagamento: "via Seller Center"
+
+# ============================================================================
+# META COMMERCE (Facebook + Instagram)
+# ============================================================================
+meta_commerce:
+  status: "ATIVO"
+  ultima_mudanca: "2026-Q1"
+  fonte: "https://www.facebook.com/business/marketplace"
+
+  comissao:
+    modelo: "zero"
+    taxa: "0%"
+    nota: "Facebook Marketplace não cobra comissão nem taxa de anúncio"
+
+  social_commerce_2026:
+    novidades:
+      - "Creators podem tagar produtos de ML, Shopee, Amazon, eBay"
+      - "Links de produto no Instagram Reels (22 países incl. Brasil)"
+      - "Vitrine automática com IA em Stories e vídeos"
+      - "Botão 'comprar agora' dentro do app"
+    modelo_afiliado:
+      regra: "Creators ganham comissão dos retailers parceiros"
+      nota: "Comissão paga pelo retailer, não pelo seller"
+
+  taxa_fixa: "não"
+  mensalidade: "não"
+
+  ads:
+    meta_ads:
+      formatos: ["Feed Ads", "Stories Ads", "Reels Ads", "Shop Ads"]
+      modelo: "CPC/CPM"
+      nota: "Custo de ads é separado do marketplace"
+
+  ciclo_pagamento: "N/A (transação direta ou via retailer parceiro)"
+
+# ============================================================================
+# CARREFOUR (via Mirakl)
+# ============================================================================
+carrefour:
+  status: "ATIVO"
+  ultima_mudanca: "2025-H2"
+  fonte: "https://marketplace.anymarket.com.br/carrefour-marketplace/"
+
+  comissao:
+    modelo: "percentual_fixo"
+    taxa: "16%"
+    base: "valor total (produto + frete)"
+    negociacao: "contratos individuais podem ter % diferente"
+
+  taxa_fixa:
+    valor: "R$ 4,00"
+    condicao: "pedidos abaixo de R$ 500"
+
+  mensalidade: "não"
+  taxa_cadastro: "não"
+
+  frete:
+    carrefour_envios:
+      via: "Correios"
+      peso_max: "30kg"
+      dimensao_max: "100cm cada lado"
+      valor_max_pac: "R$ 3.000"
+      valor_max_sedex: "R$ 10.000"
+    frete_proprio: "responsabilidade do vendedor"
+
+  requisitos:
+    - "CNPJ ativo"
+    - "NF-e obrigatória"
+    - "Contrato social"
+    - "Certidões"
+    - "Carta de ética"
+
+# ============================================================================
+# LEROY MERLIN (via Mirakl)
+# ============================================================================
+leroy_merlin:
+  status: "ATIVO"
+  ultima_mudanca: "2026-01-01"
+  fonte: "https://www.leroymerlin.com.br/faq-marketplace"
+
+  comissao:
+    modelo: "percentual_fixo"
+    taxa: "18%"
+    promocao_encerrada:
+      taxa: "16%"
+      vigencia: "até 2025-12-31"
+      status: "ENCERRADA"
+
+  mensalidade:
+    valor: "R$ 49,00/mês"
+
+  taxa_cadastro: "não"
+
+  frete:
+    responsabilidade: "100% do parceiro (faturamento, expedição, entrega)"
+    fulfillment: "não disponível"
+
+  reembolso:
+    regra: "Comissão não cobrada em caso de desistência do comprador"
+
+  requisitos:
+    - "CNPJ ativo (aceita MEI)"
+    - "Código de barras regularizado"
+    - "Categorias: casa, decoração, construção"
+
+# ============================================================================
+# MADEIRAMADEIRA
+# ============================================================================
+madeiramadeira:
+  status: "ATIVO"
+  ultima_mudanca: "2025-H2"
+  fonte: "https://www.madeiramadeira.com.br/marketplace"
+
+  comissao:
+    modelo: "percentual_por_categoria"
+    range: "14% a 21%"
+    referencia: "20%"
+    base: "valor total (produto + frete)"
+    nota: "Comissão cobrada mesmo em cancelamentos (exceto fraude/falha pagamento)"
+
+  taxa_fixa: "não"
+  mensalidade: "não"
+  taxa_cadastro: "não"
+
+  frete:
+    madeira_envios: "produtos leves"
+    bulkylog:
+      tipo: "transportadora própria"
+      para: "produtos > 15kg (móveis, itens pesados)"
+    frete_proprio: "tabela configurável no painel"
+
+  ciclo_pagamento:
+    faturamento: "dia 26 ao dia 25 do mês seguinte"
+    repasse: "até 15 dias após encerramento do ciclo"
+
+  categorias: "Casa, móveis, decoração, construção"
+
+# ============================================================================
+# DAFITI
+# ============================================================================
+dafiti:
+  status: "ATIVO"
+  ultima_mudanca: "2025-H2"
+  fonte: "https://marketplace.anymarket.com.br/dafiti-marketplace/"
+
+  comissao:
+    modelo: "percentual_negociado"
+    range: "25% a 30%"
+    nota: "Negociada por canal e seller"
+
+  mensalidade:
+    valor: "R$ 299,00/mês"
+    cobranca: "todo dia 20"
+    nota: "Cobrada independente do volume de vendas"
+
+  multi_canal:
+    incluido: ["Dafiti", "Kanui", "Tricae"]
+    custo_adicional: "nenhum (3 canais no preço)"
+
+  frete:
+    dafiti_envios: "via Correios (contrato Dafiti)"
+    dafiti_milkrun: "transportadoras parceiras para coleta"
+    fulfillment:
+      tipo: "CD com 300 robôs AutoStore"
+      capacidade: "7 milhões de itens"
+      area: "45.000 m²"
+      sellers_usando: "~100 parceiros"
+
+  ciclo_pagamento: "dia 10 ao dia 9 do mês seguinte"
+  categorias: "Moda, calçados, esportes, lifestyle"
+
+# ============================================================================
+# KABUM!
+# ============================================================================
+kabum:
+  status: "ATIVO"
+  ultima_mudanca: "2025-H2"
+  fonte: "https://www.kabum.com.br/hotsite/marketplace/"
+
+  comissao:
+    modelo: "percentual_fixo"
+    taxa: "18%"
+    base: "valor produto + frete"
+
+  taxa_fixa: "não"
+  mensalidade: "não"
+  taxa_cadastro: "não"
+
+  repasse:
+    tipo: "antecipado à vista"
+    ciclo: "dia 01 ao último dia do mês"
+    pagamento: "dia 07 do mês seguinte (ou próximo dia útil)"
+
+  frete:
+    responsabilidade: "vendedor"
+
+  categorias: "Tecnologia, games, hardware, periféricos, eletrônicos"
+
+# ============================================================================
+# OLIST
+# ============================================================================
+olist:
+  status: "ATIVO"
+  ultima_mudanca: "2026-Q1"
+  fonte: "https://olist.com/planos/"
+
+  modelo: "hub_intermediario"
+  nota: "Olist vende nos marketplaces sob a conta do Olist — comissão all-inclusive"
+
+  planos:
+    lite:
+      adesao: "R$ 29,90"
+      mensalidade: "R$ 29,90"
+      comissao: "21%"
+      nota: "Inclui taxas dos marketplaces parceiros"
+
+    pro:
+      adesao: "R$ 349,00"
+      mensalidade: "R$ 249,90"
+      comissao: "19%"
+      limite_faturamento: "até R$ 200.000/mês no Olist"
+
+    premium:
+      adesao: "negociado"
+      mensalidade: "negociado"
+      comissao: "negociado"
+      para: "faturamento > R$ 200.000/mês"
+
+  taxa_fixa:
+    valor: "R$ 5,00 por item vendido"
+    aplica: "todos os planos"
+
+  taxa_faturamento_minimo:
+    valor: "R$ 350,00/mês"
+    condicao: "se GMV mensal < R$ 10.000"
+
+  canais_parceiros:
+    - "Mercado Livre"
+    - "Shopee"
+    - "Amazon"
+    - "Magazine Luiza"
+    - "Casas Bahia"
+    - "Americanas"
+    - "e outros"
+
+# ============================================================================
+# TABELA COMPARATIVA RÁPIDA
+# ============================================================================
+comparativo_rapido:
+  menor_comissao: "Meta Commerce (0%) → TikTok Shop (6%) → Amazon (8-17%)"
+  maior_comissao: "Dafiti (25-30%) → Shopee faixa baixa (até 50%) → SHEIN (20%)"
+  sem_mensalidade: ["ML", "Shopee", "Magalu", "Casas Bahia", "Americanas", "SHEIN", "Netshoes", "TikTok", "Meta", "Carrefour", "MadeiraMadeira", "KaBuM!"]
+  com_mensalidade: ["Amazon Pro (R$19)", "Leroy Merlin (R$49)", "Dafiti (R$299)", "Olist (R$29,90-249,90)"]
+  melhor_para_iniciante: "TikTok Shop (0% por 60 dias) → Amazon (Pro grátis 1º ano) → SHEIN (0% por 30-90 dias)"
+  melhor_margem_alto_ticket: "Amazon (8-13% eletrônicos) → TikTok Shop (6% + frete)"
+  pior_margem_baixo_ticket: "Shopee (até 50% em < R$8) → ML (custo operacional + comissão)"

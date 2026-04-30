@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Template: NF-e XML Structure (Modelo 55)
+  Squad: squad-nf
+  Reference: Manual de Integracao do Contribuinte v4.0
+  Note: Placeholders use {{FIELD_NAME}} syntax
+-->
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+  <infNFe versao="4.00" Id="NFe{{CHAVE_ACESSO_44}}">
+
+    <!-- ================================================================== -->
+    <!-- IDE: Identificacao da NF-e                                         -->
+    <!-- ================================================================== -->
+    <ide>
+      <cUF>{{COD_UF}}</cUF>
+      <cNF>{{COD_NUMERICO_8}}</cNF>
+      <natOp>{{NATUREZA_OPERACAO}}</natOp>
+      <mod>55</mod>
+      <serie>{{SERIE}}</serie>
+      <nNF>{{NUMERO_NF}}</nNF>
+      <dhEmi>{{DATA_EMISSAO_UTC}}</dhEmi>
+      <dhSaiEnt>{{DATA_SAIDA_UTC}}</dhSaiEnt>
+      <tpNF>{{TIPO_NF}}</tpNF> <!-- 0=Entrada, 1=Saida -->
+      <idDest>{{ID_DESTINO}}</idDest> <!-- 1=Interna, 2=Interestadual, 3=Exterior -->
+      <cMunFG>{{COD_MUNICIPIO_FG}}</cMunFG>
+      <tpImp>1</tpImp> <!-- DANFE normal -->
+      <tpEmis>{{TIPO_EMISSAO}}</tpEmis> <!-- 1=Normal, 5=Contingencia -->
+      <cDV>{{DIGITO_VERIFICADOR}}</cDV>
+      <tpAmb>{{TIPO_AMBIENTE}}</tpAmb> <!-- 1=Producao, 2=Homologacao -->
+      <finNFe>{{FINALIDADE}}</finNFe> <!-- 1=Normal, 2=Complementar, 3=Ajuste, 4=Devolucao -->
+      <indFinal>{{IND_CONSUMIDOR_FINAL}}</indFinal>
+      <indPres>{{IND_PRESENCA}}</indPres>
+      <procEmi>0</procEmi>
+      <verProc>{{VERSAO_SISTEMA}}</verProc>
+    </ide>
+
+    <!-- ================================================================== -->
+    <!-- EMIT: Emitente                                                     -->
+    <!-- ================================================================== -->
+    <emit>
+      <CNPJ>{{EMIT_CNPJ}}</CNPJ>
+      <xNome>{{EMIT_RAZAO_SOCIAL}}</xNome>
+      <xFant>{{EMIT_NOME_FANTASIA}}</xFant>
+      <enderEmit>
+        <xLgr>{{EMIT_LOGRADOURO}}</xLgr>
+        <nro>{{EMIT_NUMERO}}</nro>
+        <xCpl>{{EMIT_COMPLEMENTO}}</xCpl>
+        <xBairro>{{EMIT_BAIRRO}}</xBairro>
+        <cMun>{{EMIT_COD_MUNICIPIO}}</cMun>
+        <xMun>{{EMIT_MUNICIPIO}}</xMun>
+        <UF>{{EMIT_UF}}</UF>
+        <CEP>{{EMIT_CEP}}</CEP>
+        <cPais>1058</cPais>
+        <xPais>Brasil</xPais>
+        <fone>{{EMIT_TELEFONE}}</fone>
+      </enderEmit>
+      <IE>{{EMIT_IE}}</IE>
+      <CRT>{{EMIT_CRT}}</CRT> <!-- 1=Simples, 2=Excesso, 3=Normal -->
+    </emit>
+
+    <!-- ================================================================== -->
+    <!-- DEST: Destinatario                                                 -->
+    <!-- ================================================================== -->
+    <dest>
+      <CNPJ>{{DEST_CNPJ}}</CNPJ>
+      <!-- ou <CPF>{{DEST_CPF}}</CPF> -->
+      <xNome>{{DEST_RAZAO_SOCIAL}}</xNome>
+      <enderDest>
+        <xLgr>{{DEST_LOGRADOURO}}</xLgr>
+        <nro>{{DEST_NUMERO}}</nro>
+        <xBairro>{{DEST_BAIRRO}}</xBairro>
+        <cMun>{{DEST_COD_MUNICIPIO}}</cMun>
+        <xMun>{{DEST_MUNICIPIO}}</xMun>
+        <UF>{{DEST_UF}}</UF>
+        <CEP>{{DEST_CEP}}</CEP>
+        <cPais>1058</cPais>
+        <xPais>Brasil</xPais>
+      </enderDest>
+      <indIEDest>{{DEST_IND_IE}}</indIEDest>
+      <IE>{{DEST_IE}}</IE>
+    </dest>
+
+    <!-- ================================================================== -->
+    <!-- DET: Detalhe dos Produtos/Servicos (repetir por item)              -->
+    <!-- ================================================================== -->
+    <det nItem="{{ITEM_NUM}}">
+      <prod>
+        <cProd>{{PROD_CODIGO}}</cProd>
+        <cEAN>{{PROD_EAN}}</cEAN>
+        <xProd>{{PROD_DESCRICAO}}</xProd>
+        <NCM>{{PROD_NCM}}</NCM>
+        <CFOP>{{PROD_CFOP}}</CFOP>
+        <uCom>{{PROD_UNIDADE}}</uCom>
+        <qCom>{{PROD_QUANTIDADE}}</qCom>
+        <vUnCom>{{PROD_VALOR_UNITARIO}}</vUnCom>
+        <vProd>{{PROD_VALOR_TOTAL}}</vProd>
+        <cEANTrib>{{PROD_EAN_TRIB}}</cEANTrib>
+        <uTrib>{{PROD_UNIDADE_TRIB}}</uTrib>
+        <qTrib>{{PROD_QTD_TRIB}}</qTrib>
+        <vUnTrib>{{PROD_VALOR_UNIT_TRIB}}</vUnTrib>
+        <indTot>1</indTot>
+      </prod>
+      <imposto>
+        <!-- ICMS -->
+        <ICMS>
+          <ICMS00> <!-- ou ICMS10, ICMS20, ICMS60, ICMSSN101, etc. -->
+            <orig>{{ICMS_ORIGEM}}</orig>
+            <CST>{{ICMS_CST}}</CST>
+            <modBC>{{ICMS_MOD_BC}}</modBC>
+            <vBC>{{ICMS_BASE_CALCULO}}</vBC>
+            <pICMS>{{ICMS_ALIQUOTA}}</pICMS>
+            <vICMS>{{ICMS_VALOR}}</vICMS>
+          </ICMS00>
+        </ICMS>
+        <!-- IPI -->
+        <IPI>
+          <cEnq>999</cEnq>
+          <IPITrib>
+            <CST>{{IPI_CST}}</CST>
+            <vBC>{{IPI_BASE_CALCULO}}</vBC>
+            <pIPI>{{IPI_ALIQUOTA}}</pIPI>
+            <vIPI>{{IPI_VALOR}}</vIPI>
+          </IPITrib>
+        </IPI>
+        <!-- PIS -->
+        <PIS>
+          <PISAliq>
+            <CST>{{PIS_CST}}</CST>
+            <vBC>{{PIS_BASE_CALCULO}}</vBC>
+            <pPIS>{{PIS_ALIQUOTA}}</pPIS>
+            <vPIS>{{PIS_VALOR}}</vPIS>
+          </PISAliq>
+        </PIS>
+        <!-- COFINS -->
+        <COFINS>
+          <COFINSAliq>
+            <CST>{{COFINS_CST}}</CST>
+            <vBC>{{COFINS_BASE_CALCULO}}</vBC>
+            <pCOFINS>{{COFINS_ALIQUOTA}}</pCOFINS>
+            <vCOFINS>{{COFINS_VALOR}}</vCOFINS>
+          </COFINSAliq>
+        </COFINS>
+      </imposto>
+    </det>
+
+    <!-- ================================================================== -->
+    <!-- TOTAL: Totais da NF-e                                              -->
+    <!-- ================================================================== -->
+    <total>
+      <ICMSTot>
+        <vBC>{{TOTAL_BC_ICMS}}</vBC>
+        <vICMS>{{TOTAL_ICMS}}</vICMS>
+        <vICMSDeson>0.00</vICMSDeson>
+        <vFCP>0.00</vFCP>
+        <vBCST>{{TOTAL_BC_ICMS_ST}}</vBCST>
+        <vST>{{TOTAL_ICMS_ST}}</vST>
+        <vProd>{{TOTAL_PRODUTOS}}</vProd>
+        <vFrete>{{TOTAL_FRETE}}</vFrete>
+        <vSeg>{{TOTAL_SEGURO}}</vSeg>
+        <vDesc>{{TOTAL_DESCONTO}}</vDesc>
+        <vII>0.00</vII>
+        <vIPI>{{TOTAL_IPI}}</vIPI>
+        <vIPIDevol>0.00</vIPIDevol>
+        <vPIS>{{TOTAL_PIS}}</vPIS>
+        <vCOFINS>{{TOTAL_COFINS}}</vCOFINS>
+        <vOutro>{{TOTAL_OUTROS}}</vOutro>
+        <vNF>{{TOTAL_NF}}</vNF>
+      </ICMSTot>
+    </total>
+
+    <!-- ================================================================== -->
+    <!-- TRANSP: Transporte                                                 -->
+    <!-- ================================================================== -->
+    <transp>
+      <modFrete>{{MOD_FRETE}}</modFrete> <!-- 0=Emit, 1=Dest, 2=Terceiro, 9=Sem -->
+      <transporta>
+        <CNPJ>{{TRANSP_CNPJ}}</CNPJ>
+        <xNome>{{TRANSP_NOME}}</xNome>
+        <IE>{{TRANSP_IE}}</IE>
+        <xEnder>{{TRANSP_ENDERECO}}</xEnder>
+        <xMun>{{TRANSP_MUNICIPIO}}</xMun>
+        <UF>{{TRANSP_UF}}</UF>
+      </transporta>
+      <vol>
+        <qVol>{{VOL_QUANTIDADE}}</qVol>
+        <esp>{{VOL_ESPECIE}}</esp>
+        <pesoL>{{VOL_PESO_LIQUIDO}}</pesoL>
+        <pesoB>{{VOL_PESO_BRUTO}}</pesoB>
+      </vol>
+    </transp>
+
+    <!-- ================================================================== -->
+    <!-- PAG: Pagamento                                                     -->
+    <!-- ================================================================== -->
+    <pag>
+      <detPag>
+        <tPag>{{TIPO_PAGAMENTO}}</tPag> <!-- 01=Dinheiro, 03=Cartao Credito, etc. -->
+        <vPag>{{VALOR_PAGAMENTO}}</vPag>
+      </detPag>
+    </pag>
+
+    <!-- ================================================================== -->
+    <!-- INFADIC: Informacoes Adicionais                                    -->
+    <!-- ================================================================== -->
+    <infAdic>
+      <infAdFisco>{{INFO_FISCO}}</infAdFisco>
+      <infCpl>{{INFO_COMPLEMENTAR}}</infCpl>
+    </infAdic>
+
+  </infNFe>
+</NFe>

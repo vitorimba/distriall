@@ -1,0 +1,49 @@
+# RPD Patterns Database — Recognition-Primed Decision
+#
+# Purpose: Reference database of RPD patterns used by the tacit-extractor agent (Cedric Chin methodology).
+# RPD captures how experts make rapid decisions using pattern recognition rather than analytical comparison.
+#
+# Usage: The tacit-extractor agent matches transcript signals against these patterns
+# to identify tacit knowledge being expressed by speakers.
+#
+# Methodology: Based on Gary Klein's RPD model as applied by Cedric Chin
+# for extracting expertise from practitioners.
+#
+# Maintained by: knowledge-architect / tacit-extractor agents
+# Last updated: TODO — fill on first real update
+
+patterns:
+  # TODO: Populate with real RPD patterns extracted from domain research.
+  # Each entry follows the structure below.
+
+  - name: "TODO_pattern_name"
+    category: "TODO"  # e.g., business_strategy | marketing | leadership | operations | technical
+    description: "TODO — one-sentence description of the pattern"
+    cues:
+      # Situational cues that trigger this pattern recognition in experts
+      - "TODO — cue 1"
+      - "TODO — cue 2"
+    expectancies:
+      # What the expert expects to happen when this pattern is recognized
+      - "TODO — expectancy 1"
+    typical_action: "TODO — the default action an expert takes when recognizing this pattern"
+    anomaly_signals:
+      # Signals that something deviates from the expected pattern
+      - "TODO — anomaly 1"
+    source: "TODO — reference or origin of this pattern"
+    confidence: 0  # 0-10, how well-validated this pattern is
+
+  # EXAMPLE (remove or replace with real data):
+  # - name: "market_saturation_pivot"
+  #   category: "business_strategy"
+  #   description: "Expert recognizes diminishing returns in current market and initiates pivot"
+  #   cues:
+  #     - "Declining engagement despite increased spend"
+  #     - "Competitor convergence on same value prop"
+  #   expectancies:
+  #     - "Current trajectory leads to commoditization within 6-12 months"
+  #   typical_action: "Explore adjacent market or reposition value prop"
+  #   anomaly_signals:
+  #     - "Engagement increases unexpectedly — recheck assumptions"
+  #   source: "Cedric Chin — Commonplace newsletter"
+  #   confidence: 7
