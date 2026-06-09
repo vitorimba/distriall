@@ -1,0 +1,2 @@
+-- Seed data will be added in Story 1.3 (Multi-Account setup)
+-- See architecture.md Appendix A for initial seed data plan

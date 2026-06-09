@@ -1,0 +1,17 @@
+{
+  "name": "distriall",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Gestao de vendas e distribuicao",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "typecheck": "pnpm --filter web tsc --noEmit",
+    "test": "pnpm --filter shared test"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=9"
+  }
+}
