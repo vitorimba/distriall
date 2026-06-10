@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/providers/auth-provider';
+import { AccountProvider } from '@/providers/account-provider';
 import { Header } from '@/components/layout/header';
 import { BottomNav } from '@/components/layout/bottom-nav';
 
@@ -20,10 +21,12 @@ export default function AuthenticatedLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1 pb-16">{children}</main>
-      <BottomNav />
-    </div>
+    <AccountProvider>
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1 pb-16">{children}</main>
+        <BottomNav />
+      </div>
+    </AccountProvider>
   );
 }
