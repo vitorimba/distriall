@@ -22,6 +22,37 @@ export interface Account {
   updated_at: string;
 }
 
+export interface OrderItem {
+  id: string;
+  product_name: string;
+  variant_name: string;
+  quantity: number;
+  unit_price: number;
+  cost_price: number;
+  total: number;
+  total_cost: number;
+  is_returned: boolean;
+  returned_quantity: number;
+}
+
+export interface OrderWithItems {
+  id: string;
+  account_id: string;
+  account_name: string;
+  account_slug: string;
+  client_name: string;
+  order_number: number;
+  status: string;
+  payment_method: string | null;
+  subtotal: number;
+  total_cost: number;
+  profit: number;
+  total: number;
+  created_at: string;
+  delivery_date: string | null;
+  items: OrderItem[];
+}
+
 export interface AccountUser {
   id: string;
   account_id: string;
