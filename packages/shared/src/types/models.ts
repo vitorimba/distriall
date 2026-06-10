@@ -53,6 +53,20 @@ export interface OrderWithItems {
   items: OrderItem[];
 }
 
+export interface Payment {
+  id: string;
+  account_id: string;
+  order_id: string;
+  method: 'dinheiro' | 'pix' | 'boleto' | 'vale' | 'cartao';
+  amount: number;
+  status: 'pendente' | 'confirmado' | 'cancelado';
+  is_third_party: boolean;
+  notes: string | null;
+  confirmed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface AccountUser {
   id: string;
   account_id: string;

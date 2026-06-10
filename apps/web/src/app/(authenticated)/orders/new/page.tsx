@@ -4,13 +4,18 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/stores/cart-store';
 import { useOrders } from '@/hooks/use-orders';
+import { usePayments } from '@/hooks/use-payments';
+import { useAccount } from '@/providers/account-provider';
 import { ClientSearch } from '@/components/orders/client-search';
 import { ProductSearch } from '@/components/orders/product-search';
 import { OrderItemList } from '@/components/orders/order-item-list';
+import { PaymentSelector } from '@/components/financial/payment-selector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import type { PaymentEntry } from '@/lib/validations/payment';
+import { validatePaymentsTotal } from '@/lib/validations/payment';
 
 function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -19,10 +24,11 @@ function formatBRL(value: number) {
 export default function NewOrderPage() {
   const router = useRouter();
   const { createOrder } = useOrders();
+  const { savePayments } = usePayments();
+  const { activeAccount } = useAccount();
   const {
     client,
     items,
-    paymentMethod,
     notes,
     deliveryDate,
     setPaymentMethod,
@@ -36,6 +42,8 @@ export default function NewOrderPage() {
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [payments, setPayments] = useState<PaymentEntry[]>([]);
+  const [isMixed, setIsMixed] = useState(false);
 
   // Clear cart on mount for new orders
   useEffect(() => {
@@ -52,11 +60,29 @@ export default function NewOrderPage() {
       return;
     }
 
+    // Validate payments total
+    const subtotalVal = getSubtotal();
+    if (payments.length > 0 && isMixed) {
+      const payErr = validatePaymentsTotal(payments, subtotalVal);
+      if (payErr) {
+        setError(payErr);
+        return;
+      }
+    }
+
     setError('');
     setSaving(true);
 
     try {
-      await createOrder();
+      // Set payment method on cart store for create_order
+      setPaymentMethod(isMixed ? 'misto' : (payments[0]?.method ?? ''));
+      const orderId = await createOrder();
+
+      // Save payment records
+      if (activeAccount && payments.length > 0) {
+        await savePayments(activeAccount.id, orderId, payments);
+      }
+
       clearCart();
       router.push('/orders');
     } catch (err) {
@@ -87,22 +113,11 @@ export default function NewOrderPage() {
       {client && (
         <Card>
           <CardContent className="space-y-3 pt-4">
-            <div className="space-y-1">
-              <Label>Forma de Pagamento</Label>
-              <select
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-              >
-                <option value="">Nenhuma</option>
-                <option value="dinheiro">Dinheiro</option>
-                <option value="pix">Pix</option>
-                <option value="boleto">Boleto</option>
-                <option value="vale">Vale</option>
-                <option value="cartao">Cartao</option>
-                <option value="misto">Misto</option>
-              </select>
-            </div>
+            <PaymentSelector
+              defaultMethod={client?.default_payment_method ?? undefined}
+              orderTotal={getSubtotal()}
+              onChange={(p, mixed) => { setPayments(p); setIsMixed(mixed); }}
+            />
             <div className="space-y-1">
               <Label>Data de Entrega</Label>
               <Input

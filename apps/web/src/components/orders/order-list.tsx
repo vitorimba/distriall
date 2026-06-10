@@ -35,6 +35,16 @@ const STATUS_FILTERS: { value: string; label: string }[] = [
   { value: 'cancelado', label: 'Cancelado' },
 ];
 
+const PAYMENT_FILTERS: { value: string; label: string }[] = [
+  { value: 'all', label: 'Todos' },
+  { value: 'dinheiro', label: 'Dinheiro' },
+  { value: 'pix', label: 'Pix' },
+  { value: 'boleto', label: 'Boleto' },
+  { value: 'vale', label: 'Vale' },
+  { value: 'cartao', label: 'Cartao' },
+  { value: 'misto', label: 'Misto' },
+];
+
 function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
@@ -43,6 +53,7 @@ export function OrderList() {
   const { activeAccount } = useAccount();
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [paymentFilter, setPaymentFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [loadKey, setLoadKey] = useState(0);
@@ -61,11 +72,14 @@ export function OrderList() {
     if (statusFilter !== 'all') {
       query = query.eq('status', statusFilter);
     }
+    if (paymentFilter !== 'all') {
+      query = query.eq('payment_method', paymentFilter);
+    }
 
     const { data } = await query;
     let result = (data as unknown as OrderRow[]) ?? [];
 
-    // Client-side search filter (Supabase doesn't support ilike on joined tables easily)
+    // Client-side search filter
     if (search) {
       const lower = search.toLowerCase();
       result = result.filter((o) =>
@@ -76,7 +90,7 @@ export function OrderList() {
 
     setOrders(result);
     setLoadKey((k) => k + 1);
-  }, [activeAccount, statusFilter, search]);
+  }, [activeAccount, statusFilter, paymentFilter, search]);
 
   useEffect(() => {
     let cancelled = false;
@@ -140,6 +154,7 @@ export function OrderList() {
 
       {/* Status filters */}
       <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
+      <ChipFilter options={PAYMENT_FILTERS} selected={paymentFilter} onChange={setPaymentFilter} />
 
       {/* Order list */}
       {loading ? (
