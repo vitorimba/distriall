@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { ClientForm } from '@/components/clients/client-form';
 import { ClientPricesEditor } from '@/components/clients/client-prices-editor';
+import { ClientDebtSummary } from '@/components/financial/client-debt-summary';
 
 interface ClientData {
   id: string;
@@ -59,6 +60,9 @@ export default function EditClientPage() {
   return (
     <div className="px-4 py-4 space-y-4">
       <h1 className="text-xl font-bold">{client.name}</h1>
+
+      {/* Debt summary */}
+      <ClientDebtSummary clientId={client.id} />
 
       {/* Tab switcher */}
       <div className="flex gap-1 rounded-lg bg-muted p-1">

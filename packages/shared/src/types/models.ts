@@ -67,6 +67,21 @@ export interface Payment {
   updated_at: string;
 }
 
+export interface Voucher {
+  id: string;
+  account_id: string;
+  payment_id: string;
+  client_id: string;
+  amount: number;
+  status: 'pendente' | 'pago' | 'vencido' | 'cancelado';
+  photo_url: string | null;
+  due_date: string | null;
+  paid_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface AccountUser {
   id: string;
   account_id: string;

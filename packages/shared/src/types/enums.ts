@@ -56,3 +56,25 @@ export const PaymentMethod = {
   MISTO: 'misto',
 } as const;
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
+
+export const VoucherStatus = {
+  PENDENTE: 'pendente',
+  PAGO: 'pago',
+  VENCIDO: 'vencido',
+  CANCELADO: 'cancelado',
+} as const;
+export type VoucherStatus = (typeof VoucherStatus)[keyof typeof VoucherStatus];
+
+export const VOUCHER_STATUS_LABELS: Record<VoucherStatus, string> = {
+  pendente: 'Pendente',
+  pago: 'Pago',
+  vencido: 'Vencido',
+  cancelado: 'Cancelado',
+};
+
+export const VOUCHER_STATUS_COLORS: Record<VoucherStatus, { bg: string; text: string; border: string }> = {
+  pendente:  { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-300' },
+  pago:      { bg: 'bg-green-100',  text: 'text-green-800',  border: 'border-green-300' },
+  vencido:   { bg: 'bg-red-100',    text: 'text-red-800',    border: 'border-red-300' },
+  cancelado: { bg: 'bg-gray-100',   text: 'text-gray-700',   border: 'border-gray-300' },
+};
