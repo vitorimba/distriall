@@ -7,7 +7,21 @@ import { ProductForm } from '@/components/products/product-form';
 
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Record<string, unknown> | null>(null);
+  const [product, setProduct] = useState<{
+    id: string;
+    name: string;
+    description: string | null;
+    category: string | null;
+    unit: string;
+    product_variants: {
+      id: string;
+      name: string;
+      weight_grams: number | null;
+      cost_price: number;
+      sell_price: number;
+      sku: string | null;
+    }[];
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
