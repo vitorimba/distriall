@@ -9,6 +9,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@distriall/shared"],
   turbopack: {},
 };
 
