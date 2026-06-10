@@ -8,9 +8,10 @@ import { type OrderStatus, ORDER_STATUS_LABELS } from '@distriall/shared';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, ArrowLeft, Pencil, Printer } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Pencil, Printer, RotateCcw } from 'lucide-react';
 import { usePrinter } from '@/hooks/use-printer';
 import { OrderReceipt } from '@/components/orders/order-receipt';
+import { ReturnForm } from '@/components/orders/return-form';
 
 interface OrderItem {
   id: string;
@@ -20,6 +21,10 @@ interface OrderItem {
   unit_price: number;
   cost_price: number;
   total: number;
+  is_returned: boolean;
+  returned_quantity: number;
+  return_reason: string | null;
+  returned_at: string | null;
 }
 
 interface OrderDetail {
@@ -79,6 +84,7 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [showReturnForm, setShowReturnForm] = useState(false);
   const { isSupported, isPrinting, printOrder } = usePrinter();
 
   useEffect(() => {
@@ -95,6 +101,16 @@ export default function OrderDetailPage() {
     }
     load();
   }, [id]);
+
+  async function reloadOrder() {
+    const supabase = createClient();
+    const { data } = await supabase
+      .from('orders')
+      .select('*, clients(id, name), order_items(*)')
+      .eq('id', id)
+      .single();
+    setOrder(data as unknown as OrderDetail | null);
+  }
 
   async function handleTransition(newStatus: OrderStatus) {
     setTransitioning(true);
@@ -207,7 +223,28 @@ export default function OrderDetailPage() {
             Ver Cupom
           </Button>
         )}
+        {order.status === 'entregue' && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-destructive border-destructive/50"
+            onClick={() => setShowReturnForm(true)}
+          >
+            <RotateCcw className="mr-1 size-3.5" />
+            Devolucao
+          </Button>
+        )}
       </div>
+
+      {/* Return form */}
+      {showReturnForm && order && (
+        <ReturnForm
+          orderId={order.id}
+          items={order.order_items}
+          onClose={() => setShowReturnForm(false)}
+          onReturned={reloadOrder}
+        />
+      )}
 
       {/* Fallback receipt */}
       {showReceipt && order && (
@@ -229,16 +266,39 @@ export default function OrderDetailPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-1">
-            {order.order_items.map((item) => (
-              <div key={item.id} className="flex items-center justify-between py-1 text-sm">
-                <div>
-                  <span className="font-medium">{item.product_name}</span>
-                  <span className="text-muted-foreground"> – {item.variant_name}</span>
-                  <span className="text-muted-foreground"> x{item.quantity}</span>
+            {order.order_items.map((item) => {
+              const hasReturn = item.returned_quantity > 0;
+              return (
+                <div key={item.id} className={`py-1 text-sm ${hasReturn ? 'bg-red-50 rounded px-2 -mx-2' : ''}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-medium">{item.product_name}</span>
+                      <span className="text-muted-foreground"> – {item.variant_name}</span>
+                      <span className="text-muted-foreground"> x{item.quantity}</span>
+                      {item.is_returned && (
+                        <span className="ml-1 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-800 border border-red-300">
+                          Devolvido
+                        </span>
+                      )}
+                      {hasReturn && !item.is_returned && (
+                        <span className="ml-1 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-800 border border-red-300">
+                          Dev. parcial: {item.returned_quantity}
+                        </span>
+                      )}
+                    </div>
+                    <span className={`font-medium ${hasReturn ? 'line-through text-muted-foreground' : ''}`}>
+                      {formatBRL(item.total)}
+                    </span>
+                  </div>
+                  {hasReturn && (
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {item.return_reason && <span>Motivo: {item.return_reason}</span>}
+                      {item.returned_at && <span> · {formatDateTime(item.returned_at)}</span>}
+                    </div>
+                  )}
                 </div>
-                <span className="font-medium">{formatBRL(item.total)}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>
