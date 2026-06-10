@@ -8,7 +8,9 @@ import { type OrderStatus, ORDER_STATUS_LABELS } from '@distriall/shared';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, ArrowLeft, Pencil } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Pencil, Printer } from 'lucide-react';
+import { usePrinter } from '@/hooks/use-printer';
+import { OrderReceipt } from '@/components/orders/order-receipt';
 
 interface OrderItem {
   id: string;
@@ -76,6 +78,8 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
+  const [showReceipt, setShowReceipt] = useState(false);
+  const { isSupported, isPrinting, printOrder } = usePrinter();
 
   useEffect(() => {
     async function load() {
@@ -178,7 +182,45 @@ export default function OrderDetailPage() {
             </Button>
           </Link>
         )}
+        {isSupported ? (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isPrinting}
+            onClick={async () => {
+              try {
+                await printOrder(
+                  { ...order, client_name: order.clients?.name ?? '', items: order.order_items },
+                  'Distriall'
+                );
+              } catch {
+                setShowReceipt(true);
+              }
+            }}
+          >
+            <Printer className="mr-1 size-3.5" />
+            {isPrinting ? 'Imprimindo...' : 'Imprimir'}
+          </Button>
+        ) : (
+          <Button variant="outline" size="sm" onClick={() => setShowReceipt(true)}>
+            <Printer className="mr-1 size-3.5" />
+            Ver Cupom
+          </Button>
+        )}
       </div>
+
+      {/* Fallback receipt */}
+      {showReceipt && order && (
+        <OrderReceipt
+          orderNumber={order.order_number}
+          clientName={order.clients?.name ?? ''}
+          accountName="Distriall"
+          paymentMethod={order.payment_method}
+          total={order.total}
+          items={order.order_items}
+          onClose={() => setShowReceipt(false)}
+        />
+      )}
 
       {/* Items */}
       <Card>
