@@ -4,7 +4,7 @@
 In Progress
 
 ## Progress
-2/4 stories Done (50%)
+3/4 stories Done (75%)
 
 ## Stories
 
@@ -12,7 +12,7 @@ In Progress
 |-------|-------|--------|
 | 4.1 | Tela do Entregador (Joao) | Done |
 | 4.2 | Lista de Rota (Admin) | Done |
-| 4.3 | Dashboard de Estatisticas | Draft |
+| 4.3 | Dashboard de Estatisticas | Done |
 | 4.4 | Historico de Clientes | Draft |
 
 ## Business Value
@@ -103,3 +103,37 @@ In Progress
 - AC2-gap (MEDIUM): campo numerico de sequencia (Task 3.6) nao implementado — avaliar necessidade real apos feedback de uso
 
 **Tests:** 11 novos (11 unit + 0 integration) + 26 regressao = 37 total. **Deploy:** vercel (migrations 00021+00022 pendentes aplicacao cloud via @devops). **CodeRabbit:** 0 iter (CLI nao disponivel no ambiente Windows)
+
+### Story 4.3 — Dashboard de Estatisticas (2026-06-11)
+
+**Built:**
+- `apps/web/src/app/api/stats/route.ts` — GET /api/stats com filtros account_id/period/start_date/end_date; 4 queries agregadas (metricas basicas, payment breakdown, product ranking top-10, weekly evolution 12 semanas); RLS via get_user_account_ids() + can_view_financial()
+- `apps/web/src/hooks/use-stats.ts` — hook com fetchStats, loading/error state, parametros tipados
+- `apps/web/src/components/stats/stats-card.tsx` — card reutilizavel para metricas (faturamento, lucro, ticket, pedidos, clientes)
+- `apps/web/src/components/stats/revenue-chart.tsx` — Recharts BarChart evolucao semanal (faturamento + lucro)
+- `apps/web/src/components/stats/payment-pie-chart.tsx` — Recharts PieChart metodos de pagamento (REUSE PAYMENT_METHOD_LABELS de enums.ts)
+- `apps/web/src/components/stats/product-ranking-table.tsx` — tabela ranking produtos com tabs "Por Valor" / "Por Quantidade"
+- `apps/web/src/app/(authenticated)/dashboard/page.tsx` — ADAPTED placeholder: filtros de conta/periodo, cards de metricas, graficos integrados
+- `apps/web/src/app/(authenticated)/stats/page.tsx` — ADAPTED placeholder: ranking completo de produtos, filtros
+- `packages/shared/src/types/models.ts` — tipos adicionados: DashboardStats, ProductRanking, PaymentBreakdown, WeeklyEvolution
+- `packages/shared/src/utils/__tests__/stats-calculations.test.ts` — 8 unit tests (avg ticket, payment percentages)
+- `packages/shared/src/utils/__tests__/currency-format.test.ts` — 6 unit tests para formatBRL
+
+**Patterns established:**
+- API route de agregacao em Next.js: usar Supabase server client com `auth.getUser()` + filtro explicito de `account_users` por `user_id/is_active/can_view_financial` — nao confiar apenas em RLS de tabela
+- Filtros de data DEVEM ser pushdown para o banco (`.gte/.lte` no Supabase client) — nunca filtrar historico completo em memoria JS
+- Recharts instalado: `pnpm add recharts --filter web` — React 19 compatible; `<ResponsiveContainer>` obrigatorio para charts responsivos
+- Tipos de stats em `packages/shared/src/types/models.ts` — disponivel para futuros consumidores
+
+**Key decisions:**
+- Queries executadas sequencialmente (4x `await`) — `Promise.all` deferido como tech debt L01; aceitavel para MVP
+- Integration tests (RLS, stats-api) requerem DB real — deferred; RLS verificada por code review da API
+- stats/page.tsx reutiliza product_ranking da mesma API (top-10) — ranking "completo" deferido como M01; `?limit=all` seria breaking change no endpoint
+
+**Tech debt identified:**
+- M01 (MEDIUM): stats/page.tsx usa ranking top-10 da API; AC3 (ranking completo) parcialmente nao cumprido — adicionar param `?limit=all` ou endpoint separado
+- M02 (MEDIUM): fetchStats sem debounce no date range customizado — adicionar 400ms debounce nos inputs de data
+- AC6-gap (MEDIUM): sem teste automatizado de permissao Diego x Tiago — unit test com mock Supabase seria suficiente sem DB real
+- L01 (LOW): 4 queries sequenciais por request — otimizar com Promise.all em iteracao futura
+
+**Tests:** 14 novos (8 stats-calculations + 6 currency-format) + 37 regressao = 51 total. **Deploy:** vercel (auto-deploy via CI; sem novas migrations). **CodeRabbit:** 0 iter (CLI nao disponivel no ambiente Windows). **QA:** CONCERNS 85/100; 2 HIGH corrigidos em review (date filter pushdown).

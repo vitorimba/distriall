@@ -1,0 +1,76 @@
+schema: 1
+story: '4.3'
+story_title: 'Dashboard e Estatisticas'
+gate: CONCERNS
+status_reason: '2 HIGH issues fixed during review (query date pushdown for payments and order_items). 2 MEDIUMs remain: stats/page ranking not truly complete (AC3/Task 6.2 gap) and no automated permission test for AC6. Non-blocking for progression with tracking.'
+reviewer: 'Aria (System Architect)'
+updated: '2026-06-11T00:00:00Z'
+
+top_issues:
+  - id: M01
+    severity: medium
+    category: requirements
+    description: 'stats/page.tsx uses same product_ranking as dashboard (top-10). Task 6.2 specifies "ranking completo sem limite" but API always slices to 10. AC3 partially unmet for stats detail page.'
+    suggested_owner: dev
+  - id: M02
+    severity: medium
+    category: reliability
+    description: 'fetchStats fires on every keystroke in custom date range inputs — no debounce. Excessive API calls during date typing.'
+    suggested_owner: dev
+  - id: AC6-gap
+    severity: medium
+    category: security
+    description: 'AC6 (Diego nao ve conta Tiago) validated by code logic review but no automated test. Integration test deferred (requires DB). A unit test with mocked Supabase client would cover this without real DB.'
+    suggested_owner: dev
+  - id: L01
+    severity: low
+    category: maintainability
+    description: 'fetchStats uses 4 sequential queries without Promise.all — minor performance opportunity for future sprint.'
+    suggested_owner: dev
+
+waiver:
+  active: false
+
+quality_score: 85
+
+expires: '2026-06-25T00:00:00Z'
+
+evidence:
+  tests_reviewed: 51
+  risks_identified: 4
+  trace:
+    ac_covered: [1, 2, 4, 5]
+    ac_gaps: [3, 6]
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'auth.getUser() + account_users filtered by user_id/is_active/financial permission + explicit accountId validation against allowed IDs. No SQL injection. Diego cannot access Tiago account.'
+  performance:
+    status: CONCERNS
+    notes: 'Queries 2 and 3 (payments, order_items) fixed during review — date filter now pushed to DB. 4 sequential queries per request (no Promise.all) is acceptable tech debt for MVP.'
+  reliability:
+    status: CONCERNS
+    notes: 'fetchStats triggers on every keystroke in custom date range (no debounce). Non-blocking for MVP but should be addressed.'
+  maintainability:
+    status: PASS
+    notes: 'Clean code, self-documenting. formatBRL and PAYMENT_METHOD_LABELS correctly reused from shared package. Types well-defined in packages/shared.'
+
+recommendations:
+  immediate:
+    - action: 'Confirm or defer AC3/Task 6.2: either add ?limit=all param to API for stats page OR explicitly descope "ranking completo" to top-10 and update story'
+      refs: ['apps/web/src/app/(authenticated)/stats/page.tsx', 'apps/web/src/app/api/stats/route.ts']
+      suggested_owner: dev
+    - action: 'Update File List to include apps/web/src/app/api/stats/route.ts as modified during QA review'
+      refs: ['docs/stories/4.3.dashboard-estatisticas.md']
+      suggested_owner: dev
+  future:
+    - action: 'Add permission test for AC6 using mocked Supabase client (no real DB required for basic mock)'
+      refs: ['packages/shared/src/utils/__tests__/']
+      suggested_owner: dev
+    - action: 'Add 400ms debounce on startDate/endDate inputs in dashboard and stats pages'
+      refs: ['apps/web/src/app/(authenticated)/dashboard/page.tsx', 'apps/web/src/app/(authenticated)/stats/page.tsx']
+      suggested_owner: dev
+    - action: 'Optimize 4 sequential queries with Promise.all for parallel execution'
+      refs: ['apps/web/src/app/api/stats/route.ts']
+      suggested_owner: dev

@@ -187,3 +187,34 @@ export interface DeliveryItem {
   delivered_at: string | null;
   created_at: string;
 }
+
+export interface PaymentBreakdown {
+  method: string;
+  amount: number;
+  percentage: number;
+}
+
+export interface ProductRanking {
+  product_name: string;
+  variant_name: string;
+  total_value: number;
+  total_quantity: number;
+}
+
+export interface WeeklyEvolution {
+  week: string;
+  revenue: number;
+  profit: number;
+}
+
+export interface DashboardStats {
+  revenue: number;
+  cost: number;
+  profit: number;
+  order_count: number;
+  client_count: number;
+  avg_ticket: number;
+  payment_breakdown: PaymentBreakdown[];
+  product_ranking: ProductRanking[];
+  weekly_evolution: WeeklyEvolution[];
+}
