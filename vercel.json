@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npx -y n 20 && npx -y n exec 20 npm i -g --force pnpm@9 && npx -y n exec 20 pnpm install --no-frozen-lockfile",
+  "installCommand": "npm i -g pnpm@10.14.0 && pnpm install --no-frozen-lockfile",
   "framework": "nextjs"
 }
