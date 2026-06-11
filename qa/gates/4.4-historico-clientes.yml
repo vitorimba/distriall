@@ -1,0 +1,80 @@
+schema: 1
+story: '4.4'
+story_title: 'Historico e Relatorios por Cliente'
+gate: CONCERNS
+status_reason: 'Todos os 5 ACs implementados corretamente. Algoritmo de frequencia correto com 11 testes cobrindo edge cases. 3 issues MEDIUM identificados: query de balance sem filtro account_id no join de orders, erro silencioso nas queries de balance, e duplicacao de logica de query no loadMore. Nenhum CRITICAL ou HIGH. Nao bloqueante para progressao.'
+reviewer: 'Aria (System Architect)'
+updated: '2026-06-11T10:00:00Z'
+
+top_issues:
+  - id: M01
+    severity: medium
+    category: security
+    description: 'use-client-detail.ts:41-45 — query de payments filtra orders.client_id mas nao filtra orders.account_id explicitamente no join. RLS deve cobrir isso, mas a query nao e defensiva por construcao. Adicionar .eq("orders.account_id", activeAccount.id) ao join.'
+    suggested_owner: dev
+  - id: M02
+    severity: medium
+    category: reliability
+    description: 'use-client-detail.ts — nenhuma das tres queries (clients, vouchers, payments) captura erros. Falhas silenciosas: se uma query falhar, balance e client ficam null sem feedback ao usuario.'
+    suggested_owner: dev
+  - id: M03
+    severity: medium
+    category: maintainability
+    description: 'use-client-orders.ts:37-67 e 74-107 — logica de query duplicada entre load() e loadMore(). Extrair buildQuery(range) para evitar drift entre os dois paths.'
+    suggested_owner: dev
+  - id: L01
+    severity: low
+    category: maintainability
+    description: 'client-purchase-frequency.tsx:62 — retorna null durante carregamento causando salto de layout. Considerar skeleton loader.'
+    suggested_owner: dev
+  - id: L02
+    severity: low
+    category: maintainability
+    description: 'orders/new/page.tsx linha 81 — eslint-disable-line para react-hooks/exhaustive-deps. Adicionar activeAccount e os setters ao array de dependencias ou usar useCallback para os setters.'
+    suggested_owner: dev
+
+waiver:
+  active: false
+
+quality_score: 83
+
+expires: '2026-06-25T00:00:00Z'
+
+evidence:
+  tests_reviewed: 62
+  risks_identified: 5
+  coderabbit_iterations: 0
+  coderabbit_note: 'CLI nao instalado no ambiente — SKIPPED conforme protocolo'
+  trace:
+    ac_covered: [1, 2, 3, 4, 5]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: CONCERNS
+    notes: 'Todas as queries filtram account_id via activeAccount (RLS respeitado). Porem, query de payments em use-client-detail.ts usa join orders!inner sem filtrar account_id explicitamente — RLS cobre mas query nao e defensiva por construcao. Sem SQL injection. Sem exposicao cross-account.'
+  performance:
+    status: PASS
+    notes: 'Paginacao 20/pagina implementada corretamente. Queries simples sem N+1. Frequencia calculada client-side sobre maximo 3 meses de dados. Filtro de data na query de frequencia aplicado no banco. Aceitavel para MVP.'
+  reliability:
+    status: CONCERNS
+    notes: 'Tres queries em useClientDetail sem captura de erro — falhas silenciosas. Se Supabase retornar erro, usuario ve tela em branco sem mensagem. Pattern de error handling ausente neste hook.'
+  maintainability:
+    status: PASS
+    notes: 'Codigo limpo e autodocumentado. Componentes bem separados. Tipos definidos em packages/shared. Unico ponto de melhoria: duplicacao de query logic em use-client-orders.'
+
+recommendations:
+  immediate:
+    - action: 'Adicionar filtro account_id ao join de orders na query de payments em use-client-detail.ts (.eq("orders.account_id", activeAccount.id))'
+      refs: ['apps/web/src/hooks/use-client-detail.ts']
+      suggested_owner: dev
+  future:
+    - action: 'Adicionar captura de erro nas tres queries de useClientDetail (clients, vouchers, payments) e expor estado de erro para o componente pai'
+      refs: ['apps/web/src/hooks/use-client-detail.ts']
+      suggested_owner: dev
+    - action: 'Extrair buildQuery helper em use-client-orders para eliminar duplicacao entre load() e loadMore()'
+      refs: ['apps/web/src/hooks/use-client-orders.ts']
+      suggested_owner: dev
+    - action: 'Adicionar skeleton loader em ClientPurchaseFrequency para evitar salto de layout'
+      refs: ['apps/web/src/components/clients/client-purchase-frequency.tsx']
+      suggested_owner: dev

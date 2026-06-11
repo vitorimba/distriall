@@ -63,6 +63,45 @@ function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+export type PurchaseFrequency = 'semanal' | 'quinzenal' | 'mensal' | 'irregular' | 'novo';
+
+export interface PurchaseFrequencyResult {
+  frequency: PurchaseFrequency;
+  avgIntervalDays: number;
+  lastOrderDate: Date | null;
+  daysSinceLastOrder: number | null;
+}
+
+export function calculatePurchaseFrequency(orderDates: Date[]): PurchaseFrequencyResult {
+  if (orderDates.length === 0) {
+    return { frequency: 'novo', avgIntervalDays: 0, lastOrderDate: null, daysSinceLastOrder: null };
+  }
+
+  const sorted = [...orderDates].sort((a, b) => b.getTime() - a.getTime());
+  const lastOrderDate = sorted[0];
+  const daysSinceLastOrder = Math.floor((Date.now() - lastOrderDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (sorted.length < 2) {
+    return { frequency: 'novo', avgIntervalDays: 0, lastOrderDate, daysSinceLastOrder };
+  }
+
+  const intervals: number[] = [];
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const diff = Math.floor((sorted[i].getTime() - sorted[i + 1].getTime()) / (1000 * 60 * 60 * 24));
+    intervals.push(diff);
+  }
+
+  const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+
+  let frequency: PurchaseFrequency;
+  if (avgInterval <= 10) frequency = 'semanal';
+  else if (avgInterval <= 20) frequency = 'quinzenal';
+  else if (avgInterval <= 45) frequency = 'mensal';
+  else frequency = 'irregular';
+
+  return { frequency, avgIntervalDays: Math.round(avgInterval), lastOrderDate, daysSinceLastOrder };
+}
+
 /**
  * Calculate expense splits with rounding adjustment.
  * The last split absorbs any rounding difference to ensure

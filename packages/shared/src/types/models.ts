@@ -218,3 +218,26 @@ export interface DashboardStats {
   product_ranking: ProductRanking[];
   weekly_evolution: WeeklyEvolution[];
 }
+
+export interface ClientDetail {
+  id: string;
+  name: string;
+  trade_name: string | null;
+  address: string | null;
+  city: string | null;
+  neighborhood: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  default_payment_method: string | null;
+  notes: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface ClientBalance {
+  vouchers_pending: number;
+  vouchers_count: number;
+  payments_pending: number;
+  payments_count: number;
+  total: number;
+}

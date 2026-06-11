@@ -1,10 +1,12 @@
 # Epic 4 — Entregas e Estatisticas
 
 ## Status
-In Progress
+Done
 
 ## Progress
-3/4 stories Done (75%)
+4/4 stories Done (100%)
+
+## Completed: 2026-06-11
 
 ## Stories
 
@@ -13,7 +15,7 @@ In Progress
 | 4.1 | Tela do Entregador (Joao) | Done |
 | 4.2 | Lista de Rota (Admin) | Done |
 | 4.3 | Dashboard de Estatisticas | Done |
-| 4.4 | Historico de Clientes | Draft |
+| 4.4 | Historico de Clientes | Done |
 
 ## Business Value
 
@@ -137,3 +139,37 @@ In Progress
 - L01 (LOW): 4 queries sequenciais por request — otimizar com Promise.all em iteracao futura
 
 **Tests:** 14 novos (8 stats-calculations + 6 currency-format) + 37 regressao = 51 total. **Deploy:** vercel (auto-deploy via CI; sem novas migrations). **CodeRabbit:** 0 iter (CLI nao disponivel no ambiente Windows). **QA:** CONCERNS 85/100; 2 HIGH corrigidos em review (date filter pushdown).
+
+### Story 4.4 — Historico de Clientes (2026-06-11)
+
+**Built:**
+- `apps/web/src/app/(authenticated)/clients/[id]/page.tsx` — reescrita como pagina de detalhe completa: header, dados cadastrais, saldo devedor, frequencia, precos especiais, historico de pedidos
+- `apps/web/src/app/(authenticated)/clients/[id]/edit/page.tsx` — pagina de edicao do cliente (conteudo extraido do page.tsx anterior)
+- `apps/web/src/components/clients/client-balance.tsx` — card de saldo devedor (vermelho/verde): calcula vales + payments pendentes via hook
+- `apps/web/src/components/clients/client-purchase-frequency.tsx` — frequencia de compra e ultimo pedido; consume calculatePurchaseFrequency de packages/shared
+- `apps/web/src/components/clients/client-order-history.tsx` — historico de pedidos com filtros (date range, status) e paginacao "Ver mais"
+- `apps/web/src/components/clients/client-prices-table.tsx` — tabela read-only de precos especiais da tabela client_prices
+- `apps/web/src/hooks/use-client-detail.ts` — hook agregado: queries paralelas para client + vouchers + payments; expoe ClientDetail e ClientBalance
+- `apps/web/src/hooks/use-client-orders.ts` — hook para historico de pedidos com filtros e paginacao (20/pagina)
+- `packages/shared/src/utils/calculations.ts` — MODIFY: adicionado calculatePurchaseFrequency (semanal/quinzenal/mensal/irregular/novo)
+- `packages/shared/src/types/models.ts` — MODIFY: adicionados ClientDetail e ClientBalance
+- `packages/shared/src/utils/__tests__/purchase-frequency.test.ts` — 11 unit tests cobrindo edge cases (0 pedidos, 1 pedido, boundary values, unsorted dates)
+
+**Patterns established:**
+- Hook agregado pattern: `use-client-detail.ts` centraliza multiplas queries em um hook com estado unico (loading/error/data) — reutilizar para proximas paginas de detalhe de entidade
+- Logica de frequencia em packages/shared (nao em componente): `calculatePurchaseFrequency` e pure function testavel em Vitest sem browser — seguir para logicas de calculo futuros
+- Links bidirecionais entre entidades: cliente → pedidos (historico) E pedido → cliente (detalhe) — padrao de navegacao estabelecido para o admin
+
+**Key decisions:**
+- client-debt-summary.tsx da Story 3.2 NAO foi reutilizado para calculo — apenas para referencia de UI. Componente existente usa apenas `getClientDebt(vouchers)`, sem payments. Nova logica de balance calculada de forma independente em use-client-detail.ts para cobrir ambas as fontes.
+- Integration tests (Tasks 6.2/6.3) descoped: requerem mock supabase ou ambiente real — deferido. Unit tests de algoritmos cobrem logica de negocio critica.
+- Botao "Editar" redireciona para `/clients/[id]/edit` (pagina separada) em vez de modal in-page — consistente com padrao de edicao do cadastro da Story 1.5.
+
+**Tech debt identified:**
+- M01 (MEDIUM): use-client-detail.ts:41-45 — join de payments em orders sem filtro explicito de account_id; depende de RLS. Adicionar `.eq("orders.account_id", activeAccount.id)` — recomendado antes de producao
+- M02 (MEDIUM): use-client-detail.ts — 3 queries sem captura de erro; falhas silenciosas. Adicionar try/catch e expor estado de erro ao componente pai
+- M03 (MEDIUM): use-client-orders.ts — logica de query duplicada entre load() e loadMore(); extrair buildQuery(range) helper
+- L01 (LOW): client-purchase-frequency.tsx:62 — retorna null durante carregamento causando salto de layout; adicionar skeleton loader
+- L02 (LOW): orders/new/page.tsx:81 — eslint-disable para react-hooks/exhaustive-deps; resolver dependencias do useCallback
+
+**Tests:** 11 novos (purchase-frequency unit tests) + 51 regressao = 62 total. **Deploy:** vercel (sem novas migrations; deploy via CI). **CodeRabbit:** 0 iter (CLI nao disponivel no ambiente Windows). **QA:** CONCERNS 83/100 — todos 5 ACs cobertos, 3 MEDIUM + 2 LOW nao-bloqueantes.

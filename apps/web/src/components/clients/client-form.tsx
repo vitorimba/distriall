@@ -87,7 +87,7 @@ export function ClientForm({ client }: ClientFormProps) {
     }
 
     setSaving(false);
-    router.push('/clients');
+    router.push(isEdit && client ? `/clients/${client.id}` : '/clients');
   }
 
   return (

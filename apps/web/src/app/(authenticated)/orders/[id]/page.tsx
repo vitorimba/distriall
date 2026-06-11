@@ -162,7 +162,13 @@ export default function OrderDetailPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">Pedido #{order.order_number}</h1>
-          <p className="text-sm text-muted-foreground">{order.clients?.name ?? '—'}</p>
+          {order.clients ? (
+            <Link href={`/clients/${order.clients.id}`} className="text-sm text-primary underline underline-offset-2">
+              {order.clients.name}
+            </Link>
+          ) : (
+            <p className="text-sm text-muted-foreground">—</p>
+          )}
         </div>
         <OrderStatusBadge status={order.status} className="text-sm px-3 py-1" />
       </div>

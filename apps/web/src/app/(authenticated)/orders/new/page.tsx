@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import { useCartStore } from '@/stores/cart-store';
 import { useOrders } from '@/hooks/use-orders';
 import { usePayments } from '@/hooks/use-payments';
@@ -23,6 +24,8 @@ function formatBRL(value: number) {
 
 export default function NewOrderPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedClientId = searchParams.get('client');
   const { createOrder } = useOrders();
   const { savePayments } = usePayments();
   const { activeAccount } = useAccount();
@@ -34,6 +37,8 @@ export default function NewOrderPage() {
     setPaymentMethod,
     setNotes,
     setDeliveryDate,
+    setClient,
+    setPriceMap,
     clearCart,
     getSubtotal,
     getTotalCost,
@@ -45,10 +50,35 @@ export default function NewOrderPage() {
   const [payments, setPayments] = useState<PaymentEntry[]>([]);
   const [isMixed, setIsMixed] = useState(false);
 
-  // Clear cart on mount for new orders
+  // Clear cart on mount for new orders, then pre-select client if provided
   useEffect(() => {
     clearCart();
   }, [clearCart]);
+
+  useEffect(() => {
+    if (!preselectedClientId || !activeAccount) return;
+
+    async function preloadClient() {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('clients')
+        .select('id, name, default_payment_method')
+        .eq('id', preselectedClientId!)
+        .single();
+
+      if (!data) return;
+      setClient({ id: data.id, name: data.name, default_payment_method: data.default_payment_method });
+
+      const { data: prices } = await supabase
+        .from('client_prices')
+        .select('product_variant_id, custom_price')
+        .eq('client_id', preselectedClientId!);
+
+      setPriceMap(new Map((prices ?? []).map((p) => [p.product_variant_id, p.custom_price])));
+    }
+
+    preloadClient();
+  }, [preselectedClientId, activeAccount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSave() {
     if (!client) {
