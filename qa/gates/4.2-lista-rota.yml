@@ -1,0 +1,79 @@
+schema: 1
+story: '4.2'
+story_title: 'Lista de Rota'
+gate: CONCERNS
+status_reason: 'Implementação funcional e bem estruturada. Três CONCERNS não-bloqueantes: (1) createDelivery não-atômico — risco de inconsistência em falha de rede; (2) AC2/Task 3.6 checkbox marcado mas campo numérico não implementado; (3) infrastructure-map.json ausente impede formalizar rollback plan.'
+reviewer: 'Aria (System Architect)'
+updated: '2026-06-11T00:00:00Z'
+
+top_issues:
+  - id: M02
+    severity: medium
+    category: reliability
+    description: 'createDelivery faz 2 inserts sequenciais sem transação — delivery órfão em caso de falha no insert de delivery_items'
+    suggested_owner: dev
+  - id: AC2-gap
+    severity: medium
+    category: requirements
+    description: 'Task 3.6 (campo numérico de sequência) marcada como concluída mas não implementada no código — apenas DnD disponível'
+    suggested_owner: dev
+  - id: M03
+    severity: medium
+    category: performance
+    description: 'reorderDeliveryItems faz N roundtrips individuais ao banco — ineficiente para rotas grandes'
+    suggested_owner: dev
+  - id: L01
+    severity: low
+    category: code
+    description: 'buildGoogleMapsUrl sem limite de waypoints — Google Maps aceita máximo 10 (origem+destino+8 intermediários) na URL gratuita'
+    suggested_owner: dev
+
+waiver:
+  active: false
+
+quality_score: 85
+
+expires: '2026-06-25T00:00:00Z'
+
+evidence:
+  tests_reviewed: 37
+  risks_identified: 4
+  trace:
+    ac_covered: [1, 3, 4, 5, 6]
+    ac_gaps: [2]
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'RPC SECURITY DEFINER com auth.uid() check correto. Migration 00022 adicionada para proteção backend de DELETE em itens entregues. GRANT EXECUTE only to authenticated.'
+  performance:
+    status: PASS
+    notes: 'Queries indexadas. reorderDeliveryItems N roundtrips é tech debt aceitável para MVP (M03 deferred).'
+  reliability:
+    status: CONCERNS
+    notes: 'createDelivery não-atômico (M02) — dois inserts sequenciais. Risco de delivery sem items em caso de falha. Deferred para story futura.'
+  maintainability:
+    status: PASS
+    notes: 'Duplicação PAYMENT_METHOD_LABELS/COLORS corrigida nesta review (M01). Código limpo e autodocumentado.'
+
+recommendations:
+  immediate:
+    - action: 'Verificar AC2/Task 3.6: confirmar se DnD touch é suficiente para mobile OU implementar input numérico de sequência conforme especificado'
+      refs: ['apps/web/src/components/deliveries/route-item.tsx']
+      suggested_owner: dev
+    - action: 'Adicionar supabase/migrations/00022_protect_delivered_items.sql ao File List da story'
+      refs: ['docs/stories/4.2.lista-rota.md']
+      suggested_owner: dev
+    - action: 'Aplicar migrations 00021 e 00022 no Supabase antes do deploy'
+      refs: ['supabase/migrations/00021_mark_delivery_item_delivered.sql', 'supabase/migrations/00022_protect_delivered_items.sql']
+      suggested_owner: dev
+  future:
+    - action: 'Criar story para tornar createDelivery atômico via RPC (equivalente ao I01 resolvido em Task 9)'
+      refs: ['apps/web/src/hooks/use-deliveries.ts']
+      suggested_owner: dev
+    - action: 'Otimizar reorderDeliveryItems para upsert batch ou RPC'
+      refs: ['apps/web/src/hooks/use-deliveries.ts']
+      suggested_owner: dev
+    - action: 'Adicionar limite de waypoints em buildGoogleMapsUrl (máx 10) e trunc com aviso ao usuário'
+      refs: ['packages/shared/src/utils/delivery.ts']
+      suggested_owner: dev

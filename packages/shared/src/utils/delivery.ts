@@ -1,6 +1,25 @@
 // Delivery utility functions
+// DeliveryItemStatus is now the canonical enum from enums.ts
+import type { DeliveryItemStatus } from '../types/enums';
+export type { DeliveryItemStatus };
 
-export type DeliveryItemStatus = 'pendente' | 'entregue' | 'nao_entregue';
+/**
+ * Generates a Google Maps URL with ordered waypoints.
+ * Format: https://www.google.com/maps/dir/{addr1}/{addr2}/...
+ */
+export function buildGoogleMapsUrl(addresses: string[]): string {
+  if (addresses.length === 0) return 'https://www.google.com/maps';
+  const encoded = addresses.map((a) => encodeURIComponent(a));
+  return `https://www.google.com/maps/dir/${encoded.join('/')}`;
+}
+
+/**
+ * Reassigns sequence numbers to a list of items starting from 1,
+ * preserving the existing order.
+ */
+export function reassignSequences<T extends { sequence: number }>(items: T[]): T[] {
+  return items.map((item, index) => ({ ...item, sequence: index + 1 }));
+}
 
 export interface DeliveryStatusTransition {
   itemId: string;

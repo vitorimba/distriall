@@ -114,7 +114,10 @@ export function useDriverDeliveries(userId: string | undefined) {
 
   // Scoped realtime subscription: only listen to delivery_items of THIS driver's delivery
   const refetchRef = useRef(fetchDeliveries);
-  refetchRef.current = fetchDeliveries;
+
+  useEffect(() => {
+    refetchRef.current = fetchDeliveries;
+  });
 
   useEffect(() => {
     if (!userId || !deliveryId) return;
@@ -150,26 +153,13 @@ export function useDriverDeliveries(userId: string | undefined) {
   async function markDelivered(itemId: string, orderId: string, observation?: string) {
     const supabase = createClient();
 
-    const { error: itemError } = await supabase
-      .from('delivery_items')
-      .update({
-        status: 'entregue',
-        delivered_at: new Date().toISOString(),
-        observation: observation ?? null,
-      })
-      .eq('id', itemId);
+    const { error } = await supabase.rpc('mark_delivery_item_delivered', {
+      p_item_id: itemId,
+      p_order_id: orderId,
+      p_observation: observation ?? null,
+    });
 
-    if (itemError) throw itemError;
-
-    const { error: orderError } = await supabase
-      .from('orders')
-      .update({
-        status: 'entregue',
-        delivered_at: new Date().toISOString(),
-      })
-      .eq('id', orderId);
-
-    if (orderError) throw orderError;
+    if (error) throw error;
 
     await fetchDeliveries();
   }

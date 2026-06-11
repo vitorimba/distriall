@@ -57,6 +57,24 @@ export const PaymentMethod = {
 } as const;
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
 
+export const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  dinheiro: 'Dinheiro',
+  pix: 'PIX',
+  boleto: 'Boleto',
+  vale: 'Vale',
+  cartao: 'Cartao',
+  misto: 'Misto',
+};
+
+export const PAYMENT_METHOD_COLORS: Record<string, string> = {
+  dinheiro: 'bg-green-100 text-green-800',
+  pix: 'bg-blue-100 text-blue-800',
+  boleto: 'bg-yellow-100 text-yellow-800',
+  vale: 'bg-purple-100 text-purple-800',
+  cartao: 'bg-orange-100 text-orange-800',
+  misto: 'bg-gray-100 text-gray-800',
+};
+
 export const VoucherStatus = {
   PENDENTE: 'pendente',
   PAGO: 'pago',
@@ -135,4 +153,42 @@ export const SETTLEMENT_STATUS_COLORS: Record<SettlementStatus, { bg: string; te
   rascunho:  { bg: 'bg-gray-100',   text: 'text-gray-700',   border: 'border-gray-300' },
   conferido: { bg: 'bg-blue-100',   text: 'text-blue-800',   border: 'border-blue-300' },
   fechado:   { bg: 'bg-green-100',  text: 'text-green-800',  border: 'border-green-300' },
+};
+
+export const DeliveryStatus = {
+  PENDENTE: 'pendente',
+  EM_ROTA: 'em_rota',
+  CONCLUIDA: 'concluida',
+} as const;
+export type DeliveryStatus = (typeof DeliveryStatus)[keyof typeof DeliveryStatus];
+
+export const DELIVERY_STATUS_LABELS: Record<DeliveryStatus, string> = {
+  pendente: 'Pendente',
+  em_rota: 'Em rota',
+  concluida: 'Concluida',
+};
+
+export const DELIVERY_STATUS_COLORS: Record<DeliveryStatus, { bg: string; text: string; border: string }> = {
+  pendente:  { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-300' },
+  em_rota:   { bg: 'bg-blue-100',   text: 'text-blue-800',   border: 'border-blue-300' },
+  concluida: { bg: 'bg-green-100',  text: 'text-green-800',  border: 'border-green-300' },
+};
+
+export const DeliveryItemStatus = {
+  PENDENTE: 'pendente',
+  ENTREGUE: 'entregue',
+  NAO_ENTREGUE: 'nao_entregue',
+} as const;
+export type DeliveryItemStatus = (typeof DeliveryItemStatus)[keyof typeof DeliveryItemStatus];
+
+export const DELIVERY_ITEM_STATUS_LABELS: Record<DeliveryItemStatus, string> = {
+  pendente: 'Pendente',
+  entregue: 'Entregue',
+  nao_entregue: 'Nao entregue',
+};
+
+export const DELIVERY_ITEM_STATUS_COLORS: Record<DeliveryItemStatus, { bg: string; text: string; border: string }> = {
+  pendente:     { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-300' },
+  entregue:     { bg: 'bg-green-100',  text: 'text-green-800',  border: 'border-green-300' },
+  nao_entregue: { bg: 'bg-red-100',    text: 'text-red-800',    border: 'border-red-300' },
 };

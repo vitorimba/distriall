@@ -4,14 +4,14 @@
 In Progress
 
 ## Progress
-1/4 stories Done (25%)
+2/4 stories Done (50%)
 
 ## Stories
 
 | Story | Title | Status |
 |-------|-------|--------|
 | 4.1 | Tela do Entregador (Joao) | Done |
-| 4.2 | Lista de Rota (Admin) | Draft |
+| 4.2 | Lista de Rota (Admin) | Done |
 | 4.3 | Dashboard de Estatisticas | Draft |
 | 4.4 | Historico de Clientes | Draft |
 
@@ -65,3 +65,41 @@ In Progress
 - I05 (LOW): driverOnlyPaths hardcoded em proxy.ts — derivar de PROTECTED_PATHS
 
 **Tests:** 10 novos (delivery utils) + 16 regressao = 26 total. **Deploy:** vercel (migration pendente cloud). **CodeRabbit:** 0 iter (CLI nao disponivel)
+
+### Story 4.2 — Lista de Rota / Montar Rota (2026-06-11)
+
+**Built:**
+- `apps/web/src/app/(authenticated)/deliveries/page.tsx` — tela "Montar Rota": seletor de data/entregador, lista de pedidos disponiveis, area de rota com drag-and-drop
+- `apps/web/src/components/deliveries/route-builder.tsx` — orquestra drag-and-drop via @dnd-kit/sortable; draft-state local antes do envio
+- `apps/web/src/components/deliveries/route-item.tsx` — card de item: sequencia, nome cliente, endereco, badge pagamento, botao remover, indicador status
+- `apps/web/src/components/deliveries/available-orders.tsx` — lista de pedidos com status "carregado" disponíveis para adicionar à rota
+- `apps/web/src/components/deliveries/route-map-link.tsx` — link Google Maps com waypoints ordenados por sequencia
+- `apps/web/src/hooks/use-deliveries.ts` — hook CRUD: createDelivery, updateDelivery, addItemToDelivery, removeItemFromDelivery, reorderDeliveryItems; subscription Realtime
+- `apps/web/src/lib/delivery-utils.ts` — re-export de buildGoogleMapsUrl e reassignSequences
+- `supabase/migrations/00021_mark_delivery_item_delivered.sql` — RPC atomica `mark_delivery_item_delivered(item_id, observation)` com SECURITY DEFINER; resolve tech debt I01 da Story 4.1
+- `supabase/migrations/00022_protect_delivered_items.sql` — RLS policy: bloqueia DELETE de delivery_items com status != 'pendente'; proteção backend de regra de negocio
+- `packages/shared/src/types/models.ts` — interfaces Delivery, DeliveryItem adicionadas
+- `packages/shared/src/types/enums.ts` — DeliveryStatus, DeliveryItemStatus + PAYMENT_METHOD_LABELS/COLORS como exportacoes canonicas (dedupado do componente)
+- `packages/shared/src/utils/delivery.ts` — buildGoogleMapsUrl, reassignSequences adicionados; REUSE de isDeliveryTerminal/getDeliveryStatusLabel existentes
+- `packages/shared/src/utils/__tests__/google-maps-url.test.ts` — 5 testes unitarios (1 endereco, multiplos, caracteres especiais, URL vazia)
+- `packages/shared/src/utils/__tests__/route-sequence.test.ts` — 6 testes unitarios (reordenacao, normalizacao de sequencia, gaps)
+- `apps/web/src/hooks/use-driver-deliveries.ts` — refatorado: markDelivered usa RPC mark_delivery_item_delivered em vez de 2 UPDATEs sequenciais
+
+**Patterns established:**
+- Draft-state pattern: estado local da rota antes do envio (pendingItems, pendingSequence) vs. DB-state apos createDelivery — evita roundtrips desnecessarios
+- PAYMENT_METHOD_LABELS/COLORS em `packages/shared/src/types/enums.ts` — fonte canonica; componentes importam de `@distriall/shared` (nao duplicar localmente)
+- RPC SECURITY DEFINER pattern: `SET search_path = ''`, `auth.uid()` check explicito, `GRANT EXECUTE to authenticated` — padrao estabelecido em 00021 e 00022
+- Protecao de regra de negocio em RLS (nao apenas frontend): bloquear operacoes proibidas diretamente na policy
+
+**Key decisions:**
+- @dnd-kit/core + @dnd-kit/sortable escolhido sobre react-beautiful-dnd (leve, acessivel, suporte touch nativo) — campo numerico de sequencia (Task 3.6) nao implementado; DnD touch considerado suficiente para MVP
+- createDelivery nao-atomico (2 inserts): deliberadamente deferido para story futura (M02) — risco aceitavel para MVP
+- Tech debt I01 (markDelivered) resolvido via RPC 00021 — padrao a seguir para operacoes compostas futuras
+
+**Tech debt identified:**
+- M02 (MEDIUM): createDelivery faz 2 inserts sequenciais sem transacao — criar RPC createDeliveryWithItems em story futura
+- M03 (MEDIUM): reorderDeliveryItems faz N roundtrips individuais — otimizar via upsert batch ou RPC em story futura
+- L01 (LOW): buildGoogleMapsUrl sem limite de waypoints — Google Maps aceita max 10; adicionar aviso ao usuario
+- AC2-gap (MEDIUM): campo numerico de sequencia (Task 3.6) nao implementado — avaliar necessidade real apos feedback de uso
+
+**Tests:** 11 novos (11 unit + 0 integration) + 26 regressao = 37 total. **Deploy:** vercel (migrations 00021+00022 pendentes aplicacao cloud via @devops). **CodeRabbit:** 0 iter (CLI nao disponivel no ambiente Windows)

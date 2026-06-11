@@ -163,3 +163,27 @@ export interface SettlementExpense {
   amount: number;
   created_at: string;
 }
+
+export interface Delivery {
+  id: string;
+  account_id: string;
+  driver_id: string;
+  delivery_date: string;
+  status: 'pendente' | 'em_rota' | 'concluida';
+  notes: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DeliveryItem {
+  id: string;
+  delivery_id: string;
+  order_id: string;
+  sequence: number;
+  status: 'pendente' | 'entregue' | 'nao_entregue';
+  observation: string | null;
+  delivered_at: string | null;
+  created_at: string;
+}
