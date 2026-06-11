@@ -73,6 +73,37 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
+  // Bidirectional /driver protection:
+  // (a) Non-drivers trying to access /driver → redirect to /dashboard
+  // (b) Drivers trying to access non-driver protected routes → redirect to /driver
+  if (user && path.startsWith('/driver')) {
+    const { data: profile } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'entregador') {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
+
+  if (user && !path.startsWith('/driver')) {
+    const driverOnlyPaths = ['/dashboard', '/orders', '/products', '/clients', '/financial', '/stats', '/settings'];
+    const isDriverOnlyPath = driverOnlyPaths.some((p) => path.startsWith(p));
+    if (isDriverOnlyPath) {
+      const { data: profile } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.role === 'entregador') {
+        return NextResponse.redirect(new URL('/driver', request.url));
+      }
+    }
+  }
+
   return response;
 }
 

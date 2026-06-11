@@ -1,0 +1,161 @@
+schema: 1
+story: '4.1'
+story_title: 'Tela do Entregador (Joao) — Interface EXTREMAMENTE Simples'
+gate: CONCERNS
+status_reason: >
+  Implementacao solida com boa arquitetura de segurança (dupla proteção auth + RLS).
+  O issue HIGH de subscription sem filtro foi corrigido via refactoring durante o review.
+  Permanecem issues MEDIUM: two-step update sem transação (risco de inconsistência de estado),
+  multiplas queries de role por request no middleware, e cobertura de testes limitada a utils.
+reviewer: 'Aria (System Architect)'
+updated: '2026-06-11T12:00:00Z'
+
+top_issues:
+  - id: I01
+    severity: medium
+    category: reliability
+    description: >
+      markDelivered executa dois UPDATEs sequenciais sem transação (delivery_items → orders).
+      Se o segundo UPDATE falhar, o estado fica inconsistente: delivery_item marcado como entregue
+      mas order ainda com status anterior.
+    recommendation: >
+      Criar uma Supabase database function (RPC) que execute os dois UPDATEs atomicamente,
+      ou usar a Supabase transactions API quando disponível.
+    file: 'apps/web/src/hooks/use-driver-deliveries.ts'
+    suggested_owner: dev
+
+  - id: I02
+    severity: medium
+    category: performance
+    description: >
+      proxy.ts executa até 3 queries separadas para buscar profile.role por request HTTP,
+      uma para cada bloco condicional (login redirect, root redirect, /driver guard, driver-guard).
+      Requests que caem em multiplos blocos fazem multiplas round-trips ao banco.
+    recommendation: >
+      Buscar role uma única vez por request, armazenar em variável local, reutilizar nos blocos subsequentes.
+    file: 'apps/web/src/proxy.ts'
+    suggested_owner: dev
+
+  - id: I03
+    severity: medium
+    category: tests
+    description: >
+      Cobertura de testes limitada a utility functions puras (delivery.ts).
+      Nenhum teste para componentes React, hook useDriverDeliveries, fluxo de redirect bidirecional,
+      ou integração da subscription realtime.
+    recommendation: >
+      Adicionar testes de componente para DeliveryCard e DeliveryConfirmSheet com Vitest/Testing Library
+      na próxima sprint. Documentar como tech debt.
+    file: 'packages/shared/src/utils/__tests__/delivery.test.ts'
+    suggested_owner: dev
+
+  - id: I04
+    severity: medium
+    category: reliability
+    description: >
+      'today' calculado uma vez no mount do hook como new Date().toISOString().split('T')[0].
+      Se o app permanecer aberto após meia-noite, a lista não atualizará para o novo dia
+      até o próximo refresh manual ou remount do componente.
+    recommendation: >
+      Edge case raro para este contexto de uso. Documentar como known limitation.
+      Solução futura: adicionar um useEffect que detecta mudança de dia e refaz o fetch.
+    file: 'apps/web/src/hooks/use-driver-deliveries.ts'
+    suggested_owner: dev
+
+  - id: I05
+    severity: low
+    category: maintainability
+    description: >
+      driverOnlyPaths em proxy.ts é uma cópia parcial de PROTECTED_PATHS.
+      Nova rota adicionada a PROTECTED_PATHS pode não ser adicionada a driverOnlyPaths,
+      quebrando silenciosamente a proteção bidirecional.
+    recommendation: >
+      Derivar driverOnlyPaths de PROTECTED_PATHS via filter/exclusão ao invés de lista hardcoded.
+    file: 'apps/web/src/proxy.ts'
+    suggested_owner: dev
+
+waiver:
+  active: false
+
+quality_score: 76
+# Cálculo: 100 - (0 FAILs × 20) - (4 MEDIUM × 6) = 100 - 0 - 24 = 76
+# (usando deduction padrão: fail=20, concerns/medium=6 — skill-defaults.json ausente)
+expires: '2026-06-25T12:00:00Z'
+
+evidence:
+  tests_reviewed: 10
+  risks_identified: 5
+  coderabbit_iterations: 0  # CLI não disponível — WSL não instalado
+  refactoring_performed: true
+  refactoring_files:
+    - 'apps/web/src/hooks/use-driver-deliveries.ts'
+    - 'apps/web/src/app/driver/page.tsx'
+  trace:
+    ac_covered: [1, 2, 3, 4, 5, 6, 7]
+    ac_gaps: []
+    ac_notes: >
+      Todos os 7 ACs implementados. Testes cobrem apenas utils (AC3/AC4 via utilitarios);
+      ACs 1,2,5,6,7 sem cobertura automatizada — documentado como tech debt.
+
+nfr_validation:
+  security:
+    status: CONCERNS
+    notes: >
+      Dupla proteção (proxy.ts server + layout.tsx client) implementada corretamente.
+      RLS habilitado e bem configurado em deliveries e delivery_items.
+      Sem dados financeiros expostos na UI nem na query.
+      Issue corrigido: subscription delivery_items agora filtrada por delivery_id do entregador
+      (refactoring aplicado durante este review).
+      Remaining concern: orders table RLS deve garantir que entregadores não leiam
+      campos financeiros (subtotal, total, profit) diretamente — não verificado nesta story.
+  performance:
+    status: CONCERNS
+    notes: >
+      Índices adequados na migration (4 índices em deliveries, 4 em delivery_items).
+      Múltiplas queries de role por request HTTP no middleware — I02.
+      Query com !inner joins é eficiente mas depende de índices em tabelas relacionadas.
+  reliability:
+    status: CONCERNS
+    notes: >
+      Two-step update sem transação — I01. Cleanup de subscription no unmount implementado.
+      today sem reatividade após meia-noite — I04 (edge case aceitável).
+  maintainability:
+    status: PASS
+    notes: >
+      Código limpo, responsabilidades bem separadas. Nomenclatura descritiva em pt-BR.
+      Componentes focados e testáveis. Após refactoring: subscription movida para hook,
+      page.tsx simplificada — melhora coesão.
+
+recommendations:
+  immediate:
+    - action: >
+        Criar Supabase RPC function para markDelivered atomico (delivery_items + orders em transação).
+        Story 4.2 pode incluir este fix pois relaciona com gestão de rotas.
+      refs: ['apps/web/src/hooks/use-driver-deliveries.ts']
+      suggested_owner: dev
+
+    - action: >
+        Refatorar proxy.ts para buscar profile.role uma única vez por request.
+      refs: ['apps/web/src/proxy.ts']
+      suggested_owner: dev
+
+  future:
+    - action: >
+        Adicionar testes de componente: DeliveryCard (renderiza sem precos, fonte grande, botao presente),
+        DeliveryConfirmSheet (observation opcional, confirmar), DeliveryList (separacao pendentes/entregues).
+      refs:
+        - 'apps/web/src/components/driver/delivery-card.tsx'
+        - 'apps/web/src/components/driver/delivery-confirm-sheet.tsx'
+        - 'apps/web/src/components/driver/delivery-list.tsx'
+      suggested_owner: dev
+
+    - action: >
+        Verificar que a RLS policy da tabela orders bloqueia leitura de campos financeiros
+        (subtotal, total, profit) para usuários com role 'entregador'. Auditar em Story 4.4.
+      refs: ['supabase/migrations/00009_orders.sql']
+      suggested_owner: dev
+
+    - action: >
+        Derivar driverOnlyPaths de PROTECTED_PATHS em proxy.ts ao invés de lista hardcoded.
+      refs: ['apps/web/src/proxy.ts']
+      suggested_owner: dev
