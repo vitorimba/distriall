@@ -78,3 +78,42 @@ export const VOUCHER_STATUS_COLORS: Record<VoucherStatus, { bg: string; text: st
   vencido:   { bg: 'bg-red-100',    text: 'text-red-800',    border: 'border-red-300' },
   cancelado: { bg: 'bg-gray-100',   text: 'text-gray-700',   border: 'border-gray-300' },
 };
+
+export const ExpenseCategory = {
+  FIXO: 'fixo',
+  VARIAVEL: 'variavel',
+} as const;
+export type ExpenseCategory = (typeof ExpenseCategory)[keyof typeof ExpenseCategory];
+
+export const EXPENSE_CATEGORY_LABELS: Record<ExpenseCategory, string> = {
+  fixo: 'Fixo',
+  variavel: 'Variavel',
+};
+
+export const ExpenseType = {
+  IMPOSTOS: 'impostos',
+  GASOLINA: 'gasolina',
+  MANUTENCAO: 'manutencao',
+  OUTROS: 'outros',
+} as const;
+export type ExpenseType = (typeof ExpenseType)[keyof typeof ExpenseType];
+
+export const EXPENSE_TYPE_LABELS: Record<ExpenseType, string> = {
+  impostos: 'Impostos',
+  gasolina: 'Gasolina',
+  manutencao: 'Manutencao',
+  outros: 'Outros',
+};
+
+export const ExpenseRecurrence = {
+  UNICO: 'unico',
+  SEMANAL: 'semanal',
+  MENSAL: 'mensal',
+} as const;
+export type ExpenseRecurrence = (typeof ExpenseRecurrence)[keyof typeof ExpenseRecurrence];
+
+export const EXPENSE_RECURRENCE_LABELS: Record<ExpenseRecurrence, string> = {
+  unico: 'Unico',
+  semanal: 'Semanal',
+  mensal: 'Mensal',
+};

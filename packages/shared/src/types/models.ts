@@ -91,3 +91,27 @@ export interface AccountUser {
   is_active: boolean;
   created_at: string;
 }
+
+export interface Expense {
+  id: string;
+  account_id: string;
+  description: string;
+  amount: number;
+  category: 'fixo' | 'variavel';
+  type: 'impostos' | 'gasolina' | 'manutencao' | 'outros' | null;
+  recurrence: 'unico' | 'semanal' | 'mensal' | null;
+  is_shared: boolean;
+  expense_date: string;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExpenseSplit {
+  id: string;
+  expense_id: string;
+  account_id: string;
+  percentage: number;
+  amount: number;
+  created_at: string;
+}
