@@ -117,3 +117,22 @@ export const EXPENSE_RECURRENCE_LABELS: Record<ExpenseRecurrence, string> = {
   semanal: 'Semanal',
   mensal: 'Mensal',
 };
+
+export const SettlementStatus = {
+  RASCUNHO: 'rascunho',
+  CONFERIDO: 'conferido',
+  FECHADO: 'fechado',
+} as const;
+export type SettlementStatus = (typeof SettlementStatus)[keyof typeof SettlementStatus];
+
+export const SETTLEMENT_STATUS_LABELS: Record<SettlementStatus, string> = {
+  rascunho: 'Rascunho',
+  conferido: 'Conferido',
+  fechado: 'Fechado',
+};
+
+export const SETTLEMENT_STATUS_COLORS: Record<SettlementStatus, { bg: string; text: string; border: string }> = {
+  rascunho:  { bg: 'bg-gray-100',   text: 'text-gray-700',   border: 'border-gray-300' },
+  conferido: { bg: 'bg-blue-100',   text: 'text-blue-800',   border: 'border-blue-300' },
+  fechado:   { bg: 'bg-green-100',  text: 'text-green-800',  border: 'border-green-300' },
+};

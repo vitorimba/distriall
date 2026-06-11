@@ -1,10 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { FileText, DollarSign } from 'lucide-react';
+import { FileText, DollarSign, BarChart2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const financialLinks = [
+  {
+    href: '/financial/settlements',
+    label: 'Acerto Semanal',
+    description: 'Calcular e fechar acertos por periodo',
+    icon: BarChart2,
+  },
   {
     href: '/financial/expenses',
     label: 'Gastos',

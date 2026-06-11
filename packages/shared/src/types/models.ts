@@ -115,3 +115,51 @@ export interface ExpenseSplit {
   amount: number;
   created_at: string;
 }
+
+export interface Settlement {
+  id: string;
+  account_id: string;
+  period_start: string;
+  period_end: string;
+  status: 'rascunho' | 'conferido' | 'fechado';
+
+  total_revenue: number;
+  revenue_dinheiro: number;
+  revenue_pix: number;
+  revenue_boleto: number;
+  revenue_vale: number;
+  revenue_cartao: number;
+
+  total_cost: number;
+  total_expenses: number;
+  total_returns: number;
+
+  gross_profit: number;
+  net_profit: number;
+
+  order_count: number;
+  client_count: number;
+  pending_vouchers_count: number;
+  pending_vouchers_amount: number;
+
+  notes: string | null;
+  closed_by: string | null;
+  closed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SettlementOrder {
+  id: string;
+  settlement_id: string;
+  order_id: string;
+  created_at: string;
+}
+
+export interface SettlementExpense {
+  id: string;
+  settlement_id: string;
+  expense_id: string;
+  amount: number;
+  created_at: string;
+}
