@@ -10,7 +10,7 @@
     "typecheck": "pnpm --filter web tsc --noEmit",
     "test": "pnpm --filter shared test"
   },
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@8.15.9",
   "engines": {
     "node": "20.x"
   }
