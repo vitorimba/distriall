@@ -11,7 +11,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b bg-background px-4">
       <div className="flex items-center gap-3">
-        <span className="hidden text-lg font-bold text-primary sm:inline">Distriall</span>
+        <span className="text-lg font-bold text-primary md:hidden">Distriall</span>
         <AccountSwitcher />
       </div>
 
