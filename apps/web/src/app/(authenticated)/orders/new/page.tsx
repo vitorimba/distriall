@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useCartStore } from '@/stores/cart-store';
@@ -23,6 +23,14 @@ function formatBRL(value: number) {
 }
 
 export default function NewOrderPage() {
+  return (
+    <Suspense fallback={<div className="px-4 py-4"><p>Carregando...</p></div>}>
+      <NewOrderContent />
+    </Suspense>
+  );
+}
+
+function NewOrderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedClientId = searchParams.get('client');
