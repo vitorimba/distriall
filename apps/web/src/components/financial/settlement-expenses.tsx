@@ -34,7 +34,7 @@ export function SettlementExpenses({ expenses }: SettlementExpensesProps) {
         {expanded && (
           <div className="space-y-1 pt-1">
             {expenses.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-2">Nenhum gasto no periodo.</p>
+              <p className="text-sm text-muted-foreground py-2">Nenhum gasto no periodo</p>
             ) : (
               expenses.map((row) => {
                 const expense = row.expenses;

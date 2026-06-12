@@ -4,9 +4,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, MapPin, Phone } from 'lucide-react';
+import { SearchField } from '@/components/ui/search-field';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
+import { FAB } from '@/components/ui/fab';
+import { Users, MapPin, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Client {
@@ -80,23 +83,24 @@ export function ClientList() {
   return (
     <div className="space-y-4">
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          placeholder="Buscar cliente..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-8"
-        />
-      </div>
+      <SearchField
+        placeholder="Buscar cliente..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onClear={() => setSearch('')}
+      />
 
       {/* Client List */}
       {loading ? (
-        <div className="py-8 text-center text-muted-foreground">Carregando...</div>
-      ) : clients.length === 0 ? (
-        <div className="py-8 text-center text-muted-foreground">
-          {search ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado.'}
+        <div className="space-y-2">
+          {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-14" />)}
         </div>
+      ) : clients.length === 0 ? (
+        <EmptyState
+          icon={Users}
+          title={search ? 'Nenhum cliente encontrado' : 'Nenhum cliente ainda'}
+          description={search ? undefined : 'Cadastre o primeiro cliente para ve-lo aqui.'}
+        />
       ) : (
         <div className="space-y-1">
           {clients.map((client) => {
@@ -142,15 +146,8 @@ export function ClientList() {
       )}
 
       {/* FAB New Client */}
-      <Link
-        href="/clients/new"
-        className={cn(
-          'fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center',
-          'rounded-full bg-primary text-primary-foreground shadow-lg',
-          'transition-transform hover:scale-105 active:scale-95'
-        )}
-      >
-        <Plus className="size-6" />
+      <Link href="/clients/new">
+        <FAB label="Novo cliente" />
       </Link>
     </div>
   );

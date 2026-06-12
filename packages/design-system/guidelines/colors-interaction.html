@@ -1,0 +1,39 @@
+<!-- @dsCard group="Cores" viewport="700x190" name="Estados de interação" subtitle="Rampa funcional do accent: default → hover → press → soft → focus" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .sw { border-radius: 8px; border: 1px solid var(--border-subtle); padding: 10px; height: 72px; display: flex; flex-direction: column; justify-content: space-between; }
+  .sw b { font-size: 10.5px; font-weight: 600; font-family: var(--font-mono); color: #fff; }
+  .sw i { font-style: normal; font-size: 10px; color: rgba(255,255,255,0.75); }
+  .demo { margin-top: 12px; display: flex; align-items: center; gap: 10px; }
+  .btn {
+    font-family: var(--font-sans); font-size: 12.5px; font-weight: 600;
+    padding: 8px 14px; border-radius: 12px; border: 1px solid transparent;
+    background: var(--accent); color: var(--text-on-accent); cursor: pointer;
+  }
+  .btn:hover { background: var(--accent-hover); }
+  .btn:active { background: var(--accent-press); transform: scale(0.97); }
+  .btn--focus { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  .note { font-size: 11px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw" style="background: var(--accent);"><b>--accent</b><i>default</i></div>
+    <div class="sw" style="background: var(--accent-hover);"><b>--accent-hover</b><i>hover · clareia</i></div>
+    <div class="sw" style="background: var(--accent-press);"><b>--accent-press</b><i>press · escurece</i></div>
+    <div class="sw" style="background: var(--accent-soft); border-color: var(--accent-soft-border);"><b style="color: var(--accent-fg);">--accent-soft</b><i style="color: var(--text-muted);">seleção, item ativo</i></div>
+    <div class="sw" style="background: var(--surface-card); outline: 2px solid var(--focus-ring); outline-offset: -2px;"><b style="color: var(--text-primary);">--focus-ring</b><i style="color: var(--text-muted);">teclado</i></div>
+  </div>
+  <div class="demo">
+    <button class="btn">Hover/press reais</button>
+    <button class="btn btn--focus">Com foco</button>
+    <span class="note">Texto/ícone accent sobre superfície usa <code style="font-family: var(--font-mono); font-size: 10.5px;">--accent-fg</code> — nunca --accent direto.</span>
+  </div>
+</body>
+</html>

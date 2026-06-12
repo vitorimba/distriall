@@ -1,0 +1,33 @@
+<!-- @dsCard group="Espaçamento" viewport="700x250" name="Camadas (z-index)" subtitle="Escada fixa --z-* — nunca usar números mágicos" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px 22px; }
+  .ladder { display: flex; flex-direction: column-reverse; gap: 6px; }
+  .layer {
+    display: flex; align-items: center; gap: 10px;
+    height: 30px; padding: 0 12px; border-radius: 8px;
+    background: var(--surface-card); border: 1px solid var(--border-strong);
+    font-size: 11.5px; font-weight: 600; white-space: nowrap;
+  }
+  .layer code { font-family: var(--font-mono); font-size: 10px; color: var(--accent-fg); font-weight: 500; }
+  .layer i { font-style: normal; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-left: auto; }
+  .note { margin-top: 10px; font-size: 10.5px; color: var(--text-secondary); }
+  .note code { font-family: var(--font-mono); color: var(--danger-fg); font-size: 10px; }
+</style>
+</head>
+<body>
+  <div class="ladder">
+    <div class="layer" style="margin-right: 200px;">conteúdo · tooltip de gráfico <code>--z-tip</code><i>5</i></div>
+    <div class="layer" style="margin-left: 40px; margin-right: 160px;">sticky bar <code>--z-sticky</code><i>40</i></div>
+    <div class="layer" style="margin-left: 80px; margin-right: 120px;">FAB · bottom nav <code>--z-fab / --z-nav</code><i>49 / 50</i></div>
+    <div class="layer" style="margin-left: 120px; margin-right: 80px;">tooltip · menu <code>--z-tooltip / --z-popover</code><i>60 / 80</i></div>
+    <div class="layer" style="margin-left: 160px; margin-right: 40px;">dialog · bottom sheet <code>--z-overlay</code><i>100</i></div>
+    <div class="layer" style="margin-left: 200px; border-color: var(--accent-soft-border); background: var(--accent-soft);">toast <code>--z-toast</code><i>200</i></div>
+  </div>
+  <p class="note">Sempre <code>z-index: var(--z-*)</code> — nunca um número. Precisa de uma camada nova? Adicione o token primeiro.</p>
+</body>
+</html>

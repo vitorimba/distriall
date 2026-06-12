@@ -1,0 +1,38 @@
+<!-- @dsCard group="Cores" viewport="700x230" name="Uso correto da cor" subtitle="Proporção 90/8/2, regra do soft-bg e os erros mais comuns" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; }
+  .bar { display: flex; height: 26px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-subtle); }
+  .bar span { display: flex; align-items: center; padding: 0 10px; font-size: 10px; font-weight: 600; font-family: var(--font-mono); white-space: nowrap; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; margin-top: 14px; }
+  .ex { display: flex; align-items: center; gap: 8px; font-size: 11.5px; }
+  .ok { color: var(--text-positive); font-weight: 700; width: 14px; }
+  .no { color: var(--text-negative); font-weight: 700; width: 14px; }
+  .badge { padding: 2px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 600; }
+  .b-soft { background: var(--status-vencido-soft); color: var(--status-vencido); }
+  .b-solid { background: #EF4444; color: #fff; }
+  .t-tok { color: var(--accent-fg); font-weight: 600; }
+  .t-hex { color: #FB923C; font-weight: 600; }
+  .lbl { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <span style="flex: 90; background: var(--surface-card); color: var(--text-secondary);">~90% neutros (superfícies + texto)</span>
+    <span style="flex: 8; background: var(--accent-soft); color: var(--accent-fg);">~8% soft</span>
+    <span style="flex: 2; background: var(--accent); color: #fff; padding: 0 8px;">2%</span>
+  </div>
+  <div class="cols">
+    <div class="ex"><span class="ok">✓</span><span class="badge b-soft">Vencido</span><span class="lbl">status: soft bg + texto na cor</span></div>
+    <div class="ex"><span class="no">✕</span><span class="badge b-solid">VENCIDO</span><span class="lbl">fundo sólido / ALL CAPS</span></div>
+    <div class="ex"><span class="ok">✓</span><span class="t-tok">R$ 1.234,56</span><span class="lbl">texto accent via --accent-fg</span></div>
+    <div class="ex"><span class="no">✕</span><span class="t-hex">R$ 1.234,56</span><span class="lbl">hex hardcoded — quebra no claro</span></div>
+    <div class="ex"><span class="ok">✓</span><span class="lbl">1 CTA primário laranja por tela</span></div>
+    <div class="ex"><span class="no">✕</span><span class="lbl">laranja como fundo decorativo de seção</span></div>
+  </div>
+</body>
+</html>

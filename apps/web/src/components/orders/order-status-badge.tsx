@@ -1,7 +1,7 @@
 'use client';
 
-import { ORDER_STATUS_LABELS, ORDER_STATUS_COLORS, type OrderStatus } from '@distriall/shared';
-import { cn } from '@/lib/utils';
+import { ORDER_STATUS_LABELS, type OrderStatus } from '@distriall/shared';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 interface OrderStatusBadgeProps {
   status: OrderStatus;
@@ -9,20 +9,11 @@ interface OrderStatusBadgeProps {
 }
 
 export function OrderStatusBadge({ status, className }: OrderStatusBadgeProps) {
-  const colors = ORDER_STATUS_COLORS[status] ?? ORDER_STATUS_COLORS.lancado;
   const label = ORDER_STATUS_LABELS[status] ?? status;
 
   return (
-    <span
-      className={cn(
-        'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium',
-        colors.bg,
-        colors.text,
-        colors.border,
-        className
-      )}
-    >
+    <StatusBadge tone={status} className={className}>
       {label}
-    </span>
+    </StatusBadge>
   );
 }

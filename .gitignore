@@ -47,3 +47,4 @@ Thumbs.db
 # Source repos (clones externos)
 aiox/
 .vercel
+.env*.local

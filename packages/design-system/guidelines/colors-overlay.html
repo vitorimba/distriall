@@ -1,0 +1,47 @@
+<!-- @dsCard group="Cores" viewport="700x200" name="Overlay e scrim" subtitle="Tokens de modal: scrim, scrim-heavy e blur — mais leve no tema claro" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 10px; }
+  .demo {
+    position: relative; height: 120px; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border-subtle); background: var(--surface-page);
+  }
+  .demo .content { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .fake-card { height: 26px; border-radius: 7px; background: var(--surface-card); border: 1px solid var(--border-subtle); }
+  .scrim { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .scrim--default { background: var(--overlay-scrim); backdrop-filter: blur(var(--overlay-blur)); }
+  .scrim--heavy { background: var(--overlay-scrim-heavy); }
+  .mini-dialog {
+    background: var(--surface-card); border: 1px solid var(--border-subtle);
+    border-radius: 12px; box-shadow: var(--shadow-overlay); padding: 10px 14px;
+    font-size: 11px; font-weight: 600; color: var(--text-primary);
+  }
+  .cap { position: absolute; left: 8px; bottom: 6px; font-family: var(--font-mono); font-size: 9.5px; color: #fff; opacity: 0.85; }
+  .note { font-size: 11.5px; color: var(--text-secondary); line-height: 1.6; padding: 4px 2px; }
+  .note b { color: var(--text-primary); }
+  .note code { font-family: var(--font-mono); font-size: 10px; color: var(--accent-fg); }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="demo">
+      <div class="content"><div class="fake-card"></div><div class="fake-card"></div><div class="fake-card"></div></div>
+      <div class="scrim scrim--default"><span class="mini-dialog">Dialog</span><span class="cap">--overlay-scrim + blur</span></div>
+    </div>
+    <div class="demo">
+      <div class="content"><div class="fake-card"></div><div class="fake-card"></div><div class="fake-card"></div></div>
+      <div class="scrim scrim--heavy"><span class="mini-dialog">Foto do vale</span><span class="cap">--overlay-scrim-heavy</span></div>
+    </div>
+    <div class="note">
+      <b>Scrim padrão</b> (<code>--overlay-scrim</code> 60% + blur 4px) atrás de dialogs e bottom sheets.<br>
+      <b>Heavy</b> (75%) para foco total: visualizar foto de comprovante, confirmações destrutivas.<br>
+      No tema claro ambos ficam mais leves (45% / 65%). Usados pelo componente <b>Dialog</b>.
+    </div>
+  </div>
+</body>
+</html>

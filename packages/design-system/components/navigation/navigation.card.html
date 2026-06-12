@@ -1,0 +1,115 @@
+<!-- @dsCard group="Componentes" viewport="700x560" name="Navegação — Sidebar, BottomNav, PageHeader, StickyBar, Pagination" subtitle="Nav desktop/mobile, header, sticky bar e paginação" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { padding: 16px; }
+  /* O grid fica no #root — o React monta os filhos aqui dentro */
+  #root { display: grid; grid-template-columns: 240px 1fr; gap: 16px; align-items: start; }
+  .caption {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 6px;
+  }
+  .sidebar-frame { border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; height: 404px; }
+  .sidebar-frame .da-sidebar { height: 100%; width: 100%; }
+  .right { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .header-frame .da-pageheader { margin-bottom: 0; }
+  .sticky-frame { border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; }
+  .sticky-frame .da-stickybar { position: static; }
+  .mobile-row { display: flex; align-items: flex-end; gap: 14px; }
+  .phone { position: relative; flex: 1; min-width: 0; border: 1px solid var(--border-strong); border-radius: var(--radius-lg); overflow: hidden; height: 64px; }
+  .phone .da-bottomnav { position: absolute; }
+  .fab-spot .da-fab { position: static; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Sidebar, BottomNav, PageHeader, StickyBar, FAB, Pagination, Button, IconButton, Badge, Money, Avatar, Icon } = window.DistriAllDesignSystem_b6afd7;
+
+function PaginationDemo() {
+  const [page, setPage] = React.useState(2);
+  return (
+    <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+      <Pagination page={page} totalItems={312} pageSize={25} onChange={setPage} label="pedidos" />
+    </div>
+  );
+}
+
+function Demo() {
+  return (
+    <React.Fragment>
+      <div>
+        <div className="caption">Sidebar 240px · item ativo</div>
+        <div className="sidebar-frame">
+          <Sidebar
+            active="orders"
+            footer={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 8px' }}>
+                <Avatar name="Conta Principal" size="sm" />
+                <span style={{ fontSize: 12.5, color: 'var(--text-secondary)', flex: 1 }}>Conta Principal</span>
+                <Icon name="chevrons-up-down" size={14} style={{ color: 'var(--text-muted)' }} />
+              </div>
+            }
+          />
+        </div>
+      </div>
+      <div className="right">
+        <div className="header-frame">
+          <div className="caption">PageHeader · voltar + badge + ações</div>
+          <PageHeader
+            title="Pedido #1042"
+            subtitle="Mercado São José"
+            onBack={() => {}}
+            actions={
+              <React.Fragment>
+                <IconButton icon="printer" label="Imprimir" variant="outline" />
+                <Button icon="pencil">Editar</Button>
+              </React.Fragment>
+            }
+          >
+            <Badge tone="confirmado" size="lg" />
+          </PageHeader>
+        </div>
+        <div>
+          <div className="caption">StickyBar · totais + ação principal</div>
+          <div className="sticky-frame">
+            <StickyBar
+              items={[
+                { label: 'Subtotal', value: <Money value={1245} /> },
+                { label: 'Lucro est.', value: <Money value={432.6} />, highlight: true },
+              ]}
+              action={<Button icon="check">Salvar pedido</Button>}
+            />
+          </div>
+        </div>
+        <div>
+          <div className="caption">BottomNav · FAB</div>
+          <div className="mobile-row">
+            <div className="phone">
+              <BottomNav active="orders" />
+            </div>
+            <div className="fab-spot">
+              <FAB label="Novo pedido" />
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="caption">Pagination · abaixo de DataTable</div>
+          <PaginationDemo />
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

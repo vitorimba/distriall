@@ -1,0 +1,29 @@
+/* ===== Print components: Receipt (recibo térmico P&B) ===== */
+/* Tokens --receipt-* são idênticos nos dois temas: papel branco, tinta preta. */
+
+.da-receipt {
+  background: var(--receipt-paper);
+  color: var(--receipt-ink);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.5;
+  padding: 18px 16px;
+  width: 280px; /* ~58mm */
+  margin: 0 auto;
+  box-shadow: var(--shadow-card);
+}
+.da-receipt--80mm { width: 380px; }
+
+.da-receipt__center { text-align: center; }
+.da-receipt__brand { font-weight: 700; font-size: 14px; letter-spacing: 0.04em; }
+.da-receipt__soft { color: var(--receipt-ink-soft); }
+.da-receipt__rule {
+  border: none;
+  border-top: 1px dashed var(--receipt-rule);
+  margin: 10px 0;
+}
+.da-receipt__row { display: flex; justify-content: space-between; gap: 12px; }
+.da-receipt__row span:last-child { text-align: right; white-space: nowrap; }
+.da-receipt__item { display: flex; flex-direction: column; margin-bottom: 6px; }
+.da-receipt__total { font-weight: 700; font-size: 13px; }
+.da-receipt h1, .da-receipt h2, .da-receipt h3 { margin: 0; font-size: inherit; }

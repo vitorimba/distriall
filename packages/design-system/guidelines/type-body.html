@@ -1,0 +1,20 @@
+<!-- @dsCard group="Tipografia" viewport="700x190" name="Texto e rótulos" subtitle="Corpo 14px, secundário, overline em caps" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .spec { display: flex; align-items: baseline; gap: 14px; }
+  .spec small { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); flex: none; width: 110px; }
+</style>
+</head>
+<body>
+  <div class="spec"><small>base · 14/400</small><span style="font-size: var(--text-base);">O pedido será entregue na rota de quinta-feira pela manhã.</span></div>
+  <div class="spec"><small>base · 14/500</small><span style="font-size: var(--text-base); font-weight: 500;">Mercado São José — Centro, Itajubá</span></div>
+  <div class="spec"><small>sm · 12.5/400</small><span style="font-size: var(--text-sm); color: var(--text-secondary);">Última compra há 6 dias · 12 pedidos no mês</span></div>
+  <div class="spec"><small>xs caps · 11/600</small><span style="font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">Forma de pagamento</span></div>
+  <div class="spec"><small>muted · 12.5</small><span style="font-size: var(--text-sm); color: var(--text-muted);">Nenhuma observação</span></div>
+</body>
+</html>

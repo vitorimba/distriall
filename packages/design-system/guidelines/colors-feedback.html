@@ -1,0 +1,23 @@
+<!-- @dsCard group="Cores" viewport="700x150" name="Feedback e dinheiro" subtitle="Sucesso, erro, aviso, info + positivo/negativo" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; align-content: start; }
+  .chip { border-radius: var(--radius-md); padding: 10px 12px; font-size: 12px; font-weight: 600; }
+  .money { grid-column: span 2; display: flex; align-items: center; justify-content: space-between; background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 10px 14px; font-variant-numeric: tabular-nums; }
+  .money b { font-size: 15px; font-weight: 700; }
+  .money span { font-size: 11px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+  <div class="chip" style="background: var(--success-soft); color: var(--green-400);">Sucesso</div>
+  <div class="chip" style="background: var(--danger-soft); color: var(--red-400);">Erro</div>
+  <div class="chip" style="background: var(--warning-soft); color: var(--yellow-400);">Aviso</div>
+  <div class="chip" style="background: var(--info-soft); color: var(--blue-400);">Info</div>
+  <div class="money"><span>Saldo positivo</span><b style="color: var(--text-positive);">+R$ 1.240,00</b></div>
+  <div class="money"><span>Saldo negativo</span><b style="color: var(--text-negative);">−R$ 350,00</b></div>
+</body>
+</html>

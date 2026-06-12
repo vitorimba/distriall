@@ -1,0 +1,134 @@
+<!-- @dsCard group="DistriAll App" viewport="390x780" name="DistriAll — mobile" subtitle="Bottom nav + FAB: mesmo sistema, viewport de campo" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DistriAll — Mobile</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  /* Em viewport larga (preview desktop), centraliza o app na largura de celular */
+  @media (min-width: 480px) {
+    body { background: var(--surface-inset); }
+    #root { max-width: 390px; margin: 0 auto; min-height: 100vh; background: var(--surface-page); box-shadow: var(--shadow-raised); }
+    #root .da-bottomnav, #root .da-fab { max-width: 390px; left: 50%; transform: translateX(-50%); }
+    #root .da-fab { left: calc(50% + 195px - 54px - var(--space-5)); transform: none; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {
+  MobileShell,
+  ToastProvider,
+  MobileMoreScreen,
+  LoginScreen,
+  DashboardScreen,
+  OrdersScreen,
+  OrderDetailScreen,
+  OrderNewScreen,
+  ClientsScreen,
+  ClientDetailScreen,
+  ClientFormScreen,
+  ProductsScreen,
+  ProductFormScreen,
+  LoadingScreen,
+  DeliveriesScreen,
+  DriverScreen,
+  FinancialHubScreen,
+  ExpensesScreen,
+  SettlementsScreen,
+  VouchersScreen,
+  StatsScreen,
+  SettingsScreen,
+  FAB,
+} = window.DistriAllDesignSystem_b6afd7;
+
+/* Mapeia rota → item ativo da bottom nav */
+const NAV_GROUP = {
+  dashboard: 'dashboard',
+  orders: 'orders', 'order-detail': 'orders', 'order-new': 'orders',
+  clients: 'clients', 'client-detail': 'clients', 'client-new': 'clients', 'client-edit': 'clients',
+  financial: 'financial', 'financial-expenses': 'financial', 'financial-settlements': 'financial', 'financial-vouchers': 'financial',
+};
+
+function App() {
+  const [route, setRoute] = React.useState(() => localStorage.getItem('distriall-kit-mobile-route') || 'login');
+  const [theme, setTheme] = React.useState(() => localStorage.getItem('distriall-kit-theme') || 'dark');
+
+  React.useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('distriall-kit-theme', theme);
+  }, [theme]);
+
+  const go = (r) => {
+    setRoute(r);
+    localStorage.setItem('distriall-kit-mobile-route', r);
+    window.scrollTo(0, 0);
+  };
+  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+  const logo = theme === 'dark' ? '../../assets/distriall-logo-on-dark.png' : '../../assets/distriall-logo-on-light.png';
+
+  if (route === 'login') {
+    return <LoginScreen logoSrc={logo} onLogin={() => go('dashboard')} />;
+  }
+  if (route === 'driver') {
+    return <DriverScreen onExit={() => go('deliveries')} />;
+  }
+
+  let screen;
+  let fab = null;
+  if (route === 'dashboard') screen = <DashboardScreen />;
+  else if (route === 'orders') {
+    screen = <OrdersScreen compact onOpenOrder={() => go('order-detail')} />;
+    fab = <FAB label="Novo pedido" onClick={() => go('order-new')} />;
+  }
+  else if (route === 'order-detail') screen = <OrderDetailScreen onBack={() => go('orders')} onEdit={() => go('order-new')} />;
+  else if (route === 'order-new') screen = <OrderNewScreen onBack={() => go('orders')} onSave={() => go('orders')} />;
+  else if (route === 'clients') {
+    screen = <ClientsScreen onOpenClient={() => go('client-detail')} />;
+    fab = <FAB label="Novo cliente" onClick={() => go('client-new')} />;
+  }
+  else if (route === 'client-detail') screen = <ClientDetailScreen onBack={() => go('clients')} onEdit={() => go('client-edit')} onNewOrder={() => go('order-new')} />;
+  else if (route === 'client-new') screen = <ClientFormScreen mode="new" onBack={() => go('clients')} onSave={() => go('clients')} />;
+  else if (route === 'client-edit') screen = <ClientFormScreen mode="edit" onBack={() => go('client-detail')} onSave={() => go('client-detail')} />;
+  else if (route === 'products') {
+    screen = <ProductsScreen onOpenProduct={() => go('product-edit')} />;
+    fab = <FAB label="Novo produto" onClick={() => go('product-new')} />;
+  }
+  else if (route === 'product-new') screen = <ProductFormScreen mode="new" onBack={() => go('products')} onSave={() => go('products')} />;
+  else if (route === 'product-edit') screen = <ProductFormScreen mode="edit" onBack={() => go('products')} onSave={() => go('products')} />;
+  else if (route === 'loading') screen = <LoadingScreen />;
+  else if (route === 'deliveries') screen = <DeliveriesScreen onOpenDriver={() => go('driver')} />;
+  else if (route === 'financial') screen = <FinancialHubScreen onNavigate={(s) => go(`financial-${s}`)} />;
+  else if (route === 'financial-expenses') screen = <ExpensesScreen onBack={() => go('financial')} />;
+  else if (route === 'financial-settlements') screen = <SettlementsScreen onBack={() => go('financial')} />;
+  else if (route === 'financial-vouchers') screen = <VouchersScreen onBack={() => go('financial')} />;
+  else if (route === 'stats') screen = <StatsScreen />;
+  else if (route === 'settings') screen = <SettingsScreen />;
+  else if (route === 'more') screen = <MobileMoreScreen onNavigate={go} />;
+  else screen = <DashboardScreen />;
+
+  return (
+    <MobileShell
+      active={NAV_GROUP[route] || 'more'}
+      onNavigate={go}
+      theme={theme}
+      onToggleTheme={toggleTheme}
+      fab={fab}
+    >
+      {screen}
+    </MobileShell>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<ToastProvider><App /></ToastProvider>);
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!-- @dsCard group="Movimento" viewport="700x300" name="Durações e curvas" subtitle="Escada 80–400ms · 4 curvas nomeadas — clique em reproduzir" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 14px 18px; }
+  .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .cap { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); }
+  .replay {
+    display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px;
+    border-radius: var(--radius-sm); border: 1px solid var(--border-strong);
+    background: var(--surface-card); color: var(--text-primary);
+    font-family: var(--font-sans); font-size: 11.5px; font-weight: 600; cursor: pointer;
+  }
+  .replay:hover { background: var(--surface-hover); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+
+  /* durações */
+  .durs { display: flex; flex-direction: column; gap: 7px; }
+  .dur { display: grid; grid-template-columns: 92px 1fr 36px; gap: 10px; align-items: center; }
+  .dur b { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); font-weight: 500; }
+  .dur i { font-style: normal; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: right; }
+  .dur .track { height: 8px; border-radius: 4px; background: var(--surface-inset); overflow: hidden; }
+  .dur .fill { height: 100%; width: 0; border-radius: 4px; background: var(--accent); }
+  .play .dur .fill { animation-name: fill-x; animation-fill-mode: forwards; animation-timing-function: linear; }
+  @keyframes fill-x { to { width: 100%; } }
+
+  /* curvas */
+  .eases { display: flex; flex-direction: column; gap: 7px; }
+  .ease { display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: center; }
+  .ease b { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); font-weight: 500; }
+  .ease .lane { position: relative; height: 16px; border-radius: 8px; background: var(--surface-inset); }
+  .ease .ball { position: absolute; top: 3px; left: 3px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-fg); }
+  .play .ease .ball { animation: run-x 0.9s forwards; }
+  @keyframes run-x { to { left: calc(100% - 13px); } }
+
+  /* padrões */
+  .patterns { grid-column: 1 / -1; display: flex; gap: 12px; align-items: flex-end; }
+  .pat { flex: 1; display: flex; flex-direction: column; gap: 5px; align-items: center; }
+  .stage { width: 100%; height: 54px; border: 1px dashed var(--border-strong); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+  .pat b { font-size: 9.5px; font-family: var(--font-mono); color: var(--text-muted); font-weight: 500; }
+  .chipx { width: 56px; height: 26px; border-radius: 7px; background: var(--surface-raised); border: 1px solid var(--border-strong); box-shadow: var(--shadow-raised); opacity: 0; }
+  .play .chipx--dialog { animation: pat-dialog var(--duration-base) var(--ease-out) 0.15s forwards; }
+  @keyframes pat-dialog { from { opacity: 0; transform: translateY(8px) scale(0.95); } to { opacity: 1; } }
+  .play .chipx--toast { animation: pat-toast var(--duration-base) var(--ease-out) 0.15s forwards; }
+  @keyframes pat-toast { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; } }
+  .play .chipx--menu { animation: pat-menu var(--duration-fast) var(--ease-out) 0.15s forwards; transform-origin: top center; }
+  @keyframes pat-menu { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; } }
+  .chipx--sheet { align-self: flex-end; border-radius: 7px 7px 0 0; margin-top: auto; }
+  .stage--sheet { align-items: flex-end; }
+  .play .chipx--sheet { animation: pat-sheet var(--duration-slow) var(--ease-out) 0.15s forwards; }
+  @keyframes pat-sheet { from { opacity: 0.5; transform: translateY(100%); } to { opacity: 1; } }
+  .play .chipx--press { opacity: 1; animation: pat-press 0.5s var(--ease-spring) 0.15s; }
+  .chipx--press { opacity: 1; background: var(--accent); border-color: var(--accent); }
+  @keyframes pat-press { 0% { transform: scale(1); } 35% { transform: scale(0.94); } 100% { transform: scale(1); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .play .dur .fill { animation-duration: 0ms !important; width: 100%; }
+    .play .ease .ball { animation: none; left: calc(100% - 13px); }
+    .play .chipx { animation: none !important; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="head">
+    <span class="cap">animar só transform + opacity · sempre respeitar prefers-reduced-motion</span>
+    <button class="replay" id="replay">↻ reproduzir</button>
+  </div>
+  <div class="grid" id="board">
+    <div class="durs">
+      <div class="dur"><b>instant · hover</b><div class="track"><div class="fill" style="animation-duration: 80ms;"></div></div><i>80</i></div>
+      <div class="dur"><b>fast · menus</b><div class="track"><div class="fill" style="animation-duration: 120ms;"></div></div><i>120</i></div>
+      <div class="dur"><b>base · dialogs</b><div class="track"><div class="fill" style="animation-duration: 180ms;"></div></div><i>180</i></div>
+      <div class="dur"><b>slow · sheets</b><div class="track"><div class="fill" style="animation-duration: 240ms;"></div></div><i>240</i></div>
+      <div class="dur"><b>deliberate</b><div class="track"><div class="fill" style="animation-duration: 400ms;"></div></div><i>400</i></div>
+    </div>
+    <div class="eases">
+      <div class="ease"><b>ease-out</b><div class="lane"><div class="ball" style="animation-timing-function: var(--ease-out);"></div></div></div>
+      <div class="ease"><b>ease-in</b><div class="lane"><div class="ball" style="animation-timing-function: var(--ease-in);"></div></div></div>
+      <div class="ease"><b>ease-in-out</b><div class="lane"><div class="ball" style="animation-timing-function: var(--ease-in-out);"></div></div></div>
+      <div class="ease"><b>ease-spring</b><div class="lane"><div class="ball" style="animation-timing-function: var(--ease-spring);"></div></div></div>
+    </div>
+    <div class="patterns">
+      <div class="pat"><div class="stage"><div class="chipx chipx--dialog"></div></div><b>dialog · base</b></div>
+      <div class="pat"><div class="stage"><div class="chipx chipx--toast"></div></div><b>toast · base</b></div>
+      <div class="pat"><div class="stage"><div class="chipx chipx--menu" style="align-self: flex-start; margin-top: 6px;"></div></div><b>menu · fast</b></div>
+      <div class="pat"><div class="stage stage--sheet"><div class="chipx chipx--sheet"></div></div><b>sheet · slow</b></div>
+      <div class="pat"><div class="stage"><div class="chipx chipx--press"></div></div><b>press · spring</b></div>
+    </div>
+  </div>
+  <script>
+    const board = document.getElementById('board');
+    const play = () => {
+      board.classList.remove('play');
+      void board.offsetWidth;
+      board.classList.add('play');
+    };
+    document.getElementById('replay').addEventListener('click', play);
+    setTimeout(play, 350);
+  </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -29,7 +30,14 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex md:w-56 md:flex-col md:border-r md:bg-background">
       <div className="flex h-14 items-center border-b px-4">
-        <span className="text-lg font-bold text-primary">Distriall</span>
+        <Image
+          src="/distriall-logo-on-dark.png"
+          alt="DistriAll"
+          width={120}
+          height={32}
+          className="h-7 w-auto"
+          priority
+        />
       </div>
       <nav className="flex-1 space-y-1 p-2">
         {navItems.map((item) => {

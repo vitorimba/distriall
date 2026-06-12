@@ -13,8 +13,12 @@ import { OrderItemList } from '@/components/orders/order-item-list';
 import { PaymentSelector } from '@/components/financial/payment-selector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { Field } from '@/components/ui/field';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert } from '@/components/ui/alert';
+import { StickyBar } from '@/components/ui/sticky-bar';
+import { Money } from '@/components/ui/money';
 import type { PaymentEntry } from '@/lib/validations/payment';
 import { validatePaymentsTotal } from '@/lib/validations/payment';
 
@@ -156,58 +160,42 @@ function NewOrderContent() {
               orderTotal={getSubtotal()}
               onChange={(p, mixed) => { setPayments(p); setIsMixed(mixed); }}
             />
-            <div className="space-y-1">
-              <Label>Data de Entrega</Label>
+            <Field label="Data de entrega">
               <Input
                 type="date"
                 value={deliveryDate}
                 onChange={(e) => setDeliveryDate(e.target.value)}
               />
-            </div>
-            <div className="space-y-1">
-              <Label>Observacoes</Label>
-              <textarea
+            </Field>
+            <Field label="Observacoes">
+              <Textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 placeholder="Observacoes do pedido..."
               />
-            </div>
+            </Field>
           </CardContent>
         </Card>
       )}
 
       {/* Error */}
-      {error && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3">
-          <p className="text-sm text-destructive">{error}</p>
-        </div>
-      )}
+      {error && <Alert tone="danger">{error}</Alert>}
 
       {/* Sticky bottom summary */}
       {items.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background p-4 shadow-lg">
-          <div className="mx-auto max-w-lg space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Subtotal</span>
-              <span className="font-medium">{formatBRL(subtotal)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Custo</span>
-              <span>{formatBRL(totalCost)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Lucro estimado</span>
-              <span className={profit >= 0 ? 'text-green-600 font-medium' : 'text-destructive font-medium'}>
-                {formatBRL(profit)}
-              </span>
-            </div>
-            <Button onClick={handleSave} disabled={saving} className="w-full">
-              {saving ? 'Salvando...' : 'Salvar Pedido'}
+        <StickyBar
+          items={[
+            { label: 'Subtotal', value: formatBRL(subtotal) },
+            { label: 'Custo', value: formatBRL(totalCost) },
+            { label: 'Lucro est.', value: formatBRL(profit), highlight: profit >= 0 },
+          ]}
+          action={
+            <Button onClick={handleSave} disabled={saving}>
+              {saving ? 'Salvando...' : 'Salvar pedido'}
             </Button>
-          </div>
-        </div>
+          }
+        />
       )}
     </div>
   );

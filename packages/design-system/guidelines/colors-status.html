@@ -1,0 +1,34 @@
+<!-- @dsCard group="Cores" viewport="700x190" name="Status do domínio" subtitle="Pedidos, vales e acertos — sempre soft bg + texto na cor" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .group em { font-style: normal; width: 64px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 600; flex: none; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12.5px; font-weight: 500; }
+  .pill i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+</style>
+</head>
+<body>
+  <div class="group"><em>Pedido</em>
+    <span class="pill" style="background: var(--status-lancado-soft); color: var(--status-lancado);"><i></i>Lançado</span>
+    <span class="pill" style="background: var(--status-confirmado-soft); color: var(--status-confirmado);"><i></i>Confirmado</span>
+    <span class="pill" style="background: var(--status-carregado-soft); color: var(--status-carregado);"><i></i>Carregado</span>
+    <span class="pill" style="background: var(--status-entregue-soft); color: var(--status-entregue);"><i></i>Entregue</span>
+    <span class="pill" style="background: var(--status-cancelado-soft); color: var(--status-cancelado);"><i></i>Cancelado</span>
+  </div>
+  <div class="group"><em>Vale</em>
+    <span class="pill" style="background: var(--status-pendente-soft); color: var(--status-pendente);"><i></i>Pendente</span>
+    <span class="pill" style="background: var(--status-pago-soft); color: var(--status-pago);"><i></i>Pago</span>
+    <span class="pill" style="background: var(--status-vencido-soft); color: var(--status-vencido);"><i></i>Vencido</span>
+  </div>
+  <div class="group"><em>Acerto</em>
+    <span class="pill" style="background: var(--gray-800); color: var(--gray-300);"><i></i>Rascunho</span>
+    <span class="pill" style="background: var(--status-confirmado-soft); color: var(--status-confirmado);"><i></i>Conferido</span>
+    <span class="pill" style="background: var(--status-entregue-soft); color: var(--status-entregue);"><i></i>Fechado</span>
+  </div>
+</body>
+</html>

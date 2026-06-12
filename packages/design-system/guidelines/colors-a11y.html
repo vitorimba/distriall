@@ -1,0 +1,72 @@
+<!-- @dsCard group="Cores" viewport="700x250" name="Contraste e acessibilidade" subtitle="Pares aprovados com taxa WCAG calculada ao vivo nos dois temas" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .half { padding: 14px 16px; }
+  .half h5 { margin: 0 0 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); }
+  .pair { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+  .sample { flex: 1; min-width: 0; font-size: 11.5px; font-weight: 500; padding: 4px 9px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ratio { font-family: var(--font-mono); font-size: 10px; width: 46px; text-align: right; color: var(--text-secondary); }
+  .grade { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; width: 28px; text-align: center; padding: 2px 0; border-radius: 4px; }
+  .grade--pass { background: var(--success-soft); color: var(--text-positive); }
+  .grade--large { background: var(--warning-soft); color: var(--warning); }
+</style>
+</head>
+<body>
+  <div class="half" id="dark" style="background: var(--surface-page);"><h5>dark</h5></div>
+  <div class="half" id="light" data-theme="light" style="background: var(--surface-page);"><h5>light</h5></div>
+<script>
+  const PAIRS = [
+    ['--text-primary', '--surface-card', 'Texto primário'],
+    ['--text-secondary', '--surface-card', 'Texto secundário'],
+    ['--text-on-accent', '--accent', 'Texto no CTA'],
+    ['--accent-fg', '--surface-card', 'Accent como texto'],
+    ['--status-vencido', '--surface-card', 'Status vencido'],
+  ];
+  function lum(hexOrRgb) {
+    let r, g, b;
+    const m = hexOrRgb.match(/rgba?\(([^)]+)\)/);
+    if (m) { [r, g, b] = m[1].split(',').map(parseFloat); }
+    else {
+      const h = hexOrRgb.replace('#', '');
+      const full = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
+      r = parseInt(full.slice(0, 2), 16); g = parseInt(full.slice(2, 4), 16); b = parseInt(full.slice(4, 6), 16);
+    }
+    const f = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  }
+  function resolve(el, name) {
+    const probe = document.createElement('span');
+    probe.style.color = `var(${name})`;
+    el.appendChild(probe);
+    const c = getComputedStyle(probe).color;
+    probe.remove();
+    return c;
+  }
+  for (const id of ['dark', 'light']) {
+    const host = document.getElementById(id);
+    for (const [fg, bg, label] of PAIRS) {
+      const cf = resolve(host, fg);
+      const cb = resolve(host, bg);
+      const L1 = Math.max(lum(cf), lum(cb));
+      const L2 = Math.min(lum(cf), lum(cb));
+      const ratio = (L1 + 0.05) / (L2 + 0.05);
+      const grade = ratio >= 4.5 ? 'AA' : ratio >= 3 ? 'AA+' : '✕';
+      const cls = ratio >= 4.5 ? 'grade--pass' : 'grade--large';
+      const row = document.createElement('div');
+      row.className = 'pair';
+      row.innerHTML =
+        `<span class="sample" style="color: var(${fg}); background: var(${bg});">${label}</span>` +
+        `<span class="ratio">${ratio.toFixed(1)}:1</span>` +
+        `<span class="grade ${cls}">${grade}</span>`;
+      host.appendChild(row);
+    }
+  }
+</script>
+<span style="position: absolute; left: -9999px;">AA+ = aprovado apenas para texto grande/negrito (≥3:1)</span>
+</body>
+</html>

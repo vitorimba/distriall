@@ -1,0 +1,210 @@
+/* DistriAll color tokens — dark-first UI with brand orange accent */
+:root {
+  /* ---- Brand orange (from logo, sampled #F47B20–#FC9336) ---- */
+  --orange-200: #FED7AA;
+  --orange-300: #FDBA74;
+  --orange-400: #FB923C;
+  --orange-500: #F97A1E;
+  --orange-600: #E2640D;
+  --orange-700: #C2530B;
+
+  /* ---- Neutrals (near-black, slightly cool) ---- */
+  --gray-950: #0B0B0D;
+  --gray-900: #121214;
+  --gray-850: #17171A;
+  --gray-800: #1D1D21;
+  --gray-700: #26262B;
+  --gray-600: #34343B;
+  --gray-500: #4B4B54;
+  --gray-400: #71717B;
+  --gray-300: #A0A0AA;
+  --gray-200: #C9C9D2;
+  --gray-100: #EDEDF0;
+  --white: #FAFAFB;
+
+  /* ---- Semantic hues ---- */
+  --green-400: #4ADE80;
+  --green-500: #22C55E;
+  --green-600: #16A34A;
+  --green-700: #15803D;
+  --red-400: #F87171;
+  --red-500: #EF4444;
+  --red-600: #DC2626;
+  --yellow-400: #FACC15;
+  --yellow-500: #EAB308;
+  --blue-400: #60A5FA;
+  --blue-500: #3B82F6;
+  --purple-400: #A78BFA;
+  --purple-500: #8B5CF6;
+
+  /* ---- Surfaces ---- */
+  --surface-page: var(--gray-950);
+  --surface-card: var(--gray-900);
+  --surface-raised: var(--gray-850);
+  --surface-inset: #0E0E10;
+  --surface-hover: rgba(250, 250, 251, 0.04);
+  --surface-active: rgba(250, 250, 251, 0.07);
+
+  /* ---- Borders ---- */
+  --border-subtle: #222227;
+  --border-strong: #303037;
+  --border-input: #34343B;
+
+  /* ---- Text ---- */
+  --text-primary: #F4F4F6;
+  --text-secondary: #A0A0AA;
+  --text-muted: #6E6E78;
+  --text-on-accent: #FFFFFF;
+  --text-positive: var(--green-400);
+  --text-negative: var(--red-400);
+
+  /* ---- Accent ---- */
+  --accent: var(--orange-500);
+  --accent-hover: var(--orange-400);
+  --accent-press: var(--orange-600);
+  --accent-fg: var(--orange-400); /* accent-colored text/icons on surfaces */
+  --accent-soft: rgba(249, 122, 30, 0.13);
+  --accent-soft-border: rgba(249, 122, 30, 0.35);
+  --focus-ring: rgba(249, 122, 30, 0.45);
+
+  /* ---- Feedback ---- */
+  --success: var(--green-500);
+  --success-soft: rgba(34, 197, 94, 0.13);
+  --danger: var(--red-500);
+  --danger-soft: rgba(239, 68, 68, 0.13);
+  --danger-fg: var(--red-400);
+  --danger-soft-hover: rgba(239, 68, 68, 0.22);
+  --danger-soft-border: rgba(239, 68, 68, 0.3);
+  --surface-glass: rgba(23, 23, 26, 0.92);
+  --warning: var(--yellow-500);
+  --warning-soft: rgba(234, 179, 8, 0.13);
+  --info: var(--blue-500);
+  --info-soft: rgba(59, 130, 246, 0.13);
+
+  /* ---- Order status (pedidos) ---- */
+  --status-lancado: var(--blue-400);
+  --status-lancado-soft: rgba(59, 130, 246, 0.14);
+  --status-confirmado: var(--purple-400);
+  --status-confirmado-soft: rgba(139, 92, 246, 0.14);
+  --status-carregado: var(--orange-400);
+  --status-carregado-soft: rgba(249, 122, 30, 0.14);
+  --status-entregue: var(--green-400);
+  --status-entregue-soft: rgba(34, 197, 94, 0.14);
+  --status-cancelado: var(--red-400);
+  --status-cancelado-soft: rgba(239, 68, 68, 0.14);
+
+  /* ---- Voucher / settlement status ---- */
+  --status-pendente: var(--yellow-400);
+  --status-pendente-soft: rgba(234, 179, 8, 0.14);
+  --status-pago: var(--green-400);
+  --status-pago-soft: rgba(34, 197, 94, 0.14);
+  --status-vencido: var(--red-400);
+  --status-vencido-soft: rgba(239, 68, 68, 0.14);
+
+  /* ---- Charts ---- */
+  --chart-1: var(--orange-500);
+  --chart-2: var(--orange-300);
+  --chart-3: var(--blue-400);
+  --chart-4: var(--green-400);
+  --chart-5: var(--purple-400);
+  --chart-grid: #222227;
+
+  /* ---- Overlay / scrim (modais, dialogs, bottom sheets) ---- */
+  --overlay-scrim: rgba(0, 0, 0, 0.6);        /* atrás de dialogs */
+  --overlay-scrim-heavy: rgba(0, 0, 0, 0.75); /* fullscreen / foco total (foto do vale) */
+  --overlay-blur: 4px;                        /* backdrop-filter do scrim */
+
+  /* ---- Recibo térmico (P&B — idêntico nos dois temas) ---- */
+  --receipt-paper: #FFFFFF;     /* papel térmico */
+  --receipt-ink: #18181B;       /* tinta — preto puro de impacto */
+  --receipt-ink-soft: #52525B;  /* secundário — simula densidade menor */
+  --receipt-rule: #A1A1AA;      /* separadores tracejados */
+}
+
+/* ============================================================
+   Light theme — off-white quente + laranja.
+   Ative com data-theme="light" no <html>.
+   ============================================================ */
+[data-theme="light"] {
+  /* ---- Surfaces ---- */
+  --surface-page: #F6F4F0;
+  --surface-card: #FFFFFF;
+  --surface-raised: #FBFAF7;
+  --surface-inset: #F0EDE8;
+  --surface-hover: rgba(28, 25, 20, 0.045);
+  --surface-active: rgba(28, 25, 20, 0.08);
+  --surface-glass: rgba(255, 255, 255, 0.92);
+
+  /* ---- Borders ---- */
+  --border-subtle: #E9E5DE;
+  --border-strong: #DAD5CC;
+  --border-input: #D3CCC2;
+
+  /* ---- Text ---- */
+  --text-primary: #211E1A;
+  --text-secondary: #5F5A52;
+  --text-muted: #8C867C;
+  --text-on-accent: #FFFFFF;
+  --text-positive: var(--green-600);
+  --text-negative: var(--red-600);
+
+  /* ---- Accent (laranja escurece um passo para contraste em claro) ---- */
+  --accent: var(--orange-600);
+  --accent-hover: var(--orange-500);
+  --accent-press: var(--orange-700);
+  --accent-fg: var(--orange-600);
+  --accent-soft: rgba(226, 100, 13, 0.10);
+  --accent-soft-border: rgba(226, 100, 13, 0.32);
+  --focus-ring: rgba(226, 100, 13, 0.35);
+
+  /* ---- Feedback ---- */
+  --success: var(--green-600);
+  --success-soft: rgba(22, 163, 74, 0.10);
+  --danger: var(--red-600);
+  --danger-soft: rgba(220, 38, 38, 0.08);
+  --danger-fg: var(--red-600);
+  --danger-soft-hover: rgba(220, 38, 38, 0.16);
+  --danger-soft-border: rgba(220, 38, 38, 0.28);
+  --warning: #A16207;
+  --warning-soft: rgba(161, 98, 7, 0.10);
+  --info: #2563EB;
+  --info-soft: rgba(37, 99, 235, 0.08);
+
+  /* ---- Order status ---- */
+  --status-lancado: #2563EB;
+  --status-lancado-soft: rgba(37, 99, 235, 0.09);
+  --status-confirmado: #7C3AED;
+  --status-confirmado-soft: rgba(124, 58, 237, 0.09);
+  --status-carregado: var(--orange-600);
+  --status-carregado-soft: rgba(226, 100, 13, 0.10);
+  --status-entregue: var(--green-600);
+  --status-entregue-soft: rgba(22, 163, 74, 0.10);
+  --status-cancelado: var(--red-600);
+  --status-cancelado-soft: rgba(220, 38, 38, 0.09);
+
+  /* ---- Voucher / settlement status ---- */
+  --status-pendente: #A16207;
+  --status-pendente-soft: rgba(161, 98, 7, 0.11);
+  --status-pago: var(--green-600);
+  --status-pago-soft: rgba(22, 163, 74, 0.10);
+  --status-vencido: var(--red-600);
+  --status-vencido-soft: rgba(220, 38, 38, 0.09);
+
+  /* ---- Charts ---- */
+  --chart-1: var(--orange-600);
+  --chart-2: var(--orange-400);
+  --chart-3: #2563EB;
+  --chart-4: var(--green-600);
+  --chart-5: #7C3AED;
+  --chart-grid: #E9E5DE;
+
+  /* ---- Overlay / scrim (mais leve em fundo claro) ---- */
+  --overlay-scrim: rgba(28, 25, 20, 0.45);
+  --overlay-scrim-heavy: rgba(28, 25, 20, 0.65);
+
+  /* ---- Shadows (mais presentes em fundo claro) ---- */
+  --shadow-card: 0 1px 2px rgba(28, 25, 20, 0.05), 0 1px 5px rgba(28, 25, 20, 0.05);
+  --shadow-raised: 0 4px 16px rgba(28, 25, 20, 0.10);
+  --shadow-overlay: 0 12px 40px rgba(28, 25, 20, 0.18);
+  --shadow-accent: 0 4px 14px rgba(226, 100, 13, 0.28);
+}

@@ -1,0 +1,78 @@
+<!-- @dsCard group="Componentes" viewport="700x500" name="Dados — StatCard, DataTable, Tabs, Accordion" subtitle="KPIs com sparkline, tabelas ordenáveis, accordion e estados vazios" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .duo { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; align-items: start; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { StatCard, Card, DataTable, Tabs, EmptyState, Badge, Money, Accordion } = window.DistriAllDesignSystem_b6afd7;
+
+const pedidos = [
+  { num: '#1042', cliente: 'Mercado São José', total: 1245.0, status: 'confirmado' },
+  { num: '#1041', cliente: 'Padaria Pão Quente', total: 482.5, status: 'entregue' },
+  { num: '#1040', cliente: 'Bar do Zé', total: 318.0, status: 'carregado' },
+];
+
+function Demo() {
+  const [tab, setTab] = React.useState('dados');
+  return (
+    <React.Fragment>
+      <div className="stats">
+        <StatCard icon="wallet" label="Faturamento" value="R$ 28.520,30" delta={3.2} spark={[3200, 4100, 3650, 5200, 6840, 4480]} accent />
+        <StatCard icon="trending-up" label="Lucro" value="R$ 7.104,12" delta={1.8} spark={[820, 1050, 910, 1340, 1710, 1120]} />
+        <StatCard icon="users" label="Total clientes" value="148" loading={false} />
+      </div>
+      <div className="duo">
+        <Card title="Últimos pedidos · cabeçalhos ordenáveis" padded={false}>
+          <DataTable
+            columns={[
+              { key: 'num', label: 'Nº', width: 60, sortable: true, render: (r) => <span className="num" style={{ fontFamily: 'var(--font-mono)', fontSize: 13 }}>{r.num}</span> },
+              { key: 'cliente', label: 'Cliente', sortable: true },
+              { key: 'total', label: 'Total', align: 'right', sortable: true, render: (r) => <Money value={r.total} /> },
+              { key: 'status', label: 'Status', render: (r) => <Badge tone={r.status} /> },
+            ]}
+            rows={pedidos}
+            defaultSort={{ key: 'total', dir: 'desc' }}
+            onRowClick={() => {}}
+          />
+        </Card>
+        <Card padded={false}>
+          <div style={{ padding: '12px 20px 0' }}>
+            <Tabs tabs={[{ id: 'dados', label: 'Dados' }, { id: 'precos', label: 'Preços especiais' }]} active={tab} onChange={setTab} />
+          </div>
+          <EmptyState
+            title="Nenhum preço especial"
+            description="Adicione produtos com preço customizado para este cliente."
+            actionLabel="Adicionar produto"
+          />
+        </Card>
+      </div>
+      <Card title="Accordion · solução de problemas" padded={false}>
+        <Accordion
+          defaultOpen={0}
+          items={[
+            { title: 'A impressora não aparece na lista', content: 'Verifique se está em modo de pareamento (LED piscando) e a menos de 1 metro.' },
+            { title: 'O recibo sai cortado', content: 'Confirme a largura do papel (58mm ou 80mm) nas opções da impressora.' },
+          ]}
+        />
+      </Card>
+    </React.Fragment>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

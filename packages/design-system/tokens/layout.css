@@ -1,0 +1,24 @@
+/* DistriAll layout utilities — responsive grids shared by desktop and mobile.
+   Desktop keeps the declared columns; below 768px everything stacks. */
+.da-grid { display: grid; gap: var(--space-4); align-items: start; }
+.da-grid--stretch { align-items: stretch; }
+
+.da-grid--stats5 { grid-template-columns: repeat(5, 1fr); }
+.da-grid--cols2 { grid-template-columns: 1fr 1fr; }
+.da-grid--cols3 { grid-template-columns: repeat(3, 1fr); }
+.da-grid--cols4 { grid-template-columns: repeat(4, 1fr); }
+.da-grid--main-side { grid-template-columns: 1.5fr 1fr; }
+.da-grid--side-main { grid-template-columns: 1fr 1.4fr; }
+.da-grid--client-top { grid-template-columns: 1fr 1fr 1.4fr; }
+.da-grid--variant { grid-template-columns: 1.4fr 0.8fr 0.9fr 0.9fr 1.1fr auto; gap: var(--space-2); align-items: end; }
+
+@media (max-width: 767px) {
+  .da-grid--stats5,
+  .da-grid--cols4 { grid-template-columns: 1fr 1fr; }
+  .da-grid--cols2,
+  .da-grid--cols3,
+  .da-grid--main-side,
+  .da-grid--side-main,
+  .da-grid--client-top { grid-template-columns: 1fr; }
+  .da-grid--variant { grid-template-columns: 1fr 1fr; }
+}

@@ -1,0 +1,31 @@
+<!-- @dsCard group="Cores" viewport="700x190" name="Tema claro" subtitle="Off-white quente + laranja — ative com data-theme=&quot;light&quot;" -->
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; }
+  .row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .sw { border-radius: 8px; border: 1px solid var(--border-subtle); padding: 10px; height: 76px; display: flex; flex-direction: column; justify-content: space-between; }
+  .sw b { font-size: 10.5px; font-weight: 600; font-family: var(--font-mono); }
+  .sw i { font-style: normal; font-size: 10px; color: var(--text-muted); }
+  .note { margin-top: 10px; font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--accent); color: var(--text-on-accent); font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw" style="background: var(--surface-page);"><b style="color: var(--text-primary);">page</b><i>#F6F4F0</i></div>
+    <div class="sw" style="background: var(--surface-card);"><b style="color: var(--text-primary);">card</b><i>#FFFFFF</i></div>
+    <div class="sw" style="background: var(--surface-inset);"><b style="color: var(--text-primary);">inset</b><i>#F0EDE8</i></div>
+    <div class="sw" style="background: var(--accent);"><b style="color: #fff;">accent</b><i style="color: rgba(255,255,255,0.8);">orange-600</i></div>
+    <div class="sw" style="background: var(--accent-soft); border-color: var(--accent-soft-border);"><b style="color: var(--accent-fg);">accent-soft</b><i>10%</i></div>
+    <div class="sw" style="background: var(--surface-card);"><b style="color: var(--text-primary);">texto</b><i>#211E1A / #5F5A52</i></div>
+  </div>
+  <div class="note">
+    <span class="pill">Laranja escurece um passo no claro</span>
+    Mesmos tokens semânticos dos dois temas — só o valor muda.
+  </div>
+</body>
+</html>

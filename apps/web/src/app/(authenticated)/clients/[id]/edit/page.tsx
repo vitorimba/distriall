@@ -5,6 +5,10 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { ClientForm } from '@/components/clients/client-form';
 import { ClientPricesEditor } from '@/components/clients/client-prices-editor';
+import { Tabs } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Users } from 'lucide-react';
 
 interface ClientData {
   id: string;
@@ -23,7 +27,7 @@ export default function EditClientPage() {
   const { id } = useParams<{ id: string }>();
   const [client, setClient] = useState<ClientData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<'info' | 'prices'>('info');
+  const [tab, setTab] = useState('info');
 
   useEffect(() => {
     async function load() {
@@ -42,16 +46,17 @@ export default function EditClientPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Carregando...
+      <div className="px-4 py-4 space-y-4">
+        <Skeleton variant="line" className="h-7 w-48" />
+        <Skeleton variant="rect" className="h-64" />
       </div>
     );
   }
 
   if (!client) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Cliente nao encontrado.
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <EmptyState icon={Users} title="Cliente nao encontrado" />
       </div>
     );
   }
@@ -60,25 +65,14 @@ export default function EditClientPage() {
     <div className="px-4 py-4 space-y-4">
       <h1 className="text-xl font-bold">Editar: {client.name}</h1>
 
-      {/* Tab switcher */}
-      <div className="flex gap-1 rounded-lg bg-muted p-1">
-        <button
-          onClick={() => setTab('info')}
-          className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-            tab === 'info' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Dados
-        </button>
-        <button
-          onClick={() => setTab('prices')}
-          className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-            tab === 'prices' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Precos Especiais
-        </button>
-      </div>
+      <Tabs
+        tabs={[
+          { id: 'info', label: 'Dados' },
+          { id: 'prices', label: 'Precos especiais' },
+        ]}
+        active={tab}
+        onChange={setTab}
+      />
 
       {tab === 'info' ? (
         <ClientForm client={client} />

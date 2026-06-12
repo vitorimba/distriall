@@ -1,0 +1,54 @@
+<!-- @dsCard group="Padrões" viewport="700x290" name="Voz e conteúdo" subtitle="Glossário do domínio, botões, formatos e confirmações — copy canônica" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; font-size: 11.5px; }
+  .cap { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 7px; }
+  .pair { display: flex; align-items: baseline; gap: 8px; padding: 3px 0; }
+  .ok { color: var(--text-positive); font-weight: 700; }
+  .no { color: var(--danger-fg); font-weight: 700; }
+  .pair s { color: var(--text-muted); }
+  .pair b { font-weight: 600; }
+  code { font-family: var(--font-mono); font-size: 10.5px; color: var(--accent-fg); }
+  .conf { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 10px 12px; background: var(--surface-card); }
+  .conf b { font-size: 12px; }
+  .conf p { margin: 3px 0 8px; color: var(--text-secondary); font-size: 11px; }
+  .conf .row { display: flex; gap: 6px; justify-content: flex-end; }
+  .bx { padding: 4px 10px; border-radius: 8px; font-size: 10.5px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="cap">glossário — sempre estes termos</div>
+    <div class="pair"><span class="ok">✓</span><b>pedido</b><s>ordem, venda</s></div>
+    <div class="pair"><span class="ok">✓</span><b>acerto</b><s>fechamento, balanço</s></div>
+    <div class="pair"><span class="ok">✓</span><b>vale</b><s>crédito, fiado</s></div>
+    <div class="pair"><span class="ok">✓</span><b>lançar pedido</b><s>criar, registrar</s></div>
+    <div class="pair"><span class="ok">✓</span><b>carregamento</b><s>expedição</s></div>
+    <div class="pair"><span class="ok">✓</span><b>rota · entrega</b><s>romaneio</s></div>
+  </div>
+  <div>
+    <div class="cap">formatos fixos</div>
+    <div class="pair"><b>Moeda</b><code>R$ 1.234,56</code> <span style="color: var(--text-muted);">· tabular-nums</span></div>
+    <div class="pair"><b>Data</b><code>12/06/2026</code> <span style="color: var(--text-muted);">· curta 12/06</span></div>
+    <div class="pair"><b>Pedido</b><code>#1042</code> <span style="color: var(--text-muted);">· JetBrains Mono</span></div>
+    <div class="pair"><b>Período</b><code>01–07 jun 2026</code></div>
+    <div class="pair"><b>Botões</b> verbo no infinitivo: <b>Salvar</b>, <b>Marcar como pago</b></div>
+    <div class="pair"><span class="no">✗</span><s>Title Case · ALL CAPS · emoji · "Ops!"</s></div>
+  </div>
+  <div style="grid-column: 1 / -1;">
+    <div class="cap">confirmação destrutiva — título com o objeto, ação no botão, sair é seguro</div>
+    <div class="conf">
+      <b>Cancelar pedido #1042?</b>
+      <p>O estoque dos itens será liberado. Esta ação não pode ser desfeita.</p>
+      <div class="row">
+        <span class="bx" style="background: var(--surface-inset); color: var(--text-secondary);">Manter pedido</span>
+        <span class="bx" style="background: var(--danger-soft); color: var(--danger-fg); border: 1px solid var(--danger-soft-border);">Cancelar pedido</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

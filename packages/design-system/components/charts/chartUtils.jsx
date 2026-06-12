@@ -1,0 +1,32 @@
+import React from 'react';
+
+/* Paleta padrão dos gráficos — sempre via tokens */
+export const CHART_COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
+
+export const fmtBRL = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+export const fmtNum = (v) => v.toLocaleString('pt-BR');
+
+/* Suaviza pontos (catmull-rom → bezier) num espaço 0–100 */
+export function smoothPath(pts) {
+  if (pts.length < 2) return '';
+  let d = `M ${pts[0][0]},${pts[0][1]}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[Math.min(pts.length - 1, i + 2)];
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += ` C ${c1[0]},${c1[1]} ${c2[0]},${c2[1]} ${p2[0]},${p2[1]}`;
+  }
+  return d;
+}
+
+export function ChartTip({ x, y, label, value }) {
+  return (
+    <div className="da-chart__tip" style={{ left: `${x}%`, top: `${y}%`, marginTop: -10 }}>
+      <span className="da-chart__tip-label">{label}</span>
+      <span className="da-chart__tip-value num">{value}</span>
+    </div>
+  );
+}

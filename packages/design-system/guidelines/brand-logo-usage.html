@@ -1,0 +1,47 @@
+<!-- @dsCard group="Marca" viewport="700x280" name="Uso do logo" subtitle="Clearspace, tamanho mínimo, versões por tema e usos proibidos" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 14px 18px; }
+  .cap { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 7px; }
+  .clear { position: relative; display: inline-block; border: 1px dashed var(--accent-soft-border); padding: 22px; border-radius: 6px; }
+  .clear img { height: 30px; display: block; }
+  .clear i { position: absolute; font-style: normal; font-family: var(--font-mono); font-size: 9px; color: var(--accent-fg); }
+  .vers { display: flex; flex-direction: column; gap: 8px; }
+  .chipv { display: flex; align-items: center; gap: 10px; border-radius: 8px; padding: 8px 12px; border: 1px solid var(--border-subtle); }
+  .chipv img { height: 18px; }
+  .chipv span { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
+  .dont { display: flex; flex-direction: column; gap: 8px; }
+  .dontrow { display: flex; align-items: center; gap: 10px; border-radius: 8px; padding: 6px 10px; background: var(--danger-soft); }
+  .dontrow img { height: 16px; }
+  .dontrow span { font-size: 10px; color: var(--danger-fg); font-weight: 600; }
+  .note { grid-column: 1 / -1; font-size: 10.5px; color: var(--text-secondary); }
+  .note code { font-family: var(--font-mono); font-size: 10px; color: var(--accent-fg); }
+</style>
+</head>
+<body>
+  <div>
+    <div class="cap">clearspace = altura do "D" em volta · mínimo 96px de largura</div>
+    <div class="clear">
+      <img src="../assets/distriall-logo-on-dark.png" alt="DistriAll">
+      <i style="top: 4px; left: 50%; transform: translateX(-50%);">1×</i>
+      <i style="left: 5px; top: 50%; transform: translateY(-50%);">1×</i>
+    </div>
+  </div>
+  <div class="vers">
+    <div class="cap">versões</div>
+    <div class="chipv" style="background: #0B0B0D;"><img src="../assets/distriall-logo-on-dark.png" alt="logo sobre fundo escuro"><span>on-dark</span></div>
+    <div class="chipv" style="background: #F6F4F0;"><img src="../assets/distriall-logo-on-light.png" alt="logo sobre fundo claro"><span>on-light</span></div>
+  </div>
+  <div class="dont">
+    <div class="cap">nunca</div>
+    <div class="dontrow"><img src="../assets/distriall-logo-on-dark.png" style="transform: scaleX(1.6);" alt=""><span>esticar</span></div>
+    <div class="dontrow"><img src="../assets/distriall-logo-on-dark.png" style="filter: hue-rotate(140deg);" alt=""><span>recolorir</span></div>
+    <div class="dontrow"><img src="../assets/distriall-logo-on-dark.png" style="filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.9));" alt=""><span>sombra</span></div>
+  </div>
+  <p class="note">Arquivos em <code>assets/</code>: <code>distriall-logo-on-dark.png</code> · <code>distriall-logo-on-light.png</code> · <code>distriall-logo-original.png</code>. Na UI, o wordmark da sidebar usa o componente <code>Wordmark</code> — não a imagem.</p>
+</body>
+</html>

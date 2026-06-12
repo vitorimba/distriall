@@ -1,0 +1,40 @@
+<!-- @dsCard group="Padrões" viewport="700x270" name="Acessibilidade" subtitle="Foco visível, teclado, alvos de toque e regras ARIA" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 22px; font-size: 11.5px; }
+  .cap { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 7px; }
+  .item { display: flex; gap: 8px; padding: 3px 0; color: var(--text-secondary); line-height: 1.5; }
+  .item b { color: var(--text-primary); font-weight: 600; }
+  .item kbd { font-family: var(--font-mono); font-size: 9.5px; background: var(--surface-inset); border: 1px solid var(--border-strong); border-radius: 4px; padding: 1px 5px; color: var(--text-primary); }
+  code { font-family: var(--font-mono); font-size: 10px; color: var(--accent-fg); }
+  .focus-demo {
+    display: inline-flex; align-items: center; height: 32px; padding: 0 14px;
+    border-radius: var(--radius-sm); background: var(--accent); color: var(--text-on-accent);
+    font-size: 12px; font-weight: 600;
+    outline: 2px solid var(--focus-ring); outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+  <div>
+    <div class="cap">foco e teclado</div>
+    <div class="item" style="align-items: center; gap: 12px;"><span class="focus-demo">Salvar</span><span>foco sempre visível: <code>outline 2px var(--focus-ring)</code>, offset 2 — nunca <code>outline: none</code> sem substituto</span></div>
+    <div class="item"><b>Dialog</b> prende o foco; <kbd>Esc</kbd> fecha; foco volta ao gatilho</div>
+    <div class="item"><b>Menu</b> <kbd>Esc</kbd> fecha · setas navegam itens</div>
+    <div class="item"><b>Tabela clicável</b> linha alcançável por <kbd>Tab</kbd></div>
+  </div>
+  <div>
+    <div class="cap">regras fixas</div>
+    <div class="item"><b>IconButton</b> sempre com <code>label</code> (vira aria-label)</div>
+    <div class="item"><b>Erro de form</b> ligado ao campo; Alert danger usa <code>role="alert"</code></div>
+    <div class="item"><b>Toque</b> ≥ <code>--touch-target</code> 44px no mobile</div>
+    <div class="item"><b>Contraste</b> AA 4.5:1 — pares válidos no card "Acessibilidade" de Colors</div>
+    <div class="item"><b>Skeleton</b> e ícones decorativos com <code>aria-hidden</code></div>
+    <div class="item"><b>Status</b> nunca só por cor — badge sempre tem o rótulo em texto</div>
+  </div>
+</body>
+</html>

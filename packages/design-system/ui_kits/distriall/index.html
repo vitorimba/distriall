@@ -1,0 +1,98 @@
+<!-- @dsCard group="DistriAll App" viewport="1280x800" name="DistriAll — app de gestão" subtitle="Click-through completo: 12 telas, modo claro/escuro no rodapé da sidebar" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DistriAll — App</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {
+  AppShell,
+  ToastProvider,
+  LoginScreen,
+  DashboardScreen,
+  OrdersScreen,
+  OrderDetailScreen,
+  OrderNewScreen,
+  ClientDetailScreen,
+  ClientsScreen,
+  ClientFormScreen,
+  ProductsScreen,
+  ProductFormScreen,
+  LoadingScreen,
+  DeliveriesScreen,
+  DriverScreen,
+  FinancialHubScreen,
+  ExpensesScreen,
+  SettlementsScreen,
+  VouchersScreen,
+  StatsScreen,
+  SettingsScreen,
+} = window.DistriAllDesignSystem_b6afd7;
+
+function App() {
+  const [route, setRoute] = React.useState(() => localStorage.getItem('distriall-kit-route') || 'login');
+  const [theme, setTheme] = React.useState(() => localStorage.getItem('distriall-kit-theme') || 'dark');
+
+  React.useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('distriall-kit-theme', theme);
+  }, [theme]);
+
+  const go = (r) => {
+    setRoute(r);
+    localStorage.setItem('distriall-kit-route', r);
+  };
+  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+  const logo = theme === 'dark' ? '../../assets/distriall-logo-on-dark.png' : '../../assets/distriall-logo-on-light.png';
+
+  if (route === 'login') {
+    return <LoginScreen logoSrc={logo} onLogin={() => go('dashboard')} />;
+  }
+  if (route === 'driver') {
+    return <DriverScreen onExit={() => go('deliveries')} />;
+  }
+
+  let screen;
+  let active = route;
+  if (route === 'dashboard') screen = <DashboardScreen />;
+  else if (route === 'orders') screen = <OrdersScreen onOpenOrder={() => go('order-detail')} onNewOrder={() => go('order-new')} />;
+  else if (route === 'order-detail') { active = 'orders'; screen = <OrderDetailScreen onBack={() => go('orders')} onEdit={() => go('order-new')} />; }
+  else if (route === 'order-new') { active = 'orders'; screen = <OrderNewScreen onBack={() => go('orders')} onSave={() => go('orders')} />; }
+  else if (route === 'clients') screen = <ClientsScreen onOpenClient={() => go('client-detail')} onNewClient={() => go('client-new')} />;
+  else if (route === 'client-detail') { active = 'clients'; screen = <ClientDetailScreen onBack={() => go('clients')} onEdit={() => go('client-edit')} onNewOrder={() => go('order-new')} />; }
+  else if (route === 'client-new') { active = 'clients'; screen = <ClientFormScreen mode="new" onBack={() => go('clients')} onSave={() => go('clients')} />; }
+  else if (route === 'client-edit') { active = 'clients'; screen = <ClientFormScreen mode="edit" onBack={() => go('client-detail')} onSave={() => go('client-detail')} />; }
+  else if (route === 'products') screen = <ProductsScreen onOpenProduct={() => go('product-edit')} onNewProduct={() => go('product-new')} />;
+  else if (route === 'product-new') { active = 'products'; screen = <ProductFormScreen mode="new" onBack={() => go('products')} onSave={() => go('products')} />; }
+  else if (route === 'product-edit') { active = 'products'; screen = <ProductFormScreen mode="edit" onBack={() => go('products')} onSave={() => go('products')} />; }
+  else if (route === 'loading') screen = <LoadingScreen />;
+  else if (route === 'deliveries') screen = <DeliveriesScreen onOpenDriver={() => go('driver')} />;
+  else if (route === 'financial') screen = <FinancialHubScreen onNavigate={(s) => go(`financial-${s}`)} />;
+  else if (route === 'financial-expenses') { active = 'financial'; screen = <ExpensesScreen onBack={() => go('financial')} />; }
+  else if (route === 'financial-settlements') { active = 'financial'; screen = <SettlementsScreen onBack={() => go('financial')} />; }
+  else if (route === 'financial-vouchers') { active = 'financial'; screen = <VouchersScreen onBack={() => go('financial')} />; }
+  else if (route === 'stats') screen = <StatsScreen />;
+  else if (route === 'settings') screen = <SettingsScreen />;
+  else screen = <DashboardScreen />;
+
+  return (
+    <AppShell active={active} onNavigate={go} theme={theme} onToggleTheme={toggleTheme}>
+      {screen}
+    </AppShell>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<ToastProvider><App /></ToastProvider>);
+</script>
+</body>
+</html>

@@ -7,8 +7,8 @@ import { LoadingOrderList } from '@/components/loading/loading-order-list';
 import { LoadingActionBar } from '@/components/loading/loading-action-bar';
 import { LoadingBottomSheet } from '@/components/loading/loading-bottom-sheet';
 import { ChipFilter } from '@/components/ui/chip-filter';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { SearchField } from '@/components/ui/search-field';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'Todos' },
@@ -63,15 +63,12 @@ export default function LoadingPage() {
     <div className="px-4 py-4 pb-32 space-y-3">
       <h1 className="text-xl font-bold">Carregamento</h1>
 
-      <div className="relative">
-        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          placeholder="Buscar por cliente ou numero..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-8"
-        />
-      </div>
+      <SearchField
+        placeholder="Buscar por cliente ou numero..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onClear={() => setSearch('')}
+      />
 
       <div className="space-y-1.5">
         <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
@@ -81,7 +78,9 @@ export default function LoadingPage() {
       </div>
 
       {loading ? (
-        <div className="py-8 text-center text-muted-foreground">Carregando pedidos...</div>
+        <div className="space-y-2">
+          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-16" />)}
+        </div>
       ) : (
         <LoadingOrderList filteredOrders={filteredOrders} />
       )}

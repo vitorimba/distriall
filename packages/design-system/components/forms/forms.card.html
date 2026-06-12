@@ -1,0 +1,67 @@
+<!-- @dsCard group="Componentes" viewport="700x470" name="Formulários — Input, Select, Radio, Stepper" subtitle="Campos com label, erro, escolha única e quantidade" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { padding: 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; align-items: start; }
+  .row { display: flex; align-items: center; gap: 20px; grid-column: span 2; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Field, Input, Select, Textarea, Checkbox, Switch, SearchField, RadioGroup, QuantityStepper } = window.DistriAllDesignSystem_b6afd7;
+
+function Demo() {
+  const [q, setQ] = React.useState('mercado');
+  const [pay, setPay] = React.useState('Pix');
+  const [qtd, setQtd] = React.useState(12);
+  return (
+    <div className="grid">
+      <Field label="Nome" required>
+        <Input placeholder="Nome do cliente" defaultValue="Mercado São José" />
+      </Field>
+      <Field label="Forma de pagamento padrão">
+        <Select placeholder="Selecionar..." options={['Dinheiro', 'Pix', 'Boleto', 'Vale', 'Cartão', 'Misto']} />
+      </Field>
+      <Field label="Preço de venda" error="Informe um valor maior que o custo">
+        <Input prefix="R$" defaultValue="0,00" invalid />
+      </Field>
+      <Field label="Telefone" hint="Apenas números, com DDD">
+        <Input icon="phone" placeholder="(35) 99999-0000" />
+      </Field>
+      <Field label="Busca" className="span2">
+        <SearchField placeholder="Buscar por cliente ou número..." value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} />
+      </Field>
+      <Field label="Observações">
+        <Textarea placeholder="Entregar pela manhã..." />
+      </Field>
+      <div className="row">
+        <Checkbox label="Selecionar pedido" defaultChecked />
+        <Checkbox label="Desabilitado" disabled />
+        <Switch label="Impressão automática" defaultChecked />
+        <Switch label="Desligado" />
+      </div>
+      <div className="row">
+        <Field label="Forma de pagamento">
+          <RadioGroup direction="row" options={['Dinheiro', 'Pix', 'Boleto']} value={pay} onChange={setPay} />
+        </Field>
+        <Field label="Quantidade">
+          <QuantityStepper value={qtd} onChange={setQtd} />
+        </Field>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

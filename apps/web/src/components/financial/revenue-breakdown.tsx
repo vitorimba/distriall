@@ -1,6 +1,8 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { ProgressBar } from '@/components/ui/progress-bar';
+import { Money } from '@/components/ui/money';
 import { formatBRL } from '@distriall/shared';
 import type { Settlement } from '@distriall/shared';
 
@@ -43,18 +45,13 @@ export function RevenueBreakdown({ settlement }: RevenueBreakdownProps) {
                   </span>
                 </span>
               </div>
-              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-primary"
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
+              <ProgressBar value={pct} />
             </div>
           );
         })}
 
         {total === 0 && (
-          <p className="text-sm text-muted-foreground py-2">Nenhuma receita no periodo.</p>
+          <p className="text-sm text-muted-foreground py-2">Nenhuma receita no periodo</p>
         )}
       </CardContent>
     </Card>

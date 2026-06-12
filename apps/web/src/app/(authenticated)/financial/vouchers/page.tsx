@@ -3,13 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useAccount } from '@/providers/account-provider';
 import { useVouchers } from '@/hooks/use-vouchers';
-import { VOUCHER_STATUS_LABELS, VOUCHER_STATUS_COLORS, type VoucherStatus } from '@distriall/shared';
+import { VOUCHER_STATUS_LABELS, type VoucherStatus } from '@distriall/shared';
 import { ChipFilter } from '@/components/ui/chip-filter';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Check, Image as ImageIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { SearchField } from '@/components/ui/search-field';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { Money } from '@/components/ui/money';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Check, Image as ImageIcon, Ticket } from 'lucide-react';
 
 interface VoucherRow {
   id: string;
@@ -28,10 +31,6 @@ const STATUS_FILTERS = [
   { value: 'pago', label: 'Pago' },
   { value: 'vencido', label: 'Vencido' },
 ];
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
 
 function formatDate(d: string) {
   return new Date(d + 'T00:00:00').toLocaleDateString('pt-BR');
@@ -77,52 +76,44 @@ export default function VouchersPage() {
     <div className="px-4 py-4 space-y-3">
       <h1 className="text-xl font-bold">Vales</h1>
 
-      <div className="relative">
-        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          placeholder="Buscar por cliente..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-8"
-        />
-      </div>
+      <SearchField
+        placeholder="Buscar por cliente..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onClear={() => setSearch('')}
+      />
 
       <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
 
       {loading ? (
-        <div className="py-8 text-center text-muted-foreground">Carregando...</div>
+        <div className="space-y-2">
+          {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-24" />)}
+        </div>
       ) : filtered.length === 0 ? (
-        <div className="py-8 text-center text-muted-foreground">Nenhum vale encontrado.</div>
+        <EmptyState icon={Ticket} title="Nenhum vale encontrado" />
       ) : (
         <div className="space-y-2">
           {filtered.map((v) => {
             const overdue = isOverdue(v.due_date, v.status);
-            const colors = overdue
-              ? VOUCHER_STATUS_COLORS.vencido
-              : VOUCHER_STATUS_COLORS[v.status] ?? VOUCHER_STATUS_COLORS.pendente;
+            const tone = overdue ? 'vencido' : v.status;
 
             return (
-              <Card key={v.id} className={overdue ? 'border-red-300' : ''}>
+              <Card key={v.id} className={overdue ? 'border-[var(--status-vencido)]' : ''}>
                 <CardContent className="pt-4 space-y-2">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">{v.clients?.name ?? '—'}</span>
-                      <span
-                        className={cn(
-                          'ml-2 inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium',
-                          colors.bg, colors.text, colors.border
-                        )}
-                      >
+                      <StatusBadge tone={tone}>
                         {overdue ? 'Vencido' : VOUCHER_STATUS_LABELS[v.status]}
-                      </span>
+                      </StatusBadge>
                     </div>
-                    <span className="text-sm font-bold">{formatBRL(v.amount)}</span>
+                    <Money value={v.amount} className="text-sm font-bold" />
                   </div>
 
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <span>Criado: {new Date(v.created_at).toLocaleDateString('pt-BR')}</span>
-                    {v.due_date && <span className={overdue ? 'text-red-600 font-medium' : ''}>Vence: {formatDate(v.due_date)}</span>}
-                    {v.paid_at && <span className="text-green-600">Pago: {new Date(v.paid_at).toLocaleDateString('pt-BR')}</span>}
+                    {v.due_date && <span className={overdue ? 'text-[var(--status-vencido)] font-medium' : ''}>Vence: {formatDate(v.due_date)}</span>}
+                    {v.paid_at && <span className="text-[var(--success)]">Pago: {new Date(v.paid_at).toLocaleDateString('pt-BR')}</span>}
                     {v.photo_url && (
                       <span className="flex items-center gap-0.5"><ImageIcon className="size-3" /> Foto</span>
                     )}
@@ -131,7 +122,7 @@ export default function VouchersPage() {
                   {v.status === 'pendente' && (
                     <Button size="sm" variant="outline" onClick={() => handleMarkPaid(v.id)}>
                       <Check className="mr-1 size-3.5" />
-                      Marcar como Pago
+                      Marcar como pago
                     </Button>
                   )}
                 </CardContent>

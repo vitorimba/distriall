@@ -1,0 +1,20 @@
+<!-- @dsCard group="Marca" viewport="700x220" name="Logo DistriAll" subtitle="Versões para fundo escuro e claro — assets/" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .tile { border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; padding: 18px; border: 1px solid var(--border-subtle); height: 150px; }
+  .tile img { max-width: 100%; max-height: 80px; }
+  .wordmark { font-weight: 800; font-size: 26px; letter-spacing: -0.01em; color: var(--text-primary); }
+  .wordmark i { font-style: normal; color: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="tile" style="background: var(--surface-page);"><img src="../assets/distriall-logo-on-dark.png" alt="DistriAll — fundo escuro"></div>
+  <div class="tile" style="background: #fff;"><img src="../assets/distriall-logo-on-light.png" alt="DistriAll — fundo claro"></div>
+  <div class="tile" style="background: var(--surface-card);"><span class="wordmark">DISTRI<i>ALL</i></span></div>
+</body>
+</html>

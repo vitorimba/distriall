@@ -3,6 +3,10 @@
 import { useLoadingStore } from '@/stores/loading-store';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import type { OrderStatus, OrderWithItems } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Forklift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const ACCOUNT_COLORS: Record<string, string> = {
@@ -10,10 +14,6 @@ const ACCOUNT_COLORS: Record<string, string> = {
   ti: 'bg-purple-500',
   vo: 'bg-orange-500',
 };
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
 
 interface LoadingOrderListProps {
   filteredOrders: OrderWithItems[];
@@ -26,9 +26,7 @@ export function LoadingOrderList({ filteredOrders }: LoadingOrderListProps) {
 
   if (filteredOrders.length === 0) {
     return (
-      <div className="py-8 text-center text-sm text-muted-foreground">
-        Nenhum pedido para carregar.
-      </div>
+      <EmptyState icon={Forklift} title="Nenhum pedido para carregar" />
     );
   }
 
@@ -90,7 +88,7 @@ export function LoadingOrderList({ filteredOrders }: LoadingOrderListProps) {
             </div>
 
             <div className="flex flex-col items-end gap-1">
-              <span className="text-sm font-medium">{formatBRL(order.total)}</span>
+              <Money value={order.total} className="text-sm font-medium" />
               <OrderStatusBadge status={order.status as OrderStatus} />
             </div>
           </button>

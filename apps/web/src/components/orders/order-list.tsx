@@ -8,9 +8,13 @@ import { type OrderStatus } from '@distriall/shared';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { OrderActionBar } from '@/components/orders/order-action-bar';
 import { ChipFilter } from '@/components/ui/chip-filter';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search } from 'lucide-react';
+import { SearchField } from '@/components/ui/search-field';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Money } from '@/components/ui/money';
+import { FAB } from '@/components/ui/fab';
+import { ClipboardList } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface OrderRow {
@@ -44,10 +48,6 @@ const PAYMENT_FILTERS: { value: string; label: string }[] = [
   { value: 'cartao', label: 'Cartao' },
   { value: 'misto', label: 'Misto' },
 ];
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
 
 export function OrderList() {
   const { activeAccount } = useAccount();
@@ -142,15 +142,12 @@ export function OrderList() {
   return (
     <div className="space-y-3">
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          placeholder="Buscar por cliente ou numero..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-8"
-        />
-      </div>
+      <SearchField
+        placeholder="Buscar por cliente ou numero..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onClear={() => setSearch('')}
+      />
 
       {/* Status filters */}
       <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
@@ -158,11 +155,15 @@ export function OrderList() {
 
       {/* Order list */}
       {loading ? (
-        <div className="py-8 text-center text-muted-foreground">Carregando...</div>
-      ) : orders.length === 0 ? (
-        <div className="py-8 text-center text-muted-foreground">
-          {search || statusFilter !== 'all' ? 'Nenhum pedido encontrado.' : 'Nenhum pedido cadastrado.'}
+        <div className="space-y-2">
+          {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-16" />)}
         </div>
+      ) : orders.length === 0 ? (
+        <EmptyState
+          icon={ClipboardList}
+          title={search || statusFilter !== 'all' ? 'Nenhum pedido encontrado' : 'Nenhum pedido ainda'}
+          description={search || statusFilter !== 'all' ? undefined : 'Lance o primeiro pedido para ve-lo aqui.'}
+        />
       ) : (
         <div className="space-y-1 pb-24">
           {orders.map((order) => {
@@ -212,7 +213,7 @@ export function OrderList() {
                   </div>
 
                   <div className="flex flex-col items-end gap-1">
-                    <span className="text-sm font-medium">{formatBRL(order.total)}</span>
+                    <Money value={order.total} className="text-sm font-medium" />
                     <OrderStatusBadge status={order.status} />
                   </div>
                 </Link>
@@ -236,15 +237,8 @@ export function OrderList() {
 
       {/* FAB New Order */}
       {selectedIds.size === 0 && (
-        <Link
-          href="/orders/new"
-          className={cn(
-            'fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center',
-            'rounded-full bg-primary text-primary-foreground shadow-lg',
-            'transition-transform hover:scale-105 active:scale-95'
-          )}
-        >
-          <Plus className="size-6" />
+        <Link href="/orders/new">
+          <FAB label="Novo pedido" />
         </Link>
       )}
     </div>

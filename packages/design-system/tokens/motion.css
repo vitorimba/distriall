@@ -1,0 +1,16 @@
+/* DistriAll motion tokens — escada de durações + curvas nomeadas.
+   Regra: animar só transform e opacity; sempre respeitar prefers-reduced-motion. */
+:root {
+  /* ---- Durações ---- */
+  --duration-instant: 80ms; /* @kind other */  /* hover, press, trocas de cor */
+  --duration-fast: 120ms; /* @kind other */    /* tooltips, menus, scrim */
+  --duration-base: 180ms; /* @kind other */    /* dialogs, toasts, transições padrão */
+  --duration-slow: 240ms; /* @kind other */    /* bottom sheets, elementos grandes */
+  --duration-deliberate: 400ms; /* @kind other */ /* progress, barras de gráfico */
+
+  /* ---- Curvas ---- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.3, 1); /* @kind other */    /* padrão: entradas, hovers */
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0.4); /* @kind other */    /* saídas (fade-out, fechar) */
+  --ease-in-out: cubic-bezier(0.45, 0, 0.25, 1); /* @kind other */ /* movimento contínuo (reordenar, expandir) */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* @kind other */ /* enfática: FAB, confirmação */
+}

@@ -1,0 +1,55 @@
+<!-- @dsCard group="Cores" viewport="700x300" name="Gradientes" subtitle="5 gradientes nomeados — tom-sobre-tom, nunca multi-cor" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .sw { display: flex; flex-direction: column; gap: 0; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-subtle); }
+  .sw .fill { height: 86px; }
+  .sw .meta { padding: 8px 10px; background: var(--surface-card); display: flex; flex-direction: column; gap: 2px; }
+  .sw b { font-family: var(--font-mono); font-size: 9.5px; color: var(--accent-fg); font-weight: 600; }
+  .sw span { font-size: 10px; color: var(--text-secondary); line-height: 1.4; }
+  .scrim-demo { position: relative; background: repeating-conic-gradient(var(--surface-inset) 0% 25%, var(--surface-raised) 0% 50%) 0 0 / 16px 16px; }
+  .scrim-demo::after { content: ''; position: absolute; inset: 0; background: var(--grad-scrim-bottom); }
+  .scrim-demo i { position: absolute; bottom: 6px; left: 8px; z-index: 1; font-style: normal; font-size: 10px; font-weight: 600; color: #fff; }
+  .rules { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 10.5px; color: var(--text-secondary); }
+  .rules b { font-weight: 700; }
+  .rules .no { color: var(--danger-fg); }
+  .rules .ok { color: var(--text-positive); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="sw">
+      <div class="fill" style="background: var(--grad-accent);"></div>
+      <div class="meta"><b>--grad-accent</b><span>hero/CTA · máx. 1 por tela · escurece no claro</span></div>
+    </div>
+    <div class="sw">
+      <div class="fill" style="background: var(--grad-driver);"></div>
+      <div class="meta"><b>--grad-driver</b><span>header do motorista — exceção ao laranja</span></div>
+    </div>
+    <div class="sw">
+      <div class="fill" style="background: var(--grad-glow), var(--surface-page);"></div>
+      <div class="meta"><b>--grad-glow</b><span>ambiência de topo (login) · compor com a página</span></div>
+    </div>
+    <div class="sw">
+      <div class="fill scrim-demo"><i>Texto protegido</i></div>
+      <div class="meta"><b>--grad-scrim-bottom</b><span>proteção de texto sobre imagem</span></div>
+    </div>
+    <div class="sw">
+      <div class="fill" style="background: var(--grad-shimmer); background-size: 200% 100%; animation: da-shimmer 1.4s ease infinite;"></div>
+      <div class="meta"><b>--grad-shimmer</b><span>skeleton (funcional) · par próprio no claro</span></div>
+    </div>
+  </div>
+  <div class="rules">
+    <span class="ok">✓ tom-sobre-tom da mesma família</span>
+    <span class="ok">✓ sempre via var(--grad-*)</span>
+    <span class="no">✗ multi-cor (azul→roxo)</span>
+    <span class="no">✗ glow neon / vidro</span>
+    <span class="no">✗ gradiente como fundo de página inteira</span>
+  </div>
+</body>
+</html>

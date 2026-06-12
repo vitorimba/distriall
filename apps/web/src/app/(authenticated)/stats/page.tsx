@@ -5,6 +5,11 @@ import { useAccount } from '@/providers/account-provider';
 import { useStats, type StatsFilters, type StatsPeriod } from '@/hooks/use-stats';
 import { ProductRankingTable } from '@/components/stats/product-ranking-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select } from '@/components/ui/select';
+import { Tabs } from '@/components/ui/tabs';
+import { Alert } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 
 export default function StatsPage() {
   const { accounts } = useAccount();
@@ -26,84 +31,55 @@ export default function StatsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAccountId, period, startDate, endDate]);
 
-  const periods: { label: string; value: StatsPeriod }[] = [
-    { label: 'Hoje', value: 'day' },
-    { label: 'Semana', value: 'week' },
-    { label: 'Mês', value: 'month' },
-    { label: 'Customizado', value: 'custom' },
+  const periodTabs = [
+    { id: 'day', label: 'Hoje' },
+    { id: 'week', label: 'Semana' },
+    { id: 'month', label: 'Mes' },
+    { id: 'custom', label: 'Customizado' },
   ];
 
   return (
     <div className="space-y-6 p-4 pb-20">
       <div>
-        <h1 className="text-xl font-bold">Estatísticas</h1>
+        <h1 className="text-xl font-bold">Estatisticas</h1>
         <p className="text-sm text-muted-foreground">Ranking completo de produtos</p>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3">
-        <select
+      <div className="flex flex-wrap items-end gap-3">
+        <Select
+          options={[
+            { value: '', label: 'Todas as contas' },
+            ...accounts.map((a) => ({ value: a.id, label: a.name })),
+          ]}
           value={selectedAccountId}
           onChange={(e) => setSelectedAccountId(e.target.value)}
-          className="rounded-md border bg-background px-3 py-1.5 text-sm"
-        >
-          <option value="">Todas as contas</option>
-          {accounts.map((account) => (
-            <option key={account.id} value={account.id}>
-              {account.name}
-            </option>
-          ))}
-        </select>
+          className="w-48"
+        />
 
-        <div className="flex gap-1">
-          {periods.map((p) => (
-            <button
-              key={p.value}
-              onClick={() => setPeriod(p.value)}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                period === p.value
-                  ? 'bg-primary text-primary-foreground'
-                  : 'border text-muted-foreground hover:bg-muted'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          tabs={periodTabs}
+          active={period}
+          onChange={(id) => setPeriod(id as StatsPeriod)}
+        />
 
         {period === 'custom' && (
           <div className="flex items-center gap-2">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="rounded-md border bg-background px-3 py-1.5 text-sm"
-            />
-            <span className="text-sm text-muted-foreground">até</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="rounded-md border bg-background px-3 py-1.5 text-sm"
-            />
+            <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-36" />
+            <span className="text-sm text-muted-foreground">ate</span>
+            <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-36" />
           </div>
         )}
       </div>
 
-      {error && (
-        <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {error && <Alert tone="danger">{error}</Alert>}
 
-      {isLoading && (
-        <div className="h-48 animate-pulse rounded-xl bg-muted" />
-      )}
+      {isLoading && <Skeleton variant="rect" className="h-48" />}
 
       {!isLoading && stats && (
         <Card>
           <CardHeader>
-            <CardTitle>Ranking Completo de Produtos</CardTitle>
+            <CardTitle>Ranking completo de produtos</CardTitle>
           </CardHeader>
           <CardContent>
             <ProductRankingTable data={stats.product_ranking} />

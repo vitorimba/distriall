@@ -9,6 +9,13 @@ import { PaymentPieChart } from '@/components/stats/payment-pie-chart';
 import { ProductRankingTable } from '@/components/stats/product-ranking-table';
 import { formatBRL } from '@distriall/shared';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select } from '@/components/ui/select';
+import { Tabs } from '@/components/ui/tabs';
+import { Alert } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { BarChart3 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 type Period = StatsPeriod;
 
@@ -32,83 +39,67 @@ export default function DashboardPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAccountId, period, startDate, endDate]);
 
-  const periods: { label: string; value: Period }[] = [
-    { label: 'Hoje', value: 'day' },
-    { label: 'Semana', value: 'week' },
-    { label: 'Mês', value: 'month' },
-    { label: 'Customizado', value: 'custom' },
+  const periodTabs = [
+    { id: 'day', label: 'Hoje' },
+    { id: 'week', label: 'Semana' },
+    { id: 'month', label: 'Mes' },
+    { id: 'custom', label: 'Customizado' },
   ];
 
   return (
     <div className="space-y-6 p-4 pb-20">
       <div>
         <h1 className="text-xl font-bold">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Visão geral do negócio</p>
+        <p className="text-sm text-muted-foreground">Visao geral do negocio</p>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3">
-        {/* Account filter */}
-        <select
+      <div className="flex flex-wrap items-end gap-3">
+        <Select
+          options={[
+            { value: '', label: 'Todas as contas' },
+            ...accounts.map((a) => ({ value: a.id, label: a.name })),
+          ]}
           value={selectedAccountId}
           onChange={(e) => setSelectedAccountId(e.target.value)}
-          className="rounded-md border bg-background px-3 py-1.5 text-sm"
-        >
-          <option value="">Todas as contas</option>
-          {accounts.map((account) => (
-            <option key={account.id} value={account.id}>
-              {account.name}
-            </option>
-          ))}
-        </select>
+          className="w-48"
+        />
 
-        {/* Period selector */}
-        <div className="flex gap-1">
-          {periods.map((p) => (
-            <button
-              key={p.value}
-              onClick={() => setPeriod(p.value)}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                period === p.value
-                  ? 'bg-primary text-primary-foreground'
-                  : 'border text-muted-foreground hover:bg-muted'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          tabs={periodTabs}
+          active={period}
+          onChange={(id) => setPeriod(id as Period)}
+        />
 
-        {/* Custom date range */}
         {period === 'custom' && (
           <div className="flex items-center gap-2">
-            <input
+            <Input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="rounded-md border bg-background px-3 py-1.5 text-sm"
+              className="w-36"
             />
-            <span className="text-sm text-muted-foreground">até</span>
-            <input
+            <span className="text-sm text-muted-foreground">ate</span>
+            <Input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="rounded-md border bg-background px-3 py-1.5 text-sm"
+              className="w-36"
             />
           </div>
         )}
       </div>
 
       {error && (
-        <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        <Alert tone="danger" title="Erro ao carregar estatisticas">
           {error}
-        </div>
+        </Alert>
       )}
 
       {isLoading && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-24 animate-pulse rounded-xl bg-muted" />
+            <Skeleton key={i} variant="rect" className="h-24" />
           ))}
         </div>
       )}
@@ -119,48 +110,35 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             <StatsCard title="Faturamento" value={formatBRL(stats.revenue)} />
             <StatsCard title="Lucro" value={formatBRL(stats.profit)} />
-            <StatsCard
-              title="Ticket Médio"
-              value={formatBRL(stats.avg_ticket)}
-            />
-            <StatsCard
-              title="Pedidos"
-              value={String(stats.order_count)}
-            />
-            <StatsCard
-              title="Clientes"
-              value={String(stats.client_count)}
-            />
+            <StatsCard title="Ticket medio" value={formatBRL(stats.avg_ticket)} />
+            <StatsCard title="Pedidos" value={String(stats.order_count)} />
+            <StatsCard title="Clientes" value={String(stats.client_count)} />
           </div>
 
           {/* Charts row */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Evolução Semanal</CardTitle>
+                <CardTitle>Evolucao semanal</CardTitle>
               </CardHeader>
               <CardContent>
                 {stats.weekly_evolution.length > 0 ? (
                   <RevenueChart data={stats.weekly_evolution} />
                 ) : (
-                  <p className="py-8 text-center text-sm text-muted-foreground">
-                    Sem dados para exibir
-                  </p>
+                  <EmptyState icon={BarChart3} title="Sem dados para exibir" />
                 )}
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Formas de Pagamento</CardTitle>
+                <CardTitle>Formas de pagamento</CardTitle>
               </CardHeader>
               <CardContent>
                 {stats.payment_breakdown.length > 0 ? (
                   <PaymentPieChart data={stats.payment_breakdown} />
                 ) : (
-                  <p className="py-8 text-center text-sm text-muted-foreground">
-                    Sem dados para exibir
-                  </p>
+                  <EmptyState icon={BarChart3} title="Sem dados para exibir" />
                 )}
               </CardContent>
             </Card>
@@ -169,7 +147,7 @@ export default function DashboardPage() {
           {/* Product ranking */}
           <Card>
             <CardHeader>
-              <CardTitle>Top 10 Produtos</CardTitle>
+              <CardTitle>Top 10 produtos</CardTitle>
             </CardHeader>
             <CardContent>
               <ProductRankingTable data={stats.product_ranking} />

@@ -1,0 +1,75 @@
+<!-- @dsCard group="Padrões" viewport="700x330" name="Formulários e validação" subtitle="Máscaras pt-BR ao digitar, erro no blur, mensagens canônicas" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<style>
+  body { padding: 14px; }
+  #root { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+  .rules { grid-column: 1 / -1; display: flex; gap: 16px; flex-wrap: wrap; font-size: 10.5px; color: var(--text-secondary); padding-top: 2px; }
+  .rules b { color: var(--text-primary); font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Field, Input } = window.DistriAllDesignSystem_b6afd7;
+
+/* mesmas máscaras de components/forms/maskUtils.jsx */
+const dig = (v) => v.replace(/\D/g, '');
+const maskPhone = (v) => {
+  const d = dig(v).slice(0, 11);
+  if (d.length <= 2) return d.length ? `(${d}` : '';
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+};
+const maskCnpj = (v) => dig(v).slice(0, 14)
+  .replace(/(\d{2})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2')
+  .replace(/(\d{3})(\d)/, '$1/$2').replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+const maskMoney = (v) => {
+  const d = dig(v).slice(0, 12);
+  return d ? (parseInt(d, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '';
+};
+
+function Demo() {
+  const [tel, setTel] = React.useState('');
+  const [telTouched, setTelTouched] = React.useState(false);
+  const [cnpj, setCnpj] = React.useState('12.345.678/0001-95');
+  const [valor, setValor] = React.useState('1.234,56');
+  const telErro = telTouched && tel && dig(tel).length < 10 ? 'Telefone incompleto' : null;
+
+  return (
+    <React.Fragment>
+      <Field label="Telefone" error={telErro} hint={!telErro ? 'máscara aplicada ao digitar · valida no blur' : undefined}>
+        <Input value={tel} invalid={!!telErro} inputMode="tel" placeholder="(00) 00000-0000"
+          onChange={(e) => setTel(maskPhone(e.target.value))} onBlur={() => setTelTouched(true)} />
+      </Field>
+      <Field label="CNPJ">
+        <Input value={cnpj} inputMode="numeric" placeholder="00.000.000/0000-00" onChange={(e) => setCnpj(maskCnpj(e.target.value))} />
+      </Field>
+      <Field label="Valor" hint="dígitos viram centavos: 123456 → 1.234,56">
+        <Input value={valor} prefix="R$" inputMode="numeric" className="num" onChange={(e) => setValor(maskMoney(e.target.value))} />
+      </Field>
+      <Field label="Campo obrigatório vazio (após submit)" error="Campo obrigatório">
+        <Input invalid placeholder="Nome" />
+      </Field>
+      <div className="rules">
+        <span><b>Valida no blur</b> e no submit — nunca a cada tecla</span>
+        <span><b>Erro</b>: borda + mensagem abaixo, nunca só cor</span>
+        <span><b>Obrigatório</b>: asterisco no label; opcional não é marcado</span>
+        <span><b>Mensagens canônicas</b> em maskUtils.MSG</span>
+      </div>
+    </React.Fragment>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

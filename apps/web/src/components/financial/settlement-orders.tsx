@@ -33,7 +33,7 @@ export function SettlementOrders({ orders }: SettlementOrdersProps) {
         {expanded && (
           <div className="space-y-1 pt-1">
             {orders.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-2">Nenhum pedido no periodo.</p>
+              <p className="text-sm text-muted-foreground py-2">Nenhum pedido no periodo</p>
             ) : (
               orders.map((row) => {
                 const order = row.orders;

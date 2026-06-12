@@ -1,0 +1,117 @@
+<!-- @dsCard group="Componentes" viewport="700x430" name="Core — Button, Badge, Chip, Dialog, Toast, Alert, Menu" subtitle="Ações, status, feedback e overlays" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { padding: 16px; }
+  .rows { display: flex; flex-direction: column; gap: 14px; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Button, IconButton, Badge, Chip, Avatar, Skeleton, Dialog, Tooltip, Alert, Spinner, ProgressBar, Menu, ToastProvider, useToast } = window.DistriAllDesignSystem_b6afd7;
+
+function ToastDemo() {
+  const toast = useToast();
+  return <Button variant="outline" icon="bell" onClick={() => toast('Pedido #1042 salvo', 'success')}>Disparar toast</Button>;
+}
+
+function DialogDemo() {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <React.Fragment>
+      <Button variant="outline" icon="panel-top" onClick={() => setOpen(true)}>Abrir dialog</Button>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Confirmar ação"
+        width={360}
+        footer={
+          <React.Fragment>
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+            <Button onClick={() => setOpen(false)}>Confirmar</Button>
+          </React.Fragment>
+        }
+      >
+        <span style={{ fontSize: 'var(--text-base)', color: 'var(--text-secondary)' }}>
+          Scrim com --overlay-scrim + blur; fecha por Esc, clique fora ou X.
+        </span>
+      </Dialog>
+    </React.Fragment>
+  );
+}
+
+function Demo() {
+  return (
+    <div className="rows">
+      <div className="row">
+        <Button icon="plus">Novo pedido</Button>
+        <Button variant="secondary">Recalcular</Button>
+        <Button variant="outline">Cancelar</Button>
+        <Button variant="ghost" icon="printer">Imprimir</Button>
+        <Button variant="danger" icon="trash-2">Excluir</Button>
+        <Button loading>Salvando</Button>
+        <Button disabled>Salvar</Button>
+      </div>
+      <div className="row">
+        <Button size="sm" icon="plus">Adicionar</Button>
+        <Button size="lg">Salvar pedido</Button>
+        <IconButton icon="pencil" label="Editar" variant="outline" />
+        <IconButton icon="ellipsis-vertical" label="Mais ações" />
+        <IconButton icon="trash-2" label="Remover" variant="danger" />
+        <IconButton icon="plus" label="Novo" variant="primary" />
+      </div>
+      <div className="row">
+        <Badge tone="lancado" />
+        <Badge tone="confirmado" />
+        <Badge tone="carregado" />
+        <Badge tone="entregue" />
+        <Badge tone="cancelado" />
+        <Badge tone="pendente" size="sm" />
+        <Badge tone="entregue" size="lg" />
+      </div>
+      <div className="row">
+        <Chip selected count={12}>Confirmado</Chip>
+        <Chip count={4}>Carregado</Chip>
+        <Chip>Entregue</Chip>
+        <Chip icon="calendar">Esta semana</Chip>
+        <Avatar name="Mercado São José" />
+        <Avatar name="Carlos Lima" />
+        <Avatar name="Padaria Pão Quente" size="lg" />
+      </div>
+      <div className="row" style={{ alignItems: 'center' }}>
+        <Skeleton variant="circle" />
+        <Skeleton width={120} />
+        <Spinner />
+        <div style={{ width: 130 }}><ProgressBar value={2} max={3} /></div>
+        <DialogDemo />
+        <ToastDemo />
+        <Tooltip label="Editar cliente"><IconButton icon="pencil" label="Editar cliente" variant="outline" /></Tooltip>
+        <Menu
+          items={[
+            { label: 'Ver detalhes', icon: 'eye' },
+            { label: 'Imprimir recibo', icon: 'printer' },
+            'separator',
+            { label: 'Cancelar pedido', icon: 'x-circle', danger: true },
+          ]}
+        />
+      </div>
+      <Alert tone="warning" title="Safari não suporta Web Bluetooth" action={<Button size="sm" variant="outline">Saiba mais</Button>}>
+        Para imprimir recibos, use Chrome ou Edge no Android.
+      </Alert>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<ToastProvider><Demo /></ToastProvider>);
+</script>
+</body>
+</html>

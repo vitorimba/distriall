@@ -1,0 +1,91 @@
+<!-- @template name="Tela mobile" description="Tela mobile DistriAll: app bar + lista + FAB + bottom nav (5 itens)" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DistriAll — mobile</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="./ds-base.js"></script>
+<style>
+  /* simula viewport de celular quando aberto em desktop */
+  #root { max-width: 430px; margin: 0 auto; min-height: 100vh; box-shadow: 0 0 0 1px var(--border-subtle); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  let tries = 0;
+  (function boot() {
+    const DS = window.DistriAllDesignSystem_b6afd7;
+    if (!DS) {
+      if (++tries > 100) { console.error('DS bundle não carregou'); return; }
+      setTimeout(boot, 50);
+      return;
+    }
+    const code = document.getElementById('app-src').textContent;
+    const compiled = Babel.transform(code, { presets: ['react'] }).code;
+    new Function('React', 'ReactDOM', 'DS', compiled)(React, ReactDOM, DS);
+  })();
+});
+</script>
+<script id="app-src" type="text/plain">
+const { MobileShell, PageHeader, SearchField, Chip, Badge, Money, Card, FAB } = DS;
+
+const PEDIDOS = [
+  { num: '#1046', cliente: 'Lanchonete Sabor', total: 204.0, status: 'lancado' },
+  { num: '#1045', cliente: 'Bar do Zé', total: 318.0, status: 'confirmado' },
+  { num: '#1044', cliente: 'Mercearia Central', total: 956.8, status: 'carregado' },
+  { num: '#1043', cliente: 'Mercado São José', total: 1245.0, status: 'entregue' },
+];
+
+function App() {
+  const [theme, setTheme] = React.useState('dark');
+  const [filtro, setFiltro] = React.useState(null);
+  React.useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]);
+
+  const rows = PEDIDOS.filter((p) => !filtro || p.status === filtro);
+
+  return (
+    <MobileShell
+      active="orders"
+      onNavigate={() => {}}
+      theme={theme}
+      onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      fab={<FAB icon="plus" label="Novo pedido" onClick={() => {}} />}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', padding: 'var(--page-pad-mobile)' }}>
+        <PageHeader title="Pedidos" subtitle={`${rows.length} pedidos`} />
+        <SearchField placeholder="Buscar pedido..." />
+        <div style={{ display: 'flex', gap: 'var(--inline-gap)', overflowX: 'auto', paddingBottom: 2 }}>
+          {[['lancado', 'Lançado'], ['confirmado', 'Confirmado'], ['carregado', 'Carregado'], ['entregue', 'Entregue']].map(([s, label]) => (
+            <Chip key={s} selected={filtro === s} onClick={() => setFiltro(filtro === s ? null : s)}>
+              {label}
+            </Chip>
+          ))}
+        </div>
+        <Card padded={false}>
+          {rows.map((p, i) => (
+            <div key={p.num} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', minHeight: 'var(--row-h-list)', padding: '0 var(--space-4)', borderTop: i === 0 ? 'none' : '1px solid var(--border-subtle)' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 'var(--weight-semibold)', fontSize: 'var(--text-sm)' }}>{p.cliente}</div>
+                <div className="num" style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>{p.num}</div>
+              </div>
+              <Money value={p.total} />
+              <Badge tone={p.status} />
+            </div>
+          ))}
+        </Card>
+      </div>
+    </MobileShell>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

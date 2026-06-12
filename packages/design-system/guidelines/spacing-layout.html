@@ -1,0 +1,64 @@
+<!-- @dsCard group="Espaçamento" viewport="700x230" name="Layout responsivo" subtitle="Desktop: sidebar 240 + conteúdo máx 1200 · Mobile <768: bottom nav 64 + FAB" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; display: flex; gap: 20px; align-items: flex-start; }
+  .device { border: 1px solid var(--border-strong); border-radius: 10px; overflow: hidden; background: var(--surface-page); position: relative; }
+  .cap { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 6px; }
+  .mlabel { position: absolute; font-family: var(--font-mono); font-size: 9px; color: var(--accent-fg); background: var(--accent-soft); padding: 1px 5px; border-radius: 999px; white-space: nowrap; }
+  .blk { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: 6px; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="cap">desktop ≥ 768</div>
+    <div class="device" style="width: 380px; height: 170px; display: flex;">
+      <div style="width: 64px; background: var(--surface-card); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 5px; padding: 8px 6px;">
+        <div style="height: 8px; border-radius: 3px; background: var(--accent); width: 80%;"></div>
+        <div style="height: 8px; border-radius: 3px; background: var(--surface-inset);"></div>
+        <div style="height: 8px; border-radius: 3px; background: var(--surface-inset);"></div>
+        <div style="height: 8px; border-radius: 3px; background: var(--surface-inset);"></div>
+      </div>
+      <div style="flex: 1; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; gap: 8px;">
+          <div class="blk" style="flex: 1; height: 34px;"></div>
+          <div class="blk" style="flex: 1; height: 34px;"></div>
+          <div class="blk" style="flex: 1; height: 34px;"></div>
+        </div>
+        <div class="blk" style="flex: 1;"></div>
+      </div>
+      <span class="mlabel" style="left: 4px; bottom: 4px;">sidebar 240</span>
+      <span class="mlabel" style="right: 4px; bottom: 4px;">conteúdo máx 1200 · pad 24</span>
+    </div>
+  </div>
+  <div>
+    <div class="cap">mobile &lt; 768</div>
+    <div class="device" style="width: 110px; height: 170px; display: flex; flex-direction: column;">
+      <div style="flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 6px;">
+        <div style="display: flex; gap: 6px;">
+          <div class="blk" style="flex: 1; height: 26px;"></div>
+          <div class="blk" style="flex: 1; height: 26px;"></div>
+        </div>
+        <div class="blk" style="flex: 1;"></div>
+      </div>
+      <div style="position: relative; height: 26px; background: var(--surface-card); border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-around; padding: 0 6px;">
+        <div style="width: 9px; height: 9px; border-radius: 3px; background: var(--accent);"></div>
+        <div style="width: 9px; height: 9px; border-radius: 3px; background: var(--surface-inset); border: 1px solid var(--border-strong);"></div>
+        <div style="width: 9px; height: 9px; border-radius: 3px; background: var(--surface-inset); border: 1px solid var(--border-strong);"></div>
+        <div style="width: 9px; height: 9px; border-radius: 3px; background: var(--surface-inset); border: 1px solid var(--border-strong);"></div>
+        <div style="width: 9px; height: 9px; border-radius: 3px; background: var(--surface-inset); border: 1px solid var(--border-strong);"></div>
+      </div>
+      <span class="mlabel" style="left: 50%; transform: translateX(-50%); bottom: 30px;">bottom nav 64</span>
+    </div>
+  </div>
+  <div style="flex: 1; font-size: 10.5px; color: var(--text-secondary); line-height: 1.6; padding-top: 18px;">
+    Um breakpoint só: <b style="font-family: var(--font-mono); font-size: 10px; color: var(--accent-fg);">768px</b>.<br>
+    Grids usam <b style="font-family: var(--font-mono); font-size: 10px;">.da-grid--*</b> (layout.css) e empilham no mobile.<br>
+    Stats 5→2 col · conteúdo 2-3→1 col.<br>
+    FAB substitui o CTA do header no mobile.
+  </div>
+</body>
+</html>

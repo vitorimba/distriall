@@ -6,10 +6,14 @@ import { useClientOrders, type ClientOrderFilters } from '@/hooks/use-client-ord
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/select';
+import { Field } from '@/components/ui/field';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { formatBRL } from '@distriall/shared';
 import type { OrderStatus } from '@distriall/shared';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ClipboardList } from 'lucide-react';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'Todos' },
@@ -73,18 +77,13 @@ export function ClientOrderHistory({ clientId }: ClientOrderHistoryProps) {
               />
             </div>
           </div>
-          <div>
-            <label className="text-xs text-muted-foreground mb-1 block">Status</label>
-            <select
+          <Field label="Status">
+            <Select
+              options={STATUS_OPTIONS}
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="h-8 w-full rounded-md border border-input bg-background px-3 text-sm"
-            >
-              {STATUS_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-          </div>
+            />
+          </Field>
           <div className="flex gap-2">
             <Button size="sm" onClick={handleApplyFilters} className="flex-1">
               Filtrar
@@ -97,9 +96,11 @@ export function ClientOrderHistory({ clientId }: ClientOrderHistoryProps) {
 
         {/* Orders list */}
         {loading && orders.length === 0 ? (
-          <div className="py-4 text-center text-sm text-muted-foreground">Carregando...</div>
+          <div className="space-y-2">
+            {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-12" />)}
+          </div>
         ) : orders.length === 0 ? (
-          <div className="py-4 text-center text-sm text-muted-foreground">Nenhum pedido encontrado.</div>
+          <EmptyState icon={ClipboardList} title="Nenhum pedido encontrado" />
         ) : (
           <div className="divide-y">
             {orders.map((order) => (

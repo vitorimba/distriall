@@ -4,9 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, ChevronDown, ChevronRight } from 'lucide-react';
+import { SearchField } from '@/components/ui/search-field';
+import { Select } from '@/components/ui/select';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Money } from '@/components/ui/money';
+import { FAB } from '@/components/ui/fab';
+import { Package, ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProductVariant {
@@ -30,6 +35,8 @@ interface Product {
 function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
+
+// formatBRL kept for inline string use (price range); Money component used where possible
 
 export function ProductList() {
   const { activeAccount } = useAccount();
@@ -97,36 +104,35 @@ export function ProductList() {
     <div className="space-y-4">
       {/* Search + Filter */}
       <div className="flex flex-col gap-2 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar produto..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-8"
-          />
-        </div>
+        <SearchField
+          placeholder="Buscar produto..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onClear={() => setSearch('')}
+          className="flex-1"
+        />
         {categories.length > 0 && (
-          <select
+          <Select
+            options={categories.map((c) => ({ value: c, label: c }))}
+            placeholder="Todas categorias"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-          >
-            <option value="">Todas categorias</option>
-            {categories.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+            className="sm:w-48"
+          />
         )}
       </div>
 
       {/* Product List */}
       {loading ? (
-        <div className="py-8 text-center text-muted-foreground">Carregando...</div>
-      ) : products.length === 0 ? (
-        <div className="py-8 text-center text-muted-foreground">
-          {search ? 'Nenhum produto encontrado.' : 'Nenhum produto cadastrado.'}
+        <div className="space-y-2">
+          {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-14" />)}
         </div>
+      ) : products.length === 0 ? (
+        <EmptyState
+          icon={Package}
+          title={search ? 'Nenhum produto encontrado' : 'Nenhum produto ainda'}
+          description={search ? undefined : 'Cadastre o primeiro produto para ve-lo aqui.'}
+        />
       ) : (
         <div className="space-y-1">
           {products.map((product) => {
@@ -194,15 +200,8 @@ export function ProductList() {
       )}
 
       {/* FAB New Product */}
-      <Link
-        href="/products/new"
-        className={cn(
-          'fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center',
-          'rounded-full bg-primary text-primary-foreground shadow-lg',
-          'transition-transform hover:scale-105 active:scale-95'
-        )}
-      >
-        <Plus className="size-6" />
+      <Link href="/products/new">
+        <FAB label="Novo produto" />
       </Link>
     </div>
   );

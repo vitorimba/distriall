@@ -1,0 +1,115 @@
+<!-- @template name="Tela do app de gestão" description="Tela base DistriAll: sidebar + header + KPIs + gráfico + tabela, nos dois temas" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DistriAll — tela do app</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="./ds-base.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  let tries = 0;
+  (function boot() {
+    const DS = window.DistriAllDesignSystem_b6afd7;
+    if (!DS) {
+      if (++tries > 100) { console.error('DS bundle não carregou'); return; }
+      setTimeout(boot, 50);
+      return;
+    }
+    const code = document.getElementById('app-src').textContent;
+    const compiled = Babel.transform(code, { presets: ['react'] }).code;
+    new Function('React', 'ReactDOM', 'DS', compiled)(React, ReactDOM, DS);
+  })();
+});
+</script>
+<script id="app-src" type="text/plain">
+const {
+  Sidebar, Avatar, Icon, Button, Chip, Badge,
+  PageHeader, StatCard, Card, DataTable, Money, SearchField,
+  LineChart,
+} = DS;
+
+const fmtBRL = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+/* ===== Dados mock — troque pelos seus ===== */
+const SEMANA = [
+  { label: 'Seg', value: 3200 }, { label: 'Ter', value: 4100 }, { label: 'Qua', value: 3650 },
+  { label: 'Qui', value: 5200 }, { label: 'Sex', value: 6840 }, { label: 'Sáb', value: 4480 }, { label: 'Dom', value: 1050 },
+];
+const PEDIDOS = [
+  { num: '#1046', cliente: 'Lanchonete Sabor', data: '12/06', total: 204.0, status: 'lancado' },
+  { num: '#1045', cliente: 'Bar do Zé', data: '12/06', total: 318.0, status: 'confirmado' },
+  { num: '#1044', cliente: 'Mercearia Central', data: '11/06', total: 956.8, status: 'carregado' },
+  { num: '#1043', cliente: 'Mercado São José', data: '11/06', total: 1245.0, status: 'entregue' },
+];
+
+function App() {
+  const [theme, setTheme] = React.useState('dark');
+  React.useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]);
+
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--surface-page)' }}>
+      <Sidebar
+        active="dashboard"
+        onNavigate={() => {}}
+        footer={
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '8px 10px',
+              background: 'transparent', border: 'none', borderRadius: 'var(--radius-sm)',
+              cursor: 'pointer', color: 'var(--text-secondary)', fontFamily: 'var(--font-sans)',
+            }}
+          >
+            <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={15} />
+            <span style={{ fontSize: 12.5, fontWeight: 500 }}>{theme === 'dark' ? 'Modo claro' : 'Modo escuro'}</span>
+          </button>
+        }
+      />
+      <main style={{ flex: 1, minWidth: 0, padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <PageHeader
+          title="Visão geral"
+          subtitle="Quinta-feira, 12 de junho"
+          actions={<Button icon="plus">Novo pedido</Button>}
+        />
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
+          <StatCard accent icon="banknote" label="Faturamento" value="R$ 28.520" delta={12} deltaLabel="vs semana anterior" />
+          <StatCard icon="trending-up" label="Lucro" value="R$ 6.840" delta={8} />
+          <StatCard icon="clipboard-list" label="Pedidos" value="312" delta={7} />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-4)', alignItems: 'start' }}>
+          <Card title="Evolução semanal de faturamento">
+            <LineChart data={SEMANA} height={150} formatValue={fmtBRL} />
+          </Card>
+          <Card title="Pedidos recentes" padded={false}>
+            <DataTable
+              columns={[
+                { key: 'num', label: 'Nº', width: 70, render: (r) => <span className="num" style={{ fontFamily: 'var(--font-mono)', fontSize: 13 }}>{r.num}</span> },
+                { key: 'cliente', label: 'Cliente' },
+                { key: 'total', label: 'Total', align: 'right', render: (r) => <Money value={r.total} /> },
+                { key: 'status', label: 'Status', width: 110, render: (r) => <Badge tone={r.status} /> },
+              ]}
+              rows={PEDIDOS}
+              rowKey="num"
+              onRowClick={() => {}}
+            />
+          </Card>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!-- @dsCard group="Espaçamento" viewport="700x170" name="Raios e sombras" subtitle="Cantos generosos; sombras sutis, accent só no FAB/CTA" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 18px; display: flex; gap: 14px; align-items: center; }
+  .box { width: 110px; height: 96px; background: var(--surface-raised); border: 1px solid var(--border-strong); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+  .box b { font-size: 11px; font-weight: 600; }
+  .box span { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+  <div class="box" style="border-radius: var(--radius-sm);"><b>sm</b><span>8px · chips</span></div>
+  <div class="box" style="border-radius: var(--radius-md);"><b>md</b><span>12px · inputs</span></div>
+  <div class="box" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-card);"><b>lg</b><span>16px · cards</span></div>
+  <div class="box" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-raised);"><b>xl</b><span>22px · modais</span></div>
+  <div class="box" style="border-radius: var(--radius-xl); background: var(--grad-accent); border-color: var(--orange-600); box-shadow: var(--shadow-accent); color: #fff;"><b style="color:#fff;">accent</b><span style="color: rgba(255,255,255,0.8);">hero / FAB</span></div>
+</body>
+</html>

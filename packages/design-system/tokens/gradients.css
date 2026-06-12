@@ -1,0 +1,28 @@
+/* DistriAll gradient tokens — gradientes nomeados e permitidos.
+   Regra: gradiente é exceção intencional, nunca decoração livre.
+   Sempre tom-sobre-tom da mesma família de cor; nunca multi-cor (azul→roxo etc). */
+:root {
+  /* Hero/CTA — único gradiente laranja permitido. Máx. 1 por tela (StatCard hero, FAB). */
+  --grad-accent: linear-gradient(135deg, var(--orange-400), var(--orange-600)); /* @kind color */
+
+  /* Papel de motorista — header verde (exceção intencional ao laranja). */
+  --grad-driver: linear-gradient(135deg, var(--green-500), var(--green-700)); /* @kind color */
+
+  /* Ambiência de topo — brilho laranja sutil atrás de telas "hero" (login).
+     Compor com a página: background: var(--grad-glow), var(--surface-page) */
+  --grad-glow: radial-gradient(800px 400px at 50% -10%, rgba(249, 122, 30, 0.13), transparent); /* @kind color */
+
+  /* Proteção de texto sobre imagem — de baixo para cima. */
+  --grad-scrim-bottom: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.62)); /* @kind color */
+
+  /* Shimmer do skeleton (funcional, não decorativo). */
+  --grad-shimmer: linear-gradient(90deg, var(--gray-800) 25%, var(--gray-700) 45%, var(--gray-800) 65%); /* @kind color */
+}
+
+[data-theme="light"] {
+  /* No claro o laranja escurece um passo, como o --accent */
+  --grad-accent: linear-gradient(135deg, var(--orange-500), var(--orange-700)); /* @kind color */
+  --grad-glow: radial-gradient(800px 400px at 50% -10%, rgba(226, 100, 13, 0.11), transparent); /* @kind color */
+  --grad-scrim-bottom: linear-gradient(180deg, transparent 30%, rgba(28, 25, 20, 0.55)); /* @kind color */
+  --grad-shimmer: linear-gradient(90deg, #EDE9E3 25%, #E2DDD5 45%, #EDE9E3 65%); /* @kind color */
+}

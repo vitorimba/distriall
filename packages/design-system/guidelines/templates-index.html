@@ -1,0 +1,50 @@
+<!-- @dsCard group="Templates" viewport="700x210" name="Pontos de partida" subtitle="4 templates para projetos consumidores — clique para abrir" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .tile {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 12px; border-radius: var(--radius-md);
+    background: var(--surface-card); border: 1px solid var(--border-subtle);
+    text-decoration: none; color: var(--text-primary);
+    transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  }
+  .tile:hover { background: var(--surface-hover); border-color: var(--border-strong); }
+  .tile b { font-size: 12.5px; font-weight: 700; }
+  .tile span { font-size: 10.5px; color: var(--text-secondary); line-height: 1.45; }
+  .tile i { font-style: normal; font-family: var(--font-mono); font-size: 9.5px; color: var(--accent-fg); }
+  .note { margin-top: 12px; font-size: 10.5px; color: var(--text-secondary); }
+  .note code { font-family: var(--font-mono); font-size: 10px; color: var(--accent-fg); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <a class="tile" href="../templates/tela-app/index.html">
+      <i>templates/tela-app</i>
+      <b>Tela do app de gestão</b>
+      <span>Sidebar + KPIs + gráfico + tabela, dois temas</span>
+    </a>
+    <a class="tile" href="../templates/formulario/index.html">
+      <i>templates/formulario</i>
+      <b>Formulário de cadastro</b>
+      <span>Cards em grid 2 col, máscara e validação</span>
+    </a>
+    <a class="tile" href="../templates/mobile/index.html">
+      <i>templates/mobile</i>
+      <b>Tela mobile</b>
+      <span>App bar + lista + FAB + bottom nav</span>
+    </a>
+    <a class="tile" href="../templates/login/index.html">
+      <i>templates/login</i>
+      <b>Login</b>
+      <span>Card central com logo e erro inline</span>
+    </a>
+  </div>
+  <p class="note">Projetos consumidores veem estes templates no picker de novo design. Cada pasta tem <code>index.html</code> + <code>ds-base.js</code> (1 linha para apontar ao design system).</p>
+</body>
+</html>

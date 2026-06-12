@@ -1,0 +1,77 @@
+<!-- @dsCard group="Padrões" viewport="700x320" name="Estados de tela" subtitle="Loading, vazio, erro e sucesso — componentes e copy canônicos" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<style>
+  body { padding: 14px; }
+  #root { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .cellx { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px; min-width: 0; }
+  .cellx .da-empty { padding: 4px 0; }
+  .capx { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .capx i { font-style: normal; color: var(--accent-fg); text-transform: none; letter-spacing: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Skeleton, EmptyState, Alert, Button, Toast, Icon } = window.DistriAllDesignSystem_b6afd7;
+
+function Demo() {
+  return (
+    <React.Fragment>
+      <div className="cellx">
+        <div className="capx">loading <i>skeleton espelha o layout — nunca spinner de página</i></div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Skeleton variant="circle" width={28} height={28} />
+            <Skeleton width="55%" height={11} />
+          </div>
+          <Skeleton width="100%" height={11} />
+          <Skeleton width="80%" height={11} />
+        </div>
+      </div>
+      <div className="cellx">
+        <div className="capx">vazio <i>ícone + título + próximo passo</i></div>
+        <EmptyState
+          icon="clipboard-list"
+          title="Nenhum pedido ainda"
+          description="Lance o primeiro pedido para vê-lo aqui."
+          actionLabel="Novo pedido"
+        />
+      </div>
+      <div className="cellx">
+        <div className="capx">erro <i>o que falhou + Tentar novamente</i></div>
+        <Alert
+          tone="danger"
+          title="Não foi possível carregar os pedidos"
+          action={<Button size="sm" variant="outline" icon="refresh-cw">Tentar novamente</Button>}
+        >
+          Verifique sua conexão.
+        </Alert>
+      </div>
+      <div className="cellx">
+        <div className="capx">sucesso <i>toast curto · some sozinho</i></div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>
+          <div className="da-toast" style={{ animation: 'none' }}>
+            <span className="da-toast__icon--success" style={{ display: 'inline-flex' }}><Icon name="check-circle-2" size={15} /></span>
+            Pedido #1047 salvo
+          </div>
+          <span style={{ fontSize: 10.5, color: 'var(--text-secondary)' }}>
+            toast = confirmação passageira · alert = estado persistente · dialog = decisão destrutiva
+          </span>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!-- @template name="Formulário de cadastro" description="Form em cards com grid 2 colunas, máscara, validação e rodapé Salvar/Cancelar" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DistriAll — formulário</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+<script src="./ds-base.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  let tries = 0;
+  (function boot() {
+    const DS = window.DistriAllDesignSystem_b6afd7;
+    if (!DS) {
+      if (++tries > 100) { console.error('DS bundle não carregou'); return; }
+      setTimeout(boot, 50);
+      return;
+    }
+    const code = document.getElementById('app-src').textContent;
+    const compiled = Babel.transform(code, { presets: ['react'] }).code;
+    new Function('React', 'ReactDOM', 'DS', compiled)(React, ReactDOM, DS);
+  })();
+});
+</script>
+<script id="app-src" type="text/plain">
+const { PageHeader, Card, Field, Input, Select, Textarea, Button } = DS;
+
+/* máscara de telefone pt-BR (copiada de components/forms/maskUtils.jsx) */
+const dig = (v) => v.replace(/\D/g, '');
+const maskPhone = (v) => {
+  const d = dig(v).slice(0, 11);
+  if (d.length <= 2) return d.length ? `(${d}` : '';
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+};
+
+function App() {
+  const [nome, setNome] = React.useState('');
+  const [telefone, setTelefone] = React.useState('');
+  const [submitted, setSubmitted] = React.useState(false);
+  const nomeErro = submitted && !nome.trim() ? 'Campo obrigatório' : null;
+
+  return (
+    <main style={{ maxWidth: 860, margin: '0 auto', padding: 'var(--page-pad)', display: 'flex', flexDirection: 'column', gap: 'var(--section-gap)' }}>
+      <PageHeader title="Novo cliente" subtitle="Cadastro de cliente" onBack={() => {}} />
+
+      <Card title="Dados do cliente">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+          <Field label="Nome" required error={nomeErro}>
+            <Input value={nome} invalid={!!nomeErro} onChange={(e) => setNome(e.target.value)} placeholder="Razão social ou nome" />
+          </Field>
+          <Field label="Telefone">
+            <Input value={telefone} inputMode="tel" onChange={(e) => setTelefone(maskPhone(e.target.value))} placeholder="(00) 00000-0000" />
+          </Field>
+          <div style={{ gridColumn: '1 / -1' }}>
+            <Field label="Endereço" required><Input placeholder="Rua, número" /></Field>
+          </div>
+          <Field label="Cidade" required><Input /></Field>
+          <Field label="Forma de pagamento padrão">
+            <Select options={['Dinheiro', 'Pix', 'Boleto', 'Vale', 'Cartão']} placeholder="Selecionar..." />
+          </Field>
+          <div style={{ gridColumn: '1 / -1' }}>
+            <Field label="Observações"><Textarea placeholder="Instruções de entrega..." rows={3} /></Field>
+          </div>
+        </div>
+      </Card>
+
+      <div style={{ display: 'flex', gap: 'var(--inline-gap)' }}>
+        <Button icon="check" onClick={() => setSubmitted(true)}>Salvar</Button>
+        <Button variant="outline">Cancelar</Button>
+      </div>
+    </main>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

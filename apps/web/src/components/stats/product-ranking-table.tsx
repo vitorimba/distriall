@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { formatBRL } from '@distriall/shared';
 import type { ProductRanking } from '@distriall/shared';
+import { Tabs } from '@/components/ui/tabs';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Package } from 'lucide-react';
 
 interface ProductRankingTableProps {
   data: ProductRanking[];
@@ -20,28 +23,15 @@ export function ProductRankingTable({ data }: ProductRankingTableProps) {
 
   return (
     <div>
-      <div className="mb-3 flex gap-2">
-        <button
-          onClick={() => setActiveTab('value')}
-          className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-            activeTab === 'value'
-              ? 'bg-primary text-primary-foreground'
-              : 'text-muted-foreground hover:bg-muted'
-          }`}
-        >
-          Por Valor
-        </button>
-        <button
-          onClick={() => setActiveTab('quantity')}
-          className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-            activeTab === 'quantity'
-              ? 'bg-primary text-primary-foreground'
-              : 'text-muted-foreground hover:bg-muted'
-          }`}
-        >
-          Por Quantidade
-        </button>
-      </div>
+      <Tabs
+        tabs={[
+          { id: 'value', label: 'Por valor' },
+          { id: 'quantity', label: 'Por quantidade' },
+        ]}
+        active={activeTab}
+        onChange={(id) => setActiveTab(id as Tab)}
+        className="mb-3"
+      />
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -66,8 +56,8 @@ export function ProductRankingTable({ data }: ProductRankingTableProps) {
             ))}
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={5} className="py-4 text-center text-muted-foreground">
-                  Nenhum produto encontrado
+                <td colSpan={5}>
+                  <EmptyState icon={Package} title="Nenhum produto encontrado" />
                 </td>
               </tr>
             )}

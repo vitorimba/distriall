@@ -1,0 +1,26 @@
+/* DistriAll base element styles */
+body {
+  margin: 0;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+::selection { background: var(--accent-soft-border); }
+
+/* Numeric data always tabular */
+.num, td.num, .ds-money {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}

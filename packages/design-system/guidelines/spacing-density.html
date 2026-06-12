@@ -1,0 +1,44 @@
+<!-- @dsCard group="Espaçamento" viewport="700x210" name="Densidade e alvos de toque" subtitle="Controles 32/40/48 — linha de tabela 48, lista 56, toque mínimo 44" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; display: flex; gap: 22px; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .cap { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); }
+  .ctrl { display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: var(--radius-md); background: var(--accent); color: var(--text-on-accent); font-size: 13px; font-weight: 600; }
+  .h-rule { display: flex; align-items: center; gap: 8px; }
+  .h-rule i { font-style: normal; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); width: 56px; }
+  .rowdemo { width: 250px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; }
+  .rowdemo > div { display: flex; align-items: center; justify-content: space-between; padding: 0 14px; font-size: 12.5px; border-top: 1px solid var(--border-subtle); color: var(--text-secondary); }
+  .rowdemo > div:first-child { border-top: none; }
+  .rowdemo b { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); font-weight: 500; }
+  .touch { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1.5px dashed var(--accent-soft-border); border-radius: 10px; }
+  .touch span { width: 28px; height: 28px; border-radius: 8px; background: var(--surface-inset); border: 1px solid var(--border-strong); }
+</style>
+</head>
+<body>
+  <div class="col">
+    <span class="cap">controles</span>
+    <div class="h-rule"><i>sm · 32</i><span class="ctrl" style="height: var(--control-h-sm); font-size: 12px;">Filtrar</span></div>
+    <div class="h-rule"><i>md · 40</i><span class="ctrl" style="height: var(--control-h);">Salvar</span></div>
+    <div class="h-rule"><i>lg · 48</i><span class="ctrl" style="height: var(--control-h-lg); font-size: 14px;">Entrar</span></div>
+  </div>
+  <div class="col">
+    <span class="cap">densidade de linhas</span>
+    <div class="rowdemo">
+      <div style="height: var(--row-h-table);">Linha de tabela <b>--row-h-table 48</b></div>
+      <div style="height: var(--row-h-list);">Linha de lista <b>--row-h-list 56</b></div>
+    </div>
+  </div>
+  <div class="col">
+    <span class="cap">toque mínimo (mobile)</span>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="touch"><span></span></span>
+      <span style="font-size: 11px; color: var(--text-secondary); max-width: 120px;">Ícone de 28px, área de toque <b style="font-family: var(--font-mono); font-size: 10px; color: var(--accent-fg);">--touch-target 44</b></span>
+    </div>
+  </div>
+</body>
+</html>

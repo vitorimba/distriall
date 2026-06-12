@@ -1,0 +1,31 @@
+<!-- @dsCard group="Cores" viewport="700x170" name="Paleta de gráficos" subtitle="--chart-1..5 em ordem de uso — laranja é sempre a série principal" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 16px; }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr) 1.2fr; gap: 8px; align-items: stretch; }
+  .sw { border-radius: 8px; padding: 10px; height: 70px; display: flex; flex-direction: column; justify-content: space-between; }
+  .sw b { font-size: 10.5px; font-weight: 600; font-family: var(--font-mono); color: #fff; }
+  .sw i { font-style: normal; font-size: 10px; color: rgba(255,255,255,0.78); }
+  .grid-sw { border: 1px dashed var(--chart-grid); background: var(--surface-card); }
+  .grid-sw b { color: var(--text-primary); }
+  .grid-sw i { color: var(--text-muted); }
+  .note { margin-top: 10px; font-size: 11px; color: var(--text-secondary); }
+  .note b { color: var(--text-primary); font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw" style="background: var(--chart-1);"><b>--chart-1</b><i>série principal</i></div>
+    <div class="sw" style="background: var(--chart-2);"><b style="color:#3a2410;">--chart-2</b><i style="color:rgba(58,36,16,0.7);">2ª série / comparação</i></div>
+    <div class="sw" style="background: var(--chart-3);"><b>--chart-3</b><i>3ª série</i></div>
+    <div class="sw" style="background: var(--chart-4);"><b style="color:#0c2616;">--chart-4</b><i style="color:rgba(12,38,22,0.7);">4ª série</i></div>
+    <div class="sw" style="background: var(--chart-5);"><b style="color:#231542;">--chart-5</b><i style="color:rgba(35,21,66,0.7);">5ª série</i></div>
+    <div class="sw grid-sw"><b>--chart-grid</b><i>linhas de grade e eixos</i></div>
+  </div>
+  <div class="note"><b>Ordem fixa:</b> usar na sequência 1→5, nunca pular. Donut: máx. ~5 segmentos (agrupar "Outros"). Sem glow, sem gradiente multi-cor — só o preenchimento sutil sob a linha (22%→2%).</div>
+</body>
+</html>

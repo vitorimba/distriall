@@ -1,0 +1,26 @@
+<!-- @dsCard group="Tipografia" viewport="700x150" name="Mono e números" subtitle="JetBrains Mono p/ códigos; tabular-nums em todo dado numérico" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .spec { display: flex; align-items: baseline; gap: 14px; }
+  .spec small { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); flex: none; width: 110px; }
+  .cols { display: flex; gap: 32px; font-variant-numeric: tabular-nums; font-size: 14px; }
+  .cols div { text-align: right; }
+  .cols span { display: block; }
+</style>
+</head>
+<body>
+  <div class="spec"><small>mono · pedido</small><span style="font-family: var(--font-mono); font-size: 13px; font-weight: 500;">#PED-001042</span></div>
+  <div class="spec"><small>mono · SKU</small><span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">CX-AGUA-510-12</span></div>
+  <div class="spec"><small>tabular-nums</small>
+    <div class="cols">
+      <div><span>R$ 1.245,00</span><span>R$ 318,50</span><span style="color: var(--text-positive);">R$ 926,50</span></div>
+      <div><span>128 un</span><span>36 un</span><span>92 un</span></div>
+    </div>
+  </div>
+</body>
+</html>
