@@ -243,6 +243,12 @@ try {
 - Use for PR creation: `gh pr create`
 - Check org access: `gh api user/memberships`
 
+### Deploy Vercel (NON-NEGOTIABLE)
+- **SEMPRE** fazer deploy via CLI: `npx vercel --prod`
+- NUNCA confiar no auto-deploy por push — o build via GitHub webhook falha por incompatibilidade corepack/pnpm
+- Após todo `git push`, rodar `npx vercel --prod` para garantir que o deploy passe
+- Verificar sucesso no output: deve terminar com `Aliased: https://distriall.vercel.app`
+
 <!-- AIOX-MANAGED-START: aiox-patterns -->
 ## AIOX-Specific Patterns
 
