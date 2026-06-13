@@ -1,0 +1,56 @@
+schema: 1
+story: '5.4.1'
+story_title: 'Criar maskUtils.ts com mascaras pt-BR'
+gate: PASS
+status_reason: 'All 8 ACs fully implemented and verified. 33 Vitest tests pass. No security issues. Code is clean, idiomatic TypeScript with no any types or regressions.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-13T10:15:00Z'
+
+top_issues: []
+waiver:
+  active: false
+
+quality_score: 95
+expires: '2026-06-27T10:15:00Z'
+
+evidence:
+  tests_reviewed: 33
+  risks_identified: 1
+  coderabbit_iterations: 0
+  coderabbit_note: 'CodeRabbit CLI not installed — WSL not available on this machine. Skipped per SKILL.md fallback rule.'
+  skill_defaults_note: '.sinkra/config/skill-defaults.json not found (directory absent). Quality score calculated using canonical defaults (fail_deduction: 15, concerns_deduction: 5). No FAIL or CONCERNS — quality_score: 100 bounded to 95 (manual deduction for 1 pre-existing lint error unrelated to this story).'
+  trace:
+    ac_covered:
+      - AC1  # maskPhone — fixed/mobile detection and formatting
+      - AC2  # maskCEP — 00000-000
+      - AC3  # maskCpfCnpj — CPF/CNPJ by digit count
+      - AC4  # maskMoney — digits to centavos
+      - AC5  # parseMoney — "1.234,56" → 1234.56
+      - AC6  # isPhoneComplete — validates length
+      - AC7  # MSG — canonical messages
+      - AC8  # Vitest tests for all functions
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Pure string manipulation, no I/O, no external calls, no eval, no user-controlled code paths. Zero security surface.'
+  performance:
+    status: PASS
+    notes: 'All functions run in O(n) on string length. No loops, no recursion. 26ms for 33 tests confirms negligible overhead.'
+  reliability:
+    status: PASS
+    notes: 'Empty string, partial input, and over-limit input all handled. parseMoney returns 0 on invalid input. No throws.'
+  maintainability:
+    status: PASS
+    notes: 'Single-responsibility functions, clear naming, const MSG as const for type safety, 62 lines total. Excellent readability.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Consider adding CPF/CNPJ digit-validation (mod-11 checksum) as a separate AC in a future story if business logic requires validity checks beyond formatting.'
+      refs: ['apps/web/src/lib/mask-utils.ts']
+      suggested_owner: po
+    - action: 'The pre-existing lint error in donut-chart.tsx (react-hooks/immutability) and other warnings are outside scope of this story but should be tracked.'
+      refs: ['apps/web/src/components/ui/charts/donut-chart.tsx']
+      suggested_owner: dev
