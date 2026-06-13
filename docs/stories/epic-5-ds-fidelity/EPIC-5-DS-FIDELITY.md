@@ -64,3 +64,33 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.2.4 | Enriquecer StatsCard com delta, deltaLabel e Sparkline | Done | 2026-06-12 |
 | 5.2.5 | Remover dependencia recharts | Done | 2026-06-12 |
 | 5.3.1 | Skeleton espelhando layout real em todas as telas | Done | 2026-06-12 |
+| 5.3.2 | EmptyState universal | Done | 2026-06-13 |
+| 5.3.3 | Error Alert + retry | Done | 2026-06-13 |
+| 5.3.4 | Toast em todas as acoes | Done | 2026-06-13 |
+| 5.4.1 | maskUtils.ts com mascaras pt-BR | Done | 2026-06-13 |
+
+## Development Log
+
+### Story 5.4.1 — Criar maskUtils.ts com mascaras pt-BR (2026-06-13)
+
+**Built:**
+- `apps/web/src/lib/mask-utils.ts` — 7 funcoes utilitarias pt-BR: `maskPhone`, `maskCEP`, `maskCpfCnpj`, `maskMoney`, `parseMoney`, `isPhoneComplete` + `MSG` object com mensagens canonicas (62 linhas)
+- `apps/web/src/lib/mask-utils.test.ts` — 33 testes Vitest cobrindo todas as funcoes, edge cases (string vazia, partial, overflow)
+- `apps/web/vitest.config.ts` — configuracao Vitest adicionada ao projeto
+
+**Patterns established:**
+- Mascaras recebem `string | number` e retornam `string` mascarada (sem side effects)
+- `maskCpfCnpj`: deteccao por contagem de digitos limpos (<=11 = CPF, 12+ = CNPJ)
+- `parseMoney` retorna `0` em input invalido — sem throw, graceful
+- `MSG as const` para narrowing de tipo TypeScript — padrao a seguir em outros objetos de mensagens
+- Import padrao: `import { maskPhone, maskCEP, maskCpfCnpj, maskMoney, parseMoney, isPhoneComplete, MSG } from '@/lib/mask-utils'`
+
+**Key decisions:**
+- `maskMoney` usa `toLocaleString('pt-BR')` internamente para garantir separador de milhar correto (ponto) e decimal (virgula)
+- Biblioteca pura: zero dependencias externas, zero I/O, funcoes exportadas individualmente (tree-shakeable)
+
+**Tech debt identified:**
+- CPF/CNPJ checksum (mod-11) nao implementado — apenas formatacao. Se validacao de digito verificador for necessaria, criar story separada em 5.4.x ou epic posterior.
+- Pre-existing lint warning em `donut-chart.tsx` (react-hooks/immutability) nao relacionado a esta story.
+
+**Tests:** 33 novos (0 regression). **Deploy:** Vercel — commit f659148, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel na maquina).

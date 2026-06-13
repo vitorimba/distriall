@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Trash2 } from 'lucide-react';
 import type { PaymentEntry } from '@/lib/validations/payment';
+import { maskMoney, parseMoney } from '@/lib/mask-utils';
 
 const METHODS = [
   { value: 'dinheiro', label: 'Dinheiro' },
@@ -14,6 +15,11 @@ const METHODS = [
   { value: 'vale', label: 'Vale' },
   { value: 'cartao', label: 'Cartao' },
 ] as const;
+
+interface MixedPaymentUI {
+  method: PaymentEntry['method'];
+  amountDisplay: string;
+}
 
 interface PaymentSelectorProps {
   defaultMethod?: string;
@@ -24,8 +30,8 @@ interface PaymentSelectorProps {
 export function PaymentSelector({ defaultMethod, orderTotal, onChange }: PaymentSelectorProps) {
   const [mode, setMode] = useState<'simple' | 'mixed'>('simple');
   const [simpleMethod, setSimpleMethod] = useState(defaultMethod ?? 'dinheiro');
-  const [mixedPayments, setMixedPayments] = useState<PaymentEntry[]>([
-    { method: 'dinheiro', amount: 0 },
+  const [mixedPayments, setMixedPayments] = useState<MixedPaymentUI[]>([
+    { method: 'dinheiro', amountDisplay: '' },
   ]);
 
   // Emit changes
@@ -36,12 +42,15 @@ export function PaymentSelector({ defaultMethod, orderTotal, onChange }: Payment
         false
       );
     } else {
-      onChange(mixedPayments, true);
+      onChange(
+        mixedPayments.map((p) => ({ method: p.method, amount: parseMoney(p.amountDisplay) })),
+        true
+      );
     }
   }, [mode, simpleMethod, mixedPayments, orderTotal]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function addMixedLine() {
-    setMixedPayments([...mixedPayments, { method: 'pix', amount: 0 }]);
+    setMixedPayments([...mixedPayments, { method: 'pix', amountDisplay: '' }]);
   }
 
   function removeMixedLine(index: number) {
@@ -49,7 +58,7 @@ export function PaymentSelector({ defaultMethod, orderTotal, onChange }: Payment
     setMixedPayments(mixedPayments.filter((_, i) => i !== index));
   }
 
-  function updateMixed(index: number, field: 'method' | 'amount', value: string | number) {
+  function updateMixed(index: number, field: 'method' | 'amountDisplay', value: string) {
     setMixedPayments(
       mixedPayments.map((p, i) =>
         i === index ? { ...p, [field]: value } : p
@@ -62,14 +71,14 @@ export function PaymentSelector({ defaultMethod, orderTotal, onChange }: Payment
     if (mixedPayments.length < 2) return;
     const sumOthers = mixedPayments
       .slice(0, -1)
-      .reduce((s, p) => s + (Number(p.amount) || 0), 0);
+      .reduce((s, p) => s + parseMoney(p.amountDisplay), 0);
     const remaining = Math.round((orderTotal - sumOthers) * 100) / 100;
     if (remaining >= 0) {
-      updateMixed(mixedPayments.length - 1, 'amount', remaining);
+      updateMixed(mixedPayments.length - 1, 'amountDisplay', maskMoney(String(Math.round(remaining * 100))));
     }
   }
 
-  const mixedSum = mixedPayments.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  const mixedSum = mixedPayments.reduce((s, p) => s + parseMoney(p.amountDisplay), 0);
   const mixedDiff = Math.round((orderTotal - mixedSum) * 100) / 100;
 
   return (
@@ -136,12 +145,12 @@ export function PaymentSelector({ defaultMethod, orderTotal, onChange }: Payment
                 ))}
               </select>
               <Input
-                type="number"
-                step="0.01"
-                value={p.amount || ''}
-                onChange={(e) => updateMixed(i, 'amount', Number(e.target.value))}
+                type="text"
+                inputMode="numeric"
+                value={p.amountDisplay}
+                onChange={(e) => updateMixed(i, 'amountDisplay', maskMoney(e.target.value))}
                 onBlur={() => i === mixedPayments.length - 1 && autoFillLast()}
-                placeholder="R$ 0,00"
+                placeholder="0,00"
                 className="flex-1"
               />
               {p.method === 'boleto' && (

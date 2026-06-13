@@ -6,6 +6,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { useAccount } from '@/providers/account-provider';
 import { useExpenses } from '@/hooks/use-expenses';
 import { expenseSchema, type ExpenseInput } from '@/lib/validations/expense';
+import { maskMoney, parseMoney } from '@/lib/mask-utils';
 import { ExpenseSplitEditor } from '@/components/financial/expense-split-editor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,7 +57,9 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
   const { createExpense, updateExpense } = useExpenses();
 
   const [description, setDescription] = useState(expense?.description ?? '');
-  const [amount, setAmount] = useState(expense?.amount?.toString() ?? '');
+  const [amount, setAmount] = useState(
+    expense?.amount ? maskMoney(String(Math.round(expense.amount * 100))) : ''
+  );
   const [expenseDate, setExpenseDate] = useState(
     expense?.expense_date ?? new Date().toISOString().split('T')[0]
   );
@@ -105,7 +108,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
     e.preventDefault();
     setErrors([]);
 
-    const parsedAmount = parseFloat(amount);
+    const parsedAmount = parseMoney(amount);
     const input: ExpenseInput = {
       description,
       amount: parsedAmount,
@@ -185,11 +188,11 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
             <Field label="Valor (R$)" required>
               <Input
                 id="amount"
-                type="number"
-                step="0.01"
-                min="0.01"
+                type="text"
+                inputMode="numeric"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => setAmount(maskMoney(e.target.value))}
+                placeholder="0,00"
                 required
               />
             </Field>
@@ -269,7 +272,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
           {isShared && (
             <ExpenseSplitEditor
               splits={splits}
-              totalAmount={parseFloat(amount) || 0}
+              totalAmount={parseMoney(amount) || 0}
               onChange={setSplits}
             />
           )}

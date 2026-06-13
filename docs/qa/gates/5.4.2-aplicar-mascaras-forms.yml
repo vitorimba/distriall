@@ -1,0 +1,55 @@
+schema: 1
+story: '5.4.2'
+story_title: 'Aplicar mascaras nos formularios'
+gate: PASS
+status_reason: 'All 7 ACs fully implemented across 4 form components. maskPhone applied correctly on onChange in client-form, maskMoney applied on onChange with parseMoney on submit in product-form/expense-form/payment-selector. inputMode and type="text" correctly set on all masked inputs. State stores masked string. 33 Vitest tests pass (mask-utils contract verified). TypeCheck clean.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-13T13:45:00Z'
+
+top_issues: []
+waiver:
+  active: false
+
+quality_score: 93
+expires: '2026-06-27T13:45:00Z'
+
+evidence:
+  tests_reviewed: 33
+  risks_identified: 1
+  coderabbit_iterations: 0
+  coderabbit_note: 'CodeRabbit CLI not installed — WSL not available on this machine. Skipped per SKILL.md fallback rule (section Step 0, point 5).'
+  skill_defaults_note: '.sinkra/config/skill-defaults.json not found. Quality score calculated using canonical defaults (fail_deduction: 15, concerns_deduction: 5). No FAILs, no CONCERNS — base score 100, bounded to 93 (7-point manual deduction: 1 pre-existing lint error in donut-chart.tsx unrelated to this story, 1 pre-existing lint warning ProductVariantInput unused import in product-form.tsx present in existing codebase).'
+  trace:
+    ac_covered:
+      - AC1  # client-form: maskPhone on phone + whatsapp, CEP absent (confirmed by code inspection — presuposto validado)
+      - AC2  # product-form: maskMoney on cost_price + sell_price via VariantUIState (string fields), parseMoney on submit
+      - AC3  # expense-form: maskMoney on amount, parseMoney on submit
+      - AC4  # payment-selector: maskMoney on amountDisplay in mixed mode, parseMoney in useEffect emit
+      - AC5  # onChange used for mask application in ALL 4 components (verified line by line)
+      - AC6  # inputMode="tel" on phone/whatsapp; inputMode="numeric" on money inputs; type="text" on all masked inputs
+      - AC7  # React state stores masked string; parseMoney conversion on submit/emit paths
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'All inputs sanitized by mask functions (strip non-digits). No eval, no dangerouslySetInnerHTML, no XSS vectors introduced. parseMoney returns 0 on invalid input — no throw paths.'
+  performance:
+    status: PASS
+    notes: 'maskMoney and maskPhone run on every keystroke — both are O(n) string operations with no side effects. Negligible overhead confirmed by 23ms test suite.'
+  reliability:
+    status: PASS
+    notes: 'Empty string handled by all mask functions. parseMoney returns 0 for empty/invalid (confirmed by tests). autoFillLast in payment-selector guards against negative remaining amounts.'
+  maintainability:
+    status: PASS
+    notes: 'Consistent pattern across all 4 components: import from @/lib/mask-utils, apply on onChange, convert on submit. VariantUIState typing is clean. One pre-existing unused import warning (ProductVariantInput) is benign.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Remove unused ProductVariantInput import in product-form.tsx (line 7) to clean up lint warning.'
+      refs: ['apps/web/src/components/products/product-form.tsx']
+      suggested_owner: dev
+    - action: 'Resolve pre-existing ESLint error in donut-chart.tsx (react-hooks/immutability) — outside scope but blocks clean lint run.'
+      refs: ['apps/web/src/components/ui/charts/donut-chart.tsx']
+      suggested_owner: dev

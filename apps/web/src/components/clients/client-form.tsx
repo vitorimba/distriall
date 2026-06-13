@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
 import { clientSchema, type ClientInput } from '@/lib/validations/client';
+import { maskPhone } from '@/lib/mask-utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
@@ -119,10 +120,10 @@ export function ClientForm({ client }: ClientFormProps) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Telefone">
-              <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <Input id="phone" type="text" inputMode="tel" value={phone} onChange={(e) => setPhone(maskPhone(e.target.value))} />
             </Field>
             <Field label="WhatsApp">
-              <Input id="whatsapp" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} />
+              <Input id="whatsapp" type="text" inputMode="tel" value={whatsapp} onChange={(e) => setWhatsapp(maskPhone(e.target.value))} />
             </Field>
           </div>
           <Field label="Forma de Pagamento Padrao">

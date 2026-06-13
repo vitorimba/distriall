@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
 import { productSchema, type ProductInput, type ProductVariantInput } from '@/lib/validations/product';
+import { maskMoney, parseMoney } from '@/lib/mask-utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
@@ -30,11 +31,20 @@ interface ProductFormProps {
   };
 }
 
-const EMPTY_VARIANT: ProductVariantInput = {
+interface VariantUIState {
+  id?: string;
+  name: string;
+  weight_grams: number | undefined;
+  cost_price: string;
+  sell_price: string;
+  sku: string | undefined;
+}
+
+const EMPTY_VARIANT: VariantUIState = {
   name: '',
   weight_grams: undefined,
-  cost_price: 0,
-  sell_price: 0,
+  cost_price: '',
+  sell_price: '',
   sku: undefined,
 };
 
@@ -48,13 +58,13 @@ export function ProductForm({ product }: ProductFormProps) {
   const [description, setDescription] = useState(product?.description ?? '');
   const [category, setCategory] = useState(product?.category ?? '');
   const [unit, setUnit] = useState(product?.unit ?? 'un');
-  const [variants, setVariants] = useState<(ProductVariantInput & { id?: string })[]>(
+  const [variants, setVariants] = useState<VariantUIState[]>(
     product?.product_variants?.map((v) => ({
       id: v.id,
       name: v.name,
       weight_grams: v.weight_grams ?? undefined,
-      cost_price: v.cost_price,
-      sell_price: v.sell_price,
+      cost_price: maskMoney(String(Math.round(v.cost_price * 100))),
+      sell_price: maskMoney(String(Math.round(v.sell_price * 100))),
       sku: v.sku ?? undefined,
     })) ?? [{ ...EMPTY_VARIANT }]
   );
@@ -70,7 +80,7 @@ export function ProductForm({ product }: ProductFormProps) {
     setVariants(variants.filter((_, i) => i !== index));
   }
 
-  function updateVariant(index: number, field: string, value: string | number) {
+  function updateVariant(index: number, field: keyof VariantUIState, value: string | number | undefined) {
     setVariants(
       variants.map((v, i) => (i === index ? { ...v, [field]: value } : v))
     );
@@ -80,12 +90,18 @@ export function ProductForm({ product }: ProductFormProps) {
     e.preventDefault();
     setErrors([]);
 
+    const parsedVariants = variants.map((v) => ({
+      ...v,
+      cost_price: parseMoney(v.cost_price),
+      sell_price: parseMoney(v.sell_price),
+    }));
+
     const input: ProductInput = {
       name,
       description: description || undefined,
       category: category || undefined,
       unit: unit as 'un' | 'kg' | 'g' | 'l',
-      variants,
+      variants: parsedVariants,
     };
 
     const result = productSchema.safeParse(input);
@@ -106,7 +122,7 @@ export function ProductForm({ product }: ProductFormProps) {
         .eq('id', product.id);
 
       // Upsert variants
-      for (const v of variants) {
+      for (const v of parsedVariants) {
         if (v.id) {
           await supabase
             .from('product_variants')
@@ -153,7 +169,7 @@ export function ProductForm({ product }: ProductFormProps) {
         .single();
 
       if (newProduct) {
-        const variantRows = variants.map((v) => ({
+        const variantRows = parsedVariants.map((v) => ({
           product_id: newProduct.id,
           account_id: activeAccount.id,
           name: v.name,
@@ -244,19 +260,21 @@ export function ProductForm({ product }: ProductFormProps) {
               <div className="grid grid-cols-2 gap-2">
                 <Field label="Preco Custo" required>
                   <Input
-                    type="number"
-                    step="0.01"
-                    value={v.cost_price || ''}
-                    onChange={(e) => updateVariant(i, 'cost_price', Number(e.target.value))}
+                    type="text"
+                    inputMode="numeric"
+                    value={v.cost_price}
+                    onChange={(e) => updateVariant(i, 'cost_price', maskMoney(e.target.value))}
+                    placeholder="0,00"
                     required
                   />
                 </Field>
                 <Field label="Preco Venda" required>
                   <Input
-                    type="number"
-                    step="0.01"
-                    value={v.sell_price || ''}
-                    onChange={(e) => updateVariant(i, 'sell_price', Number(e.target.value))}
+                    type="text"
+                    inputMode="numeric"
+                    value={v.sell_price}
+                    onChange={(e) => updateVariant(i, 'sell_price', maskMoney(e.target.value))}
+                    placeholder="0,00"
                     required
                   />
                 </Field>
