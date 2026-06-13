@@ -101,7 +101,11 @@ export default function VouchersPage() {
             const tone = overdue ? 'vencido' : v.status;
 
             return (
-              <Card key={v.id} className={overdue ? 'border-[var(--status-vencido)]' : ''}>
+              <Card
+                key={v.id}
+                className={overdue ? 'border-[var(--status-vencido)]' : ''}
+                style={overdue ? { background: 'var(--status-vencido-soft)' } : undefined}
+              >
                 <CardContent className="pt-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
