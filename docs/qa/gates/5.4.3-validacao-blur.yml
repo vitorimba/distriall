@@ -1,0 +1,65 @@
+schema: 1
+story: '5.4.3'
+story_title: 'Validacao no blur e submit, nunca a cada tecla'
+gate: CONCERNS
+status_reason: 'Todos os 5 ACs implementados corretamente. Issues MEDIUM: ausencia de testes de componente para blur validation e uso de MSG.required para valor <= 0 no expense-form (semanticamente impreciso). Nenhum issue HIGH ou CRITICAL.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-13T11:10:00-03:00'
+
+top_issues:
+  - severity: medium
+    category: tests
+    description: 'Nenhum teste de componente cobre o comportamento de blur validation em client-form, product-form ou expense-form. O fluxo onBlur -> erro -> submit -> clear nao e testado automaticamente.'
+    recommendation: 'Adicionar testes RTL para pelo menos o caminho feliz e o caminho de erro por blur em cada form.'
+    suggested_owner: dev
+  - severity: medium
+    category: code
+    description: 'expense-form usa MSG.required ("Campo obrigatorio") quando parseMoney(amount) <= 0, mas o campo pode estar preenchido com "0,00". A mensagem e tecnicamente correta mas semanticamente imprecisa.'
+    recommendation: 'Considerar adicionar MSG.valueInvalid = "Valor deve ser maior que zero" em mask-utils, ou aceitar como design decision com a constraint das msgs canonicas atuais.'
+    suggested_owner: dev
+
+waiver: { active: false }
+
+quality_score: 80
+
+expires: '2026-06-27T11:10:00-03:00'
+
+evidence:
+  tests_reviewed: 33
+  risks_identified: 2
+  trace:
+    ac_covered: [1, 2, 3, 4, 5]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Apenas validacao client-side de formularios. Sem riscos de auth ou injection. Validacao server-side (Zod schema + Supabase) permanece intacta.'
+  performance:
+    status: PASS
+    notes: 'Estado local React com useState. Sem re-renders desnecessarios. Blur handlers sao funcoes inline simples sem computacao pesada.'
+  reliability:
+    status: PASS
+    notes: 'Submit re-valida todos os campos antes de enviar. Erros de blur sao cleared corretamente no blur seguinte quando o campo fica valido. Nenhum estado de erro pode ficar preso.'
+  maintainability:
+    status: PASS
+    notes: 'Padrao uniforme Record<string, string> para fieldErrors em 3 forms. Codigo auto-documentado, alinhado com Dev Notes da story. Helper functions setVariantError/clearVariantError em product-form reduzem duplicacao.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Adicionar testes RTL para blur validation nos 3 forms (client-form, product-form, expense-form).'
+      refs:
+        - 'apps/web/src/components/clients/client-form.tsx'
+        - 'apps/web/src/components/products/product-form.tsx'
+        - 'apps/web/src/components/financial/expense-form.tsx'
+      suggested_owner: dev
+    - action: 'Considerar MSG.valueInvalid para casos onde campo tem valor mas e invalido (amount <= 0).'
+      refs:
+        - 'apps/web/src/lib/mask-utils.ts'
+        - 'apps/web/src/components/financial/expense-form.tsx'
+      suggested_owner: dev
+    - action: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para habilitar deploy readiness checks formais nas reviews.'
+      refs:
+        - 'infrastructure/'
+      suggested_owner: dev

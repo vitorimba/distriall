@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
 import { productSchema, type ProductInput, type ProductVariantInput } from '@/lib/validations/product';
-import { maskMoney, parseMoney } from '@/lib/mask-utils';
+import { maskMoney, parseMoney, MSG } from '@/lib/mask-utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
@@ -68,6 +68,8 @@ export function ProductForm({ product }: ProductFormProps) {
       sku: v.sku ?? undefined,
     })) ?? [{ ...EMPTY_VARIANT }]
   );
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [variantErrors, setVariantErrors] = useState<Record<number, Record<string, string>>>({});
   const [errors, setErrors] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
@@ -86,9 +88,39 @@ export function ProductForm({ product }: ProductFormProps) {
     );
   }
 
+  function setVariantError(index: number, field: string, message: string) {
+    setVariantErrors((prev) => ({
+      ...prev,
+      [index]: { ...(prev[index] ?? {}), [field]: message },
+    }));
+  }
+
+  function clearVariantError(index: number, field: string) {
+    setVariantErrors((prev) => {
+      const copy = { ...(prev[index] ?? {}) };
+      delete copy[field];
+      return { ...prev, [index]: copy };
+    });
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrors([]);
+
+    const newFieldErrors: Record<string, string> = {};
+    if (!name.trim()) newFieldErrors.name = MSG.required;
+    const newVariantErrors: Record<number, Record<string, string>> = {};
+    variants.forEach((v, i) => {
+      const ve: Record<string, string> = {};
+      if (!v.name.trim()) ve.name = MSG.required;
+      if (parseMoney(v.sell_price) <= 0) ve.sell_price = MSG.required;
+      if (Object.keys(ve).length > 0) newVariantErrors[i] = ve;
+    });
+    if (Object.keys(newFieldErrors).length > 0 || Object.keys(newVariantErrors).length > 0) {
+      setFieldErrors(newFieldErrors);
+      setVariantErrors(newVariantErrors);
+      return;
+    }
 
     const parsedVariants = variants.map((v) => ({
       ...v,
@@ -194,8 +226,18 @@ export function ProductForm({ product }: ProductFormProps) {
           <CardTitle>{isEdit ? 'Editar Produto' : 'Novo Produto'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Field label="Nome" required>
-            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+          <Field label="Nome" required error={fieldErrors.name}>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => {
+                if (!name.trim()) setFieldErrors((prev) => ({ ...prev, name: MSG.required }));
+                else setFieldErrors((prev) => { const { name: _, ...rest } = prev; return rest; });
+              }}
+              aria-invalid={!!fieldErrors.name}
+              required
+            />
           </Field>
           <Field label="Descricao">
             <Input id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -240,10 +282,15 @@ export function ProductForm({ product }: ProductFormProps) {
                 )}
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <Field label="Nome" required>
+                <Field label="Nome" required error={variantErrors[i]?.name}>
                   <Input
                     value={v.name}
                     onChange={(e) => updateVariant(i, 'name', e.target.value)}
+                    onBlur={() => {
+                      if (!v.name.trim()) setVariantError(i, 'name', MSG.required);
+                      else clearVariantError(i, 'name');
+                    }}
+                    aria-invalid={!!variantErrors[i]?.name}
                     placeholder="Ex: 500g"
                     required
                   />
@@ -268,12 +315,17 @@ export function ProductForm({ product }: ProductFormProps) {
                     required
                   />
                 </Field>
-                <Field label="Preco Venda" required>
+                <Field label="Preco Venda" required error={variantErrors[i]?.sell_price}>
                   <Input
                     type="text"
                     inputMode="numeric"
                     value={v.sell_price}
                     onChange={(e) => updateVariant(i, 'sell_price', maskMoney(e.target.value))}
+                    onBlur={() => {
+                      if (parseMoney(v.sell_price) <= 0) setVariantError(i, 'sell_price', MSG.required);
+                      else clearVariantError(i, 'sell_price');
+                    }}
+                    aria-invalid={!!variantErrors[i]?.sell_price}
                     placeholder="0,00"
                     required
                   />

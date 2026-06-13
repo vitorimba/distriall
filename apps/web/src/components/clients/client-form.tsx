@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
 import { clientSchema, type ClientInput } from '@/lib/validations/client';
-import { maskPhone } from '@/lib/mask-utils';
+import { maskPhone, isPhoneComplete, MSG } from '@/lib/mask-utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
@@ -42,12 +42,22 @@ export function ClientForm({ client }: ClientFormProps) {
   const [whatsapp, setWhatsapp] = useState(client?.whatsapp ?? '');
   const [paymentMethod, setPaymentMethod] = useState(client?.default_payment_method ?? '');
   const [notes, setNotes] = useState(client?.notes ?? '');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrors([]);
+
+    const newFieldErrors: Record<string, string> = {};
+    if (!name.trim()) newFieldErrors.name = MSG.required;
+    if (phone && !isPhoneComplete(phone)) newFieldErrors.phone = MSG.phoneIncomplete;
+    if (whatsapp && !isPhoneComplete(whatsapp)) newFieldErrors.whatsapp = MSG.phoneIncomplete;
+    if (Object.keys(newFieldErrors).length > 0) {
+      setFieldErrors(newFieldErrors);
+      return;
+    }
 
     const input: ClientInput = {
       name,
@@ -101,8 +111,18 @@ export function ClientForm({ client }: ClientFormProps) {
           <CardTitle>{isEdit ? 'Editar Cliente' : 'Novo Cliente'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Field label="Nome" required>
-            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+          <Field label="Nome" required error={fieldErrors.name}>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => {
+                if (!name.trim()) setFieldErrors((prev) => ({ ...prev, name: MSG.required }));
+                else setFieldErrors((prev) => { const { name: _, ...rest } = prev; return rest; });
+              }}
+              aria-invalid={!!fieldErrors.name}
+              required
+            />
           </Field>
           <Field label="Nome Fantasia">
             <Input id="trade_name" value={tradeName} onChange={(e) => setTradeName(e.target.value)} />
@@ -119,11 +139,33 @@ export function ClientForm({ client }: ClientFormProps) {
             </Field>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Telefone">
-              <Input id="phone" type="text" inputMode="tel" value={phone} onChange={(e) => setPhone(maskPhone(e.target.value))} />
+            <Field label="Telefone" error={fieldErrors.phone}>
+              <Input
+                id="phone"
+                type="text"
+                inputMode="tel"
+                value={phone}
+                onChange={(e) => setPhone(maskPhone(e.target.value))}
+                onBlur={() => {
+                  if (phone && !isPhoneComplete(phone)) setFieldErrors((prev) => ({ ...prev, phone: MSG.phoneIncomplete }));
+                  else setFieldErrors((prev) => { const { phone: _, ...rest } = prev; return rest; });
+                }}
+                aria-invalid={!!fieldErrors.phone}
+              />
             </Field>
-            <Field label="WhatsApp">
-              <Input id="whatsapp" type="text" inputMode="tel" value={whatsapp} onChange={(e) => setWhatsapp(maskPhone(e.target.value))} />
+            <Field label="WhatsApp" error={fieldErrors.whatsapp}>
+              <Input
+                id="whatsapp"
+                type="text"
+                inputMode="tel"
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(maskPhone(e.target.value))}
+                onBlur={() => {
+                  if (whatsapp && !isPhoneComplete(whatsapp)) setFieldErrors((prev) => ({ ...prev, whatsapp: MSG.phoneIncomplete }));
+                  else setFieldErrors((prev) => { const { whatsapp: _, ...rest } = prev; return rest; });
+                }}
+                aria-invalid={!!fieldErrors.whatsapp}
+              />
             </Field>
           </div>
           <Field label="Forma de Pagamento Padrao">

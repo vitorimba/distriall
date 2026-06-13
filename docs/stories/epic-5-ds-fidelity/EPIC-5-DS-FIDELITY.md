@@ -68,6 +68,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.3.3 | Error Alert + retry | Done | 2026-06-13 |
 | 5.3.4 | Toast em todas as acoes | Done | 2026-06-13 |
 | 5.4.1 | maskUtils.ts com mascaras pt-BR | Done | 2026-06-13 |
+| 5.4.2 | Aplicar mascaras nos formularios | Done | 2026-06-13 |
 
 ## Development Log
 
@@ -94,3 +95,28 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 - Pre-existing lint warning em `donut-chart.tsx` (react-hooks/immutability) nao relacionado a esta story.
 
 **Tests:** 33 novos (0 regression). **Deploy:** Vercel — commit f659148, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel na maquina).
+
+### Story 5.4.2 — Aplicar mascaras nos formularios (2026-06-13)
+
+**Built:**
+- (ADAPT) `apps/web/src/components/clients/client-form.tsx` — maskPhone em phone e whatsapp; inputMode="tel"; type="text"
+- (ADAPT) `apps/web/src/components/products/product-form.tsx` — VariantUIState introducido para separar string mascarada de number; maskMoney em cost_price e sell_price; parseMoney no submit
+- (ADAPT) `apps/web/src/components/financial/expense-form.tsx` — maskMoney em amount; parseMoney no submit; inicializacao correta para edicao (amount * 100 → maskMoney)
+- (ADAPT) `apps/web/src/components/financial/payment-selector.tsx` — MixedPaymentUI com amountDisplay string separado de amount numerico; maskMoney no onChange; parseMoney no useEffect emit e autoFillLast
+
+**Patterns established:**
+- Padrao de mascara React: estado armazena string mascarada; parseMoney converte para numero no submit/emit — NAO no estado
+- type="number" DEVE ser removido de inputs com mascara (conflito com browser nativo); substituir por type="text" + inputMode
+- inputMode="tel" para telefone/CEP; inputMode="numeric" para moeda
+- Quando componente tem interface publica numerica (ex: PaymentSelector.onChange emite number), criar campo display separado (amountDisplay) para o estado mascarado
+- VariantUIState pattern: type local com campos string para UI que mapeia para ProductVariantInput com fields numericos no submit
+
+**Key decisions:**
+- PaymentSelector manteve interface publica (`amount: number` no PaymentEntry) — criado `amountDisplay: string` como campo de UI interno. Separacao limpa entre camada de apresentacao e contrato de API.
+- product-form introducio `VariantUIState` (type local) vs reusar `ProductVariantInput` — decisao correta pois o schema de validacao exige number, nao string.
+
+**Tech debt identified:**
+- Import `ProductVariantInput` nao utilizado em product-form.tsx (linha 7) — pre-existente, nao introduzido por esta story. Cleanup recomendado.
+- Pre-existing ESLint error em donut-chart.tsx (react-hooks/immutability) — nao relacionado.
+
+**Tests:** 0 novos (33 existentes passando — contrato maskUtils verificado). **Deploy:** Vercel — commit ce58a50, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel).

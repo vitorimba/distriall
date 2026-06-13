@@ -6,7 +6,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { useAccount } from '@/providers/account-provider';
 import { useExpenses } from '@/hooks/use-expenses';
 import { expenseSchema, type ExpenseInput } from '@/lib/validations/expense';
-import { maskMoney, parseMoney } from '@/lib/mask-utils';
+import { maskMoney, parseMoney, MSG } from '@/lib/mask-utils';
 import { ExpenseSplitEditor } from '@/components/financial/expense-split-editor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -84,6 +84,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
       percentage: 0,
     }));
   });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
@@ -107,6 +108,14 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrors([]);
+
+    const newFieldErrors: Record<string, string> = {};
+    if (!description.trim()) newFieldErrors.description = MSG.required;
+    if (parseMoney(amount) <= 0) newFieldErrors.amount = MSG.required;
+    if (Object.keys(newFieldErrors).length > 0) {
+      setFieldErrors(newFieldErrors);
+      return;
+    }
 
     const parsedAmount = parseMoney(amount);
     const input: ExpenseInput = {
@@ -175,23 +184,33 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
           <CardTitle>{isEdit ? 'Editar Gasto' : 'Novo Gasto'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Field label="Descricao" required>
+          <Field label="Descricao" required error={fieldErrors.description}>
             <Input
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              onBlur={() => {
+                if (!description.trim()) setFieldErrors((prev) => ({ ...prev, description: MSG.required }));
+                else setFieldErrors((prev) => { const { description: _, ...rest } = prev; return rest; });
+              }}
+              aria-invalid={!!fieldErrors.description}
               required
             />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Valor (R$)" required>
+            <Field label="Valor (R$)" required error={fieldErrors.amount}>
               <Input
                 id="amount"
                 type="text"
                 inputMode="numeric"
                 value={amount}
                 onChange={(e) => setAmount(maskMoney(e.target.value))}
+                onBlur={() => {
+                  if (parseMoney(amount) <= 0) setFieldErrors((prev) => ({ ...prev, amount: MSG.required }));
+                  else setFieldErrors((prev) => { const { amount: _, ...rest } = prev; return rest; });
+                }}
+                aria-invalid={!!fieldErrors.amount}
                 placeholder="0,00"
                 required
               />
