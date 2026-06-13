@@ -45,3 +45,9 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 ## Ordem de execucao recomendada
 
 5.1 → 5.2 → 5.3 → 5.4 → 5.5 → 5.6 (sequencial por prioridade)
+
+## Progresso
+
+| Story | Titulo | Status | Data |
+|-------|--------|--------|------|
+| 5.1.1 | Adicionar PageHeader em todas as paginas | Done | 2026-06-13 |
