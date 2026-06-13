@@ -1,40 +1,66 @@
 'use client';
 
+import { Printer, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Share2 } from 'lucide-react';
-import { Money } from '@/components/ui/money';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Receipt } from '@/components/orders/receipt';
 
 interface ReceiptItem {
   product_name: string;
   variant_name: string;
   quantity: number;
+  unit_price: number;
   total: number;
 }
 
 interface OrderReceiptProps {
+  open: boolean;
+  onClose: () => void;
   orderNumber: number;
   clientName: string;
   accountName: string;
   paymentMethod: string | null;
   total: number;
+  subtotal?: number;
   items: ReceiptItem[];
-  onClose: () => void;
 }
 
 function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+/**
+ * Dialog de preview do recibo térmico.
+ * — Receipt DS (tokens --receipt-*) para preview visual em 58mm
+ * — Botão "Imprimir" usa window.print() (CSS @media print mostra apenas .da-receipt)
+ * — Botão "Compartilhar" usa Web Share API / clipboard
+ * — Bluetooth (usePrinter) é gerenciado pelo pai (orders/[id]/page.tsx); este dialog
+ *   é o fallback quando Bluetooth não está disponível ou falha.
+ */
 export function OrderReceipt({
+  open,
+  onClose,
   orderNumber,
   clientName,
   accountName,
   paymentMethod,
   total,
+  subtotal,
   items,
-  onClose,
 }: OrderReceiptProps) {
-  const date = new Date().toLocaleDateString('pt-BR');
+  const date = new Date().toLocaleString('pt-BR');
+
+  const receiptItens = items.map((i) => ({
+    produto: `${i.product_name} – ${i.variant_name}`,
+    qtd: i.quantity,
+    preco: i.unit_price,
+  }));
 
   async function handleShare() {
     const text = [
@@ -45,7 +71,9 @@ export function OrderReceipt({
       `Data: ${date}  Pedido: #${orderNumber}`,
       `Pgto: ${paymentMethod ?? '—'}`,
       '--------------------------------',
-      ...items.map((i) => `${i.product_name} ${i.variant_name} x${i.quantity} R$${formatBRL(i.total)}`),
+      ...items.map(
+        (i) => `${i.product_name} ${i.variant_name} x${i.quantity} R$${formatBRL(i.total)}`
+      ),
       '--------------------------------',
       `TOTAL: R$ ${formatBRL(total)}`,
       '================================',
@@ -59,47 +87,36 @@ export function OrderReceipt({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
-      <div className="mx-4 max-w-[320px] rounded-lg bg-white p-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <div className="font-mono text-xs leading-relaxed text-gray-900">
-          <div className="text-center">
-            <div className="text-sm font-bold">DISTRIALL</div>
-            <div>{accountName}</div>
-          </div>
-          <div className="my-1 border-t-2 border-double border-gray-400" />
-          <div>Cliente: {clientName}</div>
-          <div>Data: {date} &nbsp; Pedido: #{orderNumber}</div>
-          <div>Pgto: {paymentMethod ?? '—'}</div>
-          <div className="my-1 border-t border-dashed border-gray-300" />
-          <div className="flex justify-between text-[10px] text-gray-500">
-            <span>Produto</span>
-            <span>Qtd &nbsp; Valor</span>
-          </div>
-          <div className="my-0.5 border-t border-dashed border-gray-300" />
-          {items.map((item, i) => (
-            <div key={i} className="flex justify-between">
-              <span className="truncate flex-1">{item.product_name} {item.variant_name}</span>
-              <span className="ml-2 shrink-0">{item.quantity} &nbsp; <Money value={item.total} /></span>
-            </div>
-          ))}
-          <div className="my-1 border-t border-dashed border-gray-300" />
-          <div className="flex justify-between font-bold">
-            <span>TOTAL:</span>
-            <span>R$ <Money value={total} /></span>
-          </div>
-          <div className="my-1 border-t-2 border-double border-gray-400" />
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
+      <DialogContent className="max-w-[320px] p-4" showCloseButton>
+        <DialogHeader>
+          <DialogTitle>Cupom fiscal</DialogTitle>
+        </DialogHeader>
+
+        {/* Receipt preview — styled via da-receipt CSS classes */}
+        <div className="overflow-auto py-1">
+          <Receipt
+            numero={`#${orderNumber}`}
+            cliente={clientName}
+            data={date}
+            itens={receiptItens}
+            subtotal={subtotal}
+            total={total}
+            pagamento={paymentMethod ?? undefined}
+          />
         </div>
 
-        <div className="mt-3 flex gap-2">
+        <DialogFooter>
           <Button size="sm" variant="outline" onClick={handleShare} className="flex-1">
             <Share2 className="mr-1 size-3.5" />
             {'share' in navigator ? 'Compartilhar' : 'Copiar'}
           </Button>
-          <Button size="sm" onClick={onClose} className="flex-1">
-            Fechar
+          <Button size="sm" onClick={() => window.print()} className="flex-1">
+            <Printer className="mr-1 size-3.5" />
+            Imprimir
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

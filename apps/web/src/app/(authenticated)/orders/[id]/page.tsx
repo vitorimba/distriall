@@ -278,16 +278,18 @@ export default function OrderDetailPage() {
         />
       )}
 
-      {/* Fallback receipt */}
-      {showReceipt && order && (
+      {/* Receipt dialog (preview + print fallback) */}
+      {order && (
         <OrderReceipt
+          open={showReceipt}
+          onClose={() => setShowReceipt(false)}
           orderNumber={order.order_number}
           clientName={order.clients?.name ?? ''}
           accountName="Distriall"
           paymentMethod={order.payment_method}
           total={order.total}
+          subtotal={order.subtotal}
           items={order.order_items}
-          onClose={() => setShowReceipt(false)}
         />
       )}
 

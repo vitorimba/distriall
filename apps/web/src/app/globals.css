@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "../../../../packages/design-system/components/print/print.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -408,5 +409,33 @@
   /* Mono for codes (#1042, SKUs) */
   .mono {
     font-family: var(--font-mono);
+  }
+}
+
+/* ==========================================================================
+   Print styles — window.print() mostra apenas o recibo térmico
+   ========================================================================== */
+@media print {
+  /* Ocultar elementos de navegação e interface */
+  nav,
+  header,
+  aside,
+  footer,
+  .no-print,
+  [data-slot="sidebar"],
+  [data-slot="page-header"] {
+    display: none !important;
+  }
+
+  /* Remover sombra e margens do recibo para impressão */
+  .da-receipt {
+    box-shadow: none;
+    margin: 0;
+  }
+
+  /* Garantir fundo branco e tinta preta na impressão */
+  body {
+    background: white !important;
+    color: black !important;
   }
 }
