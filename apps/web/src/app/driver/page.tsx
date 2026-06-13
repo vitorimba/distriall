@@ -3,6 +3,8 @@
 import { useAuth } from '@/providers/auth-provider';
 import { useDriverDeliveries } from '@/hooks/use-driver-deliveries';
 import { DeliveryList } from '@/components/driver/delivery-list';
+import { ProgressBar } from '@/components/ui/progress-bar';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DriverPage() {
   const { user } = useAuth();
@@ -14,8 +16,11 @@ export default function DriverPage() {
 
   if (loading) {
     return (
-      <div className="py-12 text-center">
-        <p className="text-2xl text-gray-500">Carregando entregas...</p>
+      <div className="space-y-4">
+        <Skeleton variant="rect" className="h-6 w-48" />
+        <Skeleton variant="rect" className="h-3" />
+        <Skeleton variant="rect" className="h-28" />
+        <Skeleton variant="rect" className="h-28" />
       </div>
     );
   }
@@ -35,10 +40,24 @@ export default function DriverPage() {
     );
   }
 
+  const delivered = items.filter((i) => i.status === 'entregue').length;
+  const total = items.length;
+
   return (
-    <DeliveryList
-      items={items}
-      onDelivered={markDelivered}
-    />
+    <div className="space-y-4">
+      {total > 0 && (
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium text-foreground">
+            Entregas: {delivered}/{total}
+          </p>
+          <ProgressBar value={delivered} max={total} tone="success" label="Progresso de entregas" />
+        </div>
+      )}
+
+      <DeliveryList
+        items={items}
+        onDelivered={markDelivered}
+      />
+    </div>
   );
 }
