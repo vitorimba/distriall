@@ -57,3 +57,4 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.1.5 | Driver page com header verde e layout proprio | Done | 2026-06-12 |
 | 5.1.6 | Sidebar active item com fundo laranja e texto branco | Done | 2026-06-12 |
 | 5.1.7 | Field wrapper em todos os formularios | Done | 2026-06-12 |
+| 5.1.8 | Vales vencidos com borda e fundo de status | Done | 2026-06-12 |

@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import { useAccount } from '@/providers/account-provider';
 import { useStats, type StatsFilters, type StatsPeriod } from '@/hooks/use-stats';
 import { StatsCard } from '@/components/stats/stats-card';
-import { RevenueChart } from '@/components/stats/revenue-chart';
 import { PaymentPieChart } from '@/components/stats/payment-pie-chart';
+import { BarChart } from '@/components/ui/charts/bar-chart';
+import { fmtBRL } from '@/components/ui/charts/chart-utils';
 import { ProductRankingTable } from '@/components/stats/product-ranking-table';
 import { Money } from '@/components/ui/money';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -121,7 +122,33 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 {stats.weekly_evolution.length > 0 ? (
-                  <RevenueChart data={stats.weekly_evolution} />
+                  <div className="space-y-4">
+                    <div>
+                      <p className="mb-1 text-xs font-medium text-muted-foreground">Faturamento</p>
+                      <BarChart
+                        data={stats.weekly_evolution.map((d) => ({
+                          label: d.week.slice(5).replace('-', '/'),
+                          value: d.revenue,
+                        }))}
+                        color="var(--chart-1)"
+                        formatValue={fmtBRL}
+                        highlightMax
+                      />
+                    </div>
+                    <div>
+                      <p className="mb-1 text-xs font-medium text-muted-foreground">Lucro</p>
+                      <BarChart
+                        data={stats.weekly_evolution.map((d) => ({
+                          label: d.week.slice(5).replace('-', '/'),
+                          value: d.profit,
+                        }))}
+                        color="var(--chart-3)"
+                        formatValue={fmtBRL}
+                        highlightMax
+                        height={100}
+                      />
+                    </div>
+                  </div>
                 ) : (
                   <EmptyState icon={BarChart3} title="Sem dados para exibir" />
                 )}
