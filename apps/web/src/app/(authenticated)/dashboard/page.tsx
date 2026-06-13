@@ -15,6 +15,7 @@ import { Select } from '@/components/ui/select';
 import { ChipFilter } from '@/components/ui/chip-filter';
 import { Alert } from '@/components/ui/alert';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { BarChart3 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { PageHeader } from '@/components/ui/page-header';
@@ -96,12 +97,19 @@ export default function DashboardPage() {
       )}
 
       {isLoading && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          <StatsCard title="Faturamento" value="" accent loading />
-          <StatsCard title="Lucro" value="" loading />
-          <StatsCard title="Ticket medio" value="" loading />
-          <StatsCard title="Pedidos" value="" loading />
-          <StatsCard title="Clientes" value="" loading />
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <StatsCard title="Faturamento" value="" accent loading />
+            <StatsCard title="Lucro" value="" loading />
+            <StatsCard title="Ticket medio" value="" loading />
+            <StatsCard title="Pedidos" value="" loading />
+            <StatsCard title="Clientes" value="" loading />
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Skeleton variant="rect" className="h-64" />
+            <Skeleton variant="rect" className="h-64" />
+          </div>
+          <Skeleton variant="rect" className="h-48" />
         </div>
       )}
 

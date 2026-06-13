@@ -13,6 +13,7 @@ import { Field } from '@/components/ui/field';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page-header';
 import { Money } from '@/components/ui/money';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function EditOrderPage() {
   const { id } = useParams<{ id: string }>();
@@ -116,8 +117,11 @@ export default function EditOrderPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Carregando pedido...
+      <div className="px-4 py-4 space-y-4">
+        <Skeleton variant="line" className="h-8 w-40" />
+        <Skeleton variant="rect" className="h-12" />
+        <Skeleton variant="rect" className="h-48" />
+        <Skeleton variant="rect" className="h-32" />
       </div>
     );
   }

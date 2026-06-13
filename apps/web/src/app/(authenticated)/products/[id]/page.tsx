@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { ProductForm } from '@/components/products/product-form';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -41,8 +42,10 @@ export default function EditProductPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Carregando...
+      <div className="px-4 py-4 space-y-4">
+        <Skeleton variant="line" className="h-8 w-40" />
+        <Skeleton variant="rect" className="h-48" />
+        <Skeleton variant="rect" className="h-48" />
       </div>
     );
   }

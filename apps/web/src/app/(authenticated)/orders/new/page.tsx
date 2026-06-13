@@ -22,10 +22,17 @@ import { Money } from '@/components/ui/money';
 import type { PaymentEntry } from '@/lib/validations/payment';
 import { validatePaymentsTotal } from '@/lib/validations/payment';
 import { PageHeader } from '@/components/ui/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function NewOrderPage() {
   return (
-    <Suspense fallback={<div className="px-4 py-4"><p>Carregando...</p></div>}>
+    <Suspense fallback={
+      <div className="px-4 py-4 space-y-4">
+        <Skeleton variant="line" className="h-8 w-32" />
+        <Skeleton variant="rect" className="h-12" />
+        <Skeleton variant="rect" className="h-12" />
+      </div>
+    }>
       <NewOrderContent />
     </Suspense>
   );

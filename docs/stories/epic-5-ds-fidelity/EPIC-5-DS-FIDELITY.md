@@ -62,3 +62,5 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.2.2 | Substituir PaymentPieChart (Recharts) por DonutChart SVG | Done | 2026-06-12 |
 | 5.2.3 | HBarList para ranking de produtos no dashboard | Done | 2026-06-12 |
 | 5.2.4 | Enriquecer StatsCard com delta, deltaLabel e Sparkline | Done | 2026-06-12 |
+| 5.2.5 | Remover dependencia recharts | Done | 2026-06-12 |
+| 5.3.1 | Skeleton espelhando layout real em todas as telas | Done | 2026-06-12 |

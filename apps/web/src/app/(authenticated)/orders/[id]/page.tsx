@@ -14,6 +14,7 @@ import { OrderReceipt } from '@/components/orders/order-receipt';
 import { ReturnForm } from '@/components/orders/return-form';
 import { PageHeader } from '@/components/ui/page-header';
 import { Money } from '@/components/ui/money';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface OrderItem {
   id: string;
@@ -137,8 +138,16 @@ export default function OrderDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Carregando...
+      <div className="px-4 py-4 space-y-4">
+        <Skeleton variant="line" className="h-8 w-40" />
+        <div className="flex gap-2">
+          <Skeleton variant="rect" className="h-9 w-24" />
+          <Skeleton variant="rect" className="h-9 w-24" />
+          <Skeleton variant="rect" className="h-9 w-24" />
+        </div>
+        <Skeleton variant="rect" className="h-48" />
+        <Skeleton variant="rect" className="h-32" />
+        <Skeleton variant="rect" className="h-28" />
       </div>
     );
   }

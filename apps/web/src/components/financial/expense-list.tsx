@@ -21,6 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SplitRow {
   id: string;
@@ -178,7 +179,11 @@ export function ExpenseList() {
 
       {/* List */}
       {loading ? (
-        <div className="py-8 text-center text-muted-foreground">Carregando...</div>
+        <div className="space-y-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} variant="rect" className="h-20" />
+          ))}
+        </div>
       ) : expenses.length === 0 ? (
         <div className="py-8 text-center text-muted-foreground">Nenhum gasto encontrado.</div>
       ) : (

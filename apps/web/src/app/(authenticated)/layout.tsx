@@ -5,6 +5,7 @@ import { AccountProvider } from '@/providers/account-provider';
 import { Header } from '@/components/layout/header';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { Sidebar } from '@/components/layout/sidebar';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AuthenticatedLayout({
   children,
@@ -15,8 +16,30 @@ export default function AuthenticatedLayout({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-muted-foreground">Carregando...</div>
+      <div className="flex min-h-screen">
+        <div className="hidden md:flex md:w-56 md:flex-col md:border-r">
+          <div className="flex h-14 items-center border-b px-4">
+            <Skeleton variant="rect" className="h-7 w-28" />
+          </div>
+          <div className="flex-1 space-y-1 p-2">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <Skeleton key={i} variant="rect" className="h-9" />
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-1 flex-col">
+          <div className="h-14 border-b px-4 flex items-center">
+            <Skeleton variant="rect" className="h-8 w-32" />
+          </div>
+          <main className="flex-1 p-4 space-y-4">
+            <Skeleton variant="line" className="h-7 w-48" />
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} variant="rect" className="h-24" />
+              ))}
+            </div>
+          </main>
+        </div>
       </div>
     );
   }

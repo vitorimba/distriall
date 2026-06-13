@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSettlements } from '@/hooks/use-settlements';
 import { SettlementDetail } from '@/components/financial/settlement-detail';
 import { PageHeader } from '@/components/ui/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { Settlement } from '@distriall/shared';
 import type { SettlementOrderRow, SettlementExpenseRow } from '@/hooks/use-settlements';
 
@@ -45,8 +46,15 @@ export default function SettlementDetailPage({
 
   if (loading) {
     return (
-      <div className="px-4 py-4">
-        <div className="py-16 text-center text-muted-foreground">Carregando...</div>
+      <div className="px-4 py-4 space-y-4">
+        <Skeleton variant="line" className="h-8 w-48" />
+        <div className="grid grid-cols-3 gap-3">
+          <Skeleton variant="rect" className="h-24" />
+          <Skeleton variant="rect" className="h-24" />
+          <Skeleton variant="rect" className="h-24" />
+        </div>
+        <Skeleton variant="rect" className="h-64" />
+        <Skeleton variant="rect" className="h-40" />
       </div>
     );
   }

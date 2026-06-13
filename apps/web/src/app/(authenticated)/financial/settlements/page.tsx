@@ -20,6 +20,7 @@ import { Plus, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Settlement } from '@distriall/shared';
 import { PageHeader } from '@/components/ui/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'Todos' },
@@ -171,7 +172,11 @@ export default function SettlementsPage() {
 
       {/* List */}
       {loading ? (
-        <div className="py-8 text-center text-muted-foreground">Carregando...</div>
+        <div className="space-y-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} variant="rect" className="h-20" />
+          ))}
+        </div>
       ) : settlements.length === 0 ? (
         <div className="py-8 text-center text-muted-foreground">Nenhum acerto encontrado.</div>
       ) : (

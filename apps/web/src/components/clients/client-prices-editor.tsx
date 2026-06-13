@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Search, X } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Money } from '@/components/ui/money';
 
 interface VariantRow {
@@ -138,7 +139,13 @@ export function ClientPricesEditor({ clientId }: { clientId: string }) {
     : rows;
 
   if (loading) {
-    return <div className="py-8 text-center text-muted-foreground">Carregando precos...</div>;
+    return (
+      <div className="space-y-2 py-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} variant="rect" className="h-10" />
+        ))}
+      </div>
+    );
   }
 
   return (

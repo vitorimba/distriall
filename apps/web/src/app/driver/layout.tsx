@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DriverLayout({
   children,
@@ -31,8 +32,10 @@ export default function DriverLayout({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="text-xl text-gray-600">Carregando...</div>
+      <div className="flex min-h-screen flex-col items-center justify-start gap-4 p-4 pt-16">
+        <Skeleton variant="circle" className="size-16" />
+        <Skeleton variant="line" className="h-6 w-32" />
+        <Skeleton variant="rect" className="h-40 w-full max-w-sm" />
       </div>
     );
   }

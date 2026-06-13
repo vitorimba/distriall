@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { PAYMENT_METHOD_LABELS } from '@distriall/shared';
 import { Pencil, Plus, MapPin, Phone, MessageCircle } from 'lucide-react';
 import { PageHeader } from '@/components/ui/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ClientDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,8 +21,12 @@ export default function ClientDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Carregando...
+      <div className="px-4 py-4 space-y-4">
+        <Skeleton variant="line" className="h-8 w-48" />
+        <Skeleton variant="rect" className="h-28" />
+        <Skeleton variant="rect" className="h-24" />
+        <Skeleton variant="rect" className="h-32" />
+        <Skeleton variant="rect" className="h-48" />
       </div>
     );
   }
