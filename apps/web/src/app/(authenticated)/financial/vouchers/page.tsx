@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAccount } from '@/providers/account-provider';
 import { useVouchers } from '@/hooks/use-vouchers';
 import { VOUCHER_STATUS_LABELS, type VoucherStatus } from '@distriall/shared';
@@ -13,6 +14,7 @@ import { Money } from '@/components/ui/money';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Check, Image as ImageIcon, Ticket } from 'lucide-react';
+import { PageHeader } from '@/components/ui/page-header';
 
 interface VoucherRow {
   id: string;
@@ -42,6 +44,7 @@ function isOverdue(dueDate: string | null, status: string): boolean {
 }
 
 export default function VouchersPage() {
+  const router = useRouter();
   const { activeAccount } = useAccount();
   const { listVouchers, markAsPaid } = useVouchers();
   const [vouchers, setVouchers] = useState<VoucherRow[]>([]);
@@ -74,7 +77,7 @@ export default function VouchersPage() {
 
   return (
     <div className="px-4 py-4 space-y-3">
-      <h1 className="text-xl font-bold">Vales</h1>
+      <PageHeader title="Vales" onBack={() => router.back()} />
 
       <SearchField
         placeholder="Buscar por cliente..."

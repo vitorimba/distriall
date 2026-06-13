@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader } from '@/components/ui/page-header';
 
 function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -138,7 +139,7 @@ export default function EditOrderPage() {
 
   return (
     <div className="px-4 py-4 pb-40 space-y-4">
-      <h1 className="text-xl font-bold">Editar Pedido</h1>
+      <PageHeader title="Editar pedido" onBack={() => router.back()} />
 
       <ClientSearch />
 

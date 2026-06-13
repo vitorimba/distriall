@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { BarChart3 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { PageHeader } from '@/components/ui/page-header';
 
 type Period = StatsPeriod;
 
@@ -48,10 +49,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 p-4 pb-20">
-      <div>
-        <h1 className="text-xl font-bold">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Visao geral do negocio</p>
-      </div>
+      <PageHeader title="Dashboard" subtitle="Visao geral do negocio" />
 
       {/* Filters */}
       <div className="flex flex-wrap items-end gap-3">

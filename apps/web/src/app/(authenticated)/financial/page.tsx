@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { FileText, DollarSign, BarChart2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader } from '@/components/ui/page-header';
 
 const financialLinks = [
   {
@@ -28,7 +29,7 @@ const financialLinks = [
 export default function FinancialPage() {
   return (
     <div className="px-4 py-4 space-y-4">
-      <h1 className="text-xl font-bold">Financeiro</h1>
+      <PageHeader title="Financeiro" />
       <div className="space-y-2">
         {financialLinks.map((item) => {
           const Icon = item.icon;

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAccount } from '@/providers/account-provider';
+import { PageHeader } from '@/components/ui/page-header';
 import { useStats, type StatsFilters, type StatsPeriod } from '@/hooks/use-stats';
 import { ProductRankingTable } from '@/components/stats/product-ranking-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,10 +41,7 @@ export default function StatsPage() {
 
   return (
     <div className="space-y-6 p-4 pb-20">
-      <div>
-        <h1 className="text-xl font-bold">Estatisticas</h1>
-        <p className="text-sm text-muted-foreground">Ranking completo de produtos</p>
-      </div>
+      <PageHeader title="Estatisticas" />
 
       {/* Filters */}
       <div className="flex flex-wrap items-end gap-3">

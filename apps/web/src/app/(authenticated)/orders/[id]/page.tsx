@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { type OrderStatus, ORDER_STATUS_LABELS } from '@distriall/shared';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, ArrowLeft, Pencil, Printer, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Pencil, Printer, RotateCcw } from 'lucide-react';
 import { usePrinter } from '@/hooks/use-printer';
 import { OrderReceipt } from '@/components/orders/order-receipt';
 import { ReturnForm } from '@/components/orders/return-form';
+import { PageHeader } from '@/components/ui/page-header';
 
 interface OrderItem {
   id: string;
@@ -80,6 +81,7 @@ function getPrevStatus(status: OrderStatus): OrderStatus | null {
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
@@ -159,19 +161,19 @@ export default function OrderDetailPage() {
   return (
     <div className="px-4 py-4 space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold">Pedido #{order.order_number}</h1>
-          {order.clients ? (
-            <Link href={`/clients/${order.clients.id}`} className="text-sm text-primary underline underline-offset-2">
-              {order.clients.name}
-            </Link>
-          ) : (
-            <p className="text-sm text-muted-foreground">—</p>
-          )}
-        </div>
-        <OrderStatusBadge status={order.status} className="text-sm px-3 py-1" />
-      </div>
+      <PageHeader
+        title={`Pedido #${order.order_number}`}
+        onBack={() => router.back()}
+        actions={<OrderStatusBadge status={order.status} className="text-sm px-3 py-1" />}
+      >
+        {order.clients ? (
+          <Link href={`/clients/${order.clients.id}`} className="text-sm text-primary underline underline-offset-2">
+            {order.clients.name}
+          </Link>
+        ) : (
+          <p className="text-sm text-muted-foreground">—</p>
+        )}
+      </PageHeader>
 
       {/* Status transition buttons */}
       <div className="flex gap-2">

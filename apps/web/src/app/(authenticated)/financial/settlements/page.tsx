@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAccount } from '@/providers/account-provider';
 import { useSettlements } from '@/hooks/use-settlements';
 import {
@@ -18,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Settlement } from '@distriall/shared';
+import { PageHeader } from '@/components/ui/page-header';
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'Todos' },
@@ -45,6 +47,7 @@ function getWeekEnd(date: Date): string {
 }
 
 export default function SettlementsPage() {
+  const router = useRouter();
   const { activeAccount } = useAccount();
   const { listSettlements, generateSettlement } = useSettlements();
   const [settlements, setSettlements] = useState<Settlement[]>([]);
@@ -102,7 +105,7 @@ export default function SettlementsPage() {
 
   return (
     <div className="px-4 py-4 space-y-4">
-      <h1 className="text-xl font-bold">Acerto Semanal</h1>
+      <PageHeader title="Acertos" onBack={() => router.back()} />
 
       {/* Generate form */}
       <Card>

@@ -4,6 +4,7 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSettlements } from '@/hooks/use-settlements';
 import { SettlementDetail } from '@/components/financial/settlement-detail';
+import { PageHeader } from '@/components/ui/page-header';
 import type { Settlement } from '@distriall/shared';
 import type { SettlementOrderRow, SettlementExpenseRow } from '@/hooks/use-settlements';
 
@@ -53,12 +54,7 @@ export default function SettlementDetailPage({
   if (error || !settlement) {
     return (
       <div className="px-4 py-4 space-y-4">
-        <button
-          onClick={() => router.back()}
-          className="text-sm text-primary hover:underline"
-        >
-          Voltar
-        </button>
+        <PageHeader title="Detalhe do acerto" onBack={() => router.back()} />
         <div className="py-8 text-center text-destructive">
           {error ?? 'Acerto nao encontrado.'}
         </div>
@@ -68,13 +64,7 @@ export default function SettlementDetailPage({
 
   return (
     <div className="px-4 py-4 space-y-4">
-      <button
-        onClick={() => router.back()}
-        className="text-sm text-primary hover:underline"
-      >
-        Voltar
-      </button>
-      <h1 className="text-xl font-bold">Detalhe do Acerto</h1>
+      <PageHeader title="Detalhe do acerto" onBack={() => router.back()} />
       <SettlementDetail
         settlement={settlement}
         orders={orders}

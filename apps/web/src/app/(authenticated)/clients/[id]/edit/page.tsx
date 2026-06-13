@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { ClientForm } from '@/components/clients/client-form';
 import { ClientPricesEditor } from '@/components/clients/client-prices-editor';
@@ -9,6 +9,7 @@ import { Tabs } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Users } from 'lucide-react';
+import { PageHeader } from '@/components/ui/page-header';
 
 interface ClientData {
   id: string;
@@ -25,6 +26,7 @@ interface ClientData {
 
 export default function EditClientPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [client, setClient] = useState<ClientData | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('info');
@@ -63,7 +65,7 @@ export default function EditClientPage() {
 
   return (
     <div className="px-4 py-4 space-y-4">
-      <h1 className="text-xl font-bold">Editar: {client.name}</h1>
+      <PageHeader title={`Editar: ${client.name}`} onBack={() => router.back()} />
 
       <Tabs
         tabs={[

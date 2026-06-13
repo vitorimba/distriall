@@ -21,6 +21,7 @@ import { StickyBar } from '@/components/ui/sticky-bar';
 import { Money } from '@/components/ui/money';
 import type { PaymentEntry } from '@/lib/validations/payment';
 import { validatePaymentsTotal } from '@/lib/validations/payment';
+import { PageHeader } from '@/components/ui/page-header';
 
 function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -140,7 +141,7 @@ function NewOrderContent() {
 
   return (
     <div className="px-4 py-4 pb-40 space-y-4">
-      <h1 className="text-xl font-bold">Novo Pedido</h1>
+      <PageHeader title="Novo pedido" onBack={() => router.back()} />
 
       {/* Client */}
       <ClientSearch />

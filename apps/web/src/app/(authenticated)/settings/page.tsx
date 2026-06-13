@@ -2,6 +2,7 @@
 
 import { usePrinter } from '@/hooks/use-printer';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bluetooth, Check, X, Printer } from 'lucide-react';
 
@@ -20,7 +21,7 @@ export default function SettingsPage() {
 
   return (
     <div className="px-4 py-4 space-y-4">
-      <h1 className="text-xl font-bold">Configuracoes</h1>
+      <PageHeader title="Configuracoes" />
 
       {/* Printer section */}
       <Card>

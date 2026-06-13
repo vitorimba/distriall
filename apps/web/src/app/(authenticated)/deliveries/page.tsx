@@ -11,6 +11,7 @@ import type { AvailableOrder, RouteItem } from '@/hooks/use-deliveries';
 import { RouteBuilder } from '@/components/deliveries/route-builder';
 import { AvailableOrders } from '@/components/deliveries/available-orders';
 import { reassignSequences } from '@/lib/delivery-utils';
+import { PageHeader } from '@/components/ui/page-header';
 
 interface Driver {
   id: string;
@@ -182,7 +183,7 @@ export default function DeliveriesPage() {
 
   return (
     <div className="space-y-4 px-4 py-4">
-      <h1 className="text-xl font-bold">Montar Rota</h1>
+      <PageHeader title="Entregas" />
 
       {/* Selectors */}
       <div className="grid grid-cols-2 gap-3">

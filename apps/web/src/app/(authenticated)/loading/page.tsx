@@ -9,6 +9,7 @@ import { LoadingBottomSheet } from '@/components/loading/loading-bottom-sheet';
 import { ChipFilter } from '@/components/ui/chip-filter';
 import { SearchField } from '@/components/ui/search-field';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageHeader } from '@/components/ui/page-header';
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'Todos' },
@@ -61,7 +62,7 @@ export default function LoadingPage() {
 
   return (
     <div className="px-4 py-4 pb-32 space-y-3">
-      <h1 className="text-xl font-bold">Carregamento</h1>
+      <PageHeader title="Carregamento" />
 
       <SearchField
         placeholder="Buscar por cliente ou numero..."

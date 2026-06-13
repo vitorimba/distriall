@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useClientDetail } from '@/hooks/use-client-detail';
 import { ClientBalanceCard } from '@/components/clients/client-balance';
@@ -10,10 +10,12 @@ import { ClientOrderHistory } from '@/components/clients/client-order-history';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PAYMENT_METHOD_LABELS } from '@distriall/shared';
-import { ArrowLeft, Pencil, Plus, MapPin, Phone, MessageCircle } from 'lucide-react';
+import { Pencil, Plus, MapPin, Phone, MessageCircle } from 'lucide-react';
+import { PageHeader } from '@/components/ui/page-header';
 
 export default function ClientDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { client, balance, loading } = useClientDetail(id);
 
   if (loading) {
@@ -35,25 +37,27 @@ export default function ClientDetailPage() {
   return (
     <div className="px-4 py-4 space-y-4 pb-8">
       {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <Link href="/clients" className="text-muted-foreground hover:text-foreground shrink-0">
-            <ArrowLeft className="size-5" />
-          </Link>
-          <div className="min-w-0">
-            <h1 className="text-xl font-bold truncate">{client.name}</h1>
-            {client.trade_name && (
-              <p className="text-sm text-muted-foreground truncate">{client.trade_name}</p>
-            )}
-          </div>
-        </div>
-        <Link href={`/clients/${id}/edit`} className="shrink-0">
-          <Button variant="outline" size="sm">
-            <Pencil className="size-3.5 mr-1" />
-            Editar
-          </Button>
-        </Link>
-      </div>
+      <PageHeader
+        title={client.name}
+        subtitle={client.trade_name ?? undefined}
+        onBack={() => router.back()}
+        actions={
+          <>
+            <Link href={`/clients/${id}/edit`}>
+              <Button variant="outline" size="sm">
+                <Pencil className="size-3.5 mr-1" />
+                Editar
+              </Button>
+            </Link>
+            <Link href={`/orders/new?client=${id}`}>
+              <Button size="sm">
+                <Plus className="size-3.5 mr-1" />
+                Novo pedido
+              </Button>
+            </Link>
+          </>
+        }
+      />
 
       {/* Cadastral data */}
       <Card>
