@@ -3,11 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Mail, Lock } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Field } from '@/components/ui/field';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -54,47 +55,64 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="flex flex-col items-center text-center">
-          <Image
-            src="/logo.jpg"
-            alt="Distriall"
-            width={180}
-            height={80}
-            className="mb-2"
-            priority
-          />
+    <div
+      className="flex min-h-screen flex-col items-center justify-center px-4"
+      style={{ background: 'var(--grad-glow), var(--surface-page)' }}
+    >
+      <Image
+        src="/distriall-logo-on-dark.png"
+        alt="Distriall"
+        width={160}
+        height={56}
+        className="mb-6"
+        priority
+      />
+
+      <Card
+        className="w-full max-w-sm"
+        style={{
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-ds-xl)',
+        }}
+      >
+        <CardHeader className="text-center">
           <CardTitle className="text-lg font-normal text-muted-foreground">
             Entre na sua conta
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Sua senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-            </div>
+            <Field label="Email">
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                  className="pl-9"
+                />
+              </div>
+            </Field>
+
+            <Field label="Senha">
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Sua senha"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  className="pl-9"
+                />
+              </div>
+            </Field>
 
             {error && (
               <p className="text-sm text-destructive">{error}</p>
@@ -108,6 +126,15 @@ export default function LoginPage() {
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
           </form>
         </CardContent>
       </Card>
