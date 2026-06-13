@@ -1,0 +1,62 @@
+schema: 1
+story: '5.4.4'
+story_title: 'Inputs de moeda com prefixo R$ e classe .num'
+gate: PASS
+status_reason: 'Todos os 3 ACs implementados corretamente. prop `prefix` opcional e backward-compatible, alinhamento visual correto com h-8 e border-r-0, classe .num aplicada em todos os 4 inputs de moeda. Nenhum issue HIGH ou CRITICAL. Debt: ausencia de testes de componente (consistente com serie 5.4.x).'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-13T15:30:00-03:00'
+
+top_issues:
+  - severity: low
+    category: tests
+    description: 'Nenhum teste de componente cobre o comportamento visual do prefix (span renderizado, select-none, alinhamento h-8). Consistente com debt acumulado da serie 5.4.x.'
+    recommendation: 'Incluir em batch de testes RTL para a serie 5.4.x quando criado.'
+    suggested_owner: dev
+  - severity: low
+    category: code
+    description: 'Warning pre-existente em product-form.tsx linha 7: ProductVariantInput importado mas nao usado. Nao introduzido por esta story.'
+    recommendation: 'Remover import nao utilizado em oportunidade futura.'
+    suggested_owner: dev
+
+waiver: { active: false }
+
+quality_score: 90
+
+expires: '2026-06-27T15:30:00-03:00'
+
+evidence:
+  tests_reviewed: 62
+  risks_identified: 2
+  trace:
+    ac_covered: [1, 2, 3]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Prefixo e puramente visual (span select-none). Sem superfície de ataque. Input nao editavel via DOM — span nao e um form element.'
+  performance:
+    status: PASS
+    notes: 'Wrapper div + span apenas quando prefix presente. Sem re-renders adicionais. Condicional simples sem computacao.'
+  reliability:
+    status: PASS
+    notes: 'prop prefix e opcional — consumers existentes sem prefix nao sao afetados. Omit<...,"prefix"> garante sem conflito com HTML nativo. parseMoney/maskMoney nao afetados pelo prefixo visual.'
+  maintainability:
+    status: PASS
+    notes: 'Implementacao centralizada em input.tsx. Todos os call-sites usam prefix="R$" de forma uniforme. .num ja definida em globals.css — sem duplicacao.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Adicionar testes RTL para Input com prefix: verificar span renderizado, texto "R$", classe select-none, e que input recebe rounded-l-none.'
+      refs:
+        - 'apps/web/src/components/ui/input.tsx'
+      suggested_owner: dev
+    - action: 'Remover import nao utilizado ProductVariantInput em product-form.tsx linha 7.'
+      refs:
+        - 'apps/web/src/components/products/product-form.tsx'
+      suggested_owner: dev
+    - action: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para habilitar deploy readiness checks formais nas reviews (recomendacao carry-over da gate 5.4.3).'
+      refs:
+        - 'infrastructure/'
+      suggested_owner: dev

@@ -69,6 +69,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.3.4 | Toast em todas as acoes | Done | 2026-06-13 |
 | 5.4.1 | maskUtils.ts com mascaras pt-BR | Done | 2026-06-13 |
 | 5.4.2 | Aplicar mascaras nos formularios | Done | 2026-06-13 |
+| 5.4.3 | Validacao no blur e submit, nunca a cada tecla | Done | 2026-06-13 |
 
 ## Development Log
 
@@ -120,3 +121,28 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 - Pre-existing ESLint error em donut-chart.tsx (react-hooks/immutability) — nao relacionado.
 
 **Tests:** 0 novos (33 existentes passando — contrato maskUtils verificado). **Deploy:** Vercel — commit ce58a50, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel).
+
+### Story 5.4.3 — Validacao no blur e submit, nunca a cada tecla (2026-06-13)
+
+**Built:**
+- (ADAPT) `apps/web/src/components/clients/client-form.tsx` — onBlur para nome (required) e telefone (isPhoneComplete); submit re-valida; fieldErrors `Record<string,string>`; aria-invalid nos inputs
+- (ADAPT) `apps/web/src/components/products/product-form.tsx` — onBlur para nome e preco por variante; `variantErrors Record<number,Record<string,string>>`; helpers `setVariantError`/`clearVariantError`
+- (ADAPT) `apps/web/src/components/financial/expense-form.tsx` — onBlur para descricao e amount > 0; fieldErrors; aria-invalid
+- `apps/web/src/app/(authenticated)/orders/new/page.tsx` — Task 4 N/A: Alert global para erros de fluxo mantido; campos Data/Observacoes nao requerem blur validation
+
+**Patterns established:**
+- Padrao de blur validation: `onBlur` seta `fieldErrors[campo]` com MSG canonico; `onChange` nao valida — apenas atualiza valor ou aplica mascara (5.4.2)
+- `Record<string, string>` para fieldErrors em forms simples; `Record<number, Record<string, string>>` para forms com arrays de itens (variantes)
+- `aria-invalid={!!fieldErrors.campo}` no `<Input>` (nao no `<Field>`) — Input.tsx usa `aria-invalid:border-destructive` via Tailwind attribute selector
+- Submit re-valida todos os campos required antes de prosseguir (double guard: blur + submit)
+- Erros de fluxo (cliente nao selecionado, carrinho vazio) permanecem como Alert global — nao convertidos para Field error
+
+**Key decisions:**
+- helpers `setVariantError`/`clearVariantError` criados em product-form para reduzir duplicacao ao lidar com array de variantes
+- Task 4 (order/new) N/A confirmada: campos do form nao tem validacao de campo individual — erros sao de fluxo (Alert) ja existentes
+
+**Tech debt identified:**
+- Sem testes RTL para blur validation nos 3 forms — apenas Vitest (mask-utils.ts). Testes de componente recomendados pela QA.
+- `MSG.required` usado para `amount <= 0` em expense-form — tecnicamente correto mas semanticamente impreciso. Candidato a `MSG.valueInvalid` em story futura.
+
+**Tests:** 0 novos (33 existentes passando). **Deploy:** Vercel — commit 9908969, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel).
