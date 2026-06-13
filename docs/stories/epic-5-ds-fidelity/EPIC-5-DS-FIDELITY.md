@@ -58,3 +58,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.1.6 | Sidebar active item com fundo laranja e texto branco | Done | 2026-06-12 |
 | 5.1.7 | Field wrapper em todos os formularios | Done | 2026-06-12 |
 | 5.1.8 | Vales vencidos com borda e fundo de status | Done | 2026-06-12 |
+| 5.2.1 | Substituir RevenueChart (Recharts) por BarChart SVG | Done | 2026-06-12 |
+| 5.2.2 | Substituir PaymentPieChart (Recharts) por DonutChart SVG | Done | 2026-06-12 |
+| 5.2.3 | HBarList para ranking de produtos no dashboard | Done | 2026-06-12 |
+| 5.2.4 | Enriquecer StatsCard com delta, deltaLabel e Sparkline | Done | 2026-06-12 |

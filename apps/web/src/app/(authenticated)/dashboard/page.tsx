@@ -4,16 +4,16 @@ import { useEffect, useState } from 'react';
 import { useAccount } from '@/providers/account-provider';
 import { useStats, type StatsFilters, type StatsPeriod } from '@/hooks/use-stats';
 import { StatsCard } from '@/components/stats/stats-card';
-import { PaymentPieChart } from '@/components/stats/payment-pie-chart';
 import { BarChart } from '@/components/ui/charts/bar-chart';
-import { fmtBRL } from '@/components/ui/charts/chart-utils';
-import { ProductRankingTable } from '@/components/stats/product-ranking-table';
+import { DonutChart } from '@/components/ui/charts/donut-chart';
+import { HBarList } from '@/components/ui/charts/hbar-list';
+import { fmtBRL, CHART_COLORS } from '@/components/ui/charts/chart-utils';
+import { PAYMENT_METHOD_LABELS } from '@distriall/shared';
 import { Money } from '@/components/ui/money';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
 import { ChipFilter } from '@/components/ui/chip-filter';
 import { Alert } from '@/components/ui/alert';
-import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { BarChart3 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,7 @@ type Period = StatsPeriod;
 
 export default function DashboardPage() {
   const { accounts } = useAccount();
-  const { stats, isLoading, error, fetchStats } = useStats();
+  const { stats, delta, isLoading, error, fetchStats } = useStats();
 
   const [selectedAccountId, setSelectedAccountId] = useState<string>('');
   const [period, setPeriod] = useState<Period>('month');
@@ -97,9 +97,11 @@ export default function DashboardPage() {
 
       {isLoading && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} variant="rect" className="h-24" />
-          ))}
+          <StatsCard title="Faturamento" value="" accent loading />
+          <StatsCard title="Lucro" value="" loading />
+          <StatsCard title="Ticket medio" value="" loading />
+          <StatsCard title="Pedidos" value="" loading />
+          <StatsCard title="Clientes" value="" loading />
         </div>
       )}
 
@@ -107,10 +109,27 @@ export default function DashboardPage() {
         <>
           {/* Metric cards */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            <StatsCard title="Faturamento" value={<Money value={stats.revenue} />} />
-            <StatsCard title="Lucro" value={<Money value={stats.profit} signed />} />
+            <StatsCard
+              title="Faturamento"
+              value={<Money value={stats.revenue} />}
+              accent
+              delta={delta?.revenue ?? undefined}
+              deltaLabel="vs periodo ant."
+              spark={delta?.spark}
+            />
+            <StatsCard
+              title="Lucro"
+              value={<Money value={stats.profit} signed />}
+              delta={delta?.profit ?? undefined}
+              deltaLabel="vs periodo ant."
+            />
             <StatsCard title="Ticket medio" value={<Money value={stats.avg_ticket} />} />
-            <StatsCard title="Pedidos" value={String(stats.order_count)} />
+            <StatsCard
+              title="Pedidos"
+              value={String(stats.order_count)}
+              delta={delta?.orders ?? undefined}
+              deltaLabel="vs periodo ant."
+            />
             <StatsCard title="Clientes" value={String(stats.client_count)} />
           </div>
 
@@ -161,7 +180,19 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 {stats.payment_breakdown.length > 0 ? (
-                  <PaymentPieChart data={stats.payment_breakdown} />
+                  <DonutChart
+                    data={stats.payment_breakdown
+                      .slice(0, 5)
+                      .map((d, i) => ({
+                        label: PAYMENT_METHOD_LABELS[d.method] ?? d.method,
+                        value: d.amount,
+                        color: CHART_COLORS[i % CHART_COLORS.length],
+                      }))}
+                    centerValue={fmtBRL(stats.payment_breakdown.reduce((a, d) => a + d.amount, 0))}
+                    centerLabel="Total"
+                    formatValue={fmtBRL}
+                    showPercent={false}
+                  />
                 ) : (
                   <EmptyState icon={BarChart3} title="Sem dados para exibir" />
                 )}
@@ -175,7 +206,18 @@ export default function DashboardPage() {
               <CardTitle>Top 10 produtos</CardTitle>
             </CardHeader>
             <CardContent>
-              <ProductRankingTable data={stats.product_ranking} />
+              {stats.product_ranking.length > 0 ? (
+                <HBarList
+                  data={stats.product_ranking.slice(0, 10).map((p) => ({
+                    label: p.product_name,
+                    value: p.total_value,
+                  }))}
+                  color="var(--chart-1)"
+                  formatValue={fmtBRL}
+                />
+              ) : (
+                <EmptyState icon={BarChart3} title="Sem dados para exibir" />
+              )}
             </CardContent>
           </Card>
         </>
