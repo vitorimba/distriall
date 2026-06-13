@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Money } from '@/components/ui/money';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { EmptyState } from '@/components/ui/empty-state';
+import { ChevronDown, ChevronUp, DollarSign } from 'lucide-react';
 import type { SettlementExpenseRow } from '@/hooks/use-settlements';
 
 interface SettlementExpensesProps {
@@ -34,7 +35,7 @@ export function SettlementExpenses({ expenses }: SettlementExpensesProps) {
         {expanded && (
           <div className="space-y-1 pt-1">
             {expenses.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-2">Nenhum gasto no periodo</p>
+              <EmptyState icon={DollarSign} title="Nenhum gasto no periodo" />
             ) : (
               expenses.map((row) => {
                 const expense = row.expenses;

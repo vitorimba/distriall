@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Money } from '@/components/ui/money';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { EmptyState } from '@/components/ui/empty-state';
+import { ChevronDown, ChevronUp, ShoppingCart } from 'lucide-react';
 import type { SettlementOrderRow } from '@/hooks/use-settlements';
 
 interface SettlementOrdersProps {
@@ -33,7 +34,7 @@ export function SettlementOrders({ orders }: SettlementOrdersProps) {
         {expanded && (
           <div className="space-y-1 pt-1">
             {orders.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-2">Nenhum pedido no periodo</p>
+              <EmptyState icon={ShoppingCart} title="Nenhum pedido no periodo" />
             ) : (
               orders.map((row) => {
                 const order = row.orders;

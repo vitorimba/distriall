@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/toast';
 import {
   EXPENSE_CATEGORY_LABELS,
   EXPENSE_TYPE_LABELS,
@@ -49,6 +50,7 @@ interface ExpenseFormProps {
 export function ExpenseForm({ expense }: ExpenseFormProps) {
   const isEdit = !!expense;
   const router = useRouter();
+  const toast = useToast();
   const { user } = useAuth();
   const { activeAccount, accounts } = useAccount();
   const { createExpense, updateExpense } = useExpenses();
@@ -154,6 +156,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
         await createExpense(params);
       }
 
+      toast('Gasto registrado', 'success');
       router.push('/financial/expenses');
     } catch (err) {
       setErrors([(err as Error).message || 'Erro ao salvar gasto']);

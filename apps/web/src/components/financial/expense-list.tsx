@@ -19,9 +19,12 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Plus, Trash2, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
+import { Alert } from '@/components/ui/alert';
+import { Plus, Trash2, ChevronDown, ChevronUp, Calendar, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { DollarSign } from 'lucide-react';
 
 interface SplitRow {
   id: string;
@@ -67,6 +70,7 @@ export function ExpenseList() {
   const { listExpenses, deleteExpense } = useExpenses();
   const [expenses, setExpenses] = useState<ExpenseRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [dateFrom, setDateFrom] = useState('');
@@ -77,6 +81,7 @@ export function ExpenseList() {
   async function load() {
     if (!activeAccount) return;
     setLoading(true);
+    setLoadError(null);
     try {
       const data = await listExpenses({
         accountId: activeAccount.id,
@@ -102,6 +107,7 @@ export function ExpenseList() {
         }))
       );
     } catch {
+      setLoadError('Nao foi possivel carregar os gastos.');
       setExpenses([]);
     } finally {
       setLoading(false);
@@ -131,6 +137,18 @@ export function ExpenseList() {
 
   return (
     <div className="space-y-3">
+      {loadError && (
+        <Alert
+          tone="danger"
+          title={loadError}
+          action={
+            <Button size="sm" variant="ghost" onClick={load}>
+              <RefreshCw className="size-3.5 mr-1" />
+              Tentar novamente
+            </Button>
+          }
+        />
+      )}
       {deleteError && (
         <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3">
           <p className="text-sm text-destructive">{deleteError}</p>
@@ -185,7 +203,11 @@ export function ExpenseList() {
           ))}
         </div>
       ) : expenses.length === 0 ? (
-        <div className="py-8 text-center text-muted-foreground">Nenhum gasto encontrado.</div>
+        <EmptyState
+          icon={DollarSign}
+          title="Nenhum gasto ainda"
+          description="Registre o primeiro gasto operacional."
+        />
       ) : (
         <div className="space-y-2">
           {expenses.map((exp) => {

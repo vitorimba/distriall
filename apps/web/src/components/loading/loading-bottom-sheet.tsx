@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useLoadingStore } from '@/stores/loading-store';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/toast';
 import { X, Printer, Truck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Money } from '@/components/ui/money';
@@ -26,6 +27,7 @@ interface LoadingBottomSheetProps {
 
 export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomSheetProps) {
   const { selectedIds, consolidatedProducts, summary, orders, deselectAll } = useLoadingStore();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState<'quantity' | 'name'>('quantity');
 
@@ -50,6 +52,8 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
     setLoading(false);
 
     if (!error) {
+      const count = selectedIds.size;
+      toast(`${count} pedido${count !== 1 ? 's' : ''} marcado${count !== 1 ? 's' : ''} como carregado`, 'success');
       deselectAll();
       onMarked();
       onClose();

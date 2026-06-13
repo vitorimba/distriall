@@ -17,6 +17,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Field } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert } from '@/components/ui/alert';
+import { useToast } from '@/components/ui/toast';
 import { StickyBar } from '@/components/ui/sticky-bar';
 import { Money } from '@/components/ui/money';
 import type { PaymentEntry } from '@/lib/validations/payment';
@@ -61,6 +62,7 @@ function NewOrderContent() {
     getProfit,
   } = useCartStore();
 
+  const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [payments, setPayments] = useState<PaymentEntry[]>([]);
@@ -130,6 +132,7 @@ function NewOrderContent() {
       }
 
       clearCart();
+      toast('Pedido salvo', 'success');
       router.push('/orders');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao salvar pedido');

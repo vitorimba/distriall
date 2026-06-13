@@ -15,6 +15,7 @@ import { ReturnForm } from '@/components/orders/return-form';
 import { PageHeader } from '@/components/ui/page-header';
 import { Money } from '@/components/ui/money';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/toast';
 
 interface OrderItem {
   id: string;
@@ -80,6 +81,7 @@ function getPrevStatus(status: OrderStatus): OrderStatus | null {
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const toast = useToast();
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
@@ -132,8 +134,16 @@ export default function OrderDetailPage() {
       .eq('id', id)
       .single();
 
-    setOrder(data as unknown as OrderDetail | null);
+    const updated = data as unknown as OrderDetail | null;
+    setOrder(updated);
     setTransitioning(false);
+    if (updated) {
+      if (newStatus === 'cancelado') {
+        toast('Pedido cancelado', 'danger');
+      } else {
+        toast(`Pedido ${ORDER_STATUS_LABELS[newStatus].toLowerCase()}`, 'success');
+      }
+    }
   }
 
   if (loading) {

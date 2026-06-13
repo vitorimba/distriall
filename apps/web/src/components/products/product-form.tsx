@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/toast';
 import { Plus, Trash2 } from 'lucide-react';
 
 interface ProductFormProps {
@@ -40,6 +41,7 @@ const EMPTY_VARIANT: ProductVariantInput = {
 export function ProductForm({ product }: ProductFormProps) {
   const isEdit = !!product;
   const router = useRouter();
+  const toast = useToast();
   const { activeAccount } = useAccount();
 
   const [name, setName] = useState(product?.name ?? '');
@@ -165,6 +167,7 @@ export function ProductForm({ product }: ProductFormProps) {
     }
 
     setSaving(false);
+    toast('Produto salvo', 'success');
     router.push('/products');
   }
 

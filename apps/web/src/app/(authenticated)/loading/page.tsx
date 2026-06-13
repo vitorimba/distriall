@@ -9,6 +9,9 @@ import { LoadingBottomSheet } from '@/components/loading/loading-bottom-sheet';
 import { ChipFilter } from '@/components/ui/chip-filter';
 import { SearchField } from '@/components/ui/search-field';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 import { PageHeader } from '@/components/ui/page-header';
 
 const STATUS_FILTERS = [
@@ -18,7 +21,7 @@ const STATUS_FILTERS = [
 ];
 
 export default function LoadingPage() {
-  const { loading, refetch } = useLoading();
+  const { loading, error: loadError, refetch } = useLoading();
   const { orders } = useLoadingStore();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -78,13 +81,26 @@ export default function LoadingPage() {
         )}
       </div>
 
-      {loading ? (
+      {loadError && (
+        <Alert
+          tone="danger"
+          title={loadError}
+          action={
+            <Button size="sm" variant="ghost" onClick={refetch}>
+              <RefreshCw className="size-3.5 mr-1" />
+              Tentar novamente
+            </Button>
+          }
+        />
+      )}
+
+      {!loadError && loading ? (
         <div className="space-y-2">
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-16" />)}
         </div>
-      ) : (
+      ) : !loadError ? (
         <LoadingOrderList filteredOrders={filteredOrders} />
-      )}
+      ) : null}
 
       <LoadingActionBar onOpenSheet={() => setSheetOpen(true)} />
 

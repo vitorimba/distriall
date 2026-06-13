@@ -11,6 +11,8 @@ import { RevenueBreakdown } from './revenue-breakdown';
 import { SettlementOrders } from './settlement-orders';
 import { SettlementExpenses } from './settlement-expenses';
 import { useSettlements } from '@/hooks/use-settlements';
+import { Alert } from '@/components/ui/alert';
+import { useToast } from '@/components/ui/toast';
 import { cn } from '@/lib/utils';
 import type { Settlement } from '@distriall/shared';
 import type { SettlementOrderRow, SettlementExpenseRow } from '@/hooks/use-settlements';
@@ -29,6 +31,7 @@ function formatDateRange(start: string, end: string) {
 
 export function SettlementDetail({ settlement, orders, expenses, onRefresh }: SettlementDetailProps) {
   const router = useRouter();
+  const toast = useToast();
   const { closeSettlement, updateSettlementStatus, deleteSettlement } = useSettlements();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +43,7 @@ export function SettlementDetail({ settlement, orders, expenses, onRefresh }: Se
     setLoading(true);
     try {
       await updateSettlementStatus(settlement.id, 'conferido');
+      toast('Acerto marcado como conferido', 'success');
       onRefresh();
     } catch (err) {
       setError((err as Error).message);
@@ -54,6 +58,7 @@ export function SettlementDetail({ settlement, orders, expenses, onRefresh }: Se
     setLoading(true);
     try {
       await closeSettlement(settlement.id);
+      toast('Acerto fechado', 'success');
       onRefresh();
     } catch (err) {
       setError((err as Error).message);
@@ -96,9 +101,7 @@ export function SettlementDetail({ settlement, orders, expenses, onRefresh }: Se
       </div>
 
       {error && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3">
-          <p className="text-sm text-destructive">{error}</p>
-        </div>
+        <Alert tone="danger" title={error} />
       )}
 
       {/* Summary */}

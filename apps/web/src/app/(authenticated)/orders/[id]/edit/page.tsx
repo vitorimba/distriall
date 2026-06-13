@@ -14,6 +14,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page-header';
 import { Money } from '@/components/ui/money';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/toast';
 
 export default function EditOrderPage() {
   const { id } = useParams<{ id: string }>();
@@ -35,6 +36,7 @@ export default function EditOrderPage() {
     getProfit,
   } = useCartStore();
 
+  const toast = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -107,6 +109,7 @@ export default function EditOrderPage() {
     try {
       await updateOrder(id);
       clearCart();
+      toast('Pedido salvo', 'success');
       router.push('/orders');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao atualizar pedido');

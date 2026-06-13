@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
@@ -8,8 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { SearchField } from '@/components/ui/search-field';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert } from '@/components/ui/alert';
 import { FAB } from '@/components/ui/fab';
-import { Users, MapPin, Phone } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Users, MapPin, Phone, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Client {
@@ -38,37 +40,40 @@ export function ClientList() {
   const [clients, setClients] = useState<Client[]>([]);
   const [search, setSearch] = useState('');
   const [loadKey, setLoadKey] = useState(0);
-  const loading = loadKey === 0 && clients.length === 0;
+  const [error, setError] = useState<string | null>(null);
+  const loading = loadKey === 0 && clients.length === 0 && !error;
 
-  useEffect(() => {
+  const loadClients = useCallback(async () => {
     if (!activeAccount) return;
 
-    let cancelled = false;
+    const supabase = createClient();
 
-    async function load() {
-      const supabase = createClient();
+    let query = supabase
+      .from('clients')
+      .select('*, client_prices(count)')
+      .eq('account_id', activeAccount.id)
+      .eq('is_active', true)
+      .order('name');
 
-      let query = supabase
-        .from('clients')
-        .select('*, client_prices(count)')
-        .eq('account_id', activeAccount!.id)
-        .eq('is_active', true)
-        .order('name');
-
-      if (search) {
-        query = query.ilike('name', `%${search}%`);
-      }
-
-      const { data } = await query;
-      if (!cancelled) {
-        setClients((data as unknown as Client[]) ?? []);
-        setLoadKey((k) => k + 1);
-      }
+    if (search) {
+      query = query.ilike('name', `%${search}%`);
     }
 
-    load();
-    return () => { cancelled = true; };
+    const { data, error: fetchError } = await query;
+    if (fetchError) {
+      setError('Nao foi possivel carregar os clientes.');
+    } else {
+      setError(null);
+      setClients((data as unknown as Client[]) ?? []);
+    }
+    setLoadKey((k) => k + 1);
   }, [activeAccount, search]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const t = setTimeout(() => { if (!cancelled) loadClients(); }, 0);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [loadClients]);
 
   function getLocation(client: Client) {
     const parts = [client.neighborhood, client.city].filter(Boolean);
@@ -90,18 +95,32 @@ export function ClientList() {
         onClear={() => setSearch('')}
       />
 
+      {/* Error alert */}
+      {error && (
+        <Alert
+          tone="danger"
+          title={error}
+          action={
+            <Button size="sm" variant="ghost" onClick={loadClients}>
+              <RefreshCw className="size-3.5 mr-1" />
+              Tentar novamente
+            </Button>
+          }
+        />
+      )}
+
       {/* Client List */}
-      {loading ? (
+      {!error && loading ? (
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-14" />)}
         </div>
-      ) : clients.length === 0 ? (
+      ) : !error && clients.length === 0 ? (
         <EmptyState
           icon={Users}
           title={search ? 'Nenhum cliente encontrado' : 'Nenhum cliente ainda'}
           description={search ? undefined : 'Cadastre o primeiro cliente para ve-lo aqui.'}
         />
-      ) : (
+      ) : !error ? (
         <div className="space-y-1">
           {clients.map((client) => {
             const location = getLocation(client);
@@ -143,7 +162,7 @@ export function ClientList() {
             );
           })}
         </div>
-      )}
+      ) : null}
 
       {/* FAB New Client */}
       <Link href="/clients/new">

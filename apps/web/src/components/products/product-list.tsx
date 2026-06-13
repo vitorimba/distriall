@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
@@ -9,9 +9,11 @@ import { SearchField } from '@/components/ui/search-field';
 import { Select } from '@/components/ui/select';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert } from '@/components/ui/alert';
 import { Money } from '@/components/ui/money';
 import { FAB } from '@/components/ui/fab';
-import { Package, ChevronDown, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Package, ChevronDown, ChevronRight, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProductVariant {
@@ -43,40 +45,43 @@ export function ProductList() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [loadKey, setLoadKey] = useState(0);
-  const loading = loadKey === 0 && products.length === 0;
+  const [error, setError] = useState<string | null>(null);
+  const loading = loadKey === 0 && products.length === 0 && !error;
 
-  useEffect(() => {
+  const loadProducts = useCallback(async () => {
     if (!activeAccount) return;
 
-    let cancelled = false;
+    const supabase = createClient();
 
-    async function load() {
-      const supabase = createClient();
+    let query = supabase
+      .from('products')
+      .select('*, product_variants(*)')
+      .eq('account_id', activeAccount.id)
+      .eq('is_active', true)
+      .order('name');
 
-      let query = supabase
-        .from('products')
-        .select('*, product_variants(*)')
-        .eq('account_id', activeAccount!.id)
-        .eq('is_active', true)
-        .order('name');
-
-      if (search) {
-        query = query.ilike('name', `%${search}%`);
-      }
-      if (categoryFilter) {
-        query = query.eq('category', categoryFilter);
-      }
-
-      const { data } = await query;
-      if (!cancelled) {
-        setProducts((data as Product[]) ?? []);
-        setLoadKey((k) => k + 1);
-      }
+    if (search) {
+      query = query.ilike('name', `%${search}%`);
+    }
+    if (categoryFilter) {
+      query = query.eq('category', categoryFilter);
     }
 
-    load();
-    return () => { cancelled = true; };
+    const { data, error: fetchError } = await query;
+    if (fetchError) {
+      setError('Nao foi possivel carregar os produtos.');
+    } else {
+      setError(null);
+      setProducts((data as Product[]) ?? []);
+    }
+    setLoadKey((k) => k + 1);
   }, [activeAccount, search, categoryFilter]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const t = setTimeout(() => { if (!cancelled) loadProducts(); }, 0);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [loadProducts]);
 
   const categories = [...new Set(products.map((p) => p.category).filter(Boolean))] as string[];
 
@@ -120,18 +125,32 @@ export function ProductList() {
         )}
       </div>
 
+      {/* Error alert */}
+      {error && (
+        <Alert
+          tone="danger"
+          title={error}
+          action={
+            <Button size="sm" variant="ghost" onClick={loadProducts}>
+              <RefreshCw className="size-3.5 mr-1" />
+              Tentar novamente
+            </Button>
+          }
+        />
+      )}
+
       {/* Product List */}
-      {loading ? (
+      {!error && loading ? (
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-14" />)}
         </div>
-      ) : products.length === 0 ? (
+      ) : !error && products.length === 0 ? (
         <EmptyState
           icon={Package}
           title={search ? 'Nenhum produto encontrado' : 'Nenhum produto ainda'}
           description={search ? undefined : 'Cadastre o primeiro produto para ve-lo aqui.'}
         />
-      ) : (
+      ) : !error ? (
         <div className="space-y-1">
           {products.map((product) => {
             const expanded = expandedIds.has(product.id);
@@ -195,7 +214,7 @@ export function ProductList() {
             );
           })}
         </div>
-      )}
+      ) : null}
 
       {/* FAB New Product */}
       <Link href="/products/new">

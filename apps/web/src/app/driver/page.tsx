@@ -5,12 +5,19 @@ import { useDriverDeliveries } from '@/hooks/use-driver-deliveries';
 import { DeliveryList } from '@/components/driver/delivery-list';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/toast';
 
 export default function DriverPage() {
   const { user } = useAuth();
+  const toast = useToast();
   const { items, loading, error, refetch, markDelivered } = useDriverDeliveries(
     user?.id
   );
+
+  async function handleDelivered(itemId: string, orderId: string, observation: string) {
+    await markDelivered(itemId, orderId, observation);
+    toast('Entrega confirmada', 'success');
+  }
   // Realtime subscription is managed inside useDriverDeliveries
   // (scoped to this driver's delivery_id to avoid cross-driver event leakage)
 
@@ -56,7 +63,7 @@ export default function DriverPage() {
 
       <DeliveryList
         items={items}
-        onDelivered={markDelivered}
+        onDelivered={handleDelivered}
       />
     </div>
   );

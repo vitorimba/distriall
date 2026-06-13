@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/toast';
 
 interface ClientFormProps {
   client?: {
@@ -28,6 +29,7 @@ interface ClientFormProps {
 export function ClientForm({ client }: ClientFormProps) {
   const isEdit = !!client;
   const router = useRouter();
+  const toast = useToast();
   const { activeAccount } = useAccount();
 
   const [name, setName] = useState(client?.name ?? '');
@@ -87,6 +89,7 @@ export function ClientForm({ client }: ClientFormProps) {
     }
 
     setSaving(false);
+    toast('Cliente salvo', 'success');
     router.push(isEdit && client ? `/clients/${client.id}` : '/clients');
   }
 

@@ -12,9 +12,11 @@ import { Badge } from '@/components/ui/badge';
 import { SearchField } from '@/components/ui/search-field';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert } from '@/components/ui/alert';
 import { Money } from '@/components/ui/money';
 import { FAB } from '@/components/ui/fab';
-import { ClipboardList } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ClipboardList, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface OrderRow {
@@ -57,7 +59,8 @@ export function OrderList() {
   const [search, setSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [loadKey, setLoadKey] = useState(0);
-  const loading = loadKey === 0 && orders.length === 0;
+  const [error, setError] = useState<string | null>(null);
+  const loading = loadKey === 0 && orders.length === 0 && !error;
 
   const loadOrders = useCallback(async () => {
     if (!activeAccount) return;
@@ -76,7 +79,13 @@ export function OrderList() {
       query = query.eq('payment_method', paymentFilter);
     }
 
-    const { data } = await query;
+    const { data, error: fetchError } = await query;
+    if (fetchError) {
+      setError('Nao foi possivel carregar os pedidos.');
+      setLoadKey((k) => k + 1);
+      return;
+    }
+    setError(null);
     let result = (data as unknown as OrderRow[]) ?? [];
 
     // Client-side search filter
@@ -153,18 +162,32 @@ export function OrderList() {
       <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
       <ChipFilter options={PAYMENT_FILTERS} selected={paymentFilter} onChange={setPaymentFilter} />
 
+      {/* Error alert */}
+      {error && (
+        <Alert
+          tone="danger"
+          title={error}
+          action={
+            <Button size="sm" variant="ghost" onClick={loadOrders}>
+              <RefreshCw className="size-3.5 mr-1" />
+              Tentar novamente
+            </Button>
+          }
+        />
+      )}
+
       {/* Order list */}
-      {loading ? (
+      {!error && loading ? (
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} variant="rect" className="h-16" />)}
         </div>
-      ) : orders.length === 0 ? (
+      ) : !error && orders.length === 0 ? (
         <EmptyState
           icon={ClipboardList}
           title={search || statusFilter !== 'all' ? 'Nenhum pedido encontrado' : 'Nenhum pedido ainda'}
           description={search || statusFilter !== 'all' ? undefined : 'Lance o primeiro pedido para ve-lo aqui.'}
         />
-      ) : (
+      ) : !error ? (
         <div className="space-y-1 pb-24">
           {orders.map((order) => {
             const isSelected = selectedIds.has(order.id);
@@ -221,7 +244,7 @@ export function OrderList() {
             );
           })}
         </div>
-      )}
+      ) : null}
 
       {/* Action bar for batch operations */}
       {selectedIds.size > 0 && (

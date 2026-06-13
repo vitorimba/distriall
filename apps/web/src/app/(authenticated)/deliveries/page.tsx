@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { createClient } from '@/lib/supabase/client';
@@ -12,6 +12,8 @@ import { RouteBuilder } from '@/components/deliveries/route-builder';
 import { AvailableOrders } from '@/components/deliveries/available-orders';
 import { reassignSequences } from '@/lib/delivery-utils';
 import { PageHeader } from '@/components/ui/page-header';
+import { Alert } from '@/components/ui/alert';
+import { useToast } from '@/components/ui/toast';
 
 interface Driver {
   id: string;
@@ -29,13 +31,13 @@ export default function DeliveriesPage() {
   // Local route items used only before delivery is sent (draft state)
   const [draftRouteItems, setDraftRouteItems] = useState<RouteItem[]>([]);
   const [isSending, setIsSending] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pushToast = useToast();
 
   const {
     availableOrders,
     currentDelivery,
     loading,
+    error: deliveryError,
     fetchAvailableOrders,
     fetchCurrentDelivery,
     createDelivery,
@@ -52,10 +54,8 @@ export default function DeliveriesPage() {
   const deliverySent = currentDelivery !== null;
   const canEdit = !currentDelivery || currentDelivery.status === 'pendente';
 
-  function showToast(message: string) {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    setToast(message);
-    toastTimerRef.current = setTimeout(() => setToast(null), 3000);
+  function showToast(message: string, tone: 'success' | 'danger' | 'info' = 'info') {
+    pushToast(message, tone);
   }
 
   // Load drivers (entregadores) from account_users
@@ -169,11 +169,11 @@ export default function DeliveriesPage() {
         routeItems: draftRouteItems,
       });
       const driverName = drivers.find((d) => d.id === selectedDriverId)?.name ?? 'entregador';
-      showToast(`Rota enviada para ${driverName}!`);
+      showToast(`Rota enviada para ${driverName}`, 'success');
       setDraftRouteItems([]);
       loadCurrentDelivery();
     } catch (err) {
-      showToast('Erro ao enviar rota: ' + (err as Error).message);
+      showToast('Erro ao enviar rota: ' + (err as Error).message, 'danger');
     } finally {
       setIsSending(false);
     }
@@ -215,6 +215,11 @@ export default function DeliveriesPage() {
         </div>
       </div>
 
+      {/* Delivery error */}
+      {deliveryError && (
+        <Alert tone="danger" title="Nao foi possivel carregar as entregas." />
+      )}
+
       {/* Route builder */}
       <RouteBuilder
         items={routeItems}
@@ -239,11 +244,6 @@ export default function DeliveriesPage() {
         />
       </div>
 
-      {toast && (
-        <div className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-2xl bg-gray-900 px-6 py-3 text-sm font-medium text-white shadow-lg">
-          {toast}
-        </div>
-      )}
     </div>
   );
 }

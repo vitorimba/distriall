@@ -3,6 +3,8 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { Money } from '@/components/ui/money';
+import { EmptyState } from '@/components/ui/empty-state';
+import { TrendingUp } from 'lucide-react';
 import type { Settlement } from '@distriall/shared';
 
 interface RevenueBreakdownProps {
@@ -50,7 +52,7 @@ export function RevenueBreakdown({ settlement }: RevenueBreakdownProps) {
         })}
 
         {total === 0 && (
-          <p className="text-sm text-muted-foreground py-2">Nenhuma receita no periodo</p>
+          <EmptyState icon={TrendingUp} title="Nenhuma receita no periodo" />
         )}
       </CardContent>
     </Card>

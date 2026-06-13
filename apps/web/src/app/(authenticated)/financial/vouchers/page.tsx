@@ -13,7 +13,9 @@ import { StatusBadge } from '@/components/ui/status-badge';
 import { Money } from '@/components/ui/money';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Check, Image as ImageIcon, Ticket } from 'lucide-react';
+import { Alert } from '@/components/ui/alert';
+import { useToast } from '@/components/ui/toast';
+import { Check, Image as ImageIcon, Ticket, RefreshCw } from 'lucide-react';
 import { PageHeader } from '@/components/ui/page-header';
 
 interface VoucherRow {
@@ -47,17 +49,26 @@ export default function VouchersPage() {
   const router = useRouter();
   const { activeAccount } = useAccount();
   const { listVouchers, markAsPaid } = useVouchers();
+  const toast = useToast();
   const [vouchers, setVouchers] = useState<VoucherRow[]>([]);
   const [statusFilter, setStatusFilter] = useState('pendente');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   async function load() {
     if (!activeAccount) return;
     setLoading(true);
-    const data = await listVouchers(activeAccount.id, statusFilter);
-    setVouchers(data as unknown as VoucherRow[]);
-    setLoading(false);
+    setLoadError(null);
+    try {
+      const data = await listVouchers(activeAccount.id, statusFilter);
+      setVouchers(data as unknown as VoucherRow[]);
+    } catch {
+      setLoadError('Nao foi possivel carregar os vales.');
+      setVouchers([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -68,6 +79,7 @@ export default function VouchersPage() {
 
   async function handleMarkPaid(id: string) {
     await markAsPaid(id);
+    toast('Vale marcado como pago', 'success');
     load();
   }
 
@@ -87,6 +99,19 @@ export default function VouchersPage() {
       />
 
       <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
+
+      {loadError && (
+        <Alert
+          tone="danger"
+          title={loadError}
+          action={
+            <Button size="sm" variant="ghost" onClick={load}>
+              <RefreshCw className="size-3.5 mr-1" />
+              Tentar novamente
+            </Button>
+          }
+        />
+      )}
 
       {loading ? (
         <div className="space-y-2">

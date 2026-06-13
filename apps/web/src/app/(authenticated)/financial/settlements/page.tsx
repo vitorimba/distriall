@@ -16,11 +16,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Plus, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, Calendar, BarChart2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Settlement } from '@distriall/shared';
 import { PageHeader } from '@/components/ui/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Alert } from '@/components/ui/alert';
+import { useToast } from '@/components/ui/toast';
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'Todos' },
@@ -51,6 +54,7 @@ export default function SettlementsPage() {
   const router = useRouter();
   const { activeAccount } = useAccount();
   const { listSettlements, generateSettlement } = useSettlements();
+  const toast = useToast();
   const [settlements, setSettlements] = useState<Settlement[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -61,10 +65,12 @@ export default function SettlementsPage() {
   const [newStart, setNewStart] = useState(getWeekStart(new Date()));
   const [newEnd, setNewEnd] = useState(getWeekEnd(new Date()));
   const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   async function load() {
     if (!activeAccount) return;
     setLoading(true);
+    setLoadError(null);
     try {
       const data = await listSettlements({
         accountId: activeAccount.id,
@@ -74,6 +80,7 @@ export default function SettlementsPage() {
       });
       setSettlements(data);
     } catch {
+      setLoadError('Nao foi possivel carregar os acertos.');
       setSettlements([]);
     } finally {
       setLoading(false);
@@ -96,6 +103,7 @@ export default function SettlementsPage() {
         periodStart: newStart,
         periodEnd: newEnd,
       });
+      toast('Acerto gerado', 'success');
       load();
     } catch (err) {
       setError((err as Error).message);
@@ -170,6 +178,20 @@ export default function SettlementsPage() {
         </div>
       )}
 
+      {/* Load error */}
+      {loadError && (
+        <Alert
+          tone="danger"
+          title={loadError}
+          action={
+            <Button size="sm" variant="ghost" onClick={load}>
+              <RefreshCw className="size-3.5 mr-1" />
+              Tentar novamente
+            </Button>
+          }
+        />
+      )}
+
       {/* List */}
       {loading ? (
         <div className="space-y-2">
@@ -178,7 +200,7 @@ export default function SettlementsPage() {
           ))}
         </div>
       ) : settlements.length === 0 ? (
-        <div className="py-8 text-center text-muted-foreground">Nenhum acerto encontrado.</div>
+        <EmptyState icon={BarChart2} title="Nenhum acerto ainda" description="Gere o primeiro acerto semanal." />
       ) : (
         <div className="space-y-2">
           {settlements.map((s) => {

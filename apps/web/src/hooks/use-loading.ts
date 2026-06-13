@@ -6,13 +6,15 @@ import type { OrderWithItems } from '@distriall/shared';
 export function useLoading() {
   const { setOrders } = useLoadingStore();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   async function fetchOrders() {
     setLoading(true);
+    setError(null);
     const supabase = createClient();
 
     // RLS returns orders from ALL user accounts automatically
-    const { data } = await supabase
+    const { data, error: fetchError } = await supabase
       .from('orders')
       .select(`
         *,
@@ -23,6 +25,11 @@ export function useLoading() {
       .in('status', ['lancado', 'confirmado'])
       .order('created_at', { ascending: false });
 
+    if (fetchError) {
+      setError('Nao foi possivel carregar os pedidos de carregamento.');
+      setLoading(false);
+      return;
+    }
     const mapped: OrderWithItems[] = (data ?? []).map((o) => {
       const client = o.client as unknown as { name: string } | null;
       const account = o.account as unknown as { name: string; slug: string } | null;
@@ -55,5 +62,5 @@ export function useLoading() {
     return () => { cancelled = true; clearTimeout(t); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { loading, refetch: fetchOrders };
+  return { loading, error, refetch: fetchOrders };
 }
