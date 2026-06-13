@@ -52,3 +52,4 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 |-------|--------|--------|------|
 | 5.1.1 | Adicionar PageHeader em todas as paginas | Done | 2026-06-13 |
 | 5.1.2 | Substituir formatBRL por Money component em todo o app | Done | 2026-06-13 |
+| 5.1.3 | Chip filters para periodo no dashboard e stats | Done | 2026-06-12 |
