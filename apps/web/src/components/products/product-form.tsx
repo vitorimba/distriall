@@ -312,6 +312,8 @@ export function ProductForm({ product }: ProductFormProps) {
                     value={v.cost_price}
                     onChange={(e) => updateVariant(i, 'cost_price', maskMoney(e.target.value))}
                     placeholder="0,00"
+                    prefix="R$"
+                    className="num"
                     required
                   />
                 </Field>
@@ -327,6 +329,8 @@ export function ProductForm({ product }: ProductFormProps) {
                     }}
                     aria-invalid={!!variantErrors[i]?.sell_price}
                     placeholder="0,00"
+                    prefix="R$"
+                    className="num"
                     required
                   />
                 </Field>

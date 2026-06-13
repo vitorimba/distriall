@@ -151,7 +151,8 @@ export function PaymentSelector({ defaultMethod, orderTotal, onChange }: Payment
                 onChange={(e) => updateMixed(i, 'amountDisplay', maskMoney(e.target.value))}
                 onBlur={() => i === mixedPayments.length - 1 && autoFillLast()}
                 placeholder="0,00"
-                className="flex-1"
+                prefix="R$"
+                className="flex-1 num"
               />
               {p.method === 'boleto' && (
                 <span className="text-[10px] text-orange-600 shrink-0">Boa Mesa</span>

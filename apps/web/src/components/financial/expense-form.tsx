@@ -199,7 +199,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Valor (R$)" required error={fieldErrors.amount}>
+            <Field label="Valor" required error={fieldErrors.amount}>
               <Input
                 id="amount"
                 type="text"
@@ -212,6 +212,8 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
                 }}
                 aria-invalid={!!fieldErrors.amount}
                 placeholder="0,00"
+                prefix="R$"
+                className="num"
                 required
               />
             </Field>
