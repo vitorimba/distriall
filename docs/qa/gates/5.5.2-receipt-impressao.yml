@@ -1,0 +1,150 @@
+schema: 1
+story: '5.5'
+story_id: '5.5.2'
+story_title: 'Componente Receipt para impressao termica + Dialog de preview'
+gate: CONCERNS
+status_reason: >
+  Implementação sólida: port fiel do DS, DS tokens corretos, Dialog DS integrado,
+  print CSS bem estruturado. CONCERNS por: (1) ausência de testes automatizados para
+  receipt.tsx e order-receipt.tsx, (2) AC3 — botão "Imprimir" dentro do Dialog usa
+  window.print() em vez de tentar Web Bluetooth primeiro (Bluetooth está no pai, não no Dialog),
+  (3) deploy_type vercel sem infrastructure-map.json no projeto (reincidência de I03 de 5.5.1).
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-13T19:00:00Z'
+
+top_issues:
+  - id: I01
+    severity: medium
+    category: tests
+    description: >
+      Nenhum teste unitário ou de integração para receipt.tsx e order-receipt.tsx.
+      Cenários de validação da story (dual-theme, Dialog abre correto, itens renderizados,
+      window.print chamado, handle share) não têm cobertura automatizada.
+    recommendation: >
+      Adicionar testes com vitest + @testing-library/react cobrindo: (a) Receipt renderiza
+      itens corretamente, (b) subtotal/desconto opcionais, (c) OrderReceipt abre Dialog
+      ao receber open=true, (d) botão Imprimir chama window.print(), (e) handleShare
+      usa navigator.share ou clipboard fallback.
+    suggested_owner: dev
+
+  - id: I02
+    severity: medium
+    category: requirements
+    description: >
+      AC3 especifica que o botão "Imprimir" no Dialog tenta Web Bluetooth (Chrome/Edge Android).
+      Na implementação, o Bluetooth está no pai (page.tsx) e o Dialog contém apenas window.print().
+      O Dialog é o fallback para quando Bluetooth não está disponível ou falha — mas o AC diz
+      que o botão no Dialog tenta BT. Há ambiguidade: a arquitetura (BT no pai) é tecnicamente
+      melhor (evita dupla instância do hook), mas diverge da especificação literal do AC.
+    recommendation: >
+      Alinha com PO: aceitar a arquitetura atual (BT no pai, Dialog = fallback window.print)
+      ou ajustar AC3 para refletir o design real. Recomendo aceitar como WONT_FIX com
+      justificativa técnica documentada (dupla instância do hook seria incorreta).
+    suggested_owner: po
+
+  - id: I03
+    severity: low
+    category: infrastructure
+    description: >
+      deploy_type: vercel definido na story mas infrastructure/infrastructure-map.json
+      não existe no projeto. Deploy readiness não pode ser validado via registry formal.
+      Reincidência do I03 de 5.5.1 — não foi criado entre as duas stories.
+    recommendation: >
+      Criar infrastructure/infrastructure-map.json com entrada para vercel, ou remover
+      deploy_type das stories se o workflow atual não usa registry formal.
+    suggested_owner: sm
+
+  - id: I04
+    severity: low
+    category: code
+    description: >
+      order-receipt.tsx: data/hora do recibo usa new Date() no render (linha 57), sem
+      useMemo. Em SSR/SSG isso não é problema (componente é 'use client'), mas cada
+      re-render gera uma nova instância. Low severity porque o Dialog abre raramente.
+    recommendation: >
+      Memoizar: const date = useMemo(() => new Date().toLocaleString('pt-BR'), []);
+      ou receber como prop para consistência entre renders do Dialog.
+    suggested_owner: dev
+
+waiver:
+  active: false
+
+quality_score: 76
+
+expires: '2026-06-27T19:00:00Z'
+
+evidence:
+  tests_reviewed: 0
+  tests_specific_to_story: 0
+  risks_identified: 4
+  coderabbit_iterations: 0
+  coderabbit_status: 'SKIPPED — WSL nao instalado neste ambiente (unico motivo valido per SKILL.md Step 0 rule)'
+  code_intel_status: 'SKIPPED — isCodeIntelAvailable() = false, nao configurado'
+  skill_defaults_status: 'ABSENT — .sinkra/config/skill-defaults.json nao existe; quality_score calculado por avaliacao manual (reincidencia de gap de 5.5.1)'
+  trace:
+    ac_covered:
+      - '1'  # Receipt renderiza P&B com tokens --receipt-*; da-receipt classes aplicadas
+      - '2'  # Dialog DS usa @base-ui/react/dialog com Receipt dentro; max-w-[320px] ~ 58mm visual
+      - '4'  # Fallback window.print() no botao Imprimir do Dialog; @media print oculta navegacao
+      - '5'  # Tokens --receipt-paper/#FFFFFF, --receipt-ink/#18181B fixos em :root; nao mudam com tema
+    ac_gaps:
+      - '3'  # AC3 ambiguo: BT no pai (page.tsx), nao no Dialog — arquitetura tecnicamente melhor mas diverge do AC literal
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: >
+      Nenhuma superficie de ataque. window.print() e navigator.share sao APIs de browser
+      padrao sem risco de injecao. handleShare usa template string com dados ja sanitizados
+      pelo Supabase. Nenhum input do usuario direto nos componentes de recibo.
+  performance:
+    status: PASS
+    notes: >
+      receipt.tsx e estateless e puro. order-receipt.tsx tem apenas uma instancia de new Date()
+      por abertura de Dialog (low impact). Dialog base-ui usa animacoes CSS-only. @media print
+      usa display:none, sem reflow pesado. Sem consultas ao banco nos componentes de recibo.
+  reliability:
+    status: PASS
+    notes: >
+      printOrder no pai usa try/catch que faz fallback para setShowReceipt(true) em caso de
+      erro BT. window.print() e sincrono e nao pode falhar silenciosamente. handleShare tem
+      fallback clipboard quando navigator.share nao disponivel. Casos de borda cobertos.
+  maintainability:
+    status: CONCERNS
+    notes: >
+      Sem testes automatizados para receipt.tsx e order-receipt.tsx. Port do DS e fiel
+      mas nao verificado por suite automatizada. Futuros devs nao tem safety net para
+      regredir o comportamento de dual-theme ou fallback de impressao.
+
+recommendations:
+  immediate: []
+  future:
+    - action: >
+        Adicionar testes vitest/testing-library para receipt.tsx: renderizacao de itens,
+        subtotal/desconto opcionais, fmt() correctness, largura 80mm
+      refs:
+        - 'apps/web/src/components/orders/receipt.tsx'
+      suggested_owner: dev
+    - action: >
+        Adicionar testes vitest/testing-library para order-receipt.tsx: Dialog abre/fecha,
+        botao Imprimir chama window.print, handleShare usa navigator.share ou clipboard
+      refs:
+        - 'apps/web/src/components/orders/order-receipt.tsx'
+      suggested_owner: dev
+    - action: >
+        Alinhar AC3 com PO: aceitar que Bluetooth e responsabilidade do pai (page.tsx) e
+        que o Dialog serve como fallback window.print(). Ajustar redacao do AC se aprovado.
+      refs:
+        - 'docs/stories/epic-5-ds-fidelity/5.5.2.receipt-impressao.md'
+      suggested_owner: po
+    - action: >
+        Memoizar date em order-receipt.tsx: usar useMemo(() => new Date().toLocaleString("pt-BR"), [])
+        para evitar recalculo em re-renders do Dialog aberto
+      refs:
+        - 'apps/web/src/components/orders/order-receipt.tsx'
+      suggested_owner: dev
+    - action: >
+        Criar infrastructure/infrastructure-map.json com entrada vercel (reincidencia de 5.5.1)
+      refs:
+        - 'infrastructure/'
+      suggested_owner: sm

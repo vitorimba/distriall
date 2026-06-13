@@ -71,6 +71,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.4.2 | Aplicar mascaras nos formularios | Done | 2026-06-13 |
 | 5.4.3 | Validacao no blur e submit, nunca a cada tecla | Done | 2026-06-13 |
 | 5.4.4 | Inputs de moeda com prefixo R$ e classe .num | Done | 2026-06-13 |
+| 5.5.1 | Order detail com stepper visual de status | Done | 2026-06-13 |
 
 ## Development Log
 
@@ -172,3 +173,25 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 **Sub-epic 5.4 COMPLETE (4/4):** maskUtils → mascaras nos forms → blur validation → prefixo R$ + .num. Todos os criterios de formularios e mascaras do Epic 5 atendidos.
 
 **Tests:** 0 novos (62 existentes passando — 33 mask-utils + 29 outros). **Deploy:** Vercel — commits 1956f8d+89b7e45, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel).
+
+### Story 5.5.1 — Order detail com stepper visual de status (2026-06-13)
+
+**Built:**
+- (CREATE) `apps/web/src/components/orders/order-status-stepper.tsx` — componente puro `OrderStatusStepper({ status: OrderStatus })`. Renderiza 4 dots (9px) + linhas (26px x 2px) com tokens `var(--accent)` para passos concluidos e `var(--border-strong)` para futuros. Outline `3px solid var(--accent-soft-border)` no passo atual. Caso `cancelado`: todos dots cinza + label "Cancelado" em `text-destructive`. Labels `text-[10px]` abaixo de cada dot.
+- (ADAPT) `apps/web/src/app/(authenticated)/orders/[id]/page.tsx` — stepper integrado em `<Card><CardContent>` logo apos o `<PageHeader>`, antes dos botoes de transicao. Badge `<OrderStatusBadge>` preservado no `actions` do PageHeader. `canEdit` intacto.
+
+**Patterns established:**
+- Componente de status visual segue estrutura do DS ui_kit (`OrderDetailScreen.jsx` linhas 23-53) como referencia canonica — nao reimplementar, seguir o padrao de dots
+- Tokens `var(--accent)`, `var(--border-strong)`, `var(--accent-soft-border)` sao os tokens canônicos para steppers de status — confirmados em `packages/design-system/tokens/colors.css` nos temas dark e light
+- Estado `cancelado` tratado como estado lateral (fora do FLOW linear) — `FLOW.indexOf('cancelado')` retorna `-1`, logo `i <= -1` e sempre false, todos dots ficam cinza automaticamente
+- Componente puro sem estado proprio — recebe `status` via props do page, sem side effects
+
+**Key decisions:**
+- AC 3 posicionamento do label "Cancelado": WONT_FIX — implementacao coloca label inline apos ultimo dot (ml-2) em vez de abaixo do ultimo passo atingido. Decisao do PO: simplificacao aceita, rastreamento de ultimo status pre-cancelamento seria over-engineering para o caso de uso atual.
+- Badge `<OrderStatusBadge>` no PageHeader mantido sem alteracao — o stepper e complementar, nao substituto.
+
+**Tech debt identified:**
+- Sem testes unitarios para `OrderStatusStepper` (5 cenarios de status sem cobertura automatizada) — I02 do gate QA. Deferred para story tecnica futura em 5.x.
+- `infrastructure/infrastructure-map.json` nao existe no projeto — I03 do gate QA. N/A para o workflow atual (deploy direto via Vercel CLI).
+
+**Tests:** 0 novos (33 existentes passando). **Deploy:** Vercel — commit 2d8af57, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** CONCERNS (76/100) — aceito pelo PO, nao-bloqueante.
