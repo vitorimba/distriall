@@ -27,7 +27,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.1 | Fundacao de Fidelidade ao DS | 8 | 26 | CRITICAL |
 | 5.2 | Charts SVG e Recharts | 5 | 12 | HIGH |
 | 5.3 | States Canonicos | 4 | 16 | HIGH |
-| 5.4 | Formularios e Mascaras | 4 | 13 | MEDIUM |
+| 5.4 | Formularios e Mascaras ✓ COMPLETE | 4 | 13 | MEDIUM |
 | 5.5 | Telas Faltantes e Patterns | 6 | 23 | MEDIUM |
 | 5.6 | Polish Visual Final | 5 | 12 | LOW |
 | | **Total** | **32** | **102** | |
@@ -70,6 +70,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.4.1 | maskUtils.ts com mascaras pt-BR | Done | 2026-06-13 |
 | 5.4.2 | Aplicar mascaras nos formularios | Done | 2026-06-13 |
 | 5.4.3 | Validacao no blur e submit, nunca a cada tecla | Done | 2026-06-13 |
+| 5.4.4 | Inputs de moeda com prefixo R$ e classe .num | Done | 2026-06-13 |
 
 ## Development Log
 
@@ -146,3 +147,28 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 - `MSG.required` usado para `amount <= 0` em expense-form — tecnicamente correto mas semanticamente impreciso. Candidato a `MSG.valueInvalid` em story futura.
 
 **Tests:** 0 novos (33 existentes passando). **Deploy:** Vercel — commit 9908969, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel).
+
+### Story 5.4.4 — Inputs de moeda com prefixo R$ e classe .num (2026-06-13)
+
+**Built:**
+- (ADAPT) `apps/web/src/components/ui/input.tsx` — prop `prefix?: React.ReactNode` adicionada com `Omit<React.ComponentProps<"input">, "prefix">` para evitar conflito com atributo HTML nativo; wrapper condicional `div > span + InputPrimitive` aplicado apenas quando prefix presente
+- (ADAPT) `apps/web/src/components/financial/expense-form.tsx` — `prefix="R$" className="num"` no campo amount
+- (ADAPT) `apps/web/src/components/financial/payment-selector.tsx` — `prefix="R$" className="num"` no input amountDisplay (modo misto)
+- (ADAPT) `apps/web/src/components/products/product-form.tsx` — `prefix="R$" className="num"` nos campos cost_price e sell_price por variante
+
+**Patterns established:**
+- `Omit<React.ComponentProps<"input">, "prefix">` e o padrao correto ao adicionar props a wrappers de elementos HTML nativos — evita conflito com atributos DOM existentes
+- Wrapper prefix: `span` com `h-8 inline-flex items-center rounded-l-lg border border-r-0 border-input bg-muted px-2.5 text-sm select-none` + Input com `rounded-l-none`; `select-none` garante nao editabilidade via interacao
+- `.num` ja definida em `apps/web/src/app/globals.css` com `font-variant-numeric: tabular-nums` e `font-feature-settings: 'tnum'` — usar `className="num"` diretamente, sem duplicar em Tailwind
+
+**Key decisions:**
+- Wrapper condicional: sem prefix → comportamento identico ao anterior (zero impacto em consumers existentes)
+- `Omit` em vez de `React.ComponentProps<"input">` direto — necessario porque `prefix` ja existe como atributo HTML (namespace XML, obsoleto mas presente no tipo)
+
+**Tech debt identified:**
+- Testes RTL para Input com prefix ausentes (verificar span, texto "R$", select-none, rounded-l-none) — carry-over da serie 5.4.x
+- Import `ProductVariantInput` nao utilizado em product-form.tsx linha 7 — pre-existente, nao introduzido por 5.4.x
+
+**Sub-epic 5.4 COMPLETE (4/4):** maskUtils → mascaras nos forms → blur validation → prefixo R$ + .num. Todos os criterios de formularios e mascaras do Epic 5 atendidos.
+
+**Tests:** 0 novos (62 existentes passando — 33 mask-utils + 29 outros). **Deploy:** Vercel — commits 1956f8d+89b7e45, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel).

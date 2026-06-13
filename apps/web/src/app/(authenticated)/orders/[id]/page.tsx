@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { type OrderStatus, ORDER_STATUS_LABELS } from '@distriall/shared';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
+import { OrderStatusStepper } from '@/components/orders/order-status-stepper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, ArrowRight, Pencil, Printer, RotateCcw } from 'lucide-react';
@@ -190,6 +191,13 @@ export default function OrderDetailPage() {
           <p className="text-sm text-muted-foreground">—</p>
         )}
       </PageHeader>
+
+      {/* Status Stepper */}
+      <Card>
+        <CardContent className="py-3">
+          <OrderStatusStepper status={order.status} />
+        </CardContent>
+      </Card>
 
       {/* Status transition buttons */}
       <div className="flex gap-2">

@@ -1,0 +1,81 @@
+schema: 1
+story: '5.5'
+story_id: '5.5.1'
+story_title: 'Order detail com stepper visual de status'
+gate: CONCERNS
+status_reason: 'Implementação funcional e fiel à referência canônica do DS. CONCERNS por: (1) AC 3 divergência leve de posicionamento do label Cancelado, (2) ausência de testes unitários automatizados para o componente OrderStatusStepper, (3) deploy_type vercel sem infrastructure-map.json no projeto.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-13T17:30:00Z'
+
+top_issues:
+  - id: I01
+    severity: medium
+    category: requirements
+    description: 'AC 3 especifica label "Cancelado" abaixo do ultimo passo atingido antes do cancelamento. A implementacao coloca o label apos o ultimo dot (ml-2 inline), nao rastreia qual passo precedeu o cancelamento.'
+    recommendation: 'Aceitar como WONT_FIX se posicionamento simplificado for aprovado pelo PO, ou rastrear ultimo status antes do cancelamento via campo confirmed_at/loaded_at do order.'
+    suggested_owner: po
+  - id: I02
+    severity: medium
+    category: tests
+    description: 'Nenhum teste unitario ou de componente para OrderStatusStepper. Cinco cenarios de status (lancado, confirmado, carregado, entregue, cancelado) sao definidos na story como cenarios manuais mas nao tem cobertura automatizada.'
+    recommendation: 'Adicionar testes com vitest + @testing-library/react para os 5 cenarios de status definidos nos cenarios de validacao da story.'
+    suggested_owner: dev
+  - id: I03
+    severity: low
+    category: infrastructure
+    description: 'deploy_type: vercel definido na story mas infrastructure/infrastructure-map.json nao existe no projeto. Deploy readiness nao pode ser validado via registry formal.'
+    recommendation: 'Criar infrastructure-map.json com entrada para vercel, ou remover deploy_type da story se nao aplicavel ao workflow atual.'
+    suggested_owner: sm
+
+waiver:
+  active: false
+
+quality_score: 76
+
+expires: '2026-06-27T17:30:00Z'
+
+evidence:
+  tests_reviewed: 33
+  tests_specific_to_story: 0
+  risks_identified: 3
+  coderabbit_iterations: 0
+  coderabbit_status: 'SKIPPED — WSL nao instalado neste ambiente (unico motivo valido)'
+  trace:
+    ac_covered:
+      - '1'
+      - '2'
+      - '4'
+      - '5'
+    ac_gaps:
+      - '3'
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Componente pure, sem inputs de usuario, sem chamadas externas. Nenhuma superficie de ataque identificada.'
+  performance:
+    status: PASS
+    notes: 'Componente estateless, renderizacao minima. Sem loops pesados ou efeitos colaterais.'
+  reliability:
+    status: PASS
+    notes: 'status === cancelado tratado explicitamente. idx === -1 (cancelado no FLOW) resulta em todos dots cinza corretamente pois FLOW.indexOf retorna -1 e i <= -1 e sempre false.'
+  maintainability:
+    status: CONCERNS
+    notes: 'Sem testes automatizados para os 5 cenarios de status. Logica de cancelado e clara mas nao coberta por suite de testes.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Adicionar testes unitarios para OrderStatusStepper cobrindo os 5 cenarios de status definidos nos cenarios de validacao da story'
+      refs:
+        - 'apps/web/src/components/orders/order-status-stepper.tsx'
+      suggested_owner: dev
+    - action: 'Alinhar com PO sobre posicionamento do label Cancelado (AC 3): aceitar simplificacao atual ou implementar rastreamento de ultimo status'
+      refs:
+        - 'apps/web/src/components/orders/order-status-stepper.tsx'
+        - 'docs/stories/epic-5-ds-fidelity/5.5.1.order-detail-stepper.md'
+      suggested_owner: po
+    - action: 'Criar infrastructure/infrastructure-map.json com entrada vercel para habilitar deploy readiness review formal'
+      refs:
+        - 'infrastructure/'
+      suggested_owner: sm
