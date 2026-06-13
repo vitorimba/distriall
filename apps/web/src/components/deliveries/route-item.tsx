@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, X } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
 import { PAYMENT_METHOD_LABELS, PAYMENT_METHOD_COLORS } from '@distriall/shared';
 import type { RouteItem as RouteItemType } from '@/hooks/use-deliveries';
 
@@ -13,7 +13,7 @@ interface RouteItemProps {
   dragId: string;
 }
 
-export function RouteItem({ item, onRemove, canEdit, dragId }: RouteItemProps) {
+export function RouteItem({ item, canEdit, dragId }: RouteItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: dragId,
     disabled: !canEdit,
@@ -43,32 +43,25 @@ export function RouteItem({ item, onRemove, canEdit, dragId }: RouteItemProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-start gap-3 rounded-xl border p-3 shadow-sm ${
-        isDelivered ? 'bg-gray-50 border-gray-200 opacity-70' : 'bg-white border-gray-200'
-      }`}
+      className="flex items-start gap-2 min-w-0"
     >
       {/* Drag handle */}
       {canEdit && (
         <button
           {...attributes}
           {...listeners}
-          className="mt-1 cursor-grab touch-none text-gray-400 active:cursor-grabbing"
+          className="mt-0.5 cursor-grab touch-none text-[var(--text-muted)] active:cursor-grabbing shrink-0"
           aria-label="Arrastar para reordenar"
         >
-          <GripVertical className="size-5" />
+          <GripVertical className="size-4" />
         </button>
       )}
 
-      {/* Sequence number */}
-      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-        {item.sequence}
-      </span>
-
       {/* Content */}
       <div className="min-w-0 flex-1">
-        <p className="truncate font-semibold text-gray-900">{item.client_name}</p>
+        <p className="truncate font-semibold text-[var(--text-primary)] text-sm">{item.client_name}</p>
         {fullAddress && (
-          <p className="truncate text-sm text-gray-500">{fullAddress}</p>
+          <p className="truncate text-xs text-[var(--text-secondary)]">{fullAddress}</p>
         )}
         <div className="mt-1 flex flex-wrap items-center gap-2">
           {paymentLabel && (
@@ -88,17 +81,6 @@ export function RouteItem({ item, onRemove, canEdit, dragId }: RouteItemProps) {
           )}
         </div>
       </div>
-
-      {/* Remove button */}
-      {canEdit && onRemove && item.delivery_item_id && !isDelivered && (
-        <button
-          onClick={() => onRemove(item.delivery_item_id!)}
-          className="ml-1 mt-0.5 rounded-lg p-1 text-gray-400 hover:bg-red-50 hover:text-red-600"
-          aria-label="Remover da rota"
-        >
-          <X className="size-4" />
-        </button>
-      )}
     </div>
   );
 }

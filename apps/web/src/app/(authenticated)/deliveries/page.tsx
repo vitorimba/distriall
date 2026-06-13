@@ -142,19 +142,33 @@ export default function DeliveriesPage() {
     );
     if (oldIndex === -1 || newIndex === -1) return;
 
-    const reordered = reassignSequences(arrayMove(routeItems, oldIndex, newIndex));
+    applyReorder(arrayMove(routeItems, oldIndex, newIndex));
+  }
+
+  function handleMoveUp(index: number) {
+    if (index === 0) return;
+    applyReorder(arrayMove(routeItems, index, index - 1));
+  }
+
+  function handleMoveDown(index: number) {
+    if (index === routeItems.length - 1) return;
+    applyReorder(arrayMove(routeItems, index, index + 1));
+  }
+
+  function applyReorder(reordered: RouteItem[]) {
+    const reassigned = reassignSequences(reordered);
 
     if (currentDelivery) {
       reorderDeliveryItems(
         currentDelivery.id,
-        reordered
+        reassigned
           .filter((item) => item.delivery_item_id)
           .map((item) => ({ id: item.delivery_item_id!, sequence: item.sequence }))
       )
         .then(() => loadCurrentDelivery())
         .catch((err: Error) => showToast('Erro ao reordenar: ' + err.message));
     } else {
-      setDraftRouteItems(reordered);
+      setDraftRouteItems(reassigned);
     }
   }
 
@@ -220,30 +234,27 @@ export default function DeliveriesPage() {
         <Alert tone="danger" title="Nao foi possivel carregar as entregas." />
       )}
 
-      {/* Route builder */}
-      <RouteBuilder
-        items={routeItems}
-        canEdit={canEdit}
-        deliverySent={deliverySent}
-        isSending={isSending}
-        onDragEnd={handleDragEnd}
-        onRemove={handleRemoveItem}
-        onSend={handleSend}
-      />
-
-      {/* Available orders */}
-      <div>
-        <h2 className="mb-2 font-semibold text-gray-900">
-          Pedidos disponiveis
-        </h2>
+      {/* 2-column layout: available orders (left) + route builder (right) */}
+      <div className="da-grid da-grid--cols2">
         <AvailableOrders
           orders={availableOrders}
           routeOrderIds={routeOrderIds}
           onAdd={handleAddOrder}
           loading={loading}
         />
-      </div>
 
+        <RouteBuilder
+          items={routeItems}
+          canEdit={canEdit}
+          deliverySent={deliverySent}
+          isSending={isSending}
+          onDragEnd={handleDragEnd}
+          onRemove={handleRemoveItem}
+          onSend={handleSend}
+          onMoveUp={handleMoveUp}
+          onMoveDown={handleMoveDown}
+        />
+      </div>
     </div>
   );
 }
