@@ -7,7 +7,7 @@ import { StatsCard } from '@/components/stats/stats-card';
 import { RevenueChart } from '@/components/stats/revenue-chart';
 import { PaymentPieChart } from '@/components/stats/payment-pie-chart';
 import { ProductRankingTable } from '@/components/stats/product-ranking-table';
-import { formatBRL } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
 import { Tabs } from '@/components/ui/tabs';
@@ -106,9 +106,9 @@ export default function DashboardPage() {
         <>
           {/* Metric cards */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            <StatsCard title="Faturamento" value={formatBRL(stats.revenue)} />
-            <StatsCard title="Lucro" value={formatBRL(stats.profit)} />
-            <StatsCard title="Ticket medio" value={formatBRL(stats.avg_ticket)} />
+            <StatsCard title="Faturamento" value={<Money value={stats.revenue} />} />
+            <StatsCard title="Lucro" value={<Money value={stats.profit} signed />} />
+            <StatsCard title="Ticket medio" value={<Money value={stats.avg_ticket} />} />
             <StatsCard title="Pedidos" value={String(stats.order_count)} />
             <StatsCard title="Clientes" value={String(stats.client_count)} />
           </div>

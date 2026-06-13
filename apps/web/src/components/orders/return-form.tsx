@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Minus, Plus, X } from 'lucide-react';
+import { Money } from '@/components/ui/money';
 
 interface OrderItemForReturn {
   id: string;
@@ -20,10 +21,6 @@ interface ReturnFormProps {
   items: OrderItemForReturn[];
   onClose: () => void;
   onReturned: () => void;
-}
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 export function ReturnForm({ orderId, items, onClose, onReturned }: ReturnFormProps) {
@@ -132,7 +129,7 @@ export function ReturnForm({ orderId, items, onClose, onReturned }: ReturnFormPr
                     </button>
                     {qty > 0 && (
                       <span className="ml-auto text-sm text-destructive font-medium">
-                        -{formatBRL(qty * item.unit_price)}
+                        -<Money value={qty * item.unit_price} />
                       </span>
                     )}
                   </div>
@@ -158,7 +155,7 @@ export function ReturnForm({ orderId, items, onClose, onReturned }: ReturnFormPr
             <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
               <div className="flex justify-between font-medium text-destructive">
                 <span>Valor da devolucao:</span>
-                <span>-{formatBRL(totalReturnValue)}</span>
+                <span>-<Money value={totalReturnValue} /></span>
               </div>
             </div>
           )}

@@ -3,7 +3,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { Money } from '@/components/ui/money';
-import { formatBRL } from '@distriall/shared';
 import type { Settlement } from '@distriall/shared';
 
 interface RevenueBreakdownProps {
@@ -39,7 +38,7 @@ export function RevenueBreakdown({ settlement }: RevenueBreakdownProps) {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">{label}</span>
                 <span className="font-medium">
-                  {formatBRL(amount)}
+                  <Money value={amount} />
                   <span className="ml-1 text-xs text-muted-foreground">
                     ({pct.toFixed(1)}%)
                   </span>

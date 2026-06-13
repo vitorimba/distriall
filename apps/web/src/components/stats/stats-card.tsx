@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 
 interface StatsCardProps {
   title: string;
-  value: string;
+  value: ReactNode;
   subtitle?: string;
   icon?: ReactNode;
   className?: string;

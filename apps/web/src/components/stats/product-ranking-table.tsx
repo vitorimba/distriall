@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { formatBRL } from '@distriall/shared';
 import type { ProductRanking } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 import { Tabs } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Package } from 'lucide-react';
@@ -50,7 +50,7 @@ export function ProductRankingTable({ data }: ProductRankingTableProps) {
                 <td className="py-2 pr-4 text-muted-foreground">{index + 1}</td>
                 <td className="py-2 pr-4 font-medium">{item.product_name}</td>
                 <td className="py-2 pr-4 text-muted-foreground">{item.variant_name}</td>
-                <td className="py-2 pr-4 text-right">{formatBRL(item.total_value)}</td>
+                <td className="py-2 pr-4 text-right"><Money value={item.total_value} /></td>
                 <td className="py-2 text-right">{item.total_quantity}</td>
               </tr>
             ))}

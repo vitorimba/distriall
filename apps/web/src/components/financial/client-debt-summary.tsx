@@ -4,10 +4,7 @@ import { useState, useEffect } from 'react';
 import { useVouchers } from '@/hooks/use-vouchers';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
+import { Money } from '@/components/ui/money';
 
 export function ClientDebtSummary({ clientId }: { clientId: string }) {
   const { getClientDebt } = useVouchers();
@@ -38,12 +35,12 @@ export function ClientDebtSummary({ clientId }: { clientId: string }) {
           {debt.voucherDebt > 0 && (
             <div className="flex justify-between">
               <span className="text-yellow-700">Vales pendentes</span>
-              <span className="font-medium text-yellow-800">{formatBRL(debt.voucherDebt)}</span>
+              <Money value={debt.voucherDebt} className="font-medium text-yellow-800" />
             </div>
           )}
           <div className="flex justify-between border-t border-yellow-200 pt-1 font-bold text-yellow-900">
             <span>Total devedor</span>
-            <span>{formatBRL(debt.totalDebt)}</span>
+            <Money value={debt.totalDebt} className="font-bold" />
           </div>
         </div>
       </CardContent>

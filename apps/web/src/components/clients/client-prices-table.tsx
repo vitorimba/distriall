@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { formatBRL } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 
 interface ClientPrice {
   variantId: string;
@@ -88,10 +88,8 @@ export function ClientPricesTable({ clientId }: ClientPricesTableProps) {
                 <span className="text-muted-foreground"> – {p.variantName}</span>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-muted-foreground line-through text-xs">
-                  {formatBRL(p.defaultPrice)}
-                </span>
-                <span className="font-medium text-primary">{formatBRL(p.customPrice)}</span>
+                <Money value={p.defaultPrice} className="text-muted-foreground line-through text-xs" />
+                <Money value={p.customPrice} className="font-medium text-primary" />
               </div>
             </div>
           ))}

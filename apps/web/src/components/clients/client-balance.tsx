@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
-import { formatBRL } from '@distriall/shared';
 import type { ClientBalance } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 
 interface ClientBalanceCardProps {
   clientId: string;
@@ -39,7 +39,7 @@ export function ClientBalanceCard({ clientId, balance }: ClientBalanceCardProps)
             <span className="text-red-700">
               Vales pendentes ({balance.vouchers_count})
             </span>
-            <span className="font-medium text-red-800">{formatBRL(balance.vouchers_pending)}</span>
+            <Money value={balance.vouchers_pending} className="font-medium text-red-800" />
           </div>
         )}
         {balance.payments_pending > 0 && (
@@ -47,12 +47,12 @@ export function ClientBalanceCard({ clientId, balance }: ClientBalanceCardProps)
             <span className="text-red-700">
               Pagamentos pendentes ({balance.payments_count})
             </span>
-            <span className="font-medium text-red-800">{formatBRL(balance.payments_pending)}</span>
+            <Money value={balance.payments_pending} className="font-medium text-red-800" />
           </div>
         )}
         <div className="flex justify-between border-t border-red-200 pt-1 text-sm font-bold text-red-900">
           <span>Total devedor</span>
-          <span>{formatBRL(balance.total)}</span>
+          <Money value={balance.total} />
         </div>
         {balance.vouchers_pending > 0 && (
           <div className="pt-1">

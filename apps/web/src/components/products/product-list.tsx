@@ -36,8 +36,6 @@ function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// formatBRL kept for inline string use (price range); Money component used where possible
-
 export function ProductList() {
   const { activeAccount } = useAccount();
   const [products, setProducts] = useState<Product[]>([]);
@@ -185,8 +183,8 @@ export function ProductList() {
                         {variants.map((v) => (
                           <tr key={v.id}>
                             <td className="py-0.5">{v.name}</td>
-                            <td className="py-0.5 text-right text-muted-foreground">{formatBRL(v.cost_price)}</td>
-                            <td className="py-0.5 text-right font-medium">{formatBRL(v.sell_price)}</td>
+                            <td className="py-0.5 text-right text-muted-foreground"><Money value={v.cost_price} /></td>
+                            <td className="py-0.5 text-right font-medium"><Money value={v.sell_price} /></td>
                           </tr>
                         ))}
                       </tbody>

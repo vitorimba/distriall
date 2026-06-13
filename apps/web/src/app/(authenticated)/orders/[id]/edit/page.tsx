@@ -12,10 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page-header';
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
+import { Money } from '@/components/ui/money';
 
 export default function EditOrderPage() {
   const { id } = useParams<{ id: string }>();
@@ -199,17 +196,15 @@ export default function EditOrderPage() {
           <div className="mx-auto max-w-lg space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
-              <span className="font-medium">{formatBRL(subtotal)}</span>
+              <span className="font-medium"><Money value={subtotal} /></span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Custo</span>
-              <span>{formatBRL(totalCost)}</span>
+              <span><Money value={totalCost} /></span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Lucro estimado</span>
-              <span className={profit >= 0 ? 'text-green-600 font-medium' : 'text-destructive font-medium'}>
-                {formatBRL(profit)}
-              </span>
+              <Money value={profit} signed />
             </div>
             <Button onClick={handleSave} disabled={saving} className="w-full">
               {saving ? 'Atualizando...' : 'Atualizar Pedido'}

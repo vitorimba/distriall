@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Search } from 'lucide-react';
 import { useCartStore } from '@/stores/cart-store';
+import { Money } from '@/components/ui/money';
 
 interface ProductVariant {
   id: string;
@@ -19,10 +20,6 @@ interface Product {
   id: string;
   name: string;
   product_variants: ProductVariant[];
-}
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 export function ProductSearch() {
@@ -113,9 +110,10 @@ export function ProductSearch() {
                     className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
                   >
                     <span className="flex-1 pl-2">{v.name}</span>
-                    <span className={hasCustom ? 'font-medium text-primary' : 'text-muted-foreground'}>
-                      {formatBRL(effectivePrice)}
-                    </span>
+                    <Money
+                      value={effectivePrice}
+                      className={hasCustom ? 'font-medium text-primary' : 'text-muted-foreground'}
+                    />
                   </button>
                 );
               })}

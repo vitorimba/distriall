@@ -6,6 +6,7 @@ import { useLoadingStore } from '@/stores/loading-store';
 import { Button } from '@/components/ui/button';
 import { X, Printer, Truck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Money } from '@/components/ui/money';
 
 function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -153,15 +154,15 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Faturamento</span>
-                  <span className="font-medium">{formatBRL(summary.totalRevenue)}</span>
+                  <span className="font-medium"><Money value={summary.totalRevenue} /></span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Custo mercadoria</span>
-                  <span>{formatBRL(summary.totalCost)}</span>
+                  <span><Money value={summary.totalCost} /></span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Lucro bruto</span>
-                  <span className="font-medium text-green-600">{formatBRL(summary.totalProfit)}</span>
+                  <Money value={summary.totalProfit} signed className="font-medium" />
                 </div>
               </div>
 
@@ -179,7 +180,7 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
                         </span>
                         {a.accountName}
                       </span>
-                      <span>{formatBRL(a.revenue)} ({a.orderCount} ped)</span>
+                      <span><Money value={a.revenue} /> ({a.orderCount} ped)</span>
                     </div>
                   );
                 })}
@@ -202,7 +203,7 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
                       {o.account_slug}
                     </span>
                     <span className="flex-1 truncate">{o.client_name}</span>
-                    <span className="font-medium">{formatBRL(o.total)}</span>
+                    <Money value={o.total} className="font-medium" />
                   </div>
                 );
               })}

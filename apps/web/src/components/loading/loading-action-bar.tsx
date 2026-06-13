@@ -1,10 +1,7 @@
 'use client';
 
 import { useLoadingStore } from '@/stores/loading-store';
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
+import { Money } from '@/components/ui/money';
 
 interface LoadingActionBarProps {
   onOpenSheet: () => void;
@@ -25,7 +22,7 @@ export function LoadingActionBar({ onOpenSheet }: LoadingActionBarProps) {
           {summary.orderCount} pedido{summary.orderCount !== 1 ? 's' : ''} | {summary.accountCount} conta{summary.accountCount !== 1 ? 's' : ''}
         </span>
         <span>
-          Fat: {formatBRL(summary.totalRevenue)} | Lucro: {formatBRL(summary.totalProfit)}
+          Fat: <Money value={summary.totalRevenue} /> | Lucro: <Money value={summary.totalProfit} />
         </span>
       </div>
     </button>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { formatBRL } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { SettlementExpenseRow } from '@/hooks/use-settlements';
 
@@ -54,9 +54,9 @@ export function SettlementExpenses({ expenses }: SettlementExpensesProps) {
                       <span className="text-xs text-muted-foreground">{formatDate(expense.expense_date)}</span>
                     </div>
                     <div className="flex flex-col items-end shrink-0 ml-2">
-                      <span className="font-medium">{formatBRL(row.amount)}</span>
+                      <Money value={row.amount} className="font-medium" />
                       {expense.is_shared && expense.amount !== row.amount && (
-                        <span className="text-xs text-muted-foreground">de {formatBRL(expense.amount)}</span>
+                        <span className="text-xs text-muted-foreground">de <Money value={expense.amount} /></span>
                       )}
                     </div>
                   </div>

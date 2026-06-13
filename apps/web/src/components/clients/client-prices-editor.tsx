@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Search, X } from 'lucide-react';
+import { Money } from '@/components/ui/money';
 
 interface VariantRow {
   variantId: string;
@@ -16,10 +17,6 @@ interface VariantRow {
   defaultPrice: number;
   customPrice: number | null;
   clientPriceId: string | null;
-}
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 export function ClientPricesEditor({ clientId }: { clientId: string }) {
@@ -240,7 +237,7 @@ function PriceRow({
         )}
       </td>
       <td className="px-2 py-1.5 text-right text-muted-foreground">
-        {formatBRL(row.defaultPrice)}
+        <Money value={row.defaultPrice} />
       </td>
       <td className="px-2 py-1.5 text-right">
         {editing ? (
@@ -266,7 +263,7 @@ function PriceRow({
             {saving
               ? '...'
               : hasCustom
-                ? formatBRL(row.customPrice!)
+                ? <Money value={row.customPrice!} />
                 : '—'}
           </button>
         )}

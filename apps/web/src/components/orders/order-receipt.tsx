@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Share2 } from 'lucide-react';
+import { Money } from '@/components/ui/money';
 
 interface ReceiptItem {
   product_name: string;
@@ -78,13 +79,13 @@ export function OrderReceipt({
           {items.map((item, i) => (
             <div key={i} className="flex justify-between">
               <span className="truncate flex-1">{item.product_name} {item.variant_name}</span>
-              <span className="ml-2 shrink-0">{item.quantity} &nbsp; {formatBRL(item.total)}</span>
+              <span className="ml-2 shrink-0">{item.quantity} &nbsp; <Money value={item.total} /></span>
             </div>
           ))}
           <div className="my-1 border-t border-dashed border-gray-300" />
           <div className="flex justify-between font-bold">
             <span>TOTAL:</span>
-            <span>R$ {formatBRL(total)}</span>
+            <span>R$ <Money value={total} /></span>
           </div>
           <div className="my-1 border-t-2 border-double border-gray-400" />
         </div>

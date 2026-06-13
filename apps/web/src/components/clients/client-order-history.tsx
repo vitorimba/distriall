@@ -11,8 +11,8 @@ import { Field } from '@/components/ui/field';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
-import { formatBRL } from '@distriall/shared';
 import type { OrderStatus } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 import { ChevronRight, ClipboardList } from 'lucide-react';
 
 const STATUS_OPTIONS = [
@@ -122,7 +122,7 @@ export function ClientOrderHistory({ clientId }: ClientOrderHistoryProps) {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <span className="text-sm font-medium">{formatBRL(order.total)}</span>
+                  <Money value={order.total} className="text-sm font-medium" />
                   <ChevronRight className="size-4 text-muted-foreground" />
                 </div>
               </Link>

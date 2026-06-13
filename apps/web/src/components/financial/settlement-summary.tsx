@@ -1,15 +1,14 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { formatBRL } from '@distriall/shared';
 import type { Settlement } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 
 interface SettlementSummaryProps {
   settlement: Settlement;
 }
 
 export function SettlementSummary({ settlement }: SettlementSummaryProps) {
-  const netColor = settlement.net_profit >= 0 ? 'text-green-700' : 'text-red-600';
 
   return (
     <Card>
@@ -19,30 +18,30 @@ export function SettlementSummary({ settlement }: SettlementSummaryProps) {
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">Total Vendido</p>
-            <p className="font-semibold">{formatBRL(settlement.total_revenue)}</p>
+            <Money value={settlement.total_revenue} className="font-semibold" />
           </div>
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">Custo Mercadoria</p>
-            <p className="font-semibold text-orange-600">- {formatBRL(settlement.total_cost)}</p>
+            <p className="font-semibold text-orange-600">- <Money value={settlement.total_cost} /></p>
           </div>
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">Gastos</p>
-            <p className="font-semibold text-orange-600">- {formatBRL(settlement.total_expenses)}</p>
+            <p className="font-semibold text-orange-600">- <Money value={settlement.total_expenses} /></p>
           </div>
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">Devolucoes</p>
-            <p className="font-semibold text-orange-600">- {formatBRL(settlement.total_returns)}</p>
+            <p className="font-semibold text-orange-600">- <Money value={settlement.total_returns} /></p>
           </div>
         </div>
 
         <div className="border-t pt-2">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium">Lucro Bruto</p>
-            <p className="font-semibold">{formatBRL(settlement.gross_profit)}</p>
+            <Money value={settlement.gross_profit} className="font-semibold" />
           </div>
           <div className="flex items-center justify-between mt-1">
             <p className="text-base font-bold">Lucro Liquido</p>
-            <p className={`text-lg font-bold ${netColor}`}>{formatBRL(settlement.net_profit)}</p>
+            <Money value={settlement.net_profit} signed className="text-lg font-bold" />
           </div>
         </div>
 
@@ -56,7 +55,7 @@ export function SettlementSummary({ settlement }: SettlementSummaryProps) {
             <span className="font-medium text-yellow-800">
               {settlement.pending_vouchers_count} vale{settlement.pending_vouchers_count !== 1 ? 's' : ''} pendente{settlement.pending_vouchers_count !== 1 ? 's' : ''}:
             </span>{' '}
-            <span className="text-yellow-700">{formatBRL(settlement.pending_vouchers_amount)}</span>
+            <Money value={settlement.pending_vouchers_amount} className="text-yellow-700" />
           </div>
         )}
       </CardContent>

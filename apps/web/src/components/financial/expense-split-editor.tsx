@@ -2,7 +2,7 @@
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { formatBRL } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 
 interface SplitEntry {
   accountId: string;
@@ -48,9 +48,7 @@ export function ExpenseSplitEditor({ splits, totalAmount, onChange }: ExpenseSpl
               />
               <span className="text-xs text-muted-foreground">%</span>
             </div>
-            <span className="w-24 text-right text-sm text-muted-foreground">
-              {formatBRL(splitAmount)}
-            </span>
+            <Money value={splitAmount} className="w-24 text-right text-sm text-muted-foreground" />
           </div>
         );
       })}
@@ -58,7 +56,7 @@ export function ExpenseSplitEditor({ splits, totalAmount, onChange }: ExpenseSpl
         <span className={isValid ? 'text-green-600' : 'text-red-600'}>
           Total: {totalPercentage.toFixed(2)}%
         </span>
-        <span className="font-medium">{formatBRL(totalAmount)}</span>
+        <Money value={totalAmount} className="font-medium" />
       </div>
       {!isValid && (
         <p className="text-xs text-red-600">Percentuais devem somar 100%</p>

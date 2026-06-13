@@ -6,11 +6,11 @@ import { useRouter } from 'next/navigation';
 import { useAccount } from '@/providers/account-provider';
 import { useSettlements } from '@/hooks/use-settlements';
 import {
-  formatBRL,
   SETTLEMENT_STATUS_LABELS,
   SETTLEMENT_STATUS_COLORS,
   type SettlementStatus,
 } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 import { ChipFilter } from '@/components/ui/chip-filter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -178,7 +178,6 @@ export default function SettlementsPage() {
         <div className="space-y-2">
           {settlements.map((s) => {
             const colors = SETTLEMENT_STATUS_COLORS[s.status as SettlementStatus];
-            const netColor = s.net_profit >= 0 ? 'text-green-700' : 'text-red-600';
 
             return (
               <Link key={s.id} href={`/financial/settlements/${s.id}`}>
@@ -202,7 +201,7 @@ export default function SettlementsPage() {
                         >
                           {SETTLEMENT_STATUS_LABELS[s.status as SettlementStatus]}
                         </span>
-                        <p className={`text-sm font-bold ${netColor}`}>{formatBRL(s.net_profit)}</p>
+                        <Money value={s.net_profit} signed className="text-sm font-bold" />
                       </div>
                     </div>
                   </CardContent>

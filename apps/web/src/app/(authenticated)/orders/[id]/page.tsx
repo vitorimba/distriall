@@ -13,6 +13,7 @@ import { usePrinter } from '@/hooks/use-printer';
 import { OrderReceipt } from '@/components/orders/order-receipt';
 import { ReturnForm } from '@/components/orders/return-form';
 import { PageHeader } from '@/components/ui/page-header';
+import { Money } from '@/components/ui/money';
 
 interface OrderItem {
   id: string;
@@ -45,10 +46,6 @@ interface OrderDetail {
   delivered_at: string | null;
   clients: { id: string; name: string } | null;
   order_items: OrderItem[];
-}
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 function formatDate(d: string) {
@@ -295,7 +292,7 @@ export default function OrderDetailPage() {
                       )}
                     </div>
                     <span className={`font-medium ${hasReturn ? 'line-through text-muted-foreground' : ''}`}>
-                      {formatBRL(item.total)}
+                      <Money value={item.total} />
                     </span>
                   </div>
                   {hasReturn && (
@@ -316,21 +313,19 @@ export default function OrderDetailPage() {
         <CardContent className="pt-4 space-y-1">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Subtotal</span>
-            <span className="font-medium">{formatBRL(order.subtotal)}</span>
+            <span className="font-medium"><Money value={order.subtotal} /></span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Custo total</span>
-            <span>{formatBRL(order.total_cost)}</span>
+            <span><Money value={order.total_cost} /></span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Lucro</span>
-            <span className={order.profit >= 0 ? 'text-green-600 font-medium' : 'text-destructive font-medium'}>
-              {formatBRL(order.profit)}
-            </span>
+            <Money value={order.profit} signed />
           </div>
           <div className="border-t pt-1 flex justify-between text-sm font-bold">
             <span>Total</span>
-            <span>{formatBRL(order.total)}</span>
+            <span><Money value={order.total} /></span>
           </div>
         </CardContent>
       </Card>

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Money } from '@/components/ui/money';
 
 interface SelectedVariant {
   id: string;
@@ -17,10 +18,6 @@ interface SelectedVariant {
 interface BatchPriceEditorProps {
   selectedVariants: SelectedVariant[];
   onDone: () => void;
-}
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorProps) {
@@ -134,8 +131,8 @@ export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorP
               {selectedVariants.map((v) => (
                 <tr key={v.id} className="border-t">
                   <td className="px-2 py-1">{v.productName} – {v.name}</td>
-                  <td className="px-2 py-1 text-right text-muted-foreground">{formatBRL(v.currentPrice)}</td>
-                  <td className="px-2 py-1 text-right font-medium">{formatBRL(getNewPrice(v.currentPrice))}</td>
+                  <td className="px-2 py-1 text-right text-muted-foreground"><Money value={v.currentPrice} /></td>
+                  <td className="px-2 py-1 text-right font-medium"><Money value={getNewPrice(v.currentPrice)} /></td>
                 </tr>
               ))}
             </tbody>

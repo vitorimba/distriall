@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { formatBRL } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { SettlementOrderRow } from '@/hooks/use-settlements';
 
@@ -49,7 +49,7 @@ export function SettlementOrders({ orders }: SettlementOrdersProps) {
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-xs text-muted-foreground">{formatDate(order.created_at)}</span>
-                      <span className="font-medium">{formatBRL(order.total)}</span>
+                      <Money value={order.total} className="font-medium" />
                     </div>
                   </div>
                 );

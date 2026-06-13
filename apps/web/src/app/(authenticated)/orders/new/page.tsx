@@ -23,10 +23,6 @@ import type { PaymentEntry } from '@/lib/validations/payment';
 import { validatePaymentsTotal } from '@/lib/validations/payment';
 import { PageHeader } from '@/components/ui/page-header';
 
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
 export default function NewOrderPage() {
   return (
     <Suspense fallback={<div className="px-4 py-4"><p>Carregando...</p></div>}>
@@ -187,9 +183,9 @@ function NewOrderContent() {
       {items.length > 0 && (
         <StickyBar
           items={[
-            { label: 'Subtotal', value: formatBRL(subtotal) },
-            { label: 'Custo', value: formatBRL(totalCost) },
-            { label: 'Lucro est.', value: formatBRL(profit), highlight: profit >= 0 },
+            { label: 'Subtotal', value: <Money value={subtotal} /> },
+            { label: 'Custo', value: <Money value={totalCost} /> },
+            { label: 'Lucro est.', value: <Money value={profit} signed />, highlight: profit >= 0 },
           ]}
           action={
             <Button onClick={handleSave} disabled={saving}>

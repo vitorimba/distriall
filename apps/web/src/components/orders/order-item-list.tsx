@@ -3,10 +3,7 @@
 import { useCartStore } from '@/stores/cart-store';
 import { Button } from '@/components/ui/button';
 import { Minus, Plus, X } from 'lucide-react';
-
-function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
+import { Money } from '@/components/ui/money';
 
 export function OrderItemList() {
   const { items, updateQuantity, removeItem } = useCartStore();
@@ -31,7 +28,7 @@ export function OrderItemList() {
             <div className="min-w-0 flex-1">
               <div className="text-sm font-medium">{item.productName}</div>
               <div className="text-xs text-muted-foreground">
-                {item.variantName} · {formatBRL(item.unitPrice)}
+                {item.variantName} · <Money value={item.unitPrice} />
               </div>
             </div>
 
@@ -54,7 +51,7 @@ export function OrderItemList() {
 
             {/* Line total */}
             <div className="w-20 text-right text-sm font-medium">
-              {formatBRL(lineTotal)}
+              <Money value={lineTotal} />
             </div>
 
             {/* Remove */}

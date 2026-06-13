@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { formatBRL, SETTLEMENT_STATUS_LABELS, SETTLEMENT_STATUS_COLORS } from '@distriall/shared';
+import { SETTLEMENT_STATUS_LABELS, SETTLEMENT_STATUS_COLORS } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 import { SettlementSummary } from './settlement-summary';
 import { RevenueBreakdown } from './revenue-breakdown';
 import { SettlementOrders } from './settlement-orders';
@@ -82,7 +83,7 @@ export function SettlementDetail({ settlement, orders, expenses, onRefresh }: Se
           <p className="text-sm text-muted-foreground">
             {formatDateRange(settlement.period_start, settlement.period_end)}
           </p>
-          <p className="text-lg font-bold">{formatBRL(settlement.net_profit)}</p>
+          <Money value={settlement.net_profit} signed className="text-lg font-bold" />
         </div>
         <span
           className={cn(

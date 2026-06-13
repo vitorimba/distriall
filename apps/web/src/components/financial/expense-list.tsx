@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useAccount } from '@/providers/account-provider';
 import { useExpenses } from '@/hooks/use-expenses';
 import {
-  formatBRL,
   EXPENSE_CATEGORY_LABELS,
   EXPENSE_TYPE_LABELS,
   EXPENSE_RECURRENCE_LABELS,
@@ -13,6 +12,7 @@ import {
   type ExpenseType,
   type ExpenseRecurrence,
 } from '@distriall/shared';
+import { Money } from '@/components/ui/money';
 import { ChipFilter } from '@/components/ui/chip-filter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -141,7 +141,7 @@ export function ExpenseList() {
         <CardContent className="flex items-center justify-between pt-4">
           <div>
             <p className="text-xs text-muted-foreground">Total no periodo</p>
-            <p className="text-lg font-bold">{formatBRL(totalSum)}</p>
+            <Money value={totalSum} className="text-lg font-bold" />
           </div>
           <p className="text-sm text-muted-foreground">{expenses.length} gasto{expenses.length !== 1 ? 's' : ''}</p>
         </CardContent>
@@ -208,7 +208,7 @@ export function ExpenseList() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold">{formatBRL(exp.amount)}</span>
+                      <Money value={exp.amount} className="text-sm font-bold" />
                       <Button
                         variant="ghost"
                         size="icon-sm"
@@ -236,7 +236,7 @@ export function ExpenseList() {
                             <div key={split.id} className="flex justify-between py-0.5">
                               <span>{split.accounts?.name ?? split.account_id}</span>
                               <span>
-                                {split.percentage}% — {formatBRL(split.amount)}
+                                {split.percentage}% — <Money value={split.amount} />
                               </span>
                             </div>
                           ))}
