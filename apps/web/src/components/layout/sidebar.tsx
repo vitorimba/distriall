@@ -5,23 +5,23 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  ShoppingCart,
+  ClipboardList,
   Package,
   Users,
-  DollarSign,
   Truck,
-  BarChart3,
+  Wallet,
+  ChartColumn,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
-  { href: '/orders', label: 'Pedidos', icon: ShoppingCart },
+  { href: '/orders', label: 'Pedidos', icon: ClipboardList },
   { href: '/products', label: 'Produtos', icon: Package },
   { href: '/clients', label: 'Clientes', icon: Users },
   { href: '/deliveries', label: 'Entregas', icon: Truck },
-  { href: '/financial', label: 'Financeiro', icon: DollarSign },
-  { href: '/stats', label: 'Estatisticas', icon: BarChart3 },
+  { href: '/financial', label: 'Financeiro', icon: Wallet },
+  { href: '/stats', label: 'Estatisticas', icon: ChartColumn },
 ];
 
 export function Sidebar() {
@@ -49,11 +49,16 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-primary/10 text-primary font-medium'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? ''
+                  : 'hover:bg-[var(--surface-hover)]'
               )}
+              style={
+                isActive
+                  ? { background: 'var(--primary)', color: 'var(--primary-foreground)' }
+                  : { color: 'var(--text-secondary)' }
+              }
             >
               <Icon className="size-4" />
               <span>{item.label}</span>
