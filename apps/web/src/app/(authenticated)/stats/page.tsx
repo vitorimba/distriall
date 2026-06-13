@@ -7,7 +7,7 @@ import { useStats, type StatsFilters, type StatsPeriod } from '@/hooks/use-stats
 import { ProductRankingTable } from '@/components/stats/product-ranking-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
-import { Tabs } from '@/components/ui/tabs';
+import { ChipFilter } from '@/components/ui/chip-filter';
 import { Alert } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
@@ -32,11 +32,11 @@ export default function StatsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAccountId, period, startDate, endDate]);
 
-  const periodTabs = [
-    { id: 'day', label: 'Hoje' },
-    { id: 'week', label: 'Semana' },
-    { id: 'month', label: 'Mes' },
-    { id: 'custom', label: 'Customizado' },
+  const periodOptions = [
+    { value: 'day', label: 'Hoje' },
+    { value: 'week', label: 'Semana' },
+    { value: 'month', label: 'Mes' },
+    { value: 'custom', label: 'Customizado' },
   ];
 
   return (
@@ -55,10 +55,10 @@ export default function StatsPage() {
           className="w-48"
         />
 
-        <Tabs
-          tabs={periodTabs}
-          active={period}
-          onChange={(id) => setPeriod(id as StatsPeriod)}
+        <ChipFilter
+          options={periodOptions}
+          selected={period}
+          onChange={(value) => setPeriod(value as StatsPeriod)}
         />
 
         {period === 'custom' && (

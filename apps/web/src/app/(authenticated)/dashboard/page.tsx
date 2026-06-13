@@ -10,7 +10,7 @@ import { ProductRankingTable } from '@/components/stats/product-ranking-table';
 import { Money } from '@/components/ui/money';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
-import { Tabs } from '@/components/ui/tabs';
+import { ChipFilter } from '@/components/ui/chip-filter';
 import { Alert } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -40,11 +40,11 @@ export default function DashboardPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAccountId, period, startDate, endDate]);
 
-  const periodTabs = [
-    { id: 'day', label: 'Hoje' },
-    { id: 'week', label: 'Semana' },
-    { id: 'month', label: 'Mes' },
-    { id: 'custom', label: 'Customizado' },
+  const periodOptions = [
+    { value: 'day', label: 'Hoje' },
+    { value: 'week', label: 'Semana' },
+    { value: 'month', label: 'Mes' },
+    { value: 'custom', label: 'Customizado' },
   ];
 
   return (
@@ -63,10 +63,10 @@ export default function DashboardPage() {
           className="w-48"
         />
 
-        <Tabs
-          tabs={periodTabs}
-          active={period}
-          onChange={(id) => setPeriod(id as Period)}
+        <ChipFilter
+          options={periodOptions}
+          selected={period}
+          onChange={(value) => setPeriod(value as Period)}
         />
 
         {period === 'custom' && (
