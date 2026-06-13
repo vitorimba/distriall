@@ -7,7 +7,7 @@ import { useAccount } from '@/providers/account-provider';
 import { productSchema, type ProductInput, type ProductVariantInput } from '@/lib/validations/product';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Field } from '@/components/ui/field';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Trash2 } from 'lucide-react';
 
@@ -175,21 +175,17 @@ export function ProductForm({ product }: ProductFormProps) {
           <CardTitle>{isEdit ? 'Editar Produto' : 'Novo Produto'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="space-y-1">
-            <Label htmlFor="name">Nome *</Label>
+          <Field label="Nome" required>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="description">Descricao</Label>
+          </Field>
+          <Field label="Descricao">
             <Input id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-          </div>
+          </Field>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="category">Categoria</Label>
+            <Field label="Categoria">
               <Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Ex: temperos" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="unit">Unidade</Label>
+            </Field>
+            <Field label="Unidade">
               <select
                 id="unit"
                 value={unit}
@@ -201,7 +197,7 @@ export function ProductForm({ product }: ProductFormProps) {
                 <option value="g">Gramas</option>
                 <option value="l">Litros</option>
               </select>
-            </div>
+            </Field>
           </div>
         </CardContent>
       </Card>
@@ -225,28 +221,25 @@ export function ProductForm({ product }: ProductFormProps) {
                 )}
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">Nome *</Label>
+                <Field label="Nome" required>
                   <Input
                     value={v.name}
                     onChange={(e) => updateVariant(i, 'name', e.target.value)}
                     placeholder="Ex: 500g"
                     required
                   />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Peso (g)</Label>
+                </Field>
+                <Field label="Peso (g)">
                   <Input
                     type="number"
                     value={v.weight_grams ?? ''}
                     onChange={(e) => updateVariant(i, 'weight_grams', e.target.value ? Number(e.target.value) : '')}
                     placeholder="500"
                   />
-                </div>
+                </Field>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <Label className="text-xs">Preco Custo *</Label>
+                <Field label="Preco Custo" required>
                   <Input
                     type="number"
                     step="0.01"
@@ -254,9 +247,8 @@ export function ProductForm({ product }: ProductFormProps) {
                     onChange={(e) => updateVariant(i, 'cost_price', Number(e.target.value))}
                     required
                   />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Preco Venda *</Label>
+                </Field>
+                <Field label="Preco Venda" required>
                   <Input
                     type="number"
                     step="0.01"
@@ -264,7 +256,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     onChange={(e) => updateVariant(i, 'sell_price', Number(e.target.value))}
                     required
                   />
-                </div>
+                </Field>
               </div>
             </div>
           ))}

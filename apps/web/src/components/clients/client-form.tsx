@@ -7,7 +7,7 @@ import { useAccount } from '@/providers/account-provider';
 import { clientSchema, type ClientInput } from '@/lib/validations/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Field } from '@/components/ui/field';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ClientFormProps {
@@ -97,40 +97,32 @@ export function ClientForm({ client }: ClientFormProps) {
           <CardTitle>{isEdit ? 'Editar Cliente' : 'Novo Cliente'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="space-y-1">
-            <Label htmlFor="name">Nome *</Label>
+          <Field label="Nome" required>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="trade_name">Nome Fantasia</Label>
+          </Field>
+          <Field label="Nome Fantasia">
             <Input id="trade_name" value={tradeName} onChange={(e) => setTradeName(e.target.value)} />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="address">Endereco</Label>
+          </Field>
+          <Field label="Endereco">
             <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} />
-          </div>
+          </Field>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="city">Cidade</Label>
+            <Field label="Cidade">
               <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="neighborhood">Bairro</Label>
+            </Field>
+            <Field label="Bairro">
               <Input id="neighborhood" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} />
-            </div>
+            </Field>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="phone">Telefone</Label>
+            <Field label="Telefone">
               <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="whatsapp">WhatsApp</Label>
+            </Field>
+            <Field label="WhatsApp">
               <Input id="whatsapp" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} />
-            </div>
+            </Field>
           </div>
-          <div className="space-y-1">
-            <Label htmlFor="payment">Forma de Pagamento Padrao</Label>
+          <Field label="Forma de Pagamento Padrao">
             <select
               id="payment"
               value={paymentMethod}
@@ -144,9 +136,8 @@ export function ClientForm({ client }: ClientFormProps) {
               <option value="vale">Vale</option>
               <option value="cartao">Cartao</option>
             </select>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="notes">Notas</Label>
+          </Field>
+          <Field label="Notas">
             <textarea
               id="notes"
               value={notes}
@@ -154,7 +145,7 @@ export function ClientForm({ client }: ClientFormProps) {
               rows={3}
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
             />
-          </div>
+          </Field>
         </CardContent>
       </Card>
 

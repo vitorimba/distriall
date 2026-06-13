@@ -9,7 +9,7 @@ import { ProductSearch } from '@/components/orders/product-search';
 import { OrderItemList } from '@/components/orders/order-item-list';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Field } from '@/components/ui/field';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page-header';
 import { Money } from '@/components/ui/money';
@@ -147,8 +147,7 @@ export default function EditOrderPage() {
       {client && (
         <Card>
           <CardContent className="space-y-3 pt-4">
-            <div className="space-y-1">
-              <Label>Forma de Pagamento</Label>
+            <Field label="Forma de Pagamento">
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
@@ -162,17 +161,15 @@ export default function EditOrderPage() {
                 <option value="cartao">Cartao</option>
                 <option value="misto">Misto</option>
               </select>
-            </div>
-            <div className="space-y-1">
-              <Label>Data de Entrega</Label>
+            </Field>
+            <Field label="Data de Entrega">
               <Input
                 type="date"
                 value={deliveryDate}
                 onChange={(e) => setDeliveryDate(e.target.value)}
               />
-            </div>
-            <div className="space-y-1">
-              <Label>Observacoes</Label>
+            </Field>
+            <Field label="Observacoes">
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
@@ -180,7 +177,7 @@ export default function EditOrderPage() {
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 placeholder="Observacoes do pedido..."
               />
-            </div>
+            </Field>
           </CardContent>
         </Card>
       )}

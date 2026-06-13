@@ -9,6 +9,7 @@ import { expenseSchema, type ExpenseInput } from '@/lib/validations/expense';
 import { ExpenseSplitEditor } from '@/components/financial/expense-split-editor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Field } from '@/components/ui/field';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -168,19 +169,17 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
           <CardTitle>{isEdit ? 'Editar Gasto' : 'Novo Gasto'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="space-y-1">
-            <Label htmlFor="description">Descricao *</Label>
+          <Field label="Descricao" required>
             <Input
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
             />
-          </div>
+          </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="amount">Valor (R$) *</Label>
+            <Field label="Valor (R$)" required>
               <Input
                 id="amount"
                 type="number"
@@ -190,9 +189,8 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
                 onChange={(e) => setAmount(e.target.value)}
                 required
               />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="expense_date">Data *</Label>
+            </Field>
+            <Field label="Data" required>
               <Input
                 id="expense_date"
                 type="date"
@@ -200,12 +198,11 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
                 onChange={(e) => setExpenseDate(e.target.value)}
                 required
               />
-            </div>
+            </Field>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="category">Categoria *</Label>
+            <Field label="Categoria" required>
               <select
                 id="category"
                 value={category}
@@ -218,9 +215,8 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
                   )
                 )}
               </select>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="type">Tipo</Label>
+            </Field>
+            <Field label="Tipo">
               <select
                 id="type"
                 value={type}
@@ -234,11 +230,10 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
                   )
                 )}
               </select>
-            </div>
+            </Field>
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="recurrence">Recorrencia</Label>
+          <Field label="Recorrencia">
             <select
               id="recurrence"
               value={recurrence}
@@ -251,9 +246,9 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
                 )
               )}
             </select>
-          </div>
+          </Field>
 
-          {/* Shared toggle */}
+          {/* Shared toggle — checkbox com Label inline, nao usa Field */}
           <div className="flex items-center gap-2 pt-2">
             <input
               id="is_shared"
