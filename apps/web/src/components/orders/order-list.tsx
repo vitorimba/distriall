@@ -16,8 +16,11 @@ import { Alert } from '@/components/ui/alert';
 import { Money } from '@/components/ui/money';
 import { FAB } from '@/components/ui/fab';
 import { Button } from '@/components/ui/button';
+import { Pagination } from '@/components/ui/pagination';
 import { ClipboardList, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+const PAGE_SIZE = 25;
 
 interface OrderRow {
   id: string;
@@ -57,6 +60,7 @@ export function OrderList() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [paymentFilter, setPaymentFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [loadKey, setLoadKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -106,6 +110,8 @@ export function OrderList() {
     const t = setTimeout(() => { if (!cancelled) loadOrders(); }, 0);
     return () => { cancelled = true; clearTimeout(t); };
   }, [loadOrders]);
+
+  useEffect(() => { setPage(1); }, [statusFilter, paymentFilter, search]);
 
   // Realtime subscription
   useEffect(() => {
@@ -189,7 +195,7 @@ export function OrderList() {
         />
       ) : !error ? (
         <div className="space-y-1 pb-24">
-          {orders.map((order) => {
+          {orders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((order) => {
             const isSelected = selectedIds.has(order.id);
             const itemCount = getItemCount(order);
             return (
@@ -245,6 +251,10 @@ export function OrderList() {
           })}
         </div>
       ) : null}
+
+      {!error && orders.length > PAGE_SIZE && (
+        <Pagination page={page} totalItems={orders.length} pageSize={PAGE_SIZE} onChange={setPage} label="pedidos" />
+      )}
 
       {/* Action bar for batch operations */}
       {selectedIds.size > 0 && (

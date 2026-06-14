@@ -5,7 +5,10 @@ import type { ProductRanking } from '@distriall/shared';
 import { Money } from '@/components/ui/money';
 import { Tabs } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Pagination } from '@/components/ui/pagination';
 import { Package } from 'lucide-react';
+
+const PAGE_SIZE = 25;
 
 interface ProductRankingTableProps {
   data: ProductRanking[];
@@ -15,11 +18,14 @@ type Tab = 'value' | 'quantity';
 
 export function ProductRankingTable({ data }: ProductRankingTableProps) {
   const [activeTab, setActiveTab] = useState<Tab>('value');
+  const [page, setPage] = useState(1);
 
   const sorted =
     activeTab === 'value'
       ? [...data].sort((a, b) => b.total_value - a.total_value)
       : [...data].sort((a, b) => b.total_quantity - a.total_quantity);
+
+  const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div>
@@ -45,9 +51,9 @@ export function ProductRankingTable({ data }: ProductRankingTableProps) {
             </tr>
           </thead>
           <tbody>
-            {sorted.map((item, index) => (
+            {paged.map((item, index) => (
               <tr key={`${item.product_name}-${item.variant_name}`} className="border-b last:border-0">
-                <td className="py-2 pr-4 text-muted-foreground">{index + 1}</td>
+                <td className="py-2 pr-4 text-muted-foreground">{(page - 1) * PAGE_SIZE + index + 1}</td>
                 <td className="py-2 pr-4 font-medium">{item.product_name}</td>
                 <td className="py-2 pr-4 text-muted-foreground">{item.variant_name}</td>
                 <td className="py-2 pr-4 text-right"><Money value={item.total_value} /></td>
@@ -64,6 +70,10 @@ export function ProductRankingTable({ data }: ProductRankingTableProps) {
           </tbody>
         </table>
       </div>
+
+      {sorted.length > PAGE_SIZE && (
+        <Pagination page={page} totalItems={sorted.length} pageSize={PAGE_SIZE} onChange={setPage} label="produtos" />
+      )}
     </div>
   );
 }

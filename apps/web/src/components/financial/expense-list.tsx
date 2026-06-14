@@ -24,7 +24,10 @@ import { Plus, Trash2, ChevronDown, ChevronUp, Calendar, RefreshCw } from 'lucid
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Pagination } from '@/components/ui/pagination';
 import { DollarSign } from 'lucide-react';
+
+const PAGE_SIZE = 25;
 
 interface SplitRow {
   id: string;
@@ -75,6 +78,7 @@ export function ExpenseList() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [page, setPage] = useState(1);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -119,6 +123,8 @@ export function ExpenseList() {
     const t = setTimeout(() => { if (!cancelled) load(); }, 0);
     return () => { cancelled = true; clearTimeout(t); };
   }, [activeAccount, categoryFilter, typeFilter, dateFrom, dateTo]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { setPage(1); }, [categoryFilter, typeFilter, dateFrom, dateTo]);
 
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -210,7 +216,7 @@ export function ExpenseList() {
         />
       ) : (
         <div className="space-y-2">
-          {expenses.map((exp) => {
+          {expenses.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((exp) => {
             const isExpanded = expandedId === exp.id;
             return (
               <Card key={exp.id}>
@@ -276,6 +282,10 @@ export function ExpenseList() {
             );
           })}
         </div>
+      )}
+
+      {expenses.length > PAGE_SIZE && (
+        <Pagination page={page} totalItems={expenses.length} pageSize={PAGE_SIZE} onChange={setPage} label="gastos" />
       )}
 
       {/* FAB New Expense */}
