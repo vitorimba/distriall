@@ -11,8 +11,11 @@ import {
   Truck,
   Wallet,
   ChartColumn,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/hooks/use-theme';
 
 const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
@@ -26,12 +29,13 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <aside className="hidden md:flex md:w-56 md:flex-col md:border-r md:bg-background">
       <div className="flex h-14 items-center border-b px-4">
         <Image
-          src="/distriall-logo-on-dark.png"
+          src={theme === 'dark' ? '/distriall-logo-on-dark.png' : '/distriall-logo-on-light.png'}
           alt="DistriAll"
           width={120}
           height={32}
@@ -66,6 +70,17 @@ export function Sidebar() {
           );
         })}
       </nav>
+      <div className="border-t p-2">
+        <button
+          onClick={toggleTheme}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-[var(--surface-hover)]"
+          style={{ color: 'var(--text-secondary)' }}
+          aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+        >
+          {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          <span>{theme === 'dark' ? 'Tema claro' : 'Tema escuro'}</span>
+        </button>
+      </div>
     </aside>
   );
 }

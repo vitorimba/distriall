@@ -35,7 +35,15 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       className={`${archivo.variable} ${jetbrainsMono.variable} dark h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('distriall-theme');if(t==='light'){document.documentElement.classList.remove('dark');document.documentElement.setAttribute('data-theme','light')}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <ToastProvider>{children}</ToastProvider>

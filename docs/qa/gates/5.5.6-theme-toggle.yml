@@ -1,0 +1,47 @@
+schema: 1
+story: '5.5.6'
+story_title: 'Theme toggle dark/light'
+gate: PASS
+status_reason: 'Implementacao solida do toggle dark/light com hook SSR-safe, anti-flash script, logo swap e tokens DS completos. Sem issues criticos ou altos.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-14T18:00:00Z'
+
+top_issues: []
+waiver: { active: false }
+
+quality_score: 95
+expires: '2026-06-28T18:00:00Z'
+
+evidence:
+  tests_reviewed: 0
+  risks_identified: 1
+  trace:
+    ac_covered: [1, 2, 3, 4, 5]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Sem vulnerabilidades. localStorage para preferencia de tema e seguro. Nenhum dado sensivel exposto. try/catch no inline script protege contra erros.'
+  performance:
+    status: PASS
+    notes: 'Anti-flash inline script previne FOUC. Hook usa useCallback para estabilidade referencial. Sem re-renders desnecessarios.'
+  reliability:
+    status: PASS
+    notes: 'Fallback seguro para dark como default. try/catch no inline script. SSR-safe com useEffect.'
+  maintainability:
+    status: PASS
+    notes: 'Hook simples e bem estruturado. Funcao applyTheme isolada. Codigo limpo e legivel. Segue padroes existentes de hooks no projeto.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Adicionar suporte a prefers-color-scheme (media query do sistema) como opcao futura'
+      refs: ['apps/web/src/hooks/use-theme.ts']
+      suggested_owner: dev
+    - action: 'Adicionar toggle de tema no mobile quando bottom-nav tiver secao "Mais"'
+      refs: ['apps/web/src/components/layout/sidebar.tsx']
+      suggested_owner: dev
+    - action: 'Considerar testes unitarios para useTheme em futura story de cobertura de testes'
+      refs: ['apps/web/src/hooks/use-theme.ts']
+      suggested_owner: dev
