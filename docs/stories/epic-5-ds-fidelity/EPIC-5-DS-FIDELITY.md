@@ -78,6 +78,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.5.5 | Settings com Accordion FAQ e Alert compatibilidade | Done | 2026-06-14 |
 | 5.5.6 | Theme toggle dark/light | Done | 2026-06-14 |
 | 5.6.1 | Tooltip em todos os IconButton | Done | 2026-06-14 |
+| 5.6.2 | Motion tokens em vez de Tailwind defaults | Done | 2026-06-14 |
 
 ## Development Log
 
@@ -294,6 +295,29 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 - `infrastructure-map.json` ausente — reincidencia de I01/I03 das stories 5.5.1-5.5.4
 
 **Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit a66c653, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (92/100).
+
+### Story 5.6.2 — Motion tokens em vez de Tailwind defaults (2026-06-14)
+
+**Built:**
+- (ADAPT) `apps/web/src/app/globals.css` — `.hover-transition` utility class (duration-instant + ease-out); `@media (prefers-reduced-motion: reduce)` block zeroing all transitions/animations with `!important`
+- (ADAPT) `apps/web/src/components/ui/dialog.tsx` — `duration-100` → `duration-[var(--duration-base)]` (180ms); added `data-closed:translate-y-2 data-closed:scale-[0.98]` for AC2 motion
+- (ADAPT) `apps/web/src/components/ui/toast.tsx` — `duration-200` → `duration-[var(--duration-base)]` (180ms)
+- (ADAPT) `apps/web/src/components/ui/bottom-sheet.tsx` — panel `duration-200` → `duration-[var(--duration-slow)]` (240ms); items got `hover-transition` class for 80ms hover
+
+**Patterns established:**
+- `.hover-transition` utility: single class for all hover transitions (80ms ease-out via tokens) — apply to any interactive element
+- `duration-[var(--duration-*)]` Tailwind arbitrary value syntax for consuming CSS custom properties — canonical pattern for all future transition work
+- `prefers-reduced-motion` universal block at end of globals.css — covers all components without per-component media queries
+
+**Key decisions:**
+- Dialog duration deliberately changed from 100ms to 180ms (UX improvement per DS spec)
+- AC4 "Menu" re-scoped to BottomSheet item hovers (no Menu component exists)
+- progress-bar.tsx duration-300 intentionally excluded (data animation, not UI transition)
+
+**Tech debt identified:**
+- dialog.tsx has both `zoom-in-95` keyframe AND `scale-[0.98]` transform — may layer additively, needs browser validation (I01 QA)
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit 1f0c598, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (90/100).
 
 ### Story 5.6.1 — Tooltip em todos os IconButton (2026-06-14)
 
