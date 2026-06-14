@@ -29,7 +29,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.3 | States Canonicos | 4 | 16 | HIGH |
 | 5.4 | Formularios e Mascaras ✓ COMPLETE | 4 | 13 | MEDIUM |
 | 5.5 | Telas Faltantes e Patterns ✓ COMPLETE | 6 | 23 | MEDIUM |
-| 5.6 | Polish Visual Final | 5 | 12 | LOW |
+| 5.6 | Polish Visual Final ✓ COMPLETE | 5 | 12 | LOW |
 | | **Total** | **32** | **102** | |
 
 ## Criterio de conclusao
@@ -79,8 +79,66 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.5.6 | Theme toggle dark/light | Done | 2026-06-14 |
 | 5.6.1 | Tooltip em todos os IconButton | Done | 2026-06-14 |
 | 5.6.2 | Motion tokens em vez de Tailwind defaults | Done | 2026-06-14 |
+| 5.6.3 | Acessibilidade — focus ring, aria-labels, contraste | Done | 2026-06-14 |
+| 5.6.4 | Pagination em listas longas | Done | 2026-06-14 |
+| 5.6.5 | Bottom navigation mobile — 5 itens corretos | Done | 2026-06-14 |
 
 ## Development Log
+
+### Story 5.6.4 — Pagination em listas longas (2026-06-14)
+
+**Built:**
+- (ADAPT) `apps/web/src/components/stats/product-ranking-table.tsx` — `useState<number>(1)` para pagina; slice `sorted` apos sort por tab; `<Pagination>` condicional `sorted.length > PAGE_SIZE`; numeracao de posicao corrigida para `(page - 1) * PAGE_SIZE + index + 1`
+- (ADAPT) `apps/web/src/components/orders/order-list.tsx` — `useState<number>(1)` para pagina; `useEffect(() => setPage(1), [statusFilter, paymentFilter, search])` para reset; slice de `orders` apos filtro client-side; `<Pagination>` com guard `!error &&`
+- (ADAPT) `apps/web/src/components/financial/expense-list.tsx` — `useState<number>(1)` para pagina; `useEffect(() => setPage(1), [categoryFilter, typeFilter, dateFrom, dateTo])` para reset; slice de `expenses`
+
+**Patterns established:**
+- Paginacao client-side via slice: `array.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)` — aplicar APOS sort/filter, nunca nos dados brutos
+- Reset de pagina ao mudar filtros via `useEffect` separado com deps dos filtros — padrao obrigatorio em qualquer lista paginada com filtros dinamicos
+- Condicional de exibicao `array.length > PAGE_SIZE` (strict greater-than, nao `>=`) — garante que com exatamente 25 itens o componente nao aparece
+- REUSE de `pagination.tsx` sem modificacoes — import `@/components/ui/pagination`, prop `label` para contextualizar summary ("pedidos", "gastos", "produtos")
+
+**Key decisions:**
+- Paginacao client-side (slice da array local) escolhida sobre server-side (LIMIT/OFFSET) — escopo de 2 pontos, adequado para volumes tipicos do distribuidor; server-side pode ser story futura se necessario
+- `ProductRankingTable` nao precisa de reset de pagina ao trocar tab (value/quantity) — sort e recomputed e paged e re-sliced automaticamente no mesmo render
+
+**Tech debt identified:**
+- `pagination.tsx` botoes numericos sem `aria-label` contextual (ex: "Ir para pagina 3") — carregado de 5.6.3 I03, LOW, story futura
+- `infrastructure/infrastructure-map.json` ausente — reincidencia das stories 5.5.x/5.6.x, @devops
+
+**Tests:** 0 novos (33 existentes passando). **Deploy:** Vercel — commit 4b66a08, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (95/100).
+
+### Story 5.6.3 — Acessibilidade — focus ring, aria-labels, contraste (2026-06-14)
+
+**Built:**
+- (ADAPT) `apps/web/src/app/globals.css` — `*:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px }` em `@layer base`; `@media (max-width: 767px) { button:not([data-slot="button"]), a, [role="button"], [role="link"] { min-height: var(--touch-target) } }` para touch targets mobile
+- (ADAPT) `apps/web/src/components/layout/header.tsx` — `aria-hidden="true"` em `<LogOut>`
+- (ADAPT) `apps/web/src/components/layout/sidebar.tsx` — `aria-hidden="true"` em icones nav e `<Sun>/<Moon>` tema
+- (ADAPT) `apps/web/src/components/ui/page-header.tsx` — `aria-hidden="true"` em `<ArrowLeft>`
+- (ADAPT) `apps/web/src/components/ui/dialog.tsx` — `aria-hidden="true"` em `<XIcon>` do close button
+- (ADAPT) `apps/web/src/components/ui/search-field.tsx` — `aria-hidden="true"` em `<Search>` e `<X>`
+- (ADAPT) `apps/web/src/components/ui/select.tsx` — `aria-hidden="true"` em `<ChevronDown>`
+- (ADAPT) `apps/web/src/components/ui/quantity-stepper.tsx` — `aria-hidden="true"` em `<Minus>/<Plus>`; `focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]` no input numerico (fix QA)
+- (ADAPT) `apps/web/src/components/ui/pagination.tsx` — `aria-hidden="true"` em `<ChevronLeft>/<ChevronRight>`
+- (ADAPT) `apps/web/src/components/ui/checkbox.tsx` — `aria-hidden="true"` em `<Check>`
+
+**Patterns established:**
+- `*:focus-visible` global em `@layer base` e o padrao canonico para focus ring — aplicar tokens DS, nao estilos hardcoded
+- `button:not([data-slot="button"])` como seletor de touch target — exclui DS Button (controlado por cva/base-ui) e cobre buttons nativos (quantity-stepper, pagination)
+- `aria-hidden="true"` em todos os icones decorativos dentro de elementos com aria-label explicito ou texto visivel — padrao a seguir em toda adicao de icone futura
+- Contraste AA verificado via calculo WCAG relative luminance documentado em Dev Agent Record — referencia para futuras stories de theming
+
+**Key decisions:**
+- `button:not([data-slot="button"])` escolhido sobre seletor generico `button` — evita deformacao visual de icon buttons do DS em mobile (DS Button usa `data-slot="button"` via base-ui)
+- Dialog focus trap NAO reimplementado — `@base-ui/react/dialog` gerencia nativamente; task requalificada como validacao de comportamento
+- Contraste validado programaticamente (sem Lighthouse browser disponivel no contexto de implementacao) — calculo WCAG documentado como evidencia suficiente para AC5
+
+**Tech debt identified:**
+- `pagination.tsx` — botoes numericos sem `aria-label` contextual (ex: "Ir para pagina 3"). LOW — future sprint
+- `infrastructure/infrastructure-map.json` ausente — reincidencia I04 das stories 5.5.x/5.6.x. Registrado como futuro para @devops
+- Testes automatizados de acessibilidade (axe-playwright) ausentes — OUT scope serie 5.6.x, recomendado para epic posterior
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commits 9b1b58a + 1a071ed, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (93/100), 1 QG loop iteration.
 
 ### Story 5.5.3 — Deliveries com layout 2 colunas e reorder (2026-06-13)
 
@@ -366,3 +424,49 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 **Sub-epic 5.5 COMPLETE (6/6):** stepper → receipt → deliveries 2-col → financial hub → settings → theme toggle. Todos os criterios de telas faltantes e patterns do Epic 5 atendidos. Theme toggle dark/light marca o ultimo item no criterio de conclusao do Epic.
 
 **Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit 26bb1f4, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (95/100).
+
+### Story 5.6.5 — Bottom navigation mobile — 5 itens corretos (2026-06-14)
+
+**Built:**
+- (ADAPT) `apps/web/src/components/layout/bottom-nav.tsx` — itens atualizados: Produtos removido, Mais adicionado (/more). Icones corrigidos: ClipboardList (Pedidos), Wallet (Financeiro), Menu (Mais). Active color: `text-primary` → `var(--accent-fg)` (DS CLAUDE.md: texto/icone accent usa --accent-fg). Tokens: `style={{ height: 'var(--bottomnav-h)' }}` e `style={{ zIndex: 'var(--z-nav)' }}` substituindo classes Tailwind hardcoded.
+- (CREATE) `apps/web/src/app/(authenticated)/more/page.tsx` — tela "Mais" conforme MobileMoreScreen.jsx do DS. PageHeader "Mais", card conta estatico ("Conta Principal"), 5 links de navegacao (Produtos/Carregamento/Entregas/Estatisticas/Configuracoes) com icones Lucide, toggle de tema dark/light via useTheme (resolve tech debt 5.5.6), card Sair com signOut via useAuth.
+- (FIXED by QA) `apps/web/src/hooks/use-theme.ts` — lazy initializer `useState(getInitialTheme)` substituindo setTheme() dentro de useEffect; corrige cascading render e lint error react-hooks/set-state-in-effect introduzido em 5.5.6.
+
+**Patterns established:**
+- Token de cor ativa na bottom nav: `var(--accent-fg)` (nao `var(--accent)` que e superficie). DS CLAUDE.md regra 1 e autoritativa: "Texto/icone accent usa --accent-fg"
+- Tokens de layout em elementos fixos: `style={{ height: 'var(--bottomnav-h)', zIndex: 'var(--z-nav)' }}` — padrao para consumir tokens DS em propriedades que nao tem helper Tailwind
+- `useState(lazyInitFn)` como padrao para estado derivado de `window`/`localStorage` — elimina dupla renderizacao inicial, preserva SSR safety
+
+**Key decisions:**
+- AC3 corrigido durante QA de `var(--accent)` para `var(--accent-fg)` — aplicar DS CLAUDE.md como fonte de verdade sobre a story draft
+- Forklift icon confirmado disponivel no Lucide 0.460 (C1 condition atendida)
+- Theme toggle incluido na tela /more (resolucao do tech debt explicitamente registrado em 5.5.6)
+- Account switcher estatico (C2 condition atendida — real multi-conta out-of-scope)
+
+**Tech debt identified:**
+- Sem testes automatizados para more/page.tsx — componente declarativo sem logica de negocio, risco baixo
+- `infrastructure-map.json` ausente — reincidencia da serie 5.x, pendente @devops
+- `prefers-color-scheme` nao detectado em useTheme — tema sempre inicia dark, usuario precisa alternar (carry-over de 5.5.6)
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit b5d23b2, 25 pages (inclui /more), https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (93/100).
+
+---
+
+## EPIC 5 COMPLETE — 32/32 stories Done (2026-06-14)
+
+**Sub-epics fechados:**
+- 5.1 Fundacao de Fidelidade ao DS: 8/8 COMPLETE
+- 5.2 Charts SVG e Recharts: 5/5 COMPLETE
+- 5.3 States Canonicos: 4/4 COMPLETE
+- 5.4 Formularios e Mascaras: 4/4 COMPLETE
+- 5.5 Telas Faltantes e Patterns: 6/6 COMPLETE
+- 5.6 Polish Visual Final: 5/5 COMPLETE
+
+**Criterios de conclusao atendidos:**
+- [x] Todas as telas do app usam componentes do DS (nenhum improvisado)
+- [x] Tokens do DS aplicados em todo CSS (zero hardcoded hex/rgba fora de tokens)
+- [x] 4 estados canonicos (loading/empty/error/success) em toda tela com dados remotos
+- [x] Mascaras pt-BR em todos os inputs de telefone, CEP, CPF/CNPJ e moeda
+- [x] Charts SVG custom no lugar de Recharts
+- [x] Theme toggle dark/light funcionando (desktop sidebar + mobile /more)
+- [x] Build limpo sem warnings (25 pages buildadas, typecheck e lint passando)
