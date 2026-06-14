@@ -24,7 +24,7 @@ export function Header() {
         )}
         <Tooltip label="Sair">
           <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sair">
-            <LogOut className="size-4" />
+            <LogOut className="size-4" aria-hidden="true" />
           </Button>
         </Tooltip>
       </div>

@@ -21,7 +21,7 @@ export function PageHeader({ title, subtitle, onBack, actions, children, classNa
         {onBack && (
           <Tooltip label="Voltar" position="bottom">
             <Button variant="ghost" size="icon" onClick={onBack} aria-label="Voltar">
-              <ArrowLeft className="size-5" />
+              <ArrowLeft className="size-5" aria-hidden="true" />
             </Button>
           </Tooltip>
         )}

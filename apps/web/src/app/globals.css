@@ -390,6 +390,10 @@
   * {
     @apply border-border outline-ring/50;
   }
+  *:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
   body {
     @apply bg-background text-foreground;
     font-size: var(--text-base);
@@ -429,6 +433,16 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Touch targets — mobile >= 44px (DS token --touch-target)
+   Exclui [data-slot="button"] (componente DS com tamanhos controlados via cva)
+   ========================================================================== */
+@media (max-width: 767px) {
+  button:not([data-slot="button"]), a, [role="button"], [role="link"] {
+    min-height: var(--touch-target);
   }
 }
 

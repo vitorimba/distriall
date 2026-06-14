@@ -23,7 +23,7 @@ export function Checkbox({ label, disabled, className, ...rest }: CheckboxProps)
           className="peer absolute inset-0 size-full cursor-pointer appearance-none rounded border border-input bg-[var(--surface-inset)] transition-colors checked:border-primary checked:bg-primary focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)] focus-visible:outline-offset-2 disabled:cursor-not-allowed"
           {...rest}
         />
-        <Check className="pointer-events-none relative size-3 text-primary-foreground opacity-0 peer-checked:opacity-100" strokeWidth={3} />
+        <Check className="pointer-events-none relative size-3 text-primary-foreground opacity-0 peer-checked:opacity-100" strokeWidth={3} aria-hidden="true" />
       </span>
       {label && <span>{label}</span>}
     </label>

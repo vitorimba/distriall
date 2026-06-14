@@ -43,12 +43,12 @@ export function QuantityStepper({
           btnSize
         )}
       >
-        <Minus className="size-3.5" />
+        <Minus className="size-3.5" aria-hidden="true" />
       </button>
       <input
         type="number"
         className={cn(
-          'num border-x border-input bg-transparent text-center text-foreground outline-none',
+          'num border-x border-input bg-transparent text-center text-foreground outline-none focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)] focus-visible:outline-offset-2',
           '[&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden',
           inputSize
         )}
@@ -68,7 +68,7 @@ export function QuantityStepper({
           btnSize
         )}
       >
-        <Plus className="size-3.5" />
+        <Plus className="size-3.5" aria-hidden="true" />
       </button>
     </span>
   )

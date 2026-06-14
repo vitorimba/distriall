@@ -43,7 +43,7 @@ export function Pagination({
       <span className="num text-xs text-muted-foreground">{summary}</span>
       <div className="flex items-center gap-1">
         <button className={btnBase} disabled={page === 1} onClick={() => go(page - 1)} aria-label="Página anterior">
-          <ChevronLeft className="size-4" />
+          <ChevronLeft className="size-4" aria-hidden="true" />
         </button>
         {pageList(page, total).map((p, i) =>
           p === '…' ? (
@@ -63,7 +63,7 @@ export function Pagination({
           )
         )}
         <button className={btnBase} disabled={page === total} onClick={() => go(page + 1)} aria-label="Próxima página">
-          <ChevronRight className="size-4" />
+          <ChevronRight className="size-4" aria-hidden="true" />
         </button>
       </div>
     </div>

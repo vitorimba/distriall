@@ -1,0 +1,61 @@
+schema: 1
+story: '5.6.3'
+story_title: 'Acessibilidade — focus ring, aria-labels, contraste'
+gate: PASS
+status_reason: 'Todos os 6 ACs validados apos Round 1 de fixes. Focus ring global via *:focus-visible em @layer base. aria-hidden em 12 icones decorativos. Dialog focus trap nativo (base-ui). Contraste AA verificado programaticamente — todos os pares passam (min 5.76:1). Touch target refinado com button:not([data-slot="button"]) — DS buttons excluidos corretamente. Fix QA aplicado no quantity-stepper. Issues restantes sao LOW (future sprint).'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-14T23:00:00Z'
+
+top_issues:
+  - id: I03
+    severity: low
+    category: code
+    description: 'pagination.tsx — botoes numericos sem aria-label contextual. Screen readers anunciam apenas o numero sem contexto de pagina. Ex: "3" em vez de "Ir para pagina 3". WCAG 2.4.6 recomenda labels descritivos.'
+    recommendation: 'Adicionar aria-label={`Ir para pagina ${p}`} nos botoes de numero em pagination.tsx em story futura.'
+    suggested_owner: dev
+  - id: I04
+    severity: low
+    category: code
+    description: 'infrastructure/infrastructure-map.json ausente — deploy readiness vercel nao pode ser verificado via registry. Consistente com padrao das stories anteriores da serie 5.x.'
+    recommendation: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para vercel. Registrado como recomendacao futura consistente com gate 5.6.2.'
+    suggested_owner: devops
+
+waiver: { active: false }
+
+quality_score: 93
+
+expires: '2026-06-28T23:00:00Z'
+
+evidence:
+  tests_reviewed: 0
+  risks_identified: 2
+  trace:
+    ac_covered: [1, 2, 3, 4, 5, 6]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Mudancas CSS-only e atributos aria HTML. Sem dados sensiveis, sem auth, sem logica de negocio alterada.'
+  performance:
+    status: PASS
+    notes: 'CSS custom property resolution negligivel. Zero JS adicionado. Media query max-width:767px avaliada pelo browser nativamente.'
+  reliability:
+    status: PASS
+    notes: 'Fix QA aplicado no quantity-stepper (focus-visible no input numerico). Touch target refinado com :not([data-slot="button"]) — DS buttons excluidos, buttons nativos cobertos corretamente. Todos os ACs implementados e verificados.'
+  maintainability:
+    status: PASS
+    notes: 'Padrao consistente de aria-hidden="true" em todos os icones decorativos. Focus-visible via global com overrides pontuais. Seletor :not([data-slot="button"]) documentado inline no globals.css. Abordagem escalavel.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Adicionar aria-label contextual nos botoes de numero de pagina em pagination.tsx: aria-label={`Ir para pagina ${p}`}'
+      refs: ['apps/web/src/components/ui/pagination.tsx']
+      suggested_owner: dev
+    - action: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para vercel para habilitar deploy readiness checks automatizados em stories futuras.'
+      refs: ['infrastructure/']
+      suggested_owner: devops
+    - action: 'Considerar testes automatizados de acessibilidade (axe-playwright ou similar) em story dedicada da serie 5.6.x ou epic posterior.'
+      refs: ['apps/web/src/']
+      suggested_owner: dev

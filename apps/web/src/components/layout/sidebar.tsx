@@ -65,7 +65,7 @@ export function Sidebar() {
                   : { color: 'var(--text-secondary)' }
               }
             >
-              <Icon className="size-4" />
+              <Icon className="size-4" aria-hidden="true" />
               <span>{item.label}</span>
             </Link>
           );
@@ -79,7 +79,7 @@ export function Sidebar() {
             style={{ color: 'var(--text-secondary)' }}
             aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
           >
-            {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            {theme === 'dark' ? <Sun className="size-4" aria-hidden="true" /> : <Moon className="size-4" aria-hidden="true" />}
             <span>{theme === 'dark' ? 'Tema claro' : 'Tema escuro'}</span>
           </button>
         </Tooltip>

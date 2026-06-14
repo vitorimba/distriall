@@ -10,7 +10,7 @@ interface SearchFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
 export function SearchField({ value, onClear, className, ...rest }: SearchFieldProps) {
   return (
     <span className={cn('relative inline-flex w-full', className)}>
-      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
       <input
         type="search"
         value={value}
@@ -28,7 +28,7 @@ export function SearchField({ value, onClear, className, ...rest }: SearchFieldP
           className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground"
           aria-label="Limpar busca"
         >
-          <X className="size-3.5" />
+          <X className="size-3.5" aria-hidden="true" />
         </button>
       )}
     </span>
