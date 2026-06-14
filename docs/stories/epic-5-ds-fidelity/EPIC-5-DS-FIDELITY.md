@@ -74,6 +74,8 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.5.1 | Order detail com stepper visual de status | Done | 2026-06-13 |
 | 5.5.2 | Receipt para impressao termica + Dialog de preview | Done | 2026-06-13 |
 | 5.5.3 | Deliveries com layout 2 colunas e reorder | Done | 2026-06-13 |
+| 5.5.4 | Financial hub com grid 3 colunas e icones | Done | 2026-06-13 |
+| 5.5.5 | Settings com Accordion FAQ e Alert compatibilidade | Done | 2026-06-14 |
 
 ## Development Log
 
@@ -223,6 +225,27 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 
 **Tests:** 0 novos (33 existentes passando). **Deploy:** Vercel — commit 2d8af57, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** CONCERNS (76/100) — aceito pelo PO, nao-bloqueante.
 
+### Story 5.5.4 — Financial hub com grid 3 colunas e icones (2026-06-13)
+
+**Built:**
+- (ADAPT) `apps/web/src/app/(authenticated)/financial/page.tsx` — refatorado de lista vertical (`space-y-2`) para `da-grid da-grid--cols3`. Icones Scale/Receipt/Ticket (lucide-react, 20px) com wrapper 40x40 usando tokens DS (`var(--accent-soft)`, `var(--accent-fg)`, `var(--radius-md)`). Labels: Acertos / Despesas / Vales conforme DS reference. Links: `/financial/settlements`, `/financial/expenses`, `/financial/vouchers`.
+
+**Patterns established:**
+- `da-grid da-grid--cols3` disponivel via layout.css (ja importado na 5.5.3) — padrao para grids de 3 colunas sem novo import
+- Icones hub de navegacao: wrapper `inline-flex 40x40` com `var(--accent-soft)` + `var(--accent-fg)` + `var(--radius-md)` — padrão confirmado em FinancialHubScreen.jsx e consistente com DS
+- Hub page como ADAPT puro: pagina existente refatorada sem criar novos componentes — padrão para hubs simples de navegacao
+
+**Key decisions:**
+- Label "Despesas" (DS) adotado em vez de "Gastos" (draft original) — conformidade com DS reference
+- `var(--radius-md)` adotado em vez de `radius-full` (circulo) — seguir DS em vez do AC original
+- "contagem de itens" removida do AC — elemento nao existe no DS reference (Article IV compliance)
+
+**Tech debt identified:**
+- Sem testes E2E para grid + navegacao (I02 QA) — componente puramente declarativo, risco baixo
+- `infrastructure-map.json` ausente — reincidencia de I01/I03 das stories 5.5.1-5.5.3
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit 3c2efa2, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (88/100).
+
 ### Story 5.5.2 — Receipt para impressao termica + Dialog de preview (2026-06-13)
 
 **Built:**
@@ -248,3 +271,24 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 - `infrastructure-map.json` ausente — reincidencia de I03 (5.5.1)
 
 **Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commits 1bb0d04+ce79a79+ef552c8, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** CONCERNS (76/100) — aceito pelo usuario, nao-bloqueante.
+
+### Story 5.5.5 — Settings com Accordion FAQ e Alert compatibilidade (2026-06-14)
+
+**Built:**
+- (ADAPT) `apps/web/src/app/(authenticated)/settings/page.tsx` — pagina refatorada: adicionado Card "Compatibilidade" com lista de 5 browsers (Check/X icons usando `var(--text-positive)` e `var(--text-negative)`), Alert tone="warning" para Safari/Firefox, Card "Solucao de problemas" com Accordion FAQ (3 items canonicos do DS), e dot de status da impressora 8px com `var(--success)` / `var(--text-muted)` + icone wrapper 40x40 com `var(--success-soft)` / `var(--surface-inset)`
+
+**Patterns established:**
+- REUSE de componentes existentes (`Accordion`, `Alert`) sem modificacao — padrao preferido para stories de fidelidade DS
+- Dados canonicos extraidos do DS reference (`SettingsScreen.jsx`) e declarados como constantes fora do componente — evita recriacao a cada render
+- Indicador de status com dot colorido: `width: 8px, height: 8px, border-radius: 50%` com cores condicionais via tokens DS — padrao para status visual inline
+
+**Key decisions:**
+- FAQ items usam `{title, content}` (API do Accordion app) adaptado do `{q, a}` do DS — mapeamento correto sem alterar o componente
+- Layout 3 Cards (Impressora → Compatibilidade → FAQ) segue ordem logica do DS SettingsScreen
+- Nenhum componente novo criado — pure ADAPT da pagina existente com REUSE de componentes UI
+
+**Tech debt identified:**
+- Sem testes automatizados para Settings page (I01 QA, LOW) — componente puramente declarativo com dados estaticos, risco baixo
+- `infrastructure-map.json` ausente — reincidencia de I01/I03 das stories 5.5.1-5.5.4
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit a66c653, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (92/100).
