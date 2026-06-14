@@ -37,7 +37,7 @@ export function BottomSheet({ open, onClose, title, items, children }: BottomShe
       onClick={(e) => { if (e.target === e.currentTarget) onClose?.() }}
     >
       <div
-        className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-[var(--surface-raised)] pb-safe animate-in slide-in-from-bottom duration-200"
+        className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-[var(--surface-raised)] pb-safe animate-in slide-in-from-bottom duration-[var(--duration-slow)]"
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -51,7 +51,7 @@ export function BottomSheet({ open, onClose, title, items, children }: BottomShe
                 <button
                   key={i}
                   className={cn(
-                    'flex w-full items-center gap-3 px-5 py-3 text-sm transition-colors hover:bg-[var(--surface-hover)]',
+                    'flex w-full items-center gap-3 px-5 py-3 text-sm transition-colors hover-transition hover:bg-[var(--surface-hover)]',
                     item.danger ? 'text-[var(--danger-fg)]' : 'text-foreground'
                   )}
                   onClick={() => { onClose?.(); item.onClick?.() }}

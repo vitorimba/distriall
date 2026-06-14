@@ -1,0 +1,60 @@
+schema: 1
+story: '5.6.2'
+story_title: 'Motion tokens em vez de Tailwind defaults'
+gate: PASS
+status_reason: 'Todos os 7 ACs validados. Tokens var(--duration-*) aplicados corretamente em dialog.tsx, toast.tsx e bottom-sheet.tsx via sintaxe Tailwind arbitrary value. prefers-reduced-motion universalmente coberto. Zero hardcoded duration-200/100 nos arquivos migrados. TypeScript limpo.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-14T21:00:00Z'
+
+top_issues:
+  - id: I01
+    severity: medium
+    category: code
+    description: 'dialog.tsx DialogContent usa zoom-in-95/zoom-out-95 (animate-in keyframe scale) em conjunto com data-open:scale-100/data-closed:scale-[0.98] (CSS transform direto). Mecanismos distintos podem produzir efeito de escala aditivo em alguns browsers.'
+    recommendation: 'Validar visualmente em browser. Se stacking indesejado, remover zoom-in-95/zoom-out-95 e confiar apenas nas classes de scale explicitas.'
+    suggested_owner: dev
+  - id: I02
+    severity: low
+    category: code
+    description: 'infrastructure/infrastructure-map.json ausente — deploy readiness vercel nao pode ser verificado via registry. Consistente com padrao observado nas 11 stories anteriores.'
+    recommendation: 'Criar infrastructure-map.json com deploy_targets para vercel em story de infra futura.'
+    suggested_owner: devops
+
+waiver: { active: false }
+
+quality_score: 90
+expires: '2026-06-28T21:00:00Z'
+
+evidence:
+  tests_reviewed: 0
+  risks_identified: 2
+  trace:
+    ac_covered: [1, 2, 3, 4, 5, 6, 7]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Mudancas CSS-only. Sem dados sensiveis, sem auth, sem logica de negocio alterada.'
+  performance:
+    status: PASS
+    notes: 'CSS custom property resolution negligivel. Zero JS adicionado. prefers-reduced-motion nativo do browser.'
+  reliability:
+    status: PASS
+    notes: 'Substituicao de classes preserva toda a logica de renderizacao existente. Nenhuma regressao funcional identificada. Componentes continuam a funcionar identicamente.'
+  maintainability:
+    status: PASS
+    notes: 'Padrao consistente de duration-[var(--duration-*)] nos 3 componentes. Classe .hover-transition centralizada em globals.css. Tokens canonicos documentados nos Dev Notes da story.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Validar visualmente em browser o efeito de scale do Dialog (zoom-in-95 + scale-[0.98] stacking). Remover zoom-in-95/zoom-out-95 se o efeito for indesejado.'
+      refs: ['apps/web/src/components/ui/dialog.tsx']
+      suggested_owner: dev
+    - action: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para vercel para habilitar deploy readiness checks automatizados em stories futuras.'
+      refs: ['infrastructure/']
+      suggested_owner: devops
+    - action: 'Considerar adicionar testes de animacao (prefers-reduced-motion emulation) em story dedicada de cobertura de testes da serie 5.x'
+      refs: ['apps/web/src/components/ui/dialog.tsx', 'apps/web/src/components/ui/bottom-sheet.tsx']
+      suggested_owner: dev

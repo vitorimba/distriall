@@ -56,7 +56,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               className={cn(
                 'flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium shadow-lg',
                 'bg-[var(--surface-raised)] text-foreground border border-border',
-                'animate-in slide-in-from-bottom-2 fade-in duration-200'
+                'animate-in slide-in-from-bottom-2 fade-in duration-[var(--duration-base)]'
               )}
             >
               <Icon className={cn('size-4 shrink-0', TONE_STYLES[t.tone])} />
