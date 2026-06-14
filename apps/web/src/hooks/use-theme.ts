@@ -18,15 +18,18 @@ function applyTheme(theme: Theme) {
   }
 }
 
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') return DEFAULT_THEME;
+  const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+  return stored === 'light' ? 'light' : 'dark';
+}
+
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const initial = stored === 'light' ? 'light' : 'dark';
-    setTheme(initial);
-    applyTheme(initial);
-  }, []);
+    applyTheme(theme);
+  }, [theme]);
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => {

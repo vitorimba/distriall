@@ -1,0 +1,64 @@
+schema: 1
+story: '5.6.5'
+story_title: 'Bottom navigation mobile — verificar 5 itens corretos'
+gate: PASS
+status_reason: 'Todos os 6 ACs validados e implementados corretamente apos correcao de DS fidelity no token de cor ativa (var(--accent) -> var(--accent-fg)). 5 itens DS corretos, icones corretos, tokens de altura/z-index aplicados, /more page completa com 5 links + tema + logout. Typecheck limpo, sem erros de lint nos arquivos da story.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-14T17:30:00Z'
+
+top_issues:
+  - id: I01
+    severity: low
+    category: code
+    description: 'bottom-nav.tsx usava var(--accent) para cor ativa, que mapeia para superficie muted (#F0EDE8 no light, #1D1D21 no dark) — invisivel sobre bg-background. Token correto para texto/icone accent e var(--accent-fg) per DS CLAUDE.md regra 1. Corrigido em QA refactor.'
+    recommendation: 'Verificado e corrigido durante esta review. AC3 originalmente especifica var(--accent) mas DS rule e var(--accent-fg). Dev deve alinhar AC3 da story ao token correto em futuras stories semelhantes.'
+    suggested_owner: dev
+  - id: I02
+    severity: low
+    category: code
+    description: 'use-theme.ts linha 27 — setTheme() chamado sincronamente dentro de useEffect, causando cascading render (lint error react-hooks/set-state-in-effect). Este erro foi introduzido em Story 5.5.6 e carregado ate esta story. Corrigido em QA refactor usando lazy initializer em useState.'
+    recommendation: 'Corrigido nesta review. Padrao correto: useState(getInitialTheme) com lazy initializer em vez de setTheme() dentro de useEffect.'
+    suggested_owner: dev
+  - id: I03
+    severity: low
+    category: code
+    description: 'infrastructure/infrastructure-map.json ausente — deploy readiness vercel nao pode ser verificado via registry (padrao consistente na serie 5.x).'
+    recommendation: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para vercel.'
+    suggested_owner: devops
+
+waiver: { active: false }
+
+quality_score: 93
+
+expires: '2026-06-28T17:30:00Z'
+
+evidence:
+  tests_reviewed: 0
+  risks_identified: 3
+  trace:
+    ac_covered: [1, 2, 3, 4, 5, 6]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Sign-out reutiliza supabase.auth.signOut() via useAuth hook — mesmo mecanismo do header.tsx. Sem novos endpoints expostos. useAuth lanca erro se usado fora do AuthProvider (guard correto). Theme toggle opera apenas em localStorage e classList DOM — sem dados de usuario expostos.'
+  performance:
+    status: PASS
+    notes: 'BottomNav é componente leve com 5 links estaticos. /more page carrega sem fetches assincronos. Lazy initializer em useTheme elimina dupla renderizacao inicial. Impacto negligivel.'
+  reliability:
+    status: PASS
+    notes: 'getInitialTheme com guard typeof window === undefined para SSR safety. isActive via pathname.startsWith() e consistente com padrao existente no projeto. signOut via useCallback com guard supabase existente.'
+  maintainability:
+    status: PASS
+    notes: 'bottom-nav.tsx reducao de 47 para 46 linhas — mais limpo. Tokens DS centralizados em globals.css. /more page segue estrutura Card/CardContent consistente com padroes do projeto. MENU_ITEMS como constante modulo-level.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Alinhar AC3 em templates de story future: especificar var(--accent-fg) para cor de texto/icone accent, nao var(--accent). Var(--accent) e token de superficie, nao de texto.'
+      refs: ['docs/stories/epic-5-ds-fidelity/5.6.5.bottom-nav-mobile.md']
+      suggested_owner: po
+    - action: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para vercel para habilitar deploy readiness checks automatizados em stories futuras.'
+      refs: ['infrastructure/']
+      suggested_owner: devops
