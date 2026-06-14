@@ -28,7 +28,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.2 | Charts SVG e Recharts | 5 | 12 | HIGH |
 | 5.3 | States Canonicos | 4 | 16 | HIGH |
 | 5.4 | Formularios e Mascaras ✓ COMPLETE | 4 | 13 | MEDIUM |
-| 5.5 | Telas Faltantes e Patterns | 6 | 23 | MEDIUM |
+| 5.5 | Telas Faltantes e Patterns ✓ COMPLETE | 6 | 23 | MEDIUM |
 | 5.6 | Polish Visual Final | 5 | 12 | LOW |
 | | **Total** | **32** | **102** | |
 
@@ -76,6 +76,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.5.3 | Deliveries com layout 2 colunas e reorder | Done | 2026-06-13 |
 | 5.5.4 | Financial hub com grid 3 colunas e icones | Done | 2026-06-13 |
 | 5.5.5 | Settings com Accordion FAQ e Alert compatibilidade | Done | 2026-06-14 |
+| 5.5.6 | Theme toggle dark/light | Done | 2026-06-14 |
 
 ## Development Log
 
@@ -292,3 +293,29 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 - `infrastructure-map.json` ausente — reincidencia de I01/I03 das stories 5.5.1-5.5.4
 
 **Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit a66c653, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (92/100).
+
+### Story 5.5.6 — Theme toggle dark/light (2026-06-14)
+
+**Built:**
+- (CREATE) `apps/web/src/hooks/use-theme.ts` — hook `useTheme` com toggle dark/light, persistencia localStorage (`distriall-theme`), SSR-safe (leitura em useEffect, estado inicial `dark`). Funcao `applyTheme` isolada: gerencia classe `dark` no `<html>` e atributo `data-theme="light"`. `toggleTheme` com `useCallback` para estabilidade referencial.
+- (ADAPT) `apps/web/src/components/layout/sidebar.tsx` — botao toggle Sun/Moon (lucide-react) posicionado apos nav, antes do fim do aside. Logo condicional: `distriall-logo-on-dark.png` (dark) / `distriall-logo-on-light.png` (light) via ternario no `src` do Image.
+- (ADAPT) `apps/web/src/app/layout.tsx` — anti-flash inline script no `<head>` (le localStorage antes do first paint, remove `dark` e seta `data-theme="light"` se necessario). `suppressHydrationWarning` no `<html>`. Classe `dark` mantida como default server-side.
+
+**Patterns established:**
+- Hook de tema SSR-safe: estado inicial seguro (`dark`), leitura de localStorage apenas em `useEffect`, anti-flash script inline no layout para evitar FOUC — padrao canonico para qualquer preferencia client-side persistida
+- `suppressHydrationWarning` no `<html>` quando atributos sao modificados por inline script antes do React hidratar — necessario para evitar warnings de hydration mismatch
+- `data-theme="light"` e o seletor CSS para tokens light do DS extendido (surfaces, borders, text, accent, feedback, status, shadows, gradients) — ja definido em globals.css e colors.css
+
+**Key decisions:**
+- Anti-flash via inline script (nao via cookie/SSR) — mais simples, adequado para SPA sem server-side theme detection
+- Toggle apenas no sidebar desktop — mobile sem pagina "Mais" no BottomNav, escopo limitado intencionalmente
+- Nenhum CSS novo necessario — tokens `[data-theme="light"]` ja completos em globals.css (linhas 333-384)
+
+**Tech debt identified:**
+- Sem testes automatizados para `useTheme` (carry-over da serie 5.5.x — risco baixo por ser UI-only)
+- Toggle mobile ausente — depende de futura pagina "Mais" no BottomNav
+- `prefers-color-scheme` nao detectado — tema sempre inicia como dark, usuario precisa alternar manualmente
+
+**Sub-epic 5.5 COMPLETE (6/6):** stepper → receipt → deliveries 2-col → financial hub → settings → theme toggle. Todos os criterios de telas faltantes e patterns do Epic 5 atendidos. Theme toggle dark/light marca o ultimo item no criterio de conclusao do Epic.
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit 26bb1f4, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (95/100).
