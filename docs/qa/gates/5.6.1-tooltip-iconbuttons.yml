@@ -1,0 +1,44 @@
+schema: 1
+story: '5.6.1'
+story_title: 'Tooltip em todos os IconButton'
+gate: PASS
+status_reason: 'Todos os botoes size="icon" envolvidos em Tooltip com label correto, posicao top/bottom conforme AC3, aria-label preservado, importacao absoluta correta, TypeScript limpo. Cobertura completa dos 3 arquivos auditados.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-14T20:00:00Z'
+
+top_issues: []
+waiver: { active: false }
+
+quality_score: 92
+expires: '2026-06-28T20:00:00Z'
+
+evidence:
+  tests_reviewed: 0
+  risks_identified: 0
+  trace:
+    ac_covered: [1, 2, 3, 4]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Sem vulnerabilidades. Tooltip e componente CSS puro, sem JS adicional, sem dados sensiveis.'
+  performance:
+    status: PASS
+    notes: 'Tooltip CSS-only (opacity transition). Zero overhead de JS. Nao impacta renders.'
+  reliability:
+    status: PASS
+    notes: 'Renderizacao condicional preservada (onBack && ...). Nenhuma regressao identificada. Comportamento existente intacto.'
+  maintainability:
+    status: PASS
+    notes: 'Padrao uniforme de wrapping nos 3 arquivos. Importacao absoluta consistente. Codigo limpo e legivel.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Sidebar: considerar tornar o label do Tooltip dinamico ("Mudar para tema claro/escuro") para alinhar com o aria-label contextual do botao'
+      refs: ['apps/web/src/components/layout/sidebar.tsx']
+      suggested_owner: dev
+    - action: 'Adicionar testes de interacao (hover/focus) para Tooltip em futura story de cobertura de testes da serie 5.x'
+      refs: ['apps/web/src/components/ui/tooltip.tsx']
+      suggested_owner: dev

@@ -3,6 +3,7 @@
 import { useAuth } from '@/providers/auth-provider';
 import { AccountSwitcher } from '@/components/layout/account-switcher';
 import { Button } from '@/components/ui/button';
+import { Tooltip } from '@/components/ui/tooltip';
 import { LogOut } from 'lucide-react';
 
 export function Header() {
@@ -21,9 +22,11 @@ export function Header() {
             {profile.name}
           </span>
         )}
-        <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sair">
-          <LogOut className="size-4" />
-        </Button>
+        <Tooltip label="Sair">
+          <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sair">
+            <LogOut className="size-4" />
+          </Button>
+        </Tooltip>
       </div>
     </header>
   );
