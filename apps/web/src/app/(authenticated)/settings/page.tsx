@@ -4,7 +4,35 @@ import { usePrinter } from '@/hooks/use-printer';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Accordion } from '@/components/ui/accordion';
+import { Alert } from '@/components/ui/alert';
 import { Bluetooth, Check, X, Printer } from 'lucide-react';
+
+const FAQ = [
+  {
+    title: 'A impressora nao aparece na lista de pareamento',
+    content:
+      'Verifique se a impressora esta ligada e em modo de pareamento (LED piscando). Mantenha-a a menos de 1 metro do aparelho e tente novamente.',
+  },
+  {
+    title: 'O recibo sai em branco ou cortado',
+    content:
+      'Confirme a largura do papel nas opcoes da impressora (58mm ou 80mm). Recibos cortados geralmente indicam configuracao de largura errada.',
+  },
+  {
+    title: 'A conexao cai durante a impressao',
+    content:
+      'Bluetooth de baixa energia pode hibernar. Desative a economia de bateria para o navegador nas configuracoes do Android.',
+  },
+];
+
+const COMPAT = [
+  { nome: 'Chrome no Android', ok: true },
+  { nome: 'Edge no Android', ok: true },
+  { nome: 'Chrome no desktop (Windows / macOS)', ok: true },
+  { nome: 'Safari no iOS', ok: false },
+  { nome: 'Firefox', ok: false },
+];
 
 export default function SettingsPage() {
   const {
@@ -23,82 +51,139 @@ export default function SettingsPage() {
     <div className="px-4 py-4 space-y-4">
       <PageHeader title="Configuracoes" />
 
-      {/* Printer section */}
+      {/* Impressora termica */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Bluetooth className="size-4" />
-            Impressora Bluetooth
+            Impressora termica
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {/* Web Bluetooth support check */}
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Web Bluetooth:</span>
-            {isSupported ? (
-              <span className="flex items-center gap-1 text-green-600">
-                <Check className="size-3.5" /> Suportado
-              </span>
+          {/* Printer status with dot */}
+          <div className="flex items-center gap-3">
+            <span
+              className="inline-flex items-center justify-center rounded-lg"
+              style={{
+                width: 40,
+                height: 40,
+                background: isConnected
+                  ? 'var(--success-soft)'
+                  : 'var(--surface-inset)',
+                color: isConnected
+                  ? 'var(--text-positive)'
+                  : 'var(--text-muted)',
+              }}
+            >
+              <Printer className="size-5" />
+            </span>
+            <div>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <span
+                  className="shrink-0 rounded-full"
+                  style={{
+                    width: 8,
+                    height: 8,
+                    background: isConnected
+                      ? 'var(--success)'
+                      : 'var(--text-muted)',
+                  }}
+                />
+                {isConnected
+                  ? `Conectada — ${deviceName ?? 'Desconhecida'}`
+                  : 'Desconectada'}
+              </div>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {isConnected
+                  ? 'Pronta para imprimir recibos via Bluetooth'
+                  : 'Pareie uma impressora Bluetooth para imprimir recibos'}
+              </p>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-2">
+            {!isConnected ? (
+              <Button size="sm" onClick={connect} disabled={isConnecting}>
+                <Bluetooth className="mr-1 size-3.5" />
+                {isConnecting ? 'Conectando...' : 'Conectar'}
+              </Button>
             ) : (
-              <span className="flex items-center gap-1 text-destructive">
-                <X className="size-3.5" /> Nao suportado
-              </span>
+              <>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={testPrint}
+                  disabled={isPrinting}
+                >
+                  <Printer className="mr-1 size-3.5" />
+                  {isPrinting ? 'Imprimindo...' : 'Teste de impressao'}
+                </Button>
+                <Button size="sm" variant="outline" onClick={disconnect}>
+                  Desconectar
+                </Button>
+              </>
             )}
           </div>
 
-          {/* Connection status */}
-          {isSupported && (
-            <>
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Status:</span>
-                {isConnected ? (
-                  <span className="text-green-600">Conectada: {deviceName ?? 'Desconhecida'}</span>
-                ) : (
-                  <span className="text-muted-foreground">Nao configurada</span>
-                )}
-              </div>
-
-              <div className="flex gap-2">
-                {!isConnected ? (
-                  <Button size="sm" onClick={connect} disabled={isConnecting}>
-                    <Bluetooth className="mr-1 size-3.5" />
-                    {isConnecting ? 'Conectando...' : 'Conectar Impressora'}
-                  </Button>
-                ) : (
-                  <>
-                    <Button size="sm" variant="outline" onClick={testPrint} disabled={isPrinting}>
-                      <Printer className="mr-1 size-3.5" />
-                      {isPrinting ? 'Imprimindo...' : 'Testar Impressao'}
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={disconnect}>
-                      Desconectar
-                    </Button>
-                  </>
-                )}
-              </div>
-
-              {error && (
-                <p className="text-xs text-destructive">{error}</p>
-              )}
-
-              <div className="text-xs text-muted-foreground space-y-1 border-t pt-2">
-                <p className="font-medium">Troubleshooting:</p>
-                <ul className="list-disc pl-4 space-y-0.5">
-                  <li>Ligue a impressora e ative o Bluetooth do celular</li>
-                  <li>A impressora deve ser BLE (Bluetooth Low Energy)</li>
-                  <li>Se nao aparecer na lista, desligue e religue a impressora</li>
-                  <li>Use apenas Android Chrome ou Windows Chrome/Edge</li>
-                </ul>
-              </div>
-            </>
-          )}
+          {error && <p className="text-xs text-destructive">{error}</p>}
 
           {!isSupported && (
             <p className="text-xs text-muted-foreground">
-              Web Bluetooth nao e suportado neste navegador. Use Android Chrome ou Windows Chrome/Edge.
-              Cupons podem ser visualizados em tela como alternativa.
+              Web Bluetooth nao e suportado neste navegador. Use Android Chrome
+              ou Windows Chrome/Edge.
             </p>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Compatibilidade */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Compatibilidade</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex flex-col gap-2">
+            {COMPAT.map((c) => (
+              <div
+                key={c.nome}
+                className="flex items-center gap-2 text-sm"
+              >
+                <span
+                  className="inline-flex"
+                  style={{
+                    color: c.ok
+                      ? 'var(--text-positive)'
+                      : 'var(--text-negative)',
+                  }}
+                >
+                  {c.ok ? (
+                    <Check className="size-4" />
+                  ) : (
+                    <X className="size-4" />
+                  )}
+                </span>
+                <span className="text-muted-foreground">{c.nome}</span>
+              </div>
+            ))}
+          </div>
+
+          <Alert
+            tone="warning"
+            title="Safari e Firefox nao suportam Web Bluetooth"
+          >
+            Para imprimir recibos, use Chrome ou Edge no Android.
+          </Alert>
+        </CardContent>
+      </Card>
+
+      {/* Solucao de problemas */}
+      <Card>
+        <CardHeader className="pb-0">
+          <CardTitle className="text-base">Solucao de problemas</CardTitle>
+        </CardHeader>
+        <CardContent className="px-0 pb-0">
+          <Accordion items={FAQ} />
         </CardContent>
       </Card>
     </div>

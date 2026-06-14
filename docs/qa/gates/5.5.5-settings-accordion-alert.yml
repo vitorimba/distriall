@@ -1,0 +1,54 @@
+schema: 1
+story: '5.5.5'
+story_title: 'Settings com Accordion FAQ e Alert compatibilidade'
+gate: PASS
+status_reason: 'All 4 ACs fully implemented with DS-aligned tokens and data. Accordion FAQ reuses existing component with 3 items identical to DS SettingsScreen.jsx. Alert warning with tone=warning matches DS exactly. Printer status dot uses correct tokens (--success, --text-muted, --success-soft, --surface-inset). Browser compat list uses Check/X icons with --text-positive/--text-negative. No hardcoded colors. Build passes cleanly.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-14T03:00:00Z'
+
+top_issues:
+  - id: I01
+    severity: low
+    category: tests
+    description: 'No automated tests added — all validation is manual per story Testing section'
+    recommendation: 'Add E2E test asserting: Accordion opens/closes, Alert renders with warning tone, printer dot changes color based on connection state. Low priority given purely declarative UI with 3-point effort.'
+    suggested_owner: dev
+
+waiver:
+  active: false
+
+quality_score: 92
+expires: '2026-06-28T00:00:00Z'
+
+evidence:
+  tests_reviewed: 0
+  risks_identified: 1
+  trace:
+    ac_covered:
+      - AC1  # Accordion with 3 FAQ items identical to DS SettingsScreen.jsx (pareamento, recibo em branco, conexao cai)
+      - AC2  # Alert tone="warning" with title and body matching DS exactly
+      - AC3  # Printer dot 8px with var(--success)/var(--text-muted), icon wrapper 40x40 with var(--success-soft)/var(--surface-inset)
+      - AC4  # Check/X icons per browser with var(--text-positive)/var(--text-negative), 5 browsers matching DS
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'No user input processing, no API calls, no secrets. Static FAQ data and browser compat list. No injection vectors.'
+  performance:
+    status: PASS
+    notes: 'Purely declarative component with static data arrays. Accordion state is local useState. No useEffect, no data fetching beyond existing usePrinter hook.'
+  reliability:
+    status: PASS
+    notes: 'Graceful degradation: isSupported check shows fallback message. isConnected drives dot color. Error state displayed inline. No new async operations added.'
+  maintainability:
+    status: PASS
+    notes: 'FAQ and COMPAT arrays centralize data at top of file — easy to update. DS tokens via CSS vars guarantee theme compatibility. Reuses existing Accordion and Alert components without modification.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Add E2E test for Settings page: assert Accordion opens/closes FAQ items, Alert renders warning, printer dot reflects connection state'
+      refs:
+        - 'apps/web/src/app/(authenticated)/settings/page.tsx'
+      suggested_owner: dev
