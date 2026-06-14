@@ -72,8 +72,35 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.4.3 | Validacao no blur e submit, nunca a cada tecla | Done | 2026-06-13 |
 | 5.4.4 | Inputs de moeda com prefixo R$ e classe .num | Done | 2026-06-13 |
 | 5.5.1 | Order detail com stepper visual de status | Done | 2026-06-13 |
+| 5.5.2 | Receipt para impressao termica + Dialog de preview | Done | 2026-06-13 |
+| 5.5.3 | Deliveries com layout 2 colunas e reorder | Done | 2026-06-13 |
 
 ## Development Log
+
+### Story 5.5.3 — Deliveries com layout 2 colunas e reorder (2026-06-13)
+
+**Built:**
+- (ADAPT) `apps/web/src/app/(authenticated)/deliveries/page.tsx` — layout refatorado de coluna unica para `da-grid da-grid--cols2`; AvailableOrders no painel esquerdo, RouteBuilder no painel direito
+- (ADAPT) `apps/web/src/components/deliveries/route-builder.tsx` — badge sequencial com tokens DS (`var(--accent-soft)`, `var(--accent-fg)`, `var(--radius-full)`); setas `ChevronUp`/`ChevronDown` para reorder; botao "Enviar rota" + toast; titulo do painel "Rota montada (N)"
+- (ADAPT) `apps/web/src/components/deliveries/available-orders.tsx` — titulo "Pedidos disponiveis (N)" adicionado; layout alinhado ao painel esquerdo do DS
+- (ADAPT) `apps/web/src/app/globals.css` — `@import` de `layout.css` do DS adicionado (ativa `.da-grid`, `.da-grid--cols2`, media query 768px)
+
+**Patterns established:**
+- `da-grid da-grid--cols2` e o padrao canonico de layout 2 colunas no app — requer `@import "../../../../packages/design-system/tokens/layout.css"` em globals.css para funcionar
+- Badge sequencial numerado: `inline-flex` 24x24px com tokens `var(--accent-soft)` + `var(--accent-fg)` + `var(--radius-full)` — seguir DeliveriesScreen.jsx como referencia
+- Import de CSS do DS em globals.css e o padrao correto (nao copiar as classes em Tailwind) — consistente com print.css da story 5.5.2
+- Empilhamento mobile via layout.css media query (<768px) — sem necessidade de classe Tailwind adicional
+
+**Key decisions:**
+- Opcao A (import layout.css) escolhida sobre Opcao B (Tailwind grid) — mantem fidelidade com o DS e aproveita todos os utilitarios de grid (da-grid--cols3, --stats5, etc.) para uso futuro
+- `AvailableOrders` e `RouteBuilder` mantidos como componentes separados (nao fundidos em um unico) — separacao de responsabilidades preservada
+
+**Tech debt identified:**
+- Badges de `account_name` em route-item.tsx e available-orders.tsx usam `bg-gray-100 text-gray-600` (Tailwind hardcoded) em vez de tokens DS — visual inconsistencia minor
+- Sem testes automatizados para fluxo de reorder (reassignSequences ja tem logica testavel)
+- Draft route items nao persistem em sessionStorage — perda ao recarregar pagina (comportamento existente, nao regressao)
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commits a69cf0a + e90bc21, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (87/100).
 
 ### Story 5.4.1 — Criar maskUtils.ts com mascaras pt-BR (2026-06-13)
 
@@ -195,3 +222,29 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 - `infrastructure/infrastructure-map.json` nao existe no projeto — I03 do gate QA. N/A para o workflow atual (deploy direto via Vercel CLI).
 
 **Tests:** 0 novos (33 existentes passando). **Deploy:** Vercel — commit 2d8af57, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** CONCERNS (76/100) — aceito pelo PO, nao-bloqueante.
+
+### Story 5.5.2 — Receipt para impressao termica + Dialog de preview (2026-06-13)
+
+**Built:**
+- (CREATE) `apps/web/src/components/orders/receipt.tsx` — TypeScript port fiel do DS canonical `Receipt.jsx`. Mesmas classes `da-receipt`, mesmo `fmt()`, mesma estrutura JSX. Tokens `--receipt-paper`, `--receipt-ink`, `--receipt-ink-soft`, `--receipt-rule`.
+- (ADAPT) `apps/web/src/components/orders/order-receipt.tsx` — substituido modal improvised (bg-white hardcoded) por Dialog DS (`@base-ui/react/dialog`) + Receipt DS. Bluetooth gerenciado pelo pai (page.tsx) para evitar dupla instancia do hook `usePrinter`. `handleShare` com fallback clipboard.
+- (ADAPT) `apps/web/src/app/(authenticated)/orders/[id]/page.tsx` — prop `open={showReceipt}` + `subtotal` adicionados ao OrderReceipt. Componente sempre montado (nao condicional) para animacoes do Dialog base-ui.
+- (ADAPT) `apps/web/src/app/globals.css` — `@import` do `print.css` do DS no topo (ativa classes `da-receipt`) + `@media print` ao final (oculta nav, header, aside, footer, `[data-slot="sidebar"]`, `[data-slot="page-header"]`).
+
+**Patterns established:**
+- Port de componente DS: manter mesma API de props, mesmas classes CSS, mesma logica — apenas adicionar tipos TypeScript
+- Dialog DS sempre montado (nao conditional render) — necessario para animacoes de abertura/fechamento do `@base-ui/react/dialog`
+- Bluetooth no pai, Dialog = fallback `window.print()` — separacao limpa de responsabilidades
+- `@import` de CSS do DS em `globals.css` — padrao canonico para importar estilos de componentes do design system
+
+**Key decisions:**
+- AC3 interpretado como "BT no pai, Dialog = fallback" — arquitetura tecnicamente superior (evita dupla instancia de hook), diverge da leitura literal do AC. Aceito pelo PO.
+- `usePrinter` REUSE confirmado — hook nao re-implementado, apenas referenciado em page.tsx
+- Tokens `--receipt-paper/#FFFFFF`, `--receipt-ink/#18181B` em `:root` (nao `.dark`) — identicos nos dois temas (AC5)
+
+**Tech debt identified:**
+- Sem testes automatizados para `receipt.tsx` e `order-receipt.tsx` — I01 do gate QA
+- `new Date()` nao memoizado em `order-receipt.tsx` — I04 (low severity)
+- `infrastructure-map.json` ausente — reincidencia de I03 (5.5.1)
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commits 1bb0d04+ce79a79+ef552c8, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** CONCERNS (76/100) — aceito pelo usuario, nao-bloqueante.
