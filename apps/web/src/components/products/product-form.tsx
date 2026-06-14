@@ -132,7 +132,7 @@ export function ProductForm({ product }: ProductFormProps) {
       name,
       description: description || undefined,
       category: category || undefined,
-      unit: unit as 'un' | 'kg' | 'g' | 'l',
+      unit: unit as 'un' | 'kg' | 'g' | 'l' | 'cm',
       variants: parsedVariants,
     };
 
@@ -257,6 +257,7 @@ export function ProductForm({ product }: ProductFormProps) {
                 <option value="kg">Kg</option>
                 <option value="g">Gramas</option>
                 <option value="l">Litros</option>
+                <option value="cm">Centímetros</option>
               </select>
             </Field>
           </div>

@@ -13,7 +13,7 @@ export const productSchema = z.object({
   name: z.string().min(1, 'Nome do produto obrigatorio'),
   description: z.string().optional(),
   category: z.string().optional(),
-  unit: z.enum(['un', 'kg', 'g', 'l']),
+  unit: z.enum(['un', 'kg', 'g', 'l', 'cm']),
   variants: z.array(productVariantSchema).min(1, 'Pelo menos 1 variacao obrigatoria'),
 });
 
