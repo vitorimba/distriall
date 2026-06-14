@@ -77,6 +77,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.5.4 | Financial hub com grid 3 colunas e icones | Done | 2026-06-13 |
 | 5.5.5 | Settings com Accordion FAQ e Alert compatibilidade | Done | 2026-06-14 |
 | 5.5.6 | Theme toggle dark/light | Done | 2026-06-14 |
+| 5.6.1 | Tooltip em todos os IconButton | Done | 2026-06-14 |
 
 ## Development Log
 
@@ -293,6 +294,28 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 - `infrastructure-map.json` ausente — reincidencia de I01/I03 das stories 5.5.1-5.5.4
 
 **Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit a66c653, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (92/100).
+
+### Story 5.6.1 — Tooltip em todos os IconButton (2026-06-14)
+
+**Built:**
+- (ADAPT) `apps/web/src/components/layout/header.tsx` — Tooltip label="Sair" envolvendo sign-out Button size="icon"
+- (ADAPT) `apps/web/src/components/ui/page-header.tsx` — Tooltip label="Voltar" position="bottom" envolvendo onBack Button size="icon"
+- (ADAPT) `apps/web/src/components/layout/sidebar.tsx` — Tooltip label="Alternar tema" envolvendo theme toggle button
+
+**Patterns established:**
+- Todo `size="icon"` button deve estar envolto em `<Tooltip label="...">` — padrao canonico do DS
+- `position="top"` como default; `position="bottom"` apenas para botoes proximos ao topo da viewport
+- `aria-label` preservado em todos os botoes — Tooltip e aditivo, nao substituto de acessibilidade
+
+**Key decisions:**
+- Sidebar nav items NAO sao icon buttons (Link+icon+text) — apenas theme toggle coberto
+- Audit grep confirmou apenas 2 `size="icon"` no codebase (header.tsx, page-header.tsx) + sidebar toggle nativo
+
+**Tech debt identified:**
+- Testes de interacao hover/focus para Tooltip ausentes (carry-over)
+- Sidebar aria-label dinamico vs Tooltip label estatico — divergencia aceita, polish futuro
+
+**Tests:** 0 novos (62 existentes passando). **Deploy:** Vercel — commit 6bc93bb, https://distriall.vercel.app. **CodeRabbit:** 0 iter (WSL indisponivel). **QA Gate:** PASS (92/100).
 
 ### Story 5.5.6 — Theme toggle dark/light (2026-06-14)
 
