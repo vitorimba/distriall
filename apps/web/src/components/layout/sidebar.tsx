@@ -11,12 +11,9 @@ import {
   Truck,
   Wallet,
   ChartColumn,
-  Sun,
-  Moon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/hooks/use-theme';
-import { Tooltip } from '@/components/ui/tooltip';
 
 const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
@@ -30,7 +27,7 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   return (
     <aside className="hidden md:flex md:w-56 md:flex-col md:border-r md:bg-background">
@@ -71,19 +68,6 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <div className="border-t p-2">
-        <Tooltip label="Alternar tema">
-          <button
-            onClick={toggleTheme}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-[var(--surface-hover)]"
-            style={{ color: 'var(--text-secondary)' }}
-            aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-          >
-            {theme === 'dark' ? <Sun className="size-4" aria-hidden="true" /> : <Moon className="size-4" aria-hidden="true" />}
-            <span>{theme === 'dark' ? 'Tema claro' : 'Tema escuro'}</span>
-          </button>
-        </Tooltip>
-      </div>
     </aside>
   );
 }

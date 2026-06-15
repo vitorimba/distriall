@@ -1,11 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { Package, Forklift, Truck, BarChart2, Settings, LogOut, ChevronRight, ChevronsUpDown, Moon, Sun } from 'lucide-react';
+import { Package, Forklift, Truck, BarChart2, Settings, LogOut, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/providers/auth-provider';
-import { useTheme } from '@/hooks/use-theme';
 
 const MENU_ITEMS = [
   { id: 'products', label: 'Produtos', icon: Package, href: '/products' },
@@ -31,7 +30,7 @@ function MenuRow({ icon: Icon, label, href, first }: { icon: React.ElementType; 
 
 export default function MorePage() {
   const { signOut } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+
 
   return (
     <div className="px-4 py-4 space-y-4">
@@ -63,25 +62,6 @@ export default function MorePage() {
           {MENU_ITEMS.map((item, i) => (
             <MenuRow key={item.id} icon={item.icon} label={item.label} href={item.href} first={i === 0} />
           ))}
-        </CardContent>
-      </Card>
-
-      {/* Theme toggle */}
-      <Card>
-        <CardContent className="p-0">
-          <button
-            onClick={toggleTheme}
-            className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-foreground hover:bg-muted/50 transition-colors"
-            style={{ minHeight: 48 }}
-          >
-            {theme === 'dark' ? (
-              <Moon className="size-[18px] shrink-0 text-muted-foreground" aria-hidden="true" />
-            ) : (
-              <Sun className="size-[18px] shrink-0 text-muted-foreground" aria-hidden="true" />
-            )}
-            <span className="flex-1 text-left">{theme === 'dark' ? 'Modo escuro' : 'Modo claro'}</span>
-            <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-          </button>
         </CardContent>
       </Card>
 
