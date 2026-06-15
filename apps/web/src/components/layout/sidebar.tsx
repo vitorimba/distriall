@@ -11,6 +11,7 @@ import {
   Truck,
   Wallet,
   ChartColumn,
+  Settings,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +23,7 @@ const navItems = [
   { href: '/deliveries', label: 'Entregas', icon: Truck },
   { href: '/financial', label: 'Financeiro', icon: Wallet },
   { href: '/stats', label: 'Estatisticas', icon: ChartColumn },
+  { href: '/settings', label: 'Configuracoes', icon: Settings },
 ];
 
 export function Sidebar() {
