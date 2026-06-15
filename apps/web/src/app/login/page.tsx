@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Mail, Lock } from 'lucide-react';
@@ -11,6 +11,19 @@ import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
 
 export default function LoginPage() {
+  // Force dark theme on login page, restore on unmount
+  useEffect(() => {
+    const html = document.documentElement;
+    const wasDark = html.classList.contains('dark');
+    html.classList.add('dark');
+    html.removeAttribute('data-theme');
+    return () => {
+      if (!wasDark) {
+        html.classList.remove('dark');
+        html.setAttribute('data-theme', 'light');
+      }
+    };
+  }, []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
