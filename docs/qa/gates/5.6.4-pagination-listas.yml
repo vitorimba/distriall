@@ -1,0 +1,58 @@
+schema: 1
+story: '5.6.4'
+story_title: 'Pagination em listas longas'
+gate: PASS
+status_reason: 'Todos os 5 ACs validados. Slice aplicado apos sort/filter em todos os 3 componentes. Reset de pagina nos filtros implementado corretamente. Condicional > 25 (strict) correta. REUSE de pagination.tsx sem modificacoes. Build limpo, typecheck limpo, 33 testes passando.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-14T17:10:00Z'
+
+top_issues:
+  - id: I01
+    severity: low
+    category: code
+    description: 'pagination.tsx — botoes numericos sem aria-label contextual (carregado de 5.6.3 I03). Screen readers anunciam apenas o numero sem contexto de pagina. Nao e escopo desta story.'
+    recommendation: 'Adicionar aria-label={`Ir para pagina ${p}`} nos botoes de numero em pagination.tsx em story futura.'
+    suggested_owner: dev
+  - id: I02
+    severity: low
+    category: code
+    description: 'infrastructure/infrastructure-map.json ausente — deploy readiness vercel nao pode ser verificado via registry (carregado de 5.6.3 I04, padrao consistente na serie 5.x).'
+    recommendation: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para vercel.'
+    suggested_owner: devops
+
+waiver: { active: false }
+
+quality_score: 95
+
+expires: '2026-06-28T17:10:00Z'
+
+evidence:
+  tests_reviewed: 33
+  risks_identified: 2
+  trace:
+    ac_covered: [1, 2, 3, 4, 5]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Paginacao client-side de dados ja carregados em estado. Sem novos endpoints, sem novas queries, sem exposicao de dados adicionais. Surface de ataque inalterada.'
+  performance:
+    status: PASS
+    notes: 'Paginacao reduz DOM nodes de N para max 25. Sort O(n log n) e slice O(1) negligiveis para volumes tipicos. Melhora percebida de performance em contas com alto volume.'
+  reliability:
+    status: PASS
+    notes: 'Reset de pagina nos filtros implementado com useEffect separado em OrderList e ExpenseList. Guard !error && antes de Pagination em OrderList. Comportamento defensivo correto.'
+  maintainability:
+    status: PASS
+    notes: 'Padrao canonico seguido identicamente ao Dev Notes da story. PAGE_SIZE=25 como constante modulo-level. Sem duplicacao de logica. REUSE puro de pagination.tsx. Diff compacto (~170 linhas).'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Adicionar aria-label contextual nos botoes de numero de pagina em pagination.tsx: aria-label={`Ir para pagina ${p}`}'
+      refs: ['apps/web/src/components/ui/pagination.tsx']
+      suggested_owner: dev
+    - action: 'Criar infrastructure/infrastructure-map.json com deploy_targets[] para vercel para habilitar deploy readiness checks automatizados em stories futuras.'
+      refs: ['infrastructure/']
+      suggested_owner: devops

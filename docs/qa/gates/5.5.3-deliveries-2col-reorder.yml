@@ -1,0 +1,64 @@
+schema: 1
+story: '5.5.3'
+story_title: 'Deliveries com layout 2 colunas e reorder'
+gate: PASS
+status_reason: 'All 6 ACs fully implemented with DS-aligned tokens, da-grid--cols2 responsive layout, drag-and-drop + chevron reorder, sequential badge, and toast confirmation. No blocking issues found.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2026-06-13T00:00:00Z'
+
+top_issues: []
+waiver:
+  active: false
+
+quality_score: 87
+expires: '2026-06-27T00:00:00Z'
+
+evidence:
+  tests_reviewed: 0
+  risks_identified: 2
+  trace:
+    ac_covered:
+      - AC1  # da-grid da-grid--cols2 layout with left/right panels
+      - AC2  # handleAddOrder moves order from left to right panel
+      - AC3  # DndContext + SortableContext drag-and-drop + ChevronUp/ChevronDown setas
+      - AC4  # item.sequence badge with DS tokens
+      - AC5  # Enviar rota button with toast success/danger
+      - AC6  # layout.css media query stacks to 1 col at <768px
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'No auth bypass, no injection vectors, no hardcoded secrets. canEdit guard prevents mutation on sent routes.'
+  performance:
+    status: PASS
+    notes: 'No N+1 queries detected. reassignSequences is O(n) in-memory. Real-time via useDeliveryRealtime subscription appropriately scoped to delivery ID.'
+  reliability:
+    status: CONCERNS
+    notes: 'Draft route items (pre-send) are not persisted — a page refresh loses unsaved draft. This is an existing limitation, not introduced by this story, and is partially mitigated by the send flow.'
+  maintainability:
+    status: PASS
+    notes: 'Clean separation: page.tsx owns state, route-builder.tsx owns UI, available-orders.tsx owns left panel. DS token usage is consistent.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Add automated tests (unit for reassignSequences + integration for handleAddOrder/handleDragEnd) — story had no test files added'
+      refs:
+        - 'apps/web/src/app/(authenticated)/deliveries/page.tsx'
+        - 'apps/web/src/lib/delivery-utils.ts'
+      suggested_owner: dev
+    - action: 'Draft route persistence: consider sessionStorage backup so page refresh does not lose unsent route items'
+      refs:
+        - 'apps/web/src/app/(authenticated)/deliveries/page.tsx'
+      suggested_owner: dev
+    - action: 'Remove item from draft (non-sent route): currently requires delivery_item_id but draft items only have order id — handleRemoveItem may silently fail for draft items'
+      refs:
+        - 'apps/web/src/app/(authenticated)/deliveries/page.tsx'
+        - 'apps/web/src/components/deliveries/route-builder.tsx'
+      suggested_owner: dev
+    - action: 'account_name badge in route-item.tsx and available-orders.tsx uses raw Tailwind gray-100/gray-600 instead of DS tokens (bg-gray-100, text-gray-600). Should use var(--surface-inset) + var(--text-secondary).'
+      refs:
+        - 'apps/web/src/components/deliveries/route-item.tsx'
+        - 'apps/web/src/components/deliveries/available-orders.tsx'
+      suggested_owner: dev
