@@ -14,14 +14,22 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 flex h-14 items-center border-b bg-background px-4">
-      {/* Left — logo (mobile only) */}
-      <div className="flex items-center md:hidden">
+      {/* Left — logo (mobile only), both preloaded, toggled via CSS */}
+      <div className="relative flex items-center md:hidden">
         <Image
-          src={theme === 'dark' ? '/distriall-logo-on-dark.png' : '/distriall-logo-on-light.png'}
+          src="/distriall-logo-on-dark.png"
           alt="Distriall"
           width={100}
           height={28}
-          className="h-6 w-auto"
+          className="h-6 w-auto hidden dark:block"
+          priority
+        />
+        <Image
+          src="/distriall-logo-on-light.png"
+          alt="Distriall"
+          width={100}
+          height={28}
+          className="h-6 w-auto block dark:hidden"
           priority
         />
       </div>

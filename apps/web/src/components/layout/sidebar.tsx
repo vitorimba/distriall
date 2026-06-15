@@ -13,7 +13,6 @@ import {
   ChartColumn,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/hooks/use-theme';
 
 const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
@@ -27,17 +26,24 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { theme } = useTheme();
 
   return (
     <aside className="hidden md:flex md:w-56 md:flex-col md:border-r md:bg-background">
       <div className="flex h-14 items-center border-b px-4">
         <Image
-          src={theme === 'dark' ? '/distriall-logo-on-dark.png' : '/distriall-logo-on-light.png'}
-          alt="DistriAll"
+          src="/distriall-logo-on-dark.png"
+          alt="Distriall"
           width={120}
           height={32}
-          className="h-7 w-auto"
+          className="h-7 w-auto hidden dark:block"
+          priority
+        />
+        <Image
+          src="/distriall-logo-on-light.png"
+          alt="Distriall"
+          width={120}
+          height={32}
+          className="h-7 w-auto block dark:hidden"
           priority
         />
       </div>
