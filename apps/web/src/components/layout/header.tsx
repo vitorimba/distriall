@@ -13,36 +13,36 @@ export function Header() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 flex h-14 items-center border-b bg-background px-4">
-      {/* Left — logo (mobile only), both preloaded, toggled via CSS */}
-      <div className="relative flex items-center md:hidden">
+    <header className="sticky top-0 z-50 flex h-14 items-center gap-2 border-b bg-background px-3 md:px-4">
+      {/* Left — logo (mobile only) */}
+      <div className="shrink-0 md:hidden">
         <Image
           src="/distriall-logo-on-dark.png"
           alt="Distriall"
-          width={100}
-          height={28}
-          className="h-6 w-auto hidden dark:block"
+          width={80}
+          height={22}
+          className="h-5 w-auto hidden dark:block"
           priority
         />
         <Image
           src="/distriall-logo-on-light.png"
           alt="Distriall"
-          width={100}
-          height={28}
-          className="h-6 w-auto block dark:hidden"
+          width={80}
+          height={22}
+          className="h-5 w-auto block dark:hidden"
           priority
         />
       </div>
 
       {/* Center — account switcher */}
-      <div className="flex flex-1 justify-center md:justify-start">
+      <div className="flex min-w-0 flex-1 justify-center md:justify-start">
         <AccountSwitcher />
       </div>
 
-      {/* Right — user name, theme, logout */}
-      <div className="flex items-center gap-2">
+      {/* Right — theme, logout */}
+      <div className="flex shrink-0 items-center gap-1">
         {profile && (
-          <span className="hidden text-sm text-muted-foreground sm:inline">
+          <span className="hidden text-sm text-muted-foreground md:inline">
             {profile.name}
           </span>
         )}
