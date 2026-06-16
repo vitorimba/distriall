@@ -7,11 +7,11 @@ export interface SettlementOrderRow {
   orders: {
     id: string;
     order_number: number;
-    client_name: string;
     total: number;
     total_cost: number;
     status: string;
     created_at: string;
+    clients: { name: string } | null;
   } | null;
 }
 
@@ -115,7 +115,7 @@ export function useSettlements() {
       supabase
         .from('settlement_orders')
         .select(
-          'id, order_id, orders(id, order_number, client_name, total, total_cost, status, created_at)'
+          'id, order_id, orders(id, order_number, total, total_cost, status, created_at, clients(name))'
         )
         .eq('settlement_id', settlementId),
       supabase

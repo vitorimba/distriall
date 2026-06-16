@@ -46,7 +46,7 @@ export function SettlementOrders({ orders }: SettlementOrdersProps) {
                   >
                     <div className="min-w-0">
                       <span className="font-medium">#{order.order_number}</span>
-                      <span className="ml-2 text-muted-foreground truncate">{order.client_name}</span>
+                      <span className="ml-2 text-muted-foreground truncate">{order.clients?.name ?? '—'}</span>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-xs text-muted-foreground">{formatDate(order.created_at)}</span>
