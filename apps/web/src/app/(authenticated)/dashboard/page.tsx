@@ -27,7 +27,7 @@ export default function DashboardPage() {
   const { stats, delta, isLoading, error, fetchStats } = useStats();
 
   const [selectedAccountId, setSelectedAccountId] = useState<string>('');
-  const [period, setPeriod] = useState<Period>('month');
+  const [period, setPeriod] = useState<Period>('day');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 

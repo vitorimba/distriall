@@ -164,9 +164,35 @@ export function OrderList() {
         onClear={() => setSearch('')}
       />
 
-      {/* Status filters */}
-      <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
-      <ChipFilter options={PAYMENT_FILTERS} selected={paymentFilter} onChange={setPaymentFilter} />
+      {/* Filters — compact dropdowns on mobile, chips on desktop */}
+      <div className="flex gap-2 md:hidden">
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
+        >
+          {STATUS_FILTERS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              Status: {opt.label}
+            </option>
+          ))}
+        </select>
+        <select
+          value={paymentFilter}
+          onChange={(e) => setPaymentFilter(e.target.value)}
+          className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
+        >
+          {PAYMENT_FILTERS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              Pgto: {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="hidden md:block space-y-2">
+        <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
+        <ChipFilter options={PAYMENT_FILTERS} selected={paymentFilter} onChange={setPaymentFilter} />
+      </div>
 
       {/* Error alert */}
       {error && (

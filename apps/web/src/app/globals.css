@@ -226,15 +226,15 @@
   --receipt-rule: #A1A1AA;
 
   /* ---- Typography ---- */
-  --text-xs: 11px;
-  --text-sm: 12.5px;
-  --text-base: 14px;
-  --text-md: 15px;
-  --text-lg: 17px;
-  --text-xl: 20px;
-  --text-2xl: 24px;
-  --text-3xl: 30px;
-  --text-stat: 26px;
+  --text-xs: 12px;
+  --text-sm: 13.5px;
+  --text-base: 15px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 25px;
+  --text-3xl: 31px;
+  --text-stat: 28px;
   --text-display: 34px;
   --weight-regular: 400;
   --weight-medium: 500;
@@ -471,5 +471,14 @@
   body {
     background: white !important;
     color: black !important;
+  }
+}
+
+/* Hide scrollbar for horizontal-scroll navs */
+@utility scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }

@@ -21,7 +21,7 @@ export function Header() {
           alt="Distriall"
           width={80}
           height={22}
-          className="h-5 w-auto hidden dark:block"
+          className="h-7 w-auto hidden dark:block"
           priority
         />
         <Image
@@ -29,7 +29,7 @@ export function Header() {
           alt="Distriall"
           width={80}
           height={22}
-          className="h-5 w-auto block dark:hidden"
+          className="h-7 w-auto block dark:hidden"
           priority
         />
       </div>
