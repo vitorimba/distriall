@@ -2,6 +2,10 @@
 
 import { useState } from 'react';
 import { DeliveryConfirmSheet } from '@/components/driver/delivery-confirm-sheet';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Check } from 'lucide-react';
 import type { DeliveryItem } from '@/hooks/use-driver-deliveries';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
@@ -10,14 +14,6 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
   boleto: 'Boleto',
   vale: 'Vale',
   cartao: 'Cartao',
-};
-
-const PAYMENT_METHOD_COLORS: Record<string, string> = {
-  dinheiro: 'bg-green-100 text-green-800',
-  pix: 'bg-blue-100 text-blue-800',
-  boleto: 'bg-yellow-100 text-yellow-800',
-  vale: 'bg-purple-100 text-purple-800',
-  cartao: 'bg-orange-100 text-orange-800',
 };
 
 interface DeliveryCardProps {
@@ -36,9 +32,6 @@ export function DeliveryCard({ item, onDelivered }: DeliveryCardProps) {
   const paymentLabel = order.payment_method
     ? (PAYMENT_METHOD_LABELS[order.payment_method] ?? order.payment_method)
     : null;
-  const paymentColor = order.payment_method
-    ? (PAYMENT_METHOD_COLORS[order.payment_method] ?? 'bg-gray-100 text-gray-800')
-    : 'bg-gray-100 text-gray-800';
 
   const fullAddress = [client.address, client.neighborhood, client.city]
     .filter(Boolean)
@@ -53,74 +46,72 @@ export function DeliveryCard({ item, onDelivered }: DeliveryCardProps) {
 
   return (
     <>
-      <div
-        className={`border-2 rounded-2xl p-5 shadow-sm transition-colors ${
-          isDelivered ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-200'
-        }`}
-      >
-        {/* Sequence number + delivered badge */}
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-base font-semibold text-gray-500">
-            Parada {item.sequence}
-          </span>
-          {isDelivered && (
-            <span className="flex items-center gap-1 bg-green-100 text-green-800 text-base font-bold px-3 py-1 rounded-full">
-              <span>✓</span> Entregue
+      <Card className={isDelivered ? 'opacity-75' : ''}>
+        <CardContent className="space-y-3">
+          {/* Sequence number + delivered badge */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-muted-foreground">
+              Parada {item.sequence}
             </span>
+            {isDelivered && (
+              <Badge
+                className="gap-1"
+                style={{ background: 'var(--success-soft)', color: 'var(--text-positive)' }}
+              >
+                <Check className="size-3" /> Entregue
+              </Badge>
+            )}
+          </div>
+
+          {/* Client name */}
+          <h2 className="text-xl font-bold text-foreground leading-tight">
+            {client.name}
+          </h2>
+
+          {/* Address */}
+          {fullAddress && (
+            <p className="text-sm text-muted-foreground">{fullAddress}</p>
           )}
-        </div>
 
-        {/* Client name — GIGANTE */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">
-          {client.name}
-        </h2>
+          {/* Payment method */}
+          {paymentLabel && (
+            <Badge variant="outline">{paymentLabel}</Badge>
+          )}
 
-        {/* Address */}
-        {fullAddress && (
-          <p className="text-lg text-gray-600 mb-3">{fullAddress}</p>
-        )}
+          {/* Products */}
+          {order.items.length > 0 && (
+            <ul className="text-sm text-foreground space-y-1">
+              {order.items.map((orderItem) => (
+                <li key={orderItem.id} className="flex items-center gap-2">
+                  <span className="font-bold">{orderItem.quantity}x</span>
+                  <span>
+                    {orderItem.product_name}
+                    {orderItem.variant_name ? ` (${orderItem.variant_name})` : ''}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
 
-        {/* Payment method */}
-        {paymentLabel && (
-          <span
-            className={`inline-block text-base font-semibold px-3 py-1 rounded-full mb-3 ${paymentColor}`}
-          >
-            {paymentLabel}
-          </span>
-        )}
+          {/* Observation (if delivered) */}
+          {isDelivered && item.observation && (
+            <p className="text-sm text-muted-foreground italic">
+              Obs: {item.observation}
+            </p>
+          )}
 
-        {/* Products — apenas nome e quantidade, SEM precos */}
-        {order.items.length > 0 && (
-          <ul className="text-base text-gray-700 mb-4 space-y-1">
-            {order.items.map((orderItem) => (
-              <li key={orderItem.id} className="flex items-center gap-2">
-                <span className="font-bold text-gray-900">{orderItem.quantity}x</span>
-                <span>
-                  {orderItem.product_name}
-                  {orderItem.variant_name ? ` (${orderItem.variant_name})` : ''}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Observation (if delivered) */}
-        {isDelivered && item.observation && (
-          <p className="text-base text-gray-500 italic mb-3">
-            Obs: {item.observation}
-          </p>
-        )}
-
-        {/* BOTAO GIGANTE — apenas para pendentes */}
-        {!isDelivered && (
-          <button
-            onClick={() => setShowConfirm(true)}
-            className="w-full h-16 bg-green-600 hover:bg-green-700 text-white text-2xl font-bold rounded-xl active:scale-95 transition-transform"
-          >
-            ENTREGUE
-          </button>
-        )}
-      </div>
+          {/* Action button — only for pending */}
+          {!isDelivered && (
+            <Button
+              onClick={() => setShowConfirm(true)}
+              className="w-full h-12 text-base font-bold"
+              style={{ background: 'var(--success)', color: '#fff' }}
+            >
+              ENTREGUE
+            </Button>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Confirmation sheet */}
       {showConfirm && (
@@ -133,7 +124,10 @@ export function DeliveryCard({ item, onDelivered }: DeliveryCardProps) {
 
       {/* Toast */}
       {toastVisible && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 bg-green-700 text-white text-xl font-bold px-8 py-4 rounded-2xl shadow-lg">
+        <div
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl shadow-lg text-base font-bold text-white"
+          style={{ background: 'var(--success)' }}
+        >
           Entrega confirmada!
         </div>
       )}

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 
 interface DeliveryConfirmSheetProps {
   clientName: string;
@@ -27,24 +29,24 @@ export function DeliveryConfirmSheet({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/50">
-      <div className="w-full bg-white rounded-t-3xl p-6 space-y-5">
+      <div className="w-full rounded-t-2xl bg-card p-6 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">Confirmar entrega</h2>
+          <h2 className="text-lg font-bold text-foreground">Confirmar entrega</h2>
           <button
             onClick={onCancel}
-            className="text-gray-400 text-3xl leading-none"
+            className="text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Fechar"
           >
-            ×
+            <X className="size-5" />
           </button>
         </div>
 
-        <p className="text-xl text-gray-700">
+        <p className="text-sm text-foreground">
           Entrega para <span className="font-bold">{clientName}</span>
         </p>
 
-        <div className="space-y-2">
-          <label className="text-lg text-gray-700 font-medium" htmlFor="observation">
+        <div className="space-y-1.5">
+          <label className="text-sm text-muted-foreground font-medium" htmlFor="observation">
             Observacao (opcional)
           </label>
           <textarea
@@ -52,18 +54,19 @@ export function DeliveryConfirmSheet({
             value={observation}
             onChange={(e) => setObservation(e.target.value)}
             placeholder="Alguma observacao? (opcional)"
-            className="w-full border-2 border-gray-300 rounded-xl p-4 text-lg text-gray-900 resize-none focus:outline-none focus:border-green-500"
+            className="w-full rounded-lg border border-input bg-background p-3 text-sm text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
             rows={3}
           />
         </div>
 
-        <button
+        <Button
           onClick={handleConfirm}
           disabled={confirming}
-          className="w-full h-16 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-2xl font-bold rounded-xl active:scale-95 transition-transform"
+          className="w-full h-12 text-base font-bold"
+          style={{ background: 'var(--success)', color: '#fff' }}
         >
           {confirming ? 'Confirmando...' : 'CONFIRMAR ENTREGA'}
-        </button>
+        </Button>
       </div>
     </div>
   );

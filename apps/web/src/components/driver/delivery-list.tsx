@@ -15,10 +15,10 @@ export function DeliveryList({ items, onDelivered }: DeliveryListProps) {
   if (items.length === 0) {
     return (
       <div className="py-12 text-center">
-        <p className="text-2xl text-gray-500 font-medium">
+        <p className="text-xl text-muted-foreground font-medium">
           Sem entregas para hoje
         </p>
-        <p className="text-lg text-gray-400 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           Aguarde o administrador montar a rota.
         </p>
       </div>
@@ -29,11 +29,11 @@ export function DeliveryList({ items, onDelivered }: DeliveryListProps) {
     <div className="space-y-6">
       {/* Pendentes */}
       {pending.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold text-gray-700 uppercase tracking-wide">
+        <section className="space-y-3">
+          <h2 className="text-base font-bold text-foreground uppercase tracking-wide">
             Pendentes ({pending.length})
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {pending.map((item) => (
               <DeliveryCard key={item.id} item={item} onDelivered={onDelivered} />
             ))}
@@ -43,11 +43,11 @@ export function DeliveryList({ items, onDelivered }: DeliveryListProps) {
 
       {/* Entregues */}
       {delivered.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold text-gray-500 uppercase tracking-wide">
+        <section className="space-y-3">
+          <h2 className="text-base font-bold text-muted-foreground uppercase tracking-wide">
             Entregues ({delivered.length})
           </h2>
-          <div className="space-y-4 opacity-75">
+          <div className="space-y-3">
             {delivered.map((item) => (
               <DeliveryCard key={item.id} item={item} onDelivered={onDelivered} />
             ))}

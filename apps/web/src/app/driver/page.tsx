@@ -4,6 +4,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { useDriverDeliveries } from '@/hooks/use-driver-deliveries';
 import { DeliveryList } from '@/components/driver/delivery-list';
 import { ProgressBar } from '@/components/ui/progress-bar';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast';
 
@@ -35,14 +36,15 @@ export default function DriverPage() {
   if (error) {
     return (
       <div className="py-12 text-center space-y-4">
-        <p className="text-xl text-red-600 font-medium">Erro ao carregar entregas</p>
-        <p className="text-lg text-gray-500">{error}</p>
-        <button
+        <p className="text-lg font-medium" style={{ color: 'var(--danger-fg)' }}>Erro ao carregar entregas</p>
+        <p className="text-sm text-muted-foreground">{error}</p>
+        <Button
           onClick={refetch}
-          className="w-full h-14 bg-green-600 text-white text-xl font-bold rounded-xl"
+          className="w-full h-10 font-bold"
+          style={{ background: 'var(--success)', color: '#fff' }}
         >
           Tentar novamente
-        </button>
+        </Button>
       </div>
     );
   }
