@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useCallback,
+  useState,
   type ReactNode,
 } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -16,6 +17,7 @@ interface AccountContextType {
   accounts: Account[];
   switchAccount: (id: string) => void;
   isLoading: boolean;
+  hasNoAccounts: boolean;
 }
 
 const AccountContext = createContext<AccountContextType>({
@@ -23,6 +25,7 @@ const AccountContext = createContext<AccountContextType>({
   accounts: [],
   switchAccount: () => {},
   isLoading: true,
+  hasNoAccounts: false,
 });
 
 export function useAccount() {
@@ -31,6 +34,7 @@ export function useAccount() {
 
 export function AccountProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const [fetched, setFetched] = useState(false);
   const {
     accounts,
     setAccounts,
@@ -42,6 +46,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const loadAccounts = useCallback(async () => {
     if (!user) {
       clear();
+      setFetched(false);
       return;
     }
 
@@ -52,7 +57,10 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       .eq('user_id', user.id)
       .eq('is_active', true);
 
-    if (error || !data) return;
+    if (error || !data) {
+      setFetched(true);
+      return;
+    }
 
     const mapped: Account[] = data
       .filter((row) => row.accounts)
@@ -72,6 +80,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       });
 
     setAccounts(mapped);
+    setFetched(true);
   }, [user, setAccounts, clear]);
 
   useEffect(() => {
@@ -85,7 +94,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     [setActiveAccount]
   );
 
-  const isLoading = user !== null && accounts.length === 0;
+  const isLoading = user !== null && !fetched;
+  const hasNoAccounts = fetched && accounts.length === 0;
 
   return (
     <AccountContext.Provider
@@ -94,6 +104,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         accounts,
         switchAccount,
         isLoading,
+        hasNoAccounts,
       }}
     >
       {children}

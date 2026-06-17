@@ -1,11 +1,55 @@
 'use client';
 
 import { useAuth } from '@/providers/auth-provider';
-import { AccountProvider } from '@/providers/account-provider';
+import { AccountProvider, useAccount } from '@/providers/account-provider';
 import { Header } from '@/components/layout/header';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+
+function AccountGate({ children }: { children: React.ReactNode }) {
+  const { isLoading, hasNoAccounts } = useAccount();
+  const { signOut } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="space-y-4 text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+          <p className="text-sm text-muted-foreground">Carregando contas...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (hasNoAccounts) {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="max-w-sm space-y-4 text-center">
+          <h2 className="text-lg font-semibold">Sem acesso</h2>
+          <p className="text-sm text-muted-foreground">
+            Sua conta nao esta vinculada a nenhuma empresa ativa. Entre em contato com o administrador.
+          </p>
+          <Button variant="outline" onClick={signOut}>
+            Sair
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen overflow-x-hidden">
+      <Sidebar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Header />
+        <main className="flex-1 overflow-x-hidden pb-16 md:pb-0">{children}</main>
+        <BottomNav />
+      </div>
+    </div>
+  );
+}
 
 export default function AuthenticatedLayout({
   children,
@@ -46,14 +90,7 @@ export default function AuthenticatedLayout({
 
   return (
     <AccountProvider>
-      <div className="flex min-h-screen overflow-x-hidden">
-        <Sidebar />
-        <div className="flex min-w-0 flex-1 flex-col">
-          <Header />
-          <main className="flex-1 overflow-x-hidden pb-16 md:pb-0">{children}</main>
-          <BottomNav />
-        </div>
-      </div>
+      <AccountGate>{children}</AccountGate>
     </AccountProvider>
   );
 }
