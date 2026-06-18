@@ -126,7 +126,6 @@ export default function SettlementsPage() {
                 type="date"
                 value={newStart}
                 onChange={(e) => setNewStart(e.target.value)}
-                className="min-h-10"
               />
             </Field>
             <Field label="Fim">
@@ -134,7 +133,6 @@ export default function SettlementsPage() {
                 type="date"
                 value={newEnd}
                 onChange={(e) => setNewEnd(e.target.value)}
-                className="min-h-10"
               />
             </Field>
           </div>
@@ -168,10 +166,10 @@ export default function SettlementsPage() {
       {showFilters && (
         <div className="grid grid-cols-2 gap-2">
           <Field label="De">
-            <Input type="date" value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} className="min-h-10" />
+            <Input type="date" value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} />
           </Field>
           <Field label="Ate">
-            <Input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} className="min-h-10" />
+            <Input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} />
           </Field>
         </div>
       )}

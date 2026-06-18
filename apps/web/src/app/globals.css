@@ -405,6 +405,14 @@
     @apply font-sans;
   }
 
+  /* Date inputs: iOS Safari renders native controls that overflow h-8.
+     Force consistent height and prevent label overlap. */
+  input[type="date"] {
+    min-height: var(--touch-target);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
   /* Numeric data always tabular */
   .num, td.num {
     font-variant-numeric: tabular-nums;
