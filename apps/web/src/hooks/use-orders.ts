@@ -16,9 +16,7 @@ export function useOrders() {
     const { data, error } = await supabase.rpc('create_order', {
       p_account_id: activeAccount.id,
       p_client_id: client.id,
-      p_items: JSON.stringify(
-        items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity }))
-      ),
+      p_items: items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity })),
       p_payment_method: paymentMethod || null,
       p_notes: notes || null,
       p_delivery_date: deliveryDate || null,
@@ -39,9 +37,7 @@ export function useOrders() {
     const { data, error } = await supabase.rpc('update_order', {
       p_order_id: orderId,
       p_client_id: client.id,
-      p_items: JSON.stringify(
-        items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity }))
-      ),
+      p_items: items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity })),
       p_payment_method: paymentMethod || null,
       p_notes: notes || null,
       p_delivery_date: deliveryDate || null,
