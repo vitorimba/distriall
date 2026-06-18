@@ -14,7 +14,7 @@ import { Money } from '@/components/ui/money';
 import { ChipFilter } from '@/components/ui/chip-filter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Field } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { Plus, ChevronDown, ChevronUp, Calendar, BarChart2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -121,22 +121,22 @@ export default function SettlementsPage() {
         <CardContent className="pt-4 space-y-3">
           <p className="text-sm font-medium">Gerar Novo Acerto</p>
           <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1">
-              <Label className="text-xs">Inicio</Label>
+            <Field label="Inicio">
               <Input
                 type="date"
                 value={newStart}
                 onChange={(e) => setNewStart(e.target.value)}
+                className="min-h-10"
               />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">Fim</Label>
+            </Field>
+            <Field label="Fim">
               <Input
                 type="date"
                 value={newEnd}
                 onChange={(e) => setNewEnd(e.target.value)}
+                className="min-h-10"
               />
-            </div>
+            </Field>
           </div>
           {error && (
             <p className="text-sm text-destructive">{error}</p>
@@ -167,14 +167,12 @@ export default function SettlementsPage() {
 
       {showFilters && (
         <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-1">
-            <Label className="text-xs">De</Label>
-            <Input type="date" value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-xs">Ate</Label>
-            <Input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} />
-          </div>
+          <Field label="De">
+            <Input type="date" value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} className="min-h-10" />
+          </Field>
+          <Field label="Ate">
+            <Input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} className="min-h-10" />
+          </Field>
         </div>
       )}
 
