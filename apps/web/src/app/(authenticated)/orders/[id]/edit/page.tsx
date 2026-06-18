@@ -87,7 +87,9 @@ export default function EditOrderPage() {
           order.delivery_date ?? ''
         );
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro ao carregar pedido');
+        const msg = err instanceof Error ? err.message : (err as { message?: string })?.message ?? 'Erro ao carregar pedido';
+        console.error('Erro ao carregar pedido:', err);
+        setError(msg);
       } finally {
         setLoading(false);
       }
@@ -112,7 +114,9 @@ export default function EditOrderPage() {
       toast('Pedido salvo', 'success');
       router.push('/orders');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao atualizar pedido');
+      const msg = err instanceof Error ? err.message : (err as { message?: string })?.message ?? 'Erro ao atualizar pedido';
+      console.error('Erro ao atualizar pedido:', err);
+      setError(msg);
     } finally {
       setSaving(false);
     }
