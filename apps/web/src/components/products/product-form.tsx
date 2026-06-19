@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { useAccount } from '@/providers/account-provider';
 import { productSchema, type ProductInput, type ProductVariantInput } from '@/lib/validations/product';
 import { maskMoney, parseMoney, MSG } from '@/lib/mask-utils';
 import { Button } from '@/components/ui/button';
@@ -52,8 +51,6 @@ export function ProductForm({ product }: ProductFormProps) {
   const isEdit = !!product;
   const router = useRouter();
   const toast = useToast();
-  const { activeAccount } = useAccount();
-
   const [name, setName] = useState(product?.name ?? '');
   const [description, setDescription] = useState(product?.description ?? '');
   const [category, setCategory] = useState(product?.category ?? '');
@@ -142,7 +139,6 @@ export function ProductForm({ product }: ProductFormProps) {
       return;
     }
 
-    if (!activeAccount) return;
     setSaving(true);
     const supabase = createClient();
 
@@ -169,7 +165,6 @@ export function ProductForm({ product }: ProductFormProps) {
         } else {
           await supabase.from('product_variants').insert({
             product_id: product.id,
-            account_id: activeAccount.id,
             name: v.name,
             weight_grams: v.weight_grams ?? null,
             cost_price: v.cost_price,
@@ -191,7 +186,6 @@ export function ProductForm({ product }: ProductFormProps) {
       const { data: newProduct } = await supabase
         .from('products')
         .insert({
-          account_id: activeAccount.id,
           name,
           description: description || null,
           category: category || null,
@@ -203,7 +197,6 @@ export function ProductForm({ product }: ProductFormProps) {
       if (newProduct) {
         const variantRows = parsedVariants.map((v) => ({
           product_id: newProduct.id,
-          account_id: activeAccount.id,
           name: v.name,
           weight_grams: v.weight_grams ?? null,
           cost_price: v.cost_price,

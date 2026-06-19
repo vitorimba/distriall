@@ -37,7 +37,6 @@ export function ClientPricesEditor({ clientId }: { clientId: string }) {
       const { data: variants } = await supabase
         .from('product_variants')
         .select('id, name, sell_price, products(name)')
-        .eq('account_id', activeAccount!.id)
         .eq('is_active', true);
 
       // Fetch existing client prices

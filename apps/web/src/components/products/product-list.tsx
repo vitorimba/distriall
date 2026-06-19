@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { useAccount } from '@/providers/account-provider';
 import { Badge } from '@/components/ui/badge';
 import { SearchField } from '@/components/ui/search-field';
 import { Select } from '@/components/ui/select';
@@ -39,7 +38,6 @@ function formatBRL(value: number) {
 }
 
 export function ProductList() {
-  const { activeAccount } = useAccount();
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -49,14 +47,11 @@ export function ProductList() {
   const loading = loadKey === 0 && products.length === 0 && !error;
 
   const loadProducts = useCallback(async () => {
-    if (!activeAccount) return;
-
     const supabase = createClient();
 
     let query = supabase
       .from('products')
       .select('*, product_variants(*)')
-      .eq('account_id', activeAccount.id)
       .eq('is_active', true)
       .order('name');
 
@@ -75,7 +70,7 @@ export function ProductList() {
       setProducts((data as Product[]) ?? []);
     }
     setLoadKey((k) => k + 1);
-  }, [activeAccount, search, categoryFilter]);
+  }, [search, categoryFilter]);
 
   useEffect(() => {
     let cancelled = false;

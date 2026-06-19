@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useAccount } from '@/providers/account-provider';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Search } from 'lucide-react';
@@ -23,7 +22,6 @@ interface Product {
 }
 
 export function ProductSearch() {
-  const { activeAccount } = useAccount();
   const { addItem, priceMap } = useCartStore();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Product[]>([]);
@@ -34,7 +32,7 @@ export function ProductSearch() {
   useEffect(() => {
     let cancelled = false;
 
-    if (!activeAccount || query.length < 1) {
+    if (query.length < 1) {
       const t = setTimeout(() => { if (!cancelled) setResults([]); }, 0);
       return () => { cancelled = true; clearTimeout(t); };
     }
@@ -46,7 +44,6 @@ export function ProductSearch() {
       const { data } = await supabase
         .from('products')
         .select('id, name, product_variants(id, name, sell_price, cost_price)')
-        .eq('account_id', activeAccount.id)
         .eq('is_active', true)
         .ilike('name', `%${query}%`)
         .limit(10);
@@ -61,7 +58,7 @@ export function ProductSearch() {
       cancelled = true;
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query, activeAccount]);
+  }, [query]);
 
   function handleSelectVariant(product: Product, variant: ProductVariant) {
     addItem({
