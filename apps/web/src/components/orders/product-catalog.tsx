@@ -194,7 +194,7 @@ export function ProductCatalog() {
             >
               {/* Quantity badge */}
               {qty > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex size-6 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-white shadow-sm">
+                <span className="absolute -right-1.5 -top-1.5 flex size-6 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-[var(--text-primary)] shadow-sm">
                   {qty}
                 </span>
               )}
