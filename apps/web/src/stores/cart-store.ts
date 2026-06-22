@@ -13,6 +13,7 @@ export interface CartItem {
   quantity: number;
   unitPrice: number;
   costPrice: number;
+  originalPrice?: number;
 }
 
 interface CartStore {
@@ -29,6 +30,7 @@ interface CartStore {
   addItem: (item: Omit<CartItem, 'unitPrice'> & { defaultPrice: number }) => void;
   removeItem: (variantId: string) => void;
   updateQuantity: (variantId: string, quantity: number) => void;
+  updatePrice: (variantId: string, price: number) => void;
   setPaymentMethod: (method: string) => void;
   setNotes: (notes: string) => void;
   setDeliveryDate: (date: string) => void;
@@ -97,6 +99,17 @@ export const useCartStore = create<CartStore>()((set, get) => ({
     set((state) => ({
       items: state.items.map((i) =>
         i.variantId === variantId ? { ...i, quantity } : i
+      ),
+    }));
+  },
+
+  updatePrice: (variantId, price) => {
+    if (price < 0.01) return;
+    set((state) => ({
+      items: state.items.map((i) =>
+        i.variantId === variantId
+          ? { ...i, unitPrice: price, originalPrice: i.originalPrice ?? i.unitPrice }
+          : i
       ),
     }));
   },
