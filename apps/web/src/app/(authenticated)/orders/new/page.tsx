@@ -9,6 +9,7 @@ import { usePayments } from '@/hooks/use-payments';
 import { useAccount } from '@/providers/account-provider';
 import { ClientSearch } from '@/components/orders/client-search';
 import { ProductCatalog } from '@/components/orders/product-catalog';
+import { ClientRecentOrders } from '@/components/orders/client-recent-orders';
 import { OrderItemList } from '@/components/orders/order-item-list';
 import { PaymentSelector } from '@/components/financial/payment-selector';
 import { Button } from '@/components/ui/button';
@@ -153,6 +154,9 @@ function NewOrderContent() {
 
       {/* Client */}
       <ClientSearch />
+
+      {/* Recent orders from this client */}
+      {client && <ClientRecentOrders clientId={client.id} />}
 
       {/* Product catalog */}
       {client && <ProductCatalog />}
