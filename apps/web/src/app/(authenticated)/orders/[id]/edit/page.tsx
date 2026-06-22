@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCartStore, type CartItem } from '@/stores/cart-store';
 import { useOrders } from '@/hooks/use-orders';
 import { ClientSearch } from '@/components/orders/client-search';
-import { ProductSearch } from '@/components/orders/product-search';
+import { ProductCatalog } from '@/components/orders/product-catalog';
 import { OrderItemList } from '@/components/orders/order-item-list';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -151,7 +151,7 @@ export default function EditOrderPage() {
 
       <ClientSearch />
 
-      {client && <ProductSearch />}
+      {client && <ProductCatalog />}
 
       {items.length > 0 && <OrderItemList />}
 

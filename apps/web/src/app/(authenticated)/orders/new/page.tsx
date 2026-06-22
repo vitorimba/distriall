@@ -8,7 +8,7 @@ import { useOrders } from '@/hooks/use-orders';
 import { usePayments } from '@/hooks/use-payments';
 import { useAccount } from '@/providers/account-provider';
 import { ClientSearch } from '@/components/orders/client-search';
-import { ProductSearch } from '@/components/orders/product-search';
+import { ProductCatalog } from '@/components/orders/product-catalog';
 import { OrderItemList } from '@/components/orders/order-item-list';
 import { PaymentSelector } from '@/components/financial/payment-selector';
 import { Button } from '@/components/ui/button';
@@ -154,8 +154,8 @@ function NewOrderContent() {
       {/* Client */}
       <ClientSearch />
 
-      {/* Product search */}
-      {client && <ProductSearch />}
+      {/* Product catalog */}
+      {client && <ProductCatalog />}
 
       {/* Items */}
       {items.length > 0 && <OrderItemList />}
