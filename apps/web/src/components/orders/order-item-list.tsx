@@ -51,7 +51,7 @@ function InlineInput({
         if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
       }}
       className={[
-        'w-full rounded-[var(--radius-ds-sm)] border border-[var(--accent)] bg-[var(--surface-inset)] px-2 py-1 text-center text-sm tabular-nums text-foreground',
+        'rounded-[var(--radius-ds-sm)] border border-[var(--accent)] bg-[var(--surface-inset)] px-2 py-1 text-center text-sm tabular-nums text-foreground',
         'focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-1',
         'motion-reduce:transition-none',
         className,
@@ -89,9 +89,8 @@ export function OrderItemList() {
           >
             <div className="min-w-0 flex-1">
               <div className="text-sm font-medium">{item.productName}</div>
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span>{item.variantName}</span>
-                <span>·</span>
+              <div className="text-xs text-muted-foreground">{item.variantName}</div>
+              <div className="mt-0.5">
                 {isPriceEditing ? (
                   <InlineInput
                     value={item.unitPrice}
@@ -102,13 +101,13 @@ export function OrderItemList() {
                       setEditingPrice(null);
                     }}
                     onCancel={() => setEditingPrice(null)}
-                    className="max-w-[80px]"
+                    className="w-24"
                   />
                 ) : (
                   <button
                     type="button"
                     onClick={() => setEditingPrice(item.variantId)}
-                    className="inline-flex items-center gap-1 rounded px-0.5 min-h-[var(--touch-target)] hover:bg-[var(--surface-hover)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-[var(--border-subtle)] px-2 py-1 text-xs hover:bg-[var(--surface-hover)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
                     title="Editar preco"
                   >
                     {priceWasEdited && (
@@ -148,13 +147,13 @@ export function OrderItemList() {
                     setEditingQty(null);
                   }}
                   onCancel={() => setEditingQty(null)}
-                  className="w-14"
+                  className="w-12"
                 />
               ) : (
                 <button
                   type="button"
                   onClick={() => setEditingQty(item.variantId)}
-                  className="flex w-10 items-center justify-center rounded-md text-sm font-medium min-h-[var(--touch-target)] hover:bg-[var(--surface-hover)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+                  className="flex w-10 items-center justify-center rounded-md border border-dashed border-[var(--border-subtle)] text-sm font-medium min-h-10 hover:bg-[var(--surface-hover)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
                   title="Editar quantidade"
                 >
                   {item.quantity}
