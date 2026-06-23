@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
 import { Input } from '@/components/ui/input';
@@ -9,46 +9,42 @@ import { Label } from '@/components/ui/label';
 import { Search, X } from 'lucide-react';
 import { useCartStore, type CartClient } from '@/stores/cart-store';
 
+type ClientRow = CartClient & { client_prices: { count: number }[] };
+
 export function ClientSearch() {
   const { activeAccount } = useAccount();
   const { client, setClient, setPriceMap } = useCartStore();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<(CartClient & { client_prices: { count: number }[] })[]>([]);
+  const [allClients, setAllClients] = useState<ClientRow[]>([]);
   const [open, setOpen] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
+  // Load all clients once on mount
   useEffect(() => {
+    if (!activeAccount) return;
     let cancelled = false;
 
-    if (!activeAccount || query.length < 1) {
-      // Reset via timeout to avoid sync setState in effect
-      const t = setTimeout(() => { if (!cancelled) setResults([]); }, 0);
-      return () => { cancelled = true; clearTimeout(t); };
-    }
-
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    debounceRef.current = setTimeout(async () => {
+    async function loadAll() {
       const supabase = createClient();
       const { data } = await supabase
         .from('clients')
         .select('id, name, default_payment_method, client_prices(count)')
-        .eq('account_id', activeAccount.id)
+        .eq('account_id', activeAccount!.id)
         .eq('is_active', true)
-        .ilike('name', `%${query}%`)
-        .limit(10);
+        .order('name');
 
       if (!cancelled) {
-        setResults((data as unknown as typeof results) ?? []);
-        setOpen(true);
+        setAllClients((data as unknown as ClientRow[]) ?? []);
       }
-    }, 300);
+    }
 
-    return () => {
-      cancelled = true;
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [query, activeAccount]);
+    loadAll();
+    return () => { cancelled = true; };
+  }, [activeAccount]);
+
+  // Filter locally
+  const filtered = query.trim()
+    ? allClients.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
+    : allClients;
 
   async function handleSelect(c: CartClient) {
     setClient(c);
@@ -95,24 +91,24 @@ export function ClientSearch() {
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
         <Input
-          placeholder="Buscar cliente..."
+          placeholder="Filtrar clientes..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => results.length > 0 && setOpen(true)}
+          onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 200)}
           className="pl-8"
         />
       </div>
 
-      {open && results.length > 0 && (
-        <div className="absolute z-50 mt-1 w-full rounded-md border bg-background shadow-lg">
-          {results.map((c) => {
+      {open && filtered.length > 0 && (
+        <div className="absolute z-50 mt-1 w-full max-h-64 overflow-auto rounded-md border bg-background shadow-lg">
+          {filtered.map((c) => {
             const priceCount = c.client_prices?.[0]?.count ?? 0;
             return (
               <button
                 key={c.id}
                 onMouseDown={() => handleSelect(c)}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted"
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-muted touch-manipulation"
               >
                 <span className="flex-1">{c.name}</span>
                 {priceCount > 0 && (
@@ -123,6 +119,12 @@ export function ClientSearch() {
               </button>
             );
           })}
+        </div>
+      )}
+
+      {open && filtered.length === 0 && allClients.length > 0 && (
+        <div className="absolute z-50 mt-1 w-full rounded-md border bg-background p-3 text-center text-sm text-muted-foreground shadow-lg">
+          Nenhum cliente encontrado
         </div>
       )}
     </div>
