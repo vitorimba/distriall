@@ -184,7 +184,7 @@ export function ProductCatalog() {
               onClick={() => handleTap(item)}
               className={[
                 'relative flex flex-col items-start rounded-[var(--radius-ds-md)] border border-[var(--border-subtle)] bg-[var(--surface-card)] p-[var(--card-pad)] text-left shadow-[var(--shadow-card)]',
-                'min-h-[80px] transition-transform',
+                'min-h-[80px] transition-transform touch-manipulation',
                 'active:scale-[0.97]',
                 'focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2',
                 'motion-reduce:transition-none motion-reduce:active:scale-100',

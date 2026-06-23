@@ -134,7 +134,7 @@ function NewOrderContent() {
 
       clearCart();
       toast('Pedido salvo', 'success');
-      router.push('/orders');
+      router.push(`/orders/${orderId}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : (err as { message?: string })?.message ?? 'Erro ao salvar pedido';
       console.error('Erro ao salvar pedido:', err);

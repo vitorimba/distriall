@@ -9,7 +9,7 @@ import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { OrderStatusStepper } from '@/components/orders/order-status-stepper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, ArrowRight, Pencil, Printer, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Pencil, Printer, RotateCcw, Trash2, Plus } from 'lucide-react';
 import { usePrinter } from '@/hooks/use-printer';
 import { OrderReceipt } from '@/components/orders/order-receipt';
 import { ReturnForm } from '@/components/orders/return-form';
@@ -88,6 +88,7 @@ export default function OrderDetailPage() {
   const [transitioning, setTransitioning] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [showReturnForm, setShowReturnForm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const { isSupported, isPrinting, printOrder } = usePrinter();
 
   useEffect(() => {
@@ -113,6 +114,23 @@ export default function OrderDetailPage() {
       .eq('id', id)
       .single();
     setOrder(data as unknown as OrderDetail | null);
+  }
+
+  async function handleDelete() {
+    if (!confirm('Tem certeza que deseja apagar este pedido? Esta ação não pode ser desfeita.')) return;
+    setDeleting(true);
+    const supabase = createClient();
+    // Delete order items first, then order
+    await supabase.from('order_items').delete().eq('order_id', id);
+    await supabase.from('payments').delete().eq('order_id', id);
+    const { error } = await supabase.from('orders').delete().eq('id', id);
+    if (error) {
+      toast('Erro ao apagar pedido', 'danger');
+      setDeleting(false);
+      return;
+    }
+    toast('Pedido apagado', 'success');
+    router.push('/orders');
   }
 
   async function handleTransition(newStatus: OrderStatus) {
@@ -266,6 +284,28 @@ export default function OrderDetailPage() {
             Devolucao
           </Button>
         )}
+        {canEdit && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-destructive border-destructive/50"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
+            <Trash2 className="mr-1 size-3.5" />
+            {deleting ? 'Apagando...' : 'Apagar'}
+          </Button>
+        )}
+      </div>
+
+      {/* Quick action: new order */}
+      <div className="flex gap-2">
+        <Link href={order.clients ? `/orders/new?client=${order.clients.id}` : '/orders/new'}>
+          <Button variant="outline" size="sm">
+            <Plus className="mr-1 size-3.5" />
+            Novo pedido{order.clients ? ` (${order.clients.name})` : ''}
+          </Button>
+        </Link>
       </div>
 
       {/* Return form */}

@@ -17,7 +17,7 @@ export function StickyBar({ items, action, className }: StickyBarProps) {
   return (
     <div
       className={cn(
-        'sticky bottom-0 z-[var(--z-sticky)] flex items-center justify-between gap-4 border-t border-border px-[var(--page-pad)] py-3',
+        'fixed bottom-16 md:bottom-0 left-0 right-0 z-[var(--z-sticky)] flex items-center justify-between gap-4 border-t border-border px-[var(--page-pad)] py-3',
         'bg-[var(--surface-glass)] backdrop-blur-[12px]',
         className
       )}
