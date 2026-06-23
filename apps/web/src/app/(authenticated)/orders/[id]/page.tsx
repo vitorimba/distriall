@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -9,7 +9,7 @@ import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { OrderStatusStepper } from '@/components/orders/order-status-stepper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, ArrowRight, Pencil, Printer, RotateCcw, Trash2, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Minus, Pencil, Plus, Printer, RotateCcw, Trash2, X } from 'lucide-react';
 import { usePrinter } from '@/hooks/use-printer';
 import { OrderReceipt } from '@/components/orders/order-receipt';
 import { ReturnForm } from '@/components/orders/return-form';
@@ -17,6 +17,59 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Money } from '@/components/ui/money';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast';
+
+function InlineInput({
+  value,
+  onConfirm,
+  onCancel,
+  inputMode = 'numeric',
+  min,
+  className,
+}: {
+  value: number;
+  onConfirm: (val: number) => void;
+  onCancel: () => void;
+  inputMode?: 'numeric' | 'decimal';
+  min?: number;
+  className?: string;
+}) {
+  const [text, setText] = useState(String(value));
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    ref.current?.focus();
+    ref.current?.select();
+  }, []);
+
+  function handleConfirm() {
+    const parsed = Number(text.replace(',', '.'));
+    if (!isNaN(parsed) && (min === undefined || parsed >= min)) {
+      onConfirm(parsed);
+    } else {
+      onCancel();
+    }
+  }
+
+  return (
+    <input
+      ref={ref}
+      type="text"
+      inputMode={inputMode}
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      onBlur={handleConfirm}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') { e.preventDefault(); handleConfirm(); }
+        if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
+      }}
+      className={[
+        'rounded-[var(--radius-ds-sm)] border border-[var(--accent)] bg-[var(--surface-inset)] px-2 py-1 text-center text-sm tabular-nums text-foreground',
+        'focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-1',
+        className,
+      ].join(' ')}
+    />
+  );
+}
 
 interface OrderItem {
   id: string;
@@ -89,6 +142,8 @@ export default function OrderDetailPage() {
   const [showReceipt, setShowReceipt] = useState(false);
   const [showReturnForm, setShowReturnForm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [editingQty, setEditingQty] = useState<string | null>(null);
+  const [editingPrice, setEditingPrice] = useState<string | null>(null);
   const { isSupported, isPrinting, printOrder } = usePrinter();
 
   useEffect(() => {
@@ -114,6 +169,57 @@ export default function OrderDetailPage() {
       .eq('id', id)
       .single();
     setOrder(data as unknown as OrderDetail | null);
+  }
+
+  async function updateItemField(itemId: string, field: 'quantity' | 'unit_price', value: number) {
+    if (!order) return;
+    const supabase = createClient();
+
+    const item = order.order_items.find((i) => i.id === itemId);
+    if (!item) return;
+
+    const newQty = field === 'quantity' ? value : item.quantity;
+    const newPrice = field === 'unit_price' ? value : item.unit_price;
+    const newTotal = Math.round(newQty * newPrice * 100) / 100;
+    const newTotalCost = Math.round(newQty * item.cost_price * 100) / 100;
+
+    await supabase
+      .from('order_items')
+      .update({ [field]: value, total: newTotal, total_cost: newTotalCost })
+      .eq('id', itemId);
+
+    // Recalculate order totals
+    const updatedItems = order.order_items.map((i) =>
+      i.id === itemId ? { ...i, [field]: value, quantity: newQty, unit_price: newPrice, total: newTotal } : i
+    );
+    const subtotal = updatedItems.reduce((sum, i) => sum + i.total, 0);
+    const totalCost = updatedItems.reduce((sum, i) => sum + Math.round(i.quantity * i.cost_price * 100) / 100, 0);
+
+    await supabase
+      .from('orders')
+      .update({ subtotal, total_cost: totalCost, profit: subtotal - totalCost, total: subtotal })
+      .eq('id', order.id);
+
+    setOrder({ ...order, order_items: updatedItems, subtotal, total_cost: totalCost, profit: subtotal - totalCost, total: subtotal });
+  }
+
+  async function removeItem(itemId: string) {
+    if (!order) return;
+    const supabase = createClient();
+
+    await supabase.from('order_items').delete().eq('id', itemId);
+
+    const updatedItems = order.order_items.filter((i) => i.id !== itemId);
+    const subtotal = updatedItems.reduce((sum, i) => sum + i.total, 0);
+    const totalCost = updatedItems.reduce((sum, i) => sum + Math.round(i.quantity * i.cost_price * 100) / 100, 0);
+
+    await supabase
+      .from('orders')
+      .update({ subtotal, total_cost: totalCost, profit: subtotal - totalCost, total: subtotal })
+      .eq('id', order.id);
+
+    setOrder({ ...order, order_items: updatedItems, subtotal, total_cost: totalCost, profit: subtotal - totalCost, total: subtotal });
+    toast('Item removido', 'success');
   }
 
   async function handleDelete() {
@@ -342,30 +448,123 @@ export default function OrderDetailPage() {
           <div className="space-y-1">
             {order.order_items.map((item) => {
               const hasReturn = item.returned_quantity > 0;
+              const isQtyEditing = editingQty === item.id;
+              const isPriceEditing = editingPrice === item.id;
+
               return (
-                <div key={item.id} className={`py-1 text-sm ${hasReturn ? 'bg-red-50 rounded px-2 -mx-2' : ''}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-medium">{item.product_name}</span>
-                      <span className="text-muted-foreground"> – {item.variant_name}</span>
-                      <span className="text-muted-foreground"> x{item.quantity}</span>
+                <div key={item.id} className={`rounded-lg border px-3 py-2 text-sm ${hasReturn ? 'bg-red-50' : ''}`}>
+                  <div className="flex items-center gap-2">
+                    {/* Product info + price */}
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium">{item.product_name}</div>
+                      <div className="text-xs text-muted-foreground">{item.variant_name}</div>
+                      {canEdit && !hasReturn ? (
+                        <div className="mt-0.5">
+                          {isPriceEditing ? (
+                            <InlineInput
+                              value={item.unit_price}
+                              inputMode="decimal"
+                              min={0.01}
+                              onConfirm={(val) => {
+                                updateItemField(item.id, 'unit_price', val);
+                                setEditingPrice(null);
+                              }}
+                              onCancel={() => setEditingPrice(null)}
+                              className="w-24"
+                            />
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setEditingPrice(item.id)}
+                              className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-[var(--border-subtle)] px-2 py-1 text-xs hover:bg-[var(--surface-hover)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+                              title="Editar preco"
+                            >
+                              <Money value={item.unit_price} />
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="mt-0.5 text-xs text-muted-foreground">
+                          <Money value={item.unit_price} />
+                        </div>
+                      )}
                       {item.is_returned && (
-                        <span className="ml-1 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-800 border border-red-300">
+                        <span className="mt-1 inline-block rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-800 border border-red-300">
                           Devolvido
                         </span>
                       )}
                       {hasReturn && !item.is_returned && (
-                        <span className="ml-1 rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-800 border border-red-300">
+                        <span className="mt-1 inline-block rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-800 border border-red-300">
                           Dev. parcial: {item.returned_quantity}
                         </span>
                       )}
                     </div>
-                    <span className={`font-medium ${hasReturn ? 'line-through text-muted-foreground' : ''}`}>
+
+                    {/* Quantity controls */}
+                    {canEdit && !hasReturn ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => {
+                            if (item.quantity <= 1) { removeItem(item.id); return; }
+                            updateItemField(item.id, 'quantity', item.quantity - 1);
+                          }}
+                          className="flex size-10 items-center justify-center rounded-md border hover:bg-muted active:bg-muted/80 touch-manipulation"
+                        >
+                          <Minus className="size-4" />
+                        </button>
+                        {isQtyEditing ? (
+                          <InlineInput
+                            value={item.quantity}
+                            inputMode="numeric"
+                            min={1}
+                            onConfirm={(val) => {
+                              updateItemField(item.id, 'quantity', val);
+                              setEditingQty(null);
+                            }}
+                            onCancel={() => setEditingQty(null)}
+                            className="w-12"
+                          />
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setEditingQty(item.id)}
+                            className="flex w-10 items-center justify-center rounded-md border border-dashed border-[var(--border-subtle)] text-sm font-medium min-h-10 hover:bg-[var(--surface-hover)] focus-visible:outline-2 focus-visible:outline-[var(--accent)] touch-manipulation"
+                            title="Editar quantidade"
+                          >
+                            {item.quantity}
+                          </button>
+                        )}
+                        <button
+                          onClick={() => updateItemField(item.id, 'quantity', item.quantity + 1)}
+                          className="flex size-10 items-center justify-center rounded-md border hover:bg-muted active:bg-muted/80 touch-manipulation"
+                        >
+                          <Plus className="size-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">x{item.quantity}</span>
+                    )}
+
+                    {/* Line total */}
+                    <div className="w-20 text-right font-medium">
                       <Money value={item.total} />
-                    </span>
+                    </div>
+
+                    {/* Remove */}
+                    {canEdit && !hasReturn && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-xs"
+                        onClick={() => removeItem(item.id)}
+                      >
+                        <X className="size-3.5 text-destructive" />
+                      </Button>
+                    )}
                   </div>
+
                   {hasReturn && (
-                    <div className="text-xs text-muted-foreground mt-0.5">
+                    <div className="text-xs text-muted-foreground mt-1">
                       {item.return_reason && <span>Motivo: {item.return_reason}</span>}
                       {item.returned_at && <span> · {formatDateTime(item.returned_at)}</span>}
                     </div>
