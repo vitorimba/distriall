@@ -154,6 +154,8 @@ export function OrderList() {
     return order.order_items?.[0]?.count ?? 0;
   }
 
+  const pageOrders = orders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   return (
     <div className="space-y-3">
       {/* Search */}
@@ -221,7 +223,47 @@ export function OrderList() {
         />
       ) : !error ? (
         <div className="space-y-1 pb-24">
-          {orders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((order) => {
+          {/* Select all / clear */}
+          {orders.length > 0 && (
+            <div className="flex items-center gap-2 py-1">
+              <input
+                type="checkbox"
+                checked={pageOrders.length > 0 && pageOrders.every((o) => selectedIds.has(o.id))}
+                onChange={() => {
+                  const pageIds = pageOrders.map((o) => o.id);
+                  const allSelected = pageIds.every((id) => selectedIds.has(id));
+                  if (allSelected) {
+                    setSelectedIds((prev) => {
+                      const next = new Set(prev);
+                      pageIds.forEach((id) => next.delete(id));
+                      return next;
+                    });
+                  } else {
+                    setSelectedIds((prev) => {
+                      const next = new Set(prev);
+                      pageIds.forEach((id) => next.add(id));
+                      return next;
+                    });
+                  }
+                }}
+                className="size-4 shrink-0 rounded border-input"
+              />
+              <span className="text-xs text-muted-foreground">
+                {selectedIds.size > 0
+                  ? `${selectedIds.size} selecionado${selectedIds.size !== 1 ? 's' : ''}`
+                  : 'Selecionar todos'}
+              </span>
+              {selectedIds.size > 0 && (
+                <button
+                  onClick={() => setSelectedIds(new Set())}
+                  className="text-xs text-primary underline underline-offset-2"
+                >
+                  Limpar
+                </button>
+              )}
+            </div>
+          )}
+          {pageOrders.map((order) => {
             const isSelected = selectedIds.has(order.id);
             const itemCount = getItemCount(order);
             return (

@@ -57,7 +57,7 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background p-3 shadow-lg animate-in slide-in-from-bottom">
+    <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-50 border-t bg-background p-3 shadow-lg animate-in slide-in-from-bottom">
       <div className="mx-auto flex max-w-lg items-center gap-2">
         <span className="text-sm font-medium">
           {selectedIds.length} selecionado{selectedIds.length !== 1 ? 's' : ''}
