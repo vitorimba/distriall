@@ -236,7 +236,8 @@ export default function OrderDetailPage() {
       return;
     }
     toast('Pedido cancelado', 'success');
-    router.push('/orders');
+    setDeleting(false);
+    await reloadOrder();
   }
 
   async function handleTransition(newStatus: OrderStatus) {
