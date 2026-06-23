@@ -17,6 +17,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Money } from '@/components/ui/money';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast';
+import { useAccount } from '@/providers/account-provider';
 
 function InlineInput({
   value,
@@ -136,6 +137,8 @@ export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const toast = useToast();
+  const { activeAccount } = useAccount();
+  const isAdmin = activeAccount?.role === 'admin';
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
@@ -222,22 +225,43 @@ export default function OrderDetailPage() {
     toast('Item removido', 'success');
   }
 
-  async function handleDelete() {
-    if (!confirm('Tem certeza que deseja cancelar este pedido?')) return;
-    setDeleting(true);
+  async function handleCancelOrDelete() {
     const supabase = createClient();
-    const { error } = await supabase.rpc('transition_order_status', {
-      p_order_id: id,
-      p_new_status: 'cancelado',
-    });
-    if (error) {
-      toast('Erro ao cancelar pedido', 'danger');
+    setDeleting(true);
+
+    if (isAdmin) {
+      if (!confirm('Tem certeza que deseja EXCLUIR este pedido? Esta ação não pode ser desfeita.')) {
+        setDeleting(false);
+        return;
+      }
+      await supabase.from('order_items').delete().eq('order_id', id);
+      await supabase.from('payments').delete().eq('order_id', id);
+      const { error } = await supabase.from('orders').delete().eq('id', id);
+      if (error) {
+        toast('Erro ao excluir pedido', 'danger');
+        setDeleting(false);
+        return;
+      }
+      toast('Pedido excluído', 'success');
+      router.push('/orders');
+    } else {
+      if (!confirm('Tem certeza que deseja cancelar este pedido?')) {
+        setDeleting(false);
+        return;
+      }
+      const { error } = await supabase.rpc('transition_order_status', {
+        p_order_id: id,
+        p_new_status: 'cancelado',
+      });
+      if (error) {
+        toast('Erro ao cancelar pedido', 'danger');
+        setDeleting(false);
+        return;
+      }
+      toast('Pedido cancelado', 'success');
       setDeleting(false);
-      return;
+      await reloadOrder();
     }
-    toast('Pedido cancelado', 'success');
-    setDeleting(false);
-    await reloadOrder();
   }
 
   async function handleTransition(newStatus: OrderStatus) {
@@ -396,11 +420,13 @@ export default function OrderDetailPage() {
             variant="outline"
             size="sm"
             className="text-destructive border-destructive/50"
-            onClick={handleDelete}
+            onClick={handleCancelOrDelete}
             disabled={deleting}
           >
             <Trash2 className="mr-1 size-3.5" />
-            {deleting ? 'Cancelando...' : 'Cancelar'}
+            {deleting
+              ? (isAdmin ? 'Excluindo...' : 'Cancelando...')
+              : (isAdmin ? 'Excluir' : 'Cancelar')}
           </Button>
         )}
       </div>
