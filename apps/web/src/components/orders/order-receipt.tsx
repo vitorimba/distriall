@@ -94,7 +94,7 @@ export function OrderReceipt({
         </DialogHeader>
 
         {/* Receipt preview — styled via da-receipt CSS classes */}
-        <div className="overflow-auto py-1">
+        <div className="overflow-auto py-1 max-h-[60vh]">
           <Receipt
             numero={`#${orderNumber}`}
             cliente={clientName}

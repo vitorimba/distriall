@@ -223,19 +223,19 @@ export default function OrderDetailPage() {
   }
 
   async function handleDelete() {
-    if (!confirm('Tem certeza que deseja apagar este pedido? Esta ação não pode ser desfeita.')) return;
+    if (!confirm('Tem certeza que deseja cancelar este pedido?')) return;
     setDeleting(true);
     const supabase = createClient();
-    // Delete order items first, then order
-    await supabase.from('order_items').delete().eq('order_id', id);
-    await supabase.from('payments').delete().eq('order_id', id);
-    const { error } = await supabase.from('orders').delete().eq('id', id);
+    const { error } = await supabase.rpc('transition_order_status', {
+      p_order_id: id,
+      p_new_status: 'cancelado',
+    });
     if (error) {
-      toast('Erro ao apagar pedido', 'danger');
+      toast('Erro ao cancelar pedido', 'danger');
       setDeleting(false);
       return;
     }
-    toast('Pedido apagado', 'success');
+    toast('Pedido cancelado', 'success');
     router.push('/orders');
   }
 
@@ -399,7 +399,7 @@ export default function OrderDetailPage() {
             disabled={deleting}
           >
             <Trash2 className="mr-1 size-3.5" />
-            {deleting ? 'Apagando...' : 'Apagar'}
+            {deleting ? 'Cancelando...' : 'Cancelar'}
           </Button>
         )}
       </div>

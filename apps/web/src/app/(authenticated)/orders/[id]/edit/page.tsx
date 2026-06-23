@@ -112,7 +112,7 @@ export default function EditOrderPage() {
       await updateOrder(id);
       clearCart();
       toast('Pedido salvo', 'success');
-      router.push('/orders');
+      router.push(`/orders/${id}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : (err as { message?: string })?.message ?? 'Erro ao atualizar pedido';
       console.error('Erro ao atualizar pedido:', err);
@@ -200,7 +200,7 @@ export default function EditOrderPage() {
       )}
 
       {items.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background p-4 shadow-lg">
+        <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-50 border-t bg-background p-4 shadow-lg">
           <div className="mx-auto max-w-lg space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
