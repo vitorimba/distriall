@@ -625,21 +625,89 @@ export default function OrderDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Details */}
+      {/* Payment, delivery, notes — editable when canEdit */}
+      {canEdit ? (
+        <Card>
+          <CardContent className="space-y-3 pt-4">
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Forma de Pagamento</label>
+              <select
+                value={order.payment_method ?? ''}
+                onChange={async (e) => {
+                  const val = e.target.value || null;
+                  const supabase = createClient();
+                  await supabase.from('orders').update({ payment_method: val }).eq('id', order.id);
+                  setOrder({ ...order, payment_method: val });
+                }}
+                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+              >
+                <option value="">Nenhuma</option>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="pix">Pix</option>
+                <option value="boleto">Boleto</option>
+                <option value="vale">Vale</option>
+                <option value="cartao">Cartao</option>
+                <option value="misto">Misto</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Data de Entrega</label>
+              <input
+                type="date"
+                value={order.delivery_date ?? ''}
+                onChange={async (e) => {
+                  const val = e.target.value || null;
+                  const supabase = createClient();
+                  await supabase.from('orders').update({ delivery_date: val }).eq('id', order.id);
+                  setOrder({ ...order, delivery_date: val });
+                }}
+                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Observacoes</label>
+              <textarea
+                value={order.notes ?? ''}
+                onChange={(e) => setOrder({ ...order, notes: e.target.value })}
+                onBlur={async () => {
+                  const supabase = createClient();
+                  await supabase.from('orders').update({ notes: order.notes || null }).eq('id', order.id);
+                }}
+                rows={2}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                placeholder="Observacoes do pedido..."
+              />
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardContent className="pt-4 space-y-1 text-sm">
+            {order.payment_method && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Pagamento</span>
+                <span className="capitalize">{order.payment_method}</span>
+              </div>
+            )}
+            {order.delivery_date && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Entrega</span>
+                <span>{formatDate(order.delivery_date + 'T00:00:00')}</span>
+              </div>
+            )}
+            {order.notes && (
+              <div className="border-t pt-2">
+                <span className="text-muted-foreground">Notas: </span>
+                <span>{order.notes}</span>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Timestamps */}
       <Card>
         <CardContent className="pt-4 space-y-1 text-sm">
-          {order.payment_method && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Pagamento</span>
-              <span className="capitalize">{order.payment_method}</span>
-            </div>
-          )}
-          {order.delivery_date && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Entrega</span>
-              <span>{formatDate(order.delivery_date + 'T00:00:00')}</span>
-            </div>
-          )}
           <div className="flex justify-between">
             <span className="text-muted-foreground">Criado em</span>
             <span>{formatDateTime(order.created_at)}</span>
@@ -660,12 +728,6 @@ export default function OrderDetailPage() {
             <div className="flex justify-between">
               <span className="text-muted-foreground">Entregue em</span>
               <span>{formatDateTime(order.delivered_at)}</span>
-            </div>
-          )}
-          {order.notes && (
-            <div className="border-t pt-2">
-              <span className="text-muted-foreground">Notas: </span>
-              <span>{order.notes}</span>
             </div>
           )}
         </CardContent>
