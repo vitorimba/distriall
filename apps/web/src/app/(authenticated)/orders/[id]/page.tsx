@@ -325,7 +325,7 @@ export default function OrderDetailPage() {
       </Card>
 
       {/* Status transition buttons */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {prevStatus && (
           <Button
             variant="outline"
