@@ -6,7 +6,7 @@ export function useOrders() {
   const { activeAccount } = useAccount();
 
   async function createOrder() {
-    const { client, items, paymentMethod, notes, deliveryDate } = useCartStore.getState();
+    const { client, items, paymentMethod, notes, deliveryDate, deliveryAddressId } = useCartStore.getState();
 
     if (!activeAccount || !client || items.length === 0) {
       throw new Error('Dados incompletos para criar pedido');
@@ -16,10 +16,11 @@ export function useOrders() {
     const { data, error } = await supabase.rpc('create_order', {
       p_account_id: activeAccount.id,
       p_client_id: client.id,
-      p_items: items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity })),
+      p_items: items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity, unit_price: i.unitPrice })),
       p_payment_method: paymentMethod || null,
       p_notes: notes || null,
       p_delivery_date: deliveryDate || null,
+      p_delivery_address_id: deliveryAddressId || null,
     });
 
     if (error) throw error;
@@ -27,7 +28,7 @@ export function useOrders() {
   }
 
   async function updateOrder(orderId: string) {
-    const { client, items, paymentMethod, notes, deliveryDate } = useCartStore.getState();
+    const { client, items, paymentMethod, notes, deliveryDate, deliveryAddressId } = useCartStore.getState();
 
     if (!client || items.length === 0) {
       throw new Error('Dados incompletos para atualizar pedido');
@@ -37,10 +38,11 @@ export function useOrders() {
     const { data, error } = await supabase.rpc('update_order', {
       p_order_id: orderId,
       p_client_id: client.id,
-      p_items: items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity })),
+      p_items: items.map((i) => ({ variant_id: i.variantId, quantity: i.quantity, unit_price: i.unitPrice })),
       p_payment_method: paymentMethod || null,
       p_notes: notes || null,
       p_delivery_date: deliveryDate || null,
+      p_delivery_address_id: deliveryAddressId || null,
     });
 
     if (error) throw error;
