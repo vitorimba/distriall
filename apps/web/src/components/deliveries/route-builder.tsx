@@ -68,7 +68,7 @@ export function RouteBuilder({
   );
 
   return (
-    <div className="flex flex-col rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-[var(--shadow-card)]">
+    <div className="flex flex-col overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-[var(--shadow-card)]">
       {/* Card header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
         <span className="font-semibold text-[var(--text-primary)] text-sm">

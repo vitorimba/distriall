@@ -58,7 +58,7 @@ export function RouteItem({ item, canEdit, dragId }: RouteItemProps) {
       )}
 
       {/* Content */}
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 overflow-hidden">
         <p className="truncate font-semibold text-[var(--text-primary)] text-sm">{item.client_name}</p>
         {fullAddress && (
           <p className="truncate text-xs text-[var(--text-secondary)]">{fullAddress}</p>

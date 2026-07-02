@@ -15,7 +15,7 @@ export function AvailableOrders({ orders, routeOrderIds, onAdd, loading }: Avail
   const pending = orders.filter((o) => !routeOrderIds.has(o.id));
 
   return (
-    <div className="flex flex-col rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-[var(--shadow-card)]">
+    <div className="flex flex-col overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-[var(--shadow-card)]">
       {/* Card header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
         <span className="font-semibold text-[var(--text-primary)] text-sm">
@@ -54,7 +54,7 @@ export function AvailableOrders({ orders, routeOrderIds, onAdd, loading }: Avail
                 className="flex items-center gap-3 px-4 py-3 border-t border-[var(--border-subtle)] first:border-t-0"
               >
                 <MapPin className="size-4 shrink-0 text-[var(--text-muted)]" />
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 overflow-hidden">
                   <p className="truncate font-semibold text-[var(--text-primary)] text-sm">{order.client_name}</p>
                   {fullAddress && (
                     <p className="truncate text-xs text-[var(--text-secondary)]">{fullAddress}</p>
