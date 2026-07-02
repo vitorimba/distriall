@@ -10,6 +10,7 @@ import { useAccount } from '@/providers/account-provider';
 import { ClientSearch } from '@/components/orders/client-search';
 import { ProductCatalog } from '@/components/orders/product-catalog';
 import { ClientRecentOrders } from '@/components/orders/client-recent-orders';
+import { AddressSelector } from '@/components/orders/address-selector';
 import { OrderItemList } from '@/components/orders/order-item-list';
 import { PaymentSelector } from '@/components/financial/payment-selector';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ import type { PaymentEntry } from '@/lib/validations/payment';
 import { validatePaymentsTotal } from '@/lib/validations/payment';
 import { PageHeader } from '@/components/ui/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Repeat2 } from 'lucide-react';
 
 export default function NewOrderPage() {
   return (
@@ -44,6 +46,8 @@ function NewOrderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedClientId = searchParams.get('client');
+  const exchangeId = searchParams.get('exchange_id');
+  const exchangeCredit = searchParams.get('credit') ? Number(searchParams.get('credit')) : null;
   const { createOrder } = useOrders();
   const { savePayments } = usePayments();
   const { activeAccount } = useAccount();
@@ -132,8 +136,17 @@ function NewOrderContent() {
         await savePayments(activeAccount.id, orderId, payments);
       }
 
+      // Link to exchange if this is a replacement order
+      if (exchangeId) {
+        const supabase = createClient();
+        await supabase.rpc('link_exchange_order', {
+          p_exchange_id: exchangeId,
+          p_order_id: orderId,
+        });
+      }
+
       clearCart();
-      toast('Pedido salvo', 'success');
+      toast(exchangeId ? 'Pedido de troca salvo' : 'Pedido salvo', 'success');
       router.push(`/orders/${orderId}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : (err as { message?: string })?.message ?? 'Erro ao salvar pedido';
@@ -150,10 +163,25 @@ function NewOrderContent() {
 
   return (
     <div className="px-4 py-4 pb-40 space-y-4">
-      <PageHeader title="Novo pedido" onBack={() => router.back()} />
+      <PageHeader title={exchangeId ? 'Pedido de troca' : 'Novo pedido'} onBack={() => router.back()} />
+
+      {/* Exchange credit badge */}
+      {exchangeId && exchangeCredit != null && (
+        <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-50 px-3 py-2">
+          <Repeat2 className="size-4 text-amber-600 shrink-0" />
+          <div className="text-sm">
+            <span className="font-medium text-amber-700">Troca em andamento</span>
+            <span className="text-amber-600"> · Credito: </span>
+            <Money value={exchangeCredit} className="font-medium text-amber-700" />
+          </div>
+        </div>
+      )}
 
       {/* Client */}
       <ClientSearch />
+
+      {/* Delivery address */}
+      {client && <AddressSelector clientId={client.id} />}
 
       {/* Recent orders from this client */}
       {client && <ClientRecentOrders clientId={client.id} />}

@@ -9,10 +9,11 @@ import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { OrderStatusStepper } from '@/components/orders/order-status-stepper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, ArrowRight, Minus, Pencil, Plus, Printer, RotateCcw, Trash2, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Minus, Pencil, Plus, Printer, Repeat2, RotateCcw, Trash2, X } from 'lucide-react';
 import { usePrinter } from '@/hooks/use-printer';
 import { OrderReceipt } from '@/components/orders/order-receipt';
 import { ReturnForm } from '@/components/orders/return-form';
+import { ExchangeForm } from '@/components/orders/exchange-form';
 import { PageHeader } from '@/components/ui/page-header';
 import { Money } from '@/components/ui/money';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -86,6 +87,15 @@ interface OrderItem {
   returned_at: string | null;
 }
 
+interface ExchangeInfo {
+  id: string;
+  origin_order_id: string;
+  exchange_order_id: string | null;
+  credit_amount: number;
+  reason: string;
+  status: string;
+}
+
 interface OrderDetail {
   id: string;
   order_number: number;
@@ -101,6 +111,7 @@ interface OrderDetail {
   confirmed_at: string | null;
   loaded_at: string | null;
   delivered_at: string | null;
+  exchange_id: string | null;
   clients: { id: string; name: string } | null;
   order_items: OrderItem[];
 }
@@ -144,7 +155,9 @@ export default function OrderDetailPage() {
   const [transitioning, setTransitioning] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [showReturnForm, setShowReturnForm] = useState(false);
+  const [showExchangeForm, setShowExchangeForm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfo | null>(null);
   const [editingQty, setEditingQty] = useState<string | null>(null);
   const [editingPrice, setEditingPrice] = useState<string | null>(null);
   const { isSupported, isPrinting, printOrder } = usePrinter();
@@ -159,6 +172,31 @@ export default function OrderDetailPage() {
         .single();
 
       setOrder(data as unknown as OrderDetail | null);
+
+      // Load exchange info (as origin or as exchange order)
+      if (data) {
+        const { data: asOrigin } = await supabase
+          .from('exchanges')
+          .select('id, origin_order_id, exchange_order_id, credit_amount, reason, status')
+          .eq('origin_order_id', id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (asOrigin) {
+          setExchangeInfo(asOrigin as ExchangeInfo);
+        } else if (data.exchange_id) {
+          const { data: asExchange } = await supabase
+            .from('exchanges')
+            .select('id, origin_order_id, exchange_order_id, credit_amount, reason, status')
+            .eq('id', data.exchange_id)
+            .maybeSingle();
+          setExchangeInfo(asExchange as ExchangeInfo | null);
+        } else {
+          setExchangeInfo(null);
+        }
+      }
+
       setLoading(false);
     }
     load();
@@ -348,6 +386,54 @@ export default function OrderDetailPage() {
         </CardContent>
       </Card>
 
+      {/* Exchange traceability */}
+      {exchangeInfo && (
+        <Card>
+          <CardContent className="py-3">
+            {exchangeInfo.origin_order_id === id ? (
+              // This is the ORIGINAL order — exchange was created from here
+              <div className="flex items-center gap-2 text-sm">
+                <Repeat2 className="size-4 text-amber-600 shrink-0" />
+                <div>
+                  <span className="font-medium text-amber-700">Troca realizada</span>
+                  <span className="text-muted-foreground"> · Credito: </span>
+                  <Money value={exchangeInfo.credit_amount} className="font-medium" />
+                  {exchangeInfo.exchange_order_id && (
+                    <span>
+                      {' · '}
+                      <Link href={`/orders/${exchangeInfo.exchange_order_id}`} className="text-primary underline underline-offset-2">
+                        Ver pedido de troca
+                      </Link>
+                    </span>
+                  )}
+                  {exchangeInfo.status === 'pendente' && (
+                    <span className="ml-2 inline-block rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-800 border border-amber-300">
+                      Pendente
+                    </span>
+                  )}
+                </div>
+              </div>
+            ) : (
+              // This is the EXCHANGE order — created from another order
+              <div className="flex items-center gap-2 text-sm">
+                <Repeat2 className="size-4 text-amber-600 shrink-0" />
+                <div>
+                  <span className="font-medium text-amber-700">Pedido de troca</span>
+                  <span className="text-muted-foreground"> · Credito: </span>
+                  <Money value={exchangeInfo.credit_amount} className="font-medium" />
+                  <span>
+                    {' · '}
+                    <Link href={`/orders/${exchangeInfo.origin_order_id}`} className="text-primary underline underline-offset-2">
+                      Ver pedido original
+                    </Link>
+                  </span>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Status transition buttons */}
       <div className="flex flex-wrap gap-2">
         {prevStatus && (
@@ -405,15 +491,26 @@ export default function OrderDetailPage() {
           </Button>
         )}
         {order.status === 'entregue' && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-destructive border-destructive/50"
-            onClick={() => setShowReturnForm(true)}
-          >
-            <RotateCcw className="mr-1 size-3.5" />
-            Devolucao
-          </Button>
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-destructive border-destructive/50"
+              onClick={() => setShowReturnForm(true)}
+            >
+              <RotateCcw className="mr-1 size-3.5" />
+              Devolucao
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-amber-600 border-amber-500/50"
+              onClick={() => setShowExchangeForm(true)}
+            >
+              <Repeat2 className="mr-1 size-3.5" />
+              Trocar
+            </Button>
+          </>
         )}
         {canEdit && (
           <Button
@@ -448,6 +545,17 @@ export default function OrderDetailPage() {
           items={order.order_items}
           onClose={() => setShowReturnForm(false)}
           onReturned={reloadOrder}
+        />
+      )}
+
+      {/* Exchange form */}
+      {showExchangeForm && order && order.clients && (
+        <ExchangeForm
+          orderId={order.id}
+          clientId={order.clients.id}
+          items={order.order_items}
+          onClose={() => setShowExchangeForm(false)}
+          onExchangeCreated={reloadOrder}
         />
       )}
 
