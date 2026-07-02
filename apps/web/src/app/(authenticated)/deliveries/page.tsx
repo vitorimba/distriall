@@ -207,7 +207,7 @@ export default function DeliveriesPage() {
             type="date"
             value={selectedDate}
             onChange={(e) => { setSelectedDate(e.target.value); setDraftRouteItems([]); }}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            className="h-10 w-full rounded-xl border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
         <div>
@@ -215,7 +215,7 @@ export default function DeliveriesPage() {
           <select
             value={selectedDriverId}
             onChange={(e) => { setSelectedDriverId(e.target.value); setDraftRouteItems([]); }}
-            className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            className="h-10 w-full rounded-xl border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           >
             {drivers.length === 0 && (
               <option value="">Nenhum entregador</option>
