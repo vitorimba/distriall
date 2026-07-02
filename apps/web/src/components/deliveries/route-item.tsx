@@ -11,9 +11,10 @@ interface RouteItemProps {
   onRemove?: (deliveryItemId: string) => void;
   canEdit: boolean;
   dragId: string;
+  expanded?: boolean;
 }
 
-export function RouteItem({ item, canEdit, dragId }: RouteItemProps) {
+export function RouteItem({ item, canEdit, dragId, expanded }: RouteItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: dragId,
     disabled: !canEdit,
@@ -61,7 +62,7 @@ export function RouteItem({ item, canEdit, dragId }: RouteItemProps) {
       <div className="min-w-0 flex-1 overflow-hidden">
         <p className="truncate font-semibold text-[var(--text-primary)] text-sm">{item.client_name}</p>
         {fullAddress && (
-          <p className="truncate text-xs text-[var(--text-secondary)]">{fullAddress}</p>
+          <p className={`text-xs text-[var(--text-secondary)] ${expanded ? 'whitespace-normal break-words' : 'truncate'}`}>{fullAddress}</p>
         )}
         <div className="mt-1 flex flex-wrap items-center gap-2">
           {paymentLabel && (

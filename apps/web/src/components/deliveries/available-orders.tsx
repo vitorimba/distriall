@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { MapPin, Plus } from 'lucide-react';
 import { PAYMENT_METHOD_LABELS, PAYMENT_METHOD_COLORS } from '@distriall/shared';
 import type { AvailableOrder } from '@/hooks/use-deliveries';
@@ -13,6 +14,7 @@ interface AvailableOrdersProps {
 
 export function AvailableOrders({ orders, routeOrderIds, onAdd, loading }: AvailableOrdersProps) {
   const pending = orders.filter((o) => !routeOrderIds.has(o.id));
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-card)] shadow-[var(--shadow-card)]">
@@ -48,16 +50,21 @@ export function AvailableOrders({ orders, routeOrderIds, onAdd, loading }: Avail
               ? (PAYMENT_METHOD_COLORS[order.payment_method] ?? 'bg-gray-100 text-gray-800')
               : 'bg-gray-100 text-gray-800';
 
+            const isExpanded = expandedId === order.id;
+
             return (
               <div
                 key={order.id}
-                className="flex items-center gap-3 px-4 py-3 border-t border-[var(--border-subtle)] first:border-t-0"
+                className="flex items-center gap-3 px-4 py-3 border-t border-[var(--border-subtle)] first:border-t-0 cursor-pointer active:bg-[var(--surface-hover)]"
+                onClick={() => setExpandedId(isExpanded ? null : order.id)}
               >
                 <MapPin className="size-4 shrink-0 text-[var(--text-muted)]" />
                 <div className="min-w-0 flex-1 overflow-hidden">
                   <p className="truncate font-semibold text-[var(--text-primary)] text-sm">{order.client_name}</p>
                   {fullAddress && (
-                    <p className="truncate text-xs text-[var(--text-secondary)]">{fullAddress}</p>
+                    <p className={`text-xs text-[var(--text-secondary)] ${isExpanded ? 'whitespace-normal break-words' : 'truncate'}`}>
+                      {fullAddress}
+                    </p>
                   )}
                   <div className="mt-1 flex flex-wrap items-center gap-2">
                     {paymentLabel && (
@@ -71,7 +78,7 @@ export function AvailableOrders({ orders, routeOrderIds, onAdd, loading }: Avail
                   </div>
                 </div>
                 <button
-                  onClick={() => onAdd(order)}
+                  onClick={(e) => { e.stopPropagation(); onAdd(order); }}
                   className="ml-1 shrink-0 rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent-fg)]"
                   aria-label={`Adicionar ${order.client_name} a rota`}
                 >

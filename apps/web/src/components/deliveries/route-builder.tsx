@@ -14,6 +14,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { useState } from 'react';
 import { Send, Loader2, ChevronUp, ChevronDown, X } from 'lucide-react';
 import { RouteItem } from '@/components/deliveries/route-item';
 import { RouteMapLink } from '@/components/deliveries/route-map-link';
@@ -42,6 +43,8 @@ export function RouteBuilder({
   onMoveUp,
   onMoveDown,
 }: RouteBuilderProps) {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -90,10 +93,14 @@ export function RouteBuilder({
         >
           <SortableContext items={dragIds} strategy={verticalListSortingStrategy}>
             <div>
-              {items.map((item, index) => (
+              {items.map((item, index) => {
+                const itemKey = item.delivery_item_id ?? item.id;
+                const isExpanded = expandedId === itemKey;
+                return (
                 <div
-                  key={item.delivery_item_id ?? item.id}
-                  className="flex items-center gap-3 px-4 py-3 border-t border-[var(--border-subtle)] first:border-t-0"
+                  key={itemKey}
+                  className="flex items-center gap-3 px-4 py-3 border-t border-[var(--border-subtle)] first:border-t-0 cursor-pointer active:bg-[var(--surface-hover)]"
+                  onClick={() => setExpandedId(isExpanded ? null : itemKey)}
                 >
                   {/* DS sequence badge */}
                   <span
@@ -118,8 +125,9 @@ export function RouteBuilder({
                   <div className="min-w-0 flex-1">
                     <RouteItem
                       item={item}
-                      dragId={item.delivery_item_id ?? item.id}
+                      dragId={itemKey}
                       canEdit={canEdit}
+                      expanded={isExpanded}
                     />
                   </div>
 
@@ -127,7 +135,7 @@ export function RouteBuilder({
                   {canEdit && (
                     <div className="flex items-center gap-0.5 shrink-0">
                       <button
-                        onClick={() => onMoveUp?.(index)}
+                        onClick={(e) => { e.stopPropagation(); onMoveUp?.(index); }}
                         disabled={index === 0}
                         className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] disabled:opacity-30"
                         aria-label="Subir na rota"
@@ -135,7 +143,7 @@ export function RouteBuilder({
                         <ChevronUp className="size-4" />
                       </button>
                       <button
-                        onClick={() => onMoveDown?.(index)}
+                        onClick={(e) => { e.stopPropagation(); onMoveDown?.(index); }}
                         disabled={index === items.length - 1}
                         className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] disabled:opacity-30"
                         aria-label="Descer na rota"
@@ -144,7 +152,7 @@ export function RouteBuilder({
                       </button>
                       {item.delivery_item_id && item.delivery_item_status !== 'entregue' && (
                         <button
-                          onClick={() => onRemove(item.delivery_item_id!)}
+                          onClick={(e) => { e.stopPropagation(); onRemove(item.delivery_item_id!); }}
                           className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--danger-soft)] hover:text-[var(--danger-fg)]"
                           aria-label="Remover da rota"
                         >
@@ -154,7 +162,8 @@ export function RouteBuilder({
                     </div>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </SortableContext>
         </DndContext>
