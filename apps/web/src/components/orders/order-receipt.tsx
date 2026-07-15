@@ -105,13 +105,13 @@ export function OrderReceipt({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
-      <DialogContent className="max-w-[320px] p-4" showCloseButton>
+      <DialogContent className="max-w-[320px] p-3 max-md:fixed max-md:inset-2 max-md:max-w-none max-md:max-h-none max-md:translate-x-0 max-md:translate-y-0 max-md:top-2 max-md:left-2 max-md:right-2 max-md:bottom-2" showCloseButton>
         <DialogHeader>
           <DialogTitle>Cupom fiscal</DialogTitle>
         </DialogHeader>
 
         {/* Receipt preview — styled via da-receipt CSS classes */}
-        <div ref={scrollRef} className="overflow-auto py-1 max-h-[75vh]">
+        <div ref={scrollRef} className="overflow-auto py-1 flex-1 min-h-0">
           <Receipt
             numero={`#${orderNumber}`}
             cliente={clientName}
