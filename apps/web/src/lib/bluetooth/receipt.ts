@@ -1,6 +1,14 @@
 import { ESCPOSBuilder } from './escpos';
 import type { ConsolidatedProduct, LoadingSummary } from '@/lib/utils/loading-consolidation';
 
+const COMPANY = {
+  name: 'Ind. e Com. Temperos Boa Mesa',
+  phone: '+5517932254908',
+  address: 'R. Cezar Pupin, S.J. Rio Preto-SP',
+  pixKey: '+5517997478319',
+  pixInfo: 'Ag 0825 Cc 130037722',
+};
+
 interface OrderForReceipt {
   order_number: number;
   client_name: string;
@@ -24,7 +32,8 @@ function truncate(str: string, max: number): string {
 }
 
 function formatDate(): string {
-  return new Date().toLocaleDateString('pt-BR');
+  const now = new Date();
+  return `${now.toLocaleDateString('pt-BR')} as ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
 }
 
 /**
@@ -36,44 +45,61 @@ export function buildOrderReceipt(
   via: 1 | 2
 ): Uint8Array {
   const b = new ESCPOSBuilder();
+  const totalQty = order.items.reduce((s, i) => s + i.quantity, 0);
 
   b.init()
     .align('center')
     .bold(true)
-    .doubleSize(true)
-    .text('DISTRIALL')
-    .newline()
-    .doubleSize(false)
-    .text(accountName)
+    .text(COMPANY.name)
     .newline()
     .bold(false)
+    .text(COMPANY.phone)
+    .newline()
+    .text(COMPANY.address)
+    .newline()
     .align('left')
     .fullSeparator()
+    .columns('Recibo:', `#${order.order_number}`)
     .columns('Cliente:', truncate(order.client_name, 20))
     .columns('Data:', formatDate())
-    .columns('Pedido:', `#${order.order_number}`)
-    .columns('Pgto:', order.payment_method ?? '—')
+    .newline()
+    .align('center')
+    .text(`${order.items.length} itens (Qtd.: ${totalQty})`)
+    .newline()
+    .align('left')
     .separator();
-
-  // Header
-  b.threeColumns('Produto', 'Qtd', 'Valor');
-  b.separator();
 
   // Items
   for (const item of order.items) {
     const name = truncate(`${item.product_name} ${item.variant_name}`, 20);
-    const qty = String(item.quantity);
-    const val = formatBRL(item.total);
-    b.threeColumns(name, qty, val);
+    b.columns(`${item.quantity} x ${name}`, `R$ ${formatBRL(item.total)}`);
+    b.text(`  1 UN x R$ ${formatBRL(item.unit_price)}`);
+    b.newline();
   }
 
   b.separator()
     .bold(true)
-    .columns('TOTAL:', `R$ ${formatBRL(order.total)}`)
-    .bold(false)
-    .fullSeparator()
+    .columns('Total:', `R$ ${formatBRL(order.total)}`)
+    .bold(false);
+
+  if (order.payment_method) {
+    b.text(`Pagamento:`)
+      .newline()
+      .columns(order.payment_method, `R$ ${formatBRL(order.total)}`);
+  }
+
+  b.fullSeparator()
     .align('center')
+    .text('Pix: ' + COMPANY.pixKey)
+    .newline()
+    .text(COMPANY.pixInfo)
+    .newline()
+    .fullSeparator()
     .text(via === 1 ? '1a VIA - CLIENTE' : '2a VIA - CONTROLE')
+    .newline()
+    .text('AGRADECEMOS A PREFERENCIA')
+    .newline()
+    .text(formatDate())
     .newline()
     .fullSeparator()
     .cut();

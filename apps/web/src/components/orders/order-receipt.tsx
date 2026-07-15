@@ -63,21 +63,30 @@ export function OrderReceipt({
   }));
 
   async function handleShare() {
+    const totalQty = items.reduce((s, i) => s + i.quantity, 0);
     const text = [
-      'DISTRIALL',
-      accountName,
+      'Industria e Comercio Temperos Boa Mesa',
+      '+5517932254908',
+      'Rua Cezar Pupin, Sao Jose do Rio Preto - SP',
       '================================',
+      `Recibo #${orderNumber}`,
       `Cliente: ${clientName}`,
-      `Data: ${date}  Pedido: #${orderNumber}`,
-      `Pgto: ${paymentMethod ?? '—'}`,
+      `Data: ${date}`,
+      `${items.length} itens (Qtd.: ${totalQty})`,
       '--------------------------------',
       ...items.map(
-        (i) => `${i.product_name} ${i.variant_name} x${i.quantity} R$${formatBRL(i.total)}`
+        (i) => `${i.quantity} x ${i.product_name} ${i.variant_name}....R$${formatBRL(i.total)}\n  1 UN x R$${formatBRL(i.unit_price)}`
       ),
       '--------------------------------',
-      `TOTAL: R$ ${formatBRL(total)}`,
+      `Total: R$ ${formatBRL(total)}`,
+      paymentMethod ? `Pagamento:\n${paymentMethod}: R$ ${formatBRL(total)}` : '',
       '================================',
-    ].join('\n');
+      'Pix: +5517997478319',
+      'Ag 0825 Cc 130037722',
+      '================================',
+      'AGRADECEMOS A PREFERENCIA',
+      date,
+    ].filter(Boolean).join('\n');
 
     if (navigator.share) {
       await navigator.share({ text });
