@@ -498,10 +498,16 @@
     color: black !important;
   }
 
-  /* Pagina sem margens */
+  /* Pagina continua sem quebra, sem cabecalho/rodape do browser */
   @page {
-    margin: 5mm;
+    margin: 0;
     size: 80mm auto;
+  }
+
+  /* Sem quebra de pagina */
+  .da-receipt {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }
 
