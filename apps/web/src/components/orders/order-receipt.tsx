@@ -105,7 +105,7 @@ export function OrderReceipt({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
-      <DialogContent className="max-w-[340px] p-3 max-h-[90vh] flex flex-col max-md:fixed max-md:inset-2 max-md:max-w-none max-md:max-h-none max-md:translate-x-0 max-md:translate-y-0 max-md:top-2 max-md:left-2 max-md:right-2 max-md:bottom-2" showCloseButton>
+      <DialogContent className="!top-4 !bottom-4 !translate-y-0 !max-h-none w-[340px] max-w-[calc(100%-2rem)] p-3 flex flex-col" showCloseButton>
         <DialogHeader>
           <DialogTitle>Cupom fiscal</DialogTitle>
         </DialogHeader>
