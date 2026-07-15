@@ -17,10 +17,11 @@ import { Money } from '@/components/ui/money';
 import { FAB } from '@/components/ui/fab';
 import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/ui/pagination';
-import { ClipboardList, RefreshCw } from 'lucide-react';
+import { ClipboardList, RefreshCw, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const PAGE_SIZE = 25;
+const PENDING_STATUSES = ['lancado', 'confirmado', 'carregado'];
 
 interface OrderRow {
   id: string;
@@ -33,6 +34,42 @@ interface OrderRow {
   created_at: string;
   clients: { name: string } | null;
   order_items: { count: number }[];
+}
+
+type PeriodTab = 'hoje' | 'ontem' | '7dias' | 'mes' | 'custom';
+
+const PERIOD_TABS: { value: PeriodTab; label: string }[] = [
+  { value: 'hoje', label: 'Hoje' },
+  { value: 'ontem', label: 'Ontem' },
+  { value: '7dias', label: '7 dias' },
+  { value: 'mes', label: 'Mes' },
+  { value: 'custom', label: 'Personalizado' },
+];
+
+function getDateRange(tab: PeriodTab): { start: string; end: string } | null {
+  const today = new Date();
+  const fmt = (d: Date) => d.toISOString().split('T')[0];
+
+  switch (tab) {
+    case 'hoje':
+      return { start: fmt(today), end: fmt(today) };
+    case 'ontem': {
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+      return { start: fmt(yesterday), end: fmt(yesterday) };
+    }
+    case '7dias': {
+      const weekAgo = new Date(today);
+      weekAgo.setDate(today.getDate() - 6);
+      return { start: fmt(weekAgo), end: fmt(today) };
+    }
+    case 'mes': {
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      return { start: fmt(monthStart), end: fmt(today) };
+    }
+    case 'custom':
+      return null; // handled by custom date inputs
+  }
 }
 
 const STATUS_FILTERS: { value: string; label: string }[] = [
@@ -57,6 +94,9 @@ const PAYMENT_FILTERS: { value: string; label: string }[] = [
 export function OrderList() {
   const { activeAccount } = useAccount();
   const [orders, setOrders] = useState<OrderRow[]>([]);
+  const [periodTab, setPeriodTab] = useState<PeriodTab>('hoje');
+  const [customStart, setCustomStart] = useState('');
+  const [customEnd, setCustomEnd] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [paymentFilter, setPaymentFilter] = useState('all');
   const [search, setSearch] = useState('');
@@ -69,13 +109,64 @@ export function OrderList() {
 
   const loadOrders = useCallback(async () => {
     if (!activeAccount) return;
+    if (periodTab === 'custom' && (!customStart || !customEnd)) return;
 
     const supabase = createClient();
+
+    // Date range from period tab
+    const range = periodTab === 'custom'
+      ? { start: customStart, end: customEnd }
+      : getDateRange(periodTab);
+
+    // For "hoje" tab: also include pending orders from any date
+    // Query: (created within range) OR (status is pending)
+    if (periodTab === 'hoje' && statusFilter === 'all') {
+      // Use or() to include pending orders from any date + today's orders
+      let query = supabase
+        .from('orders')
+        .select('id, order_number, status, payment_method, subtotal, total, delivery_date, created_at, clients(name), order_items(count)', { count: 'exact' })
+        .eq('account_id', activeAccount.id)
+        .or(`created_at.gte.${range!.start}T00:00:00,status.in.(${PENDING_STATUSES.join(',')})`)
+        .order('created_at', { ascending: false });
+
+      if (paymentFilter !== 'all') {
+        query = query.eq('payment_method', paymentFilter);
+      }
+      if (search) {
+        const isNumeric = /^\d+$/.test(search);
+        if (isNumeric) {
+          query = query.eq('order_number', Number(search));
+        } else {
+          query = query.ilike('clients.name', `${search}%`);
+        }
+      }
+
+      const offset = (page - 1) * PAGE_SIZE;
+      query = query.range(offset, offset + PAGE_SIZE - 1);
+
+      const { data, count, error: fetchError } = await query;
+      if (fetchError) {
+        setError('Nao foi possivel carregar os pedidos.');
+        setLoadKey((k) => k + 1);
+        return;
+      }
+      setError(null);
+      setOrders((data as unknown as OrderRow[]) ?? []);
+      setTotalCount(count ?? 0);
+      setLoadKey((k) => k + 1);
+      return;
+    }
+
+    // Standard query for other tabs
     let query = supabase
       .from('orders')
       .select('id, order_number, status, payment_method, subtotal, total, delivery_date, created_at, clients(name), order_items(count)', { count: 'exact' })
       .eq('account_id', activeAccount.id)
       .order('created_at', { ascending: false });
+
+    if (range) {
+      query = query.gte('created_at', `${range.start}T00:00:00`).lte('created_at', `${range.end}T23:59:59`);
+    }
 
     if (statusFilter !== 'all') {
       query = query.eq('status', statusFilter);
@@ -105,7 +196,7 @@ export function OrderList() {
     setOrders((data as unknown as OrderRow[]) ?? []);
     setTotalCount(count ?? 0);
     setLoadKey((k) => k + 1);
-  }, [activeAccount, statusFilter, paymentFilter, search, page]);
+  }, [activeAccount, periodTab, customStart, customEnd, statusFilter, paymentFilter, search, page]);
 
   useEffect(() => {
     let cancelled = false;
@@ -113,7 +204,7 @@ export function OrderList() {
     return () => { cancelled = true; clearTimeout(t); };
   }, [loadOrders]);
 
-  useEffect(() => { setPage(1); }, [statusFilter, paymentFilter, search]);
+  useEffect(() => { setPage(1); }, [periodTab, customStart, customEnd, statusFilter, paymentFilter, search]);
 
   // Realtime subscription
   useEffect(() => {
@@ -168,7 +259,46 @@ export function OrderList() {
         onClear={() => setSearch('')}
       />
 
-      {/* Filters — compact dropdowns on mobile, chips on desktop */}
+      {/* Period tabs */}
+      <div className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
+        {PERIOD_TABS.map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => setPeriodTab(tab.value)}
+            className={cn(
+              'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
+              periodTab === tab.value
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            )}
+          >
+            {tab.value === 'custom' && <Calendar className="inline size-3 mr-1 -mt-0.5" />}
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Custom date range */}
+      {periodTab === 'custom' && (
+        <div className="flex gap-2">
+          <input
+            type="date"
+            value={customStart}
+            onChange={(e) => setCustomStart(e.target.value)}
+            className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm"
+            placeholder="De"
+          />
+          <input
+            type="date"
+            value={customEnd}
+            onChange={(e) => setCustomEnd(e.target.value)}
+            className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm"
+            placeholder="Ate"
+          />
+        </div>
+      )}
+
+      {/* Status & payment filters — compact dropdowns on mobile, chips on desktop */}
       <div className="flex gap-2 md:hidden">
         <select
           value={statusFilter}
@@ -220,8 +350,8 @@ export function OrderList() {
       ) : !error && orders.length === 0 ? (
         <EmptyState
           icon={ClipboardList}
-          title={search || statusFilter !== 'all' ? 'Nenhum pedido encontrado' : 'Nenhum pedido ainda'}
-          description={search || statusFilter !== 'all' ? undefined : 'Lance o primeiro pedido para ve-lo aqui.'}
+          title={search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Nenhum pedido encontrado' : 'Nenhum pedido hoje'}
+          description={search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Tente ajustar os filtros ou o periodo.' : 'Lance o primeiro pedido para ve-lo aqui.'}
         />
       ) : !error ? (
         <div className="space-y-1 pb-24">
