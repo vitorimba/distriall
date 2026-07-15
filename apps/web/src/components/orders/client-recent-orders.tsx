@@ -73,7 +73,7 @@ export function ClientRecentOrders({ clientId }: { clientId: string }) {
 
       if (cancelled) return;
 
-      const rows = (data ?? []).map((o) => ({
+      const rows = (data ?? []).map((o: { id: string; order_number: number; status: string; total: number; created_at: string; order_items: unknown }) => ({
         id: o.id as string,
         order_number: o.order_number as number,
         status: o.status as string,
@@ -144,7 +144,7 @@ export function ClientRecentOrders({ clientId }: { clientId: string }) {
 
       // Fallback: if join doesn't work, just use all variants
       const activeSet = new Set(
-        activeVariants ? activeVariants.map((v) => v.id as string) : variantIds
+        activeVariants ? activeVariants.map((v: { id: string }) => v.id) : variantIds
       );
 
       // Keep client, clear items only

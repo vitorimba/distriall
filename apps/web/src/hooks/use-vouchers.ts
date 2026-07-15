@@ -79,7 +79,7 @@ export function useVouchers() {
       .eq('client_id', clientId)
       .eq('status', 'pendente');
 
-    const voucherDebt = (vouchers ?? []).reduce((sum, v) => sum + Number(v.amount), 0);
+    const voucherDebt = (vouchers ?? []).reduce((sum: number, v: { amount: number }) => sum + Number(v.amount), 0);
 
     return { voucherDebt, totalDebt: voucherDebt };
   }

@@ -45,7 +45,7 @@ export function ProductSearch() {
         .from('products')
         .select('id, name, product_variants(id, name, sell_price, cost_price)')
         .eq('is_active', true)
-        .ilike('name', `%${query}%`)
+        .ilike('name', `${query}%`)
         .limit(10);
 
       if (!cancelled) {

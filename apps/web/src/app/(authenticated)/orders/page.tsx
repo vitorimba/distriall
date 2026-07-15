@@ -1,7 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { OrderList } from '@/components/orders/order-list';
+import dynamic from 'next/dynamic';
+const OrderList = dynamic(() => import('@/components/orders/order-list').then(m => m.OrderList), {
+  loading: () => <div className="animate-pulse h-96 bg-muted rounded-lg" />,
+});
 import { PageHeader } from '@/components/ui/page-header';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';

@@ -1,6 +1,9 @@
 'use client';
 
-import { ClientForm } from '@/components/clients/client-form';
+import dynamic from 'next/dynamic';
+const ClientForm = dynamic(() => import('@/components/clients/client-form').then(m => m.ClientForm), {
+  loading: () => <div className="animate-pulse h-96 bg-muted rounded-lg" />,
+});
 
 export default function NewClientPage() {
   return (

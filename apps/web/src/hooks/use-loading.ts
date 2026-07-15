@@ -30,7 +30,7 @@ export function useLoading() {
       setLoading(false);
       return;
     }
-    const mapped: OrderWithItems[] = (data ?? []).map((o) => {
+    const mapped: OrderWithItems[] = (data ?? []).map((o: Record<string, unknown>) => {
       const client = o.client as unknown as { name: string } | null;
       const account = o.account as unknown as { name: string; slug: string } | null;
       return {

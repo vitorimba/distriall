@@ -50,7 +50,7 @@ export function ClientPurchaseFrequency({ clientId }: ClientPurchaseFrequencyPro
 
       if (cancelled) return;
 
-      const dates = (orders ?? []).map((o) => new Date(o.created_at));
+      const dates = (orders ?? []).map((o: { created_at: string }) => new Date(o.created_at));
       const result = calculatePurchaseFrequency(dates);
       setData(result);
     }

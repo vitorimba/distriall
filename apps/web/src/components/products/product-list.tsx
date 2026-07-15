@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { useAccount } from '@/providers/account-provider';
 import { Badge } from '@/components/ui/badge';
 import { SearchField } from '@/components/ui/search-field';
 import { Select } from '@/components/ui/select';
@@ -38,6 +39,7 @@ function formatBRL(value: number) {
 }
 
 export function ProductList() {
+  const { activeAccount } = useAccount();
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -56,7 +58,7 @@ export function ProductList() {
       .order('name');
 
     if (search) {
-      query = query.ilike('name', `%${search}%`);
+      query = query.ilike('name', `${search}%`);
     }
     if (categoryFilter) {
       query = query.eq('category', categoryFilter);
@@ -67,10 +69,32 @@ export function ProductList() {
       setError('Nao foi possivel carregar os produtos.');
     } else {
       setError(null);
-      setProducts((data as Product[]) ?? []);
+      const productsData = (data as Product[]) ?? [];
+
+      // Override sell_price with account-specific prices
+      if (activeAccount) {
+        const { data: accountPrices } = await supabase
+          .from('account_prices')
+          .select('product_variant_id, sell_price')
+          .eq('account_id', activeAccount.id);
+
+        if (accountPrices && accountPrices.length > 0) {
+          const apMap = new Map<string, number>(accountPrices.map((ap: { product_variant_id: string; sell_price: number }) => [ap.product_variant_id, ap.sell_price]));
+          for (const product of productsData) {
+            for (const variant of product.product_variants) {
+              const accountPrice = apMap.get(variant.id);
+              if (accountPrice != null) {
+                variant.sell_price = accountPrice;
+              }
+            }
+          }
+        }
+      }
+
+      setProducts(productsData);
     }
     setLoadKey((k) => k + 1);
-  }, [search, categoryFilter]);
+  }, [search, categoryFilter, activeAccount]);
 
   useEffect(() => {
     let cancelled = false;

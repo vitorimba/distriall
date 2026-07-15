@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useCartStore } from '@/stores/cart-store';
+import { useAccount } from '@/providers/account-provider';
 import { SearchField } from '@/components/ui/search-field';
 import { Money } from '@/components/ui/money';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -34,6 +35,7 @@ interface CatalogItem {
 }
 
 export function ProductCatalog() {
+  const { activeAccount } = useAccount();
   const { addItem, items, priceMap } = useCartStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +45,7 @@ export function ProductCatalog() {
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [activeAccount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function loadProducts() {
     setLoading(true);
@@ -58,6 +60,28 @@ export function ProductCatalog() {
         .order('name');
 
       if (queryError) throw queryError;
+
+      // Load account-specific prices to override global sell_price
+      if (activeAccount) {
+        const { data: accountPrices } = await supabase
+          .from('account_prices')
+          .select('product_variant_id, sell_price')
+          .eq('account_id', activeAccount.id);
+
+        if (accountPrices && accountPrices.length > 0) {
+          const apMap = new Map(accountPrices.map((ap: { product_variant_id: string; sell_price: number }) => [ap.product_variant_id, ap.sell_price]));
+          // Override variant sell_price with account-specific price
+          for (const product of (data ?? [])) {
+            for (const variant of product.product_variants) {
+              const accountPrice = apMap.get(variant.id);
+              if (accountPrice != null) {
+                variant.sell_price = accountPrice;
+              }
+            }
+          }
+        }
+      }
+
       setProducts((data as Product[]) ?? []);
     } catch {
       setError('Erro ao carregar produtos');

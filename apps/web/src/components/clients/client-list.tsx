@@ -56,7 +56,7 @@ export function ClientList() {
       .order('name');
 
     if (search) {
-      query = query.ilike('name', `%${search}%`);
+      query = query.ilike('name', `${search}%`);
     }
 
     const { data, error: fetchError } = await query;

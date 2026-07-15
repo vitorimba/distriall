@@ -63,8 +63,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     }
 
     const mapped: Account[] = data
-      .filter((row) => row.accounts)
-      .map((row) => {
+      .filter((row: Record<string, unknown>) => row.accounts)
+      .map((row: Record<string, unknown>) => {
         const acc = row.accounts as unknown as {
           id: string;
           name: string;

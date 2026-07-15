@@ -62,6 +62,7 @@ export function OrderList() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [totalCount, setTotalCount] = useState(0);
   const [loadKey, setLoadKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const loading = loadKey === 0 && orders.length === 0 && !error;
@@ -72,7 +73,7 @@ export function OrderList() {
     const supabase = createClient();
     let query = supabase
       .from('orders')
-      .select('id, order_number, status, payment_method, subtotal, total, delivery_date, created_at, clients(name), order_items(count)')
+      .select('id, order_number, status, payment_method, subtotal, total, delivery_date, created_at, clients(name), order_items(count)', { count: 'exact' })
       .eq('account_id', activeAccount.id)
       .order('created_at', { ascending: false });
 
@@ -82,28 +83,29 @@ export function OrderList() {
     if (paymentFilter !== 'all') {
       query = query.eq('payment_method', paymentFilter);
     }
+    if (search) {
+      const isNumeric = /^\d+$/.test(search);
+      if (isNumeric) {
+        query = query.eq('order_number', Number(search));
+      } else {
+        query = query.ilike('clients.name', `${search}%`);
+      }
+    }
 
-    const { data, error: fetchError } = await query;
+    const offset = (page - 1) * PAGE_SIZE;
+    query = query.range(offset, offset + PAGE_SIZE - 1);
+
+    const { data, count, error: fetchError } = await query;
     if (fetchError) {
       setError('Nao foi possivel carregar os pedidos.');
       setLoadKey((k) => k + 1);
       return;
     }
     setError(null);
-    let result = (data as unknown as OrderRow[]) ?? [];
-
-    // Client-side search filter
-    if (search) {
-      const lower = search.toLowerCase();
-      result = result.filter((o) =>
-        o.clients?.name?.toLowerCase().includes(lower) ||
-        String(o.order_number).includes(lower)
-      );
-    }
-
-    setOrders(result);
+    setOrders((data as unknown as OrderRow[]) ?? []);
+    setTotalCount(count ?? 0);
     setLoadKey((k) => k + 1);
-  }, [activeAccount, statusFilter, paymentFilter, search]);
+  }, [activeAccount, statusFilter, paymentFilter, search, page]);
 
   useEffect(() => {
     let cancelled = false;
@@ -125,7 +127,7 @@ export function OrderList() {
         schema: 'public',
         table: 'orders',
         filter: `account_id=eq.${activeAccount.id}`,
-      }, (payload) => {
+      }, (payload: { new: Record<string, unknown> }) => {
         setOrders((prev) =>
           prev.map((o) =>
             o.id === payload.new.id
@@ -154,7 +156,7 @@ export function OrderList() {
     return order.order_items?.[0]?.count ?? 0;
   }
 
-  const pageOrders = orders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pageOrders = orders;
 
   return (
     <div className="space-y-3">
@@ -320,8 +322,8 @@ export function OrderList() {
         </div>
       ) : null}
 
-      {!error && orders.length > PAGE_SIZE && (
-        <Pagination page={page} totalItems={orders.length} pageSize={PAGE_SIZE} onChange={setPage} label="pedidos" />
+      {!error && totalCount > PAGE_SIZE && (
+        <Pagination page={page} totalItems={totalCount} pageSize={PAGE_SIZE} onChange={setPage} label="pedidos" />
       )}
 
       {/* Action bar for batch operations */}

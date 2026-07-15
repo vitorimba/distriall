@@ -69,7 +69,7 @@ export default function DeliveriesPage() {
       .eq('account_id', adminAccountId)
       .eq('role', 'entregador')
       .eq('is_active', true)
-      .then(({ data }) => {
+      .then(({ data }: { data: Record<string, unknown>[] | null }) => {
         if (!data) return;
         const mapped = data.map((row: Record<string, unknown>) => {
           const u = row.users as { id: string; name: string };

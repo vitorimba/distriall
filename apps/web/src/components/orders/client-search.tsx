@@ -59,8 +59,8 @@ export function ClientSearch() {
       .select('product_variant_id, custom_price')
       .eq('client_id', c.id);
 
-    const map = new Map(
-      (prices ?? []).map((p) => [p.product_variant_id, p.custom_price])
+    const map = new Map<string, number>(
+      (prices ?? []).map((p: { product_variant_id: string; custom_price: number }) => [p.product_variant_id, p.custom_price] as [string, number])
     );
     setPriceMap(map);
   }

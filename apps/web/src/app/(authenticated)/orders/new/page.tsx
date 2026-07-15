@@ -97,7 +97,7 @@ function NewOrderContent() {
         .select('product_variant_id, custom_price')
         .eq('client_id', preselectedClientId!);
 
-      setPriceMap(new Map((prices ?? []).map((p) => [p.product_variant_id, p.custom_price])));
+      setPriceMap(new Map((prices ?? []).map((p: { product_variant_id: string; custom_price: number }) => [p.product_variant_id, p.custom_price])));
     }
 
     preloadClient();

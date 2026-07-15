@@ -39,24 +39,36 @@ export function ClientPricesEditor({ clientId }: { clientId: string }) {
         .select('id, name, sell_price, products(name)')
         .eq('is_active', true);
 
+      // Fetch account-specific prices (store prices)
+      const { data: accountPrices } = await supabase
+        .from('account_prices')
+        .select('product_variant_id, sell_price')
+        .eq('account_id', activeAccount!.id);
+
+      const accountPriceMap = new Map(
+        (accountPrices ?? []).map((ap: { product_variant_id: string; sell_price: number }) => [ap.product_variant_id, ap.sell_price])
+      );
+
       // Fetch existing client prices
       const { data: clientPrices } = await supabase
         .from('client_prices')
         .select('id, product_variant_id, custom_price')
         .eq('client_id', clientId);
 
-      const priceMap = new Map(
-        (clientPrices ?? []).map((cp) => [cp.product_variant_id, { id: cp.id, price: cp.custom_price }])
+      const priceMap = new Map<string, { id: string; price: number }>(
+        (clientPrices ?? []).map((cp: { product_variant_id: string; id: string; custom_price: number }) => [cp.product_variant_id, { id: cp.id, price: cp.custom_price }])
       );
 
-      const mapped: VariantRow[] = (variants ?? []).map((v) => {
+      const mapped: VariantRow[] = (variants ?? []).map((v: { id: string; name: string; sell_price: number; products: unknown }) => {
         const product = v.products as unknown as { name: string } | null;
         const existing = priceMap.get(v.id);
+        // Default price = account price if available, otherwise global sell_price
+        const defaultPrice = accountPriceMap.get(v.id) ?? v.sell_price;
         return {
           variantId: v.id,
           productName: product?.name ?? '',
           variantName: v.name,
-          defaultPrice: v.sell_price,
+          defaultPrice,
           customPrice: existing?.price ?? null,
           clientPriceId: existing?.id ?? null,
         };

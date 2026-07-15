@@ -45,63 +45,38 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Already authenticated accessing login: redirect based on role
-  if (user && path === '/login') {
+  // Fetch user role ONCE for all checks below
+  const needsRole = user && (path === '/login' || path === '/' || isProtected);
+  let role: string | null = null;
+  if (needsRole) {
     const { data: profile } = await supabase
       .from('users')
       .select('role')
       .eq('id', user.id)
       .single();
+    role = profile?.role ?? null;
+  }
+  const isDriver = role === 'entregador';
 
-    if (profile?.role === 'entregador') {
-      return NextResponse.redirect(new URL('/driver', request.url));
-    }
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Already authenticated accessing login: redirect based on role
+  if (user && path === '/login') {
+    return NextResponse.redirect(new URL(isDriver ? '/driver' : '/dashboard', request.url));
   }
 
   // Root redirect for authenticated users
   if (user && path === '/') {
-    const { data: profile } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role === 'entregador') {
-      return NextResponse.redirect(new URL('/driver', request.url));
-    }
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL(isDriver ? '/driver' : '/dashboard', request.url));
   }
 
   // Bidirectional /driver protection:
   // (a) Non-drivers trying to access /driver → redirect to /dashboard
-  // (b) Drivers trying to access non-driver protected routes → redirect to /driver
-  if (user && path.startsWith('/driver')) {
-    const { data: profile } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role !== 'entregador') {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
+  if (user && path.startsWith('/driver') && !isDriver) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  if (user && !path.startsWith('/driver')) {
-    const driverOnlyPaths = ['/dashboard', '/orders', '/products', '/clients', '/financial', '/stats', '/settings'];
-    const isDriverOnlyPath = driverOnlyPaths.some((p) => path.startsWith(p));
-    if (isDriverOnlyPath) {
-      const { data: profile } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-
-      if (profile?.role === 'entregador') {
-        return NextResponse.redirect(new URL('/driver', request.url));
-      }
-    }
+  // (b) Drivers trying to access non-driver protected routes → redirect to /driver
+  if (user && !path.startsWith('/driver') && isDriver && isProtected) {
+    return NextResponse.redirect(new URL('/driver', request.url));
   }
 
   return response;

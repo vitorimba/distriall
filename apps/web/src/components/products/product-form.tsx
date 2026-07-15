@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useAccount } from '@/providers/account-provider';
 import { productSchema, type ProductInput, type ProductVariantInput } from '@/lib/validations/product';
 import { maskMoney, parseMoney, MSG } from '@/lib/mask-utils';
 import { Button } from '@/components/ui/button';
@@ -51,6 +52,7 @@ export function ProductForm({ product }: ProductFormProps) {
   const isEdit = !!product;
   const router = useRouter();
   const toast = useToast();
+  const { activeAccount } = useAccount();
   const [name, setName] = useState(product?.name ?? '');
   const [description, setDescription] = useState(product?.description ?? '');
   const [category, setCategory] = useState(product?.category ?? '');
@@ -149,7 +151,8 @@ export function ProductForm({ product }: ProductFormProps) {
         .update({ name, description: description || null, category: category || null, unit })
         .eq('id', product.id);
 
-      // Upsert variants
+      // Upsert variants (cost_price goes to product_variants, sell_price goes to account_prices)
+      const variantIdsForPricing: { variantId: string; sellPrice: number }[] = [];
       for (const v of parsedVariants) {
         if (v.id) {
           await supabase
@@ -162,16 +165,32 @@ export function ProductForm({ product }: ProductFormProps) {
               sku: v.sku ?? null,
             })
             .eq('id', v.id);
+          variantIdsForPricing.push({ variantId: v.id, sellPrice: v.sell_price });
         } else {
-          await supabase.from('product_variants').insert({
+          const { data: newVariant } = await supabase.from('product_variants').insert({
             product_id: product.id,
             name: v.name,
             weight_grams: v.weight_grams ?? null,
             cost_price: v.cost_price,
             sell_price: v.sell_price,
             sku: v.sku ?? null,
-          });
+          }).select('id').single();
+          if (newVariant) {
+            variantIdsForPricing.push({ variantId: newVariant.id, sellPrice: v.sell_price });
+          }
         }
+      }
+
+      // Upsert account-specific sell prices
+      if (activeAccount && variantIdsForPricing.length > 0) {
+        const accountPriceRows = variantIdsForPricing.map((vp) => ({
+          account_id: activeAccount.id,
+          product_variant_id: vp.variantId,
+          sell_price: vp.sellPrice,
+        }));
+        await supabase
+          .from('account_prices')
+          .upsert(accountPriceRows, { onConflict: 'account_id,product_variant_id' });
       }
 
       // Remove deleted variants
@@ -203,7 +222,22 @@ export function ProductForm({ product }: ProductFormProps) {
           sell_price: v.sell_price,
           sku: v.sku ?? null,
         }));
-        await supabase.from('product_variants').insert(variantRows);
+        const { data: insertedVariants } = await supabase
+          .from('product_variants')
+          .insert(variantRows)
+          .select('id, sell_price');
+
+        // Create account_prices for the new variants in the active account
+        if (activeAccount && insertedVariants && insertedVariants.length > 0) {
+          const accountPriceRows = insertedVariants.map((iv: { id: string; sell_price: number }) => ({
+            account_id: activeAccount.id,
+            product_variant_id: iv.id,
+            sell_price: iv.sell_price,
+          }));
+          await supabase
+            .from('account_prices')
+            .upsert(accountPriceRows, { onConflict: 'account_id,product_variant_id' });
+        }
       }
     }
 

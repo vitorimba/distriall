@@ -40,7 +40,7 @@ export function ClientPricesTable({ clientId }: ClientPricesTableProps) {
 
       if (cancelled) return;
 
-      const rows: ClientPrice[] = (data ?? []).map((cp) => {
+      const rows: ClientPrice[] = (data ?? []).map((cp: { product_variant_id: string; custom_price: number; product_variants: unknown }) => {
         const variant = cp.product_variants as unknown as {
           id: string;
           name: string;

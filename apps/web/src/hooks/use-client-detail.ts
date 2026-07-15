@@ -18,41 +18,40 @@ export function useClientDetail(clientId: string) {
       try {
         const supabase = createClient();
 
-        const { data: clientData, error: clientError } = await supabase
-          .from('clients')
-          .select('*')
-          .eq('id', clientId)
-          .single();
+        // Run all 3 queries in parallel
+        const [clientResult, vouchersResult, paymentsResult] = await Promise.all([
+          supabase
+            .from('clients')
+            .select('*')
+            .eq('id', clientId)
+            .single(),
+          supabase
+            .from('vouchers')
+            .select('amount')
+            .eq('client_id', clientId)
+            .eq('status', 'pendente'),
+          supabase
+            .from('payments')
+            .select('amount, orders!inner(client_id, account_id)')
+            .eq('orders.client_id', clientId)
+            .eq('orders.account_id', activeAccount!.id)
+            .eq('status', 'pendente')
+            .neq('method', 'vale'),
+        ]);
 
-        if (clientError) throw clientError;
+        if (clientResult.error) throw clientResult.error;
         if (cancelled) return;
-        setClient(clientData as ClientDetail | null);
+        setClient(clientResult.data as ClientDetail | null);
 
-        // Fetch vouchers pendentes
-        const { data: vouchers, error: vouchersError } = await supabase
-          .from('vouchers')
-          .select('amount')
-          .eq('client_id', clientId)
-          .eq('status', 'pendente');
+        if (vouchersResult.error) throw vouchersResult.error;
+        const vouchers = vouchersResult.data ?? [];
+        const vouchersPending = vouchers.reduce((sum: number, v: { amount: number }) => sum + Number(v.amount), 0);
+        const vouchersCount = vouchers.length;
 
-        if (vouchersError) throw vouchersError;
-
-        const vouchersPending = (vouchers ?? []).reduce((sum, v) => sum + Number(v.amount), 0);
-        const vouchersCount = (vouchers ?? []).length;
-
-        // Fetch pagamentos pendentes (exceto vales, que ja estao nos vouchers)
-        const { data: payments, error: paymentsError } = await supabase
-          .from('payments')
-          .select('amount, orders!inner(client_id, account_id)')
-          .eq('orders.client_id', clientId)
-          .eq('orders.account_id', activeAccount!.id)
-          .eq('status', 'pendente')
-          .neq('method', 'vale');
-
-        if (paymentsError) throw paymentsError;
-
-        const paymentsPending = (payments ?? []).reduce((sum, p) => sum + Number(p.amount), 0);
-        const paymentsCount = (payments ?? []).length;
+        if (paymentsResult.error) throw paymentsResult.error;
+        const payments = paymentsResult.data ?? [];
+        const paymentsPending = payments.reduce((sum: number, p: { amount: number }) => sum + Number(p.amount), 0);
+        const paymentsCount = payments.length;
 
         if (!cancelled) {
           setBalance({

@@ -114,22 +114,51 @@ export async function GET(request: Request) {
   const client_count = new Set(orders.map((o) => o.client_id).filter(Boolean)).size;
   const avg_ticket = order_count > 0 ? revenue / order_count : 0;
 
-  // Query 2: Payment breakdown — filter by date range at DB level
-  const { data: paymentsRaw, error: paymentsError } = await supabase
-    .from('payments')
-    .select('method, amount, orders!inner(account_id, status, created_at)')
-    .in('orders.account_id', targetAccountIds)
-    .gte('orders.created_at', start)
-    .lte('orders.created_at', end + 'T23:59:59')
-    .neq('orders.status', 'cancelado')
-    .neq('status', 'cancelado');
+  // Queries 2-4 in parallel (independent of each other)
+  const twelveWeeksAgo = new Date();
+  twelveWeeksAgo.setDate(twelveWeeksAgo.getDate() - 84);
+  const twelveWeeksAgoStr = twelveWeeksAgo.toISOString().split('T')[0];
 
-  if (paymentsError) {
-    return NextResponse.json({ error: paymentsError.message }, { status: 500 });
+  const [paymentsResult, itemsResult, weeklyResult] = await Promise.all([
+    // Query 2: Payment breakdown
+    supabase
+      .from('payments')
+      .select('method, amount, orders!inner(account_id, status, created_at)')
+      .in('orders.account_id', targetAccountIds)
+      .gte('orders.created_at', start)
+      .lte('orders.created_at', end + 'T23:59:59')
+      .neq('orders.status', 'cancelado')
+      .neq('status', 'cancelado'),
+    // Query 3: Product ranking
+    supabase
+      .from('order_items')
+      .select('product_name, variant_name, total, quantity, orders!inner(account_id, status, created_at)')
+      .in('orders.account_id', targetAccountIds)
+      .gte('orders.created_at', start)
+      .lte('orders.created_at', end + 'T23:59:59')
+      .neq('orders.status', 'cancelado')
+      .eq('is_returned', false),
+    // Query 4: Weekly evolution (last 12 weeks)
+    supabase
+      .from('orders')
+      .select('total, profit, created_at')
+      .in('account_id', targetAccountIds)
+      .gte('created_at', twelveWeeksAgoStr)
+      .neq('status', 'cancelado'),
+  ]);
+
+  if (paymentsResult.error) {
+    return NextResponse.json({ error: paymentsResult.error.message }, { status: 500 });
+  }
+  if (itemsResult.error) {
+    return NextResponse.json({ error: itemsResult.error.message }, { status: 500 });
+  }
+  if (weeklyResult.error) {
+    return NextResponse.json({ error: weeklyResult.error.message }, { status: 500 });
   }
 
-  const filteredPayments = paymentsRaw ?? [];
-
+  // Payment breakdown
+  const filteredPayments = paymentsResult.data ?? [];
   const paymentTotals: Record<string, number> = {};
   for (const p of filteredPayments) {
     const method = p.method as string;
@@ -144,24 +173,8 @@ export async function GET(request: Request) {
     }))
     .sort((a, b) => b.amount - a.amount);
 
-  // Query 3: Product ranking (top 10 by value) — filter by date range at DB level
-  const { data: orderItemsRaw, error: itemsError } = await supabase
-    .from('order_items')
-    .select(
-      'product_name, variant_name, total, quantity, orders!inner(account_id, status, created_at)'
-    )
-    .in('orders.account_id', targetAccountIds)
-    .gte('orders.created_at', start)
-    .lte('orders.created_at', end + 'T23:59:59')
-    .neq('orders.status', 'cancelado')
-    .eq('is_returned', false);
-
-  if (itemsError) {
-    return NextResponse.json({ error: itemsError.message }, { status: 500 });
-  }
-
-  const filteredItems = orderItemsRaw ?? [];
-
+  // Product ranking
+  const filteredItems = itemsResult.data ?? [];
   const productMap: Record<
     string,
     { product_name: string; variant_name: string; total_value: number; total_quantity: number }
@@ -179,29 +192,12 @@ export async function GET(request: Request) {
     productMap[key].total_value += Number(item.total) || 0;
     productMap[key].total_quantity += Number(item.quantity) || 0;
   }
-
   const product_ranking = Object.values(productMap)
     .sort((a, b) => b.total_value - a.total_value)
     .slice(0, 10);
 
-  // Query 4: Weekly evolution (last 12 weeks)
-  const twelveWeeksAgo = new Date();
-  twelveWeeksAgo.setDate(twelveWeeksAgo.getDate() - 84);
-  const twelveWeeksAgoStr = twelveWeeksAgo.toISOString().split('T')[0];
-
-  const { data: weeklyOrdersRaw, error: weeklyError } = await supabase
-    .from('orders')
-    .select('total, profit, created_at')
-    .in('account_id', targetAccountIds)
-    .gte('created_at', twelveWeeksAgoStr)
-    .neq('status', 'cancelado');
-
-  if (weeklyError) {
-    return NextResponse.json({ error: weeklyError.message }, { status: 500 });
-  }
-
   const weeklyMap: Record<string, { revenue: number; profit: number }> = {};
-  for (const o of weeklyOrdersRaw ?? []) {
+  for (const o of weeklyResult.data ?? []) {
     const d = new Date(o.created_at);
     // ISO week: set to Monday of that week
     const day = d.getDay();
@@ -235,5 +231,9 @@ export async function GET(request: Request) {
     weekly_evolution,
   };
 
-  return NextResponse.json(response);
+  return NextResponse.json(response, {
+    headers: {
+      'Cache-Control': 'private, max-age=60, stale-while-revalidate=300',
+    },
+  });
 }
