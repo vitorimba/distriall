@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useEffect } from 'react';
 import { Printer, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -55,6 +56,13 @@ export function OrderReceipt({
   items,
 }: OrderReceiptProps) {
   const date = new Date().toLocaleString('pt-BR');
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open && scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [open]);
 
   const receiptItens = items.map((i) => ({
     produto: `${i.product_name} – ${i.variant_name}`,
@@ -103,7 +111,7 @@ export function OrderReceipt({
         </DialogHeader>
 
         {/* Receipt preview — styled via da-receipt CSS classes */}
-        <div className="overflow-auto py-1 max-h-[60vh]">
+        <div ref={scrollRef} className="overflow-auto py-1 max-h-[75vh]">
           <Receipt
             numero={`#${orderNumber}`}
             cliente={clientName}

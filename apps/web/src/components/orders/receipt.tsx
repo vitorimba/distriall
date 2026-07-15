@@ -9,6 +9,7 @@ const COMPANY = {
   address: 'Rua Cezar Pupin, Sao Jose do Rio Preto - SP, 15051-010',
   pixKey: '+5517997478319',
   pixInfo: 'Ag 0825 Cc 130037722',
+  pixBRCode: '00020126490014br.gov.bcb.pix0114+55179974783190209Distriall5204000053039865802BR5917TEMPEROS BOA MESA6013S J RIO PRETO62070503***63041EBD',
 };
 
 interface ReceiptItem {
@@ -129,13 +130,14 @@ export function Receipt({
       <hr className="da-receipt__rule" />
 
       {/* Pix QR Code */}
-      <div className="da-receipt__center" style={{ padding: '8px 0' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0' }}>
         <div className="da-receipt__soft" style={{ marginBottom: 4, fontWeight: 600 }}>Pix</div>
         <QRCodeSVG
-          value={COMPANY.pixKey}
-          size={120}
-          bgColor="var(--receipt-paper)"
-          fgColor="var(--receipt-ink)"
+          value={COMPANY.pixBRCode}
+          size={140}
+          bgColor="#FFFFFF"
+          fgColor="#000000"
+          level="M"
         />
         <div className="da-receipt__soft" style={{ marginTop: 4, fontSize: '10px' }}>
           Chave: {COMPANY.pixKey}
