@@ -458,18 +458,32 @@
    Print styles — window.print() mostra apenas o recibo térmico
    ========================================================================== */
 @media print {
-  /* Esconder TUDO por padrao */
-  body > * {
-    display: none !important;
+  /* Esconder TUDO */
+  body * {
+    visibility: hidden;
   }
 
-  /* Mostrar apenas o portal do dialog (onde o recibo esta) */
-  body > [data-slot="dialog-portal"],
-  body > div:has(.da-receipt) {
-    display: block !important;
+  /* Mostrar apenas o recibo e seus filhos */
+  .da-receipt,
+  .da-receipt * {
+    visibility: visible !important;
   }
 
-  /* Esconder overlay, botoes e header do dialog */
+  /* Recibo posicionado no topo centralizado */
+  .da-receipt {
+    position: fixed !important;
+    top: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 72mm !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 4mm !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Esconder elementos de UI */
   [data-slot="dialog-overlay"],
   [data-slot="dialog-close"],
   [data-slot="dialog-header"],
@@ -478,39 +492,16 @@
     display: none !important;
   }
 
-  /* Dialog sem posicionamento fixo na impressao */
-  [data-slot="dialog-content"] {
-    position: static !important;
-    transform: none !important;
-    max-height: none !important;
-    max-width: none !important;
-    width: auto !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: white !important;
-    ring: none !important;
-    outline: none !important;
-  }
-
-  /* Recibo sem restricoes de scroll */
-  [data-slot="dialog-content"] > div {
-    overflow: visible !important;
-    max-height: none !important;
-  }
-
-  /* Recibo limpo */
-  .da-receipt {
-    box-shadow: none;
-    margin: 0 auto;
-    width: 58mm;
-  }
-
   /* Fundo branco e tinta preta */
   body {
     background: white !important;
     color: black !important;
+  }
+
+  /* Pagina sem margens */
+  @page {
+    margin: 5mm;
+    size: 80mm auto;
   }
 }
 
