@@ -1,3 +1,37 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-load-testing
+  task_name: Load Testing
+  status: active
+  responsible_executor: '@scalability-designer'
+  execution_type: Agent
+  estimated_time: 4-8h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Definir cenarios de carga e modelo de peak load
+  - Criar scripts k6 para cenarios priorizados
+  - Executar load test padrao com monitoring
+  - Executar stress test para encontrar ponto de ruptura
+  - Executar soak test para validar estabilidade
+  - Consolidar e interpretar resultados
+  - Documentar conclusoes e recomendacoes
+  acceptance_criteria:
+  - p95 response time < performance budget
+  - Error rate < 1% em load normal
+  - Ponto de ruptura > 2x carga normal
+  - Sistema se recupera em < 5 min apos stress
+  - Nenhum memory leak detectado em soak test
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-005: Load Testing
 
 > Planejamento e execucao de testes de carga, stress e soak

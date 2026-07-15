@@ -1,3 +1,38 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-resilience-audit
+  task_name: Resilience Audit
+  status: active
+  responsible_executor: '@resilience-engineer'
+  execution_type: Agent
+  estimated_time: 3-5h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Mapear dependencias e modos de falha
+  - Avaliar circuit breakers por dependencia
+  - Avaliar timeouts e retry policies
+  - Avaliar bulkhead pattern e isolamento de recursos
+  - Avaliar graceful degradation sob falha parcial
+  - Avaliar health check endpoints (liveness e readiness)
+  - Avaliar prontidao para chaos engineering
+  - Documentar gaps e recomendacoes no relatorio de resiliencia
+  acceptance_criteria:
+  - 100% das dependencias com timeout explicito
+  - Circuit breakers em todas as dependencias criticas
+  - Graceful degradation testado para top 3 falhas
+  - Health checks com liveness e readiness
+  - Retry policies com backoff e budget
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-007: Resilience Audit
 
 > Avaliacao de padroes de estabilidade e resiliencia do sistema

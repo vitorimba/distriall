@@ -7,7 +7,7 @@
 # ============================================================================
 
 name: squad-fastsystem
-version: 1.0.0
+version: 1.1.0
 domain: "System Performance & Speed Optimization"
 description: >
   Squad especializado em performance de sistemas, otimização de velocidade,
@@ -31,7 +31,7 @@ agents:
   # --- Orchestrator ---
   # NOTE: config.yaml v1.0 listed "performance-lead" but actual file is fastsystem-chief.md
   - id: fastsystem-chief
-    name: "Blaze"
+    name: "Velocity"
     tier: orchestrator
     mind: null
     role: "FastSystem Chief — orquestra análises, prioriza otimizações, coordena agentes"
@@ -43,7 +43,7 @@ agents:
 
   # --- Tier 0 (Foundation) ---
   - id: system-profiler
-    name: "Probe"
+    name: "Gregg"
     tier: T0
     mind: brendan_gregg
     role: "System Profiler — diagnóstico de sistema usando USE method, flame graphs, tracing"
@@ -56,7 +56,7 @@ agents:
       - io-profiling
 
   - id: observability-engineer
-    name: "Lens"
+    name: "Majors"
     tier: T0
     mind: charity_majors
     role: "Observability Engineer — instrumentação, métricas, tracing distribuído, alertas"
@@ -69,7 +69,7 @@ agents:
 
   # --- Tier 1 (Core) ---
   - id: web-performance-engineer
-    name: "Pixel"
+    name: "WebPerf"
     tier: T1
     mind: addy_osmani
     role: "Web Performance Engineer — Web Vitals, bundle optimization, rendering, lazy loading"
@@ -81,7 +81,7 @@ agents:
       - code-splitting
 
   - id: database-optimizer
-    name: "Query"
+    name: "Markus"
     tier: T1
     mind: markus_winand
     role: "Database Optimizer — query tuning, indexação, EXPLAIN plans, schema optimization"
@@ -93,10 +93,10 @@ agents:
       - connection-pooling
 
   - id: system-architect
-    name: "Flux"
+    name: "Kleppmann"
     tier: T1
-    mind: alex_xu
-    role: "System Architect — arquitetura de sistemas, design de APIs eficientes, escalabilidade"
+    mind: martin_kleppmann
+    role: "System Architect — arquitetura de sistemas de dados, distributed systems, trade-off analysis"
     skills:
       - api-design
       - system-design
@@ -105,7 +105,7 @@ agents:
       - technology-selection
 
   - id: resilience-engineer
-    name: "Shield"
+    name: "Nygard"
     tier: T1
     mind: michael_nygard
     role: "Resilience Engineer — circuit breakers, bulkheads, retry patterns, graceful degradation"
@@ -118,9 +118,9 @@ agents:
 
   # --- Tier 2 (Specialist) ---
   - id: scalability-designer
-    name: "Scale"
+    name: "Alex"
     tier: T2
-    mind: null
+    mind: alex_xu
     role: "Scalability Designer — horizontal/vertical scaling, auto-scaling, capacity planning"
     skills:
       - horizontal-scaling
@@ -130,7 +130,7 @@ agents:
       - load-balancing
 
   - id: delivery-accelerator
-    name: "Pipe"
+    name: "Nicole"
     tier: T2
     mind: nicole_forsgren
     role: "Delivery Accelerator — CI/CD speed, DORA metrics, deployment optimization"
@@ -142,10 +142,10 @@ agents:
       - deployment-strategies
 
   - id: microservices-optimizer
-    name: "Mesh"
+    name: "Chris"
     tier: T2
-    mind: martin_kleppmann
-    role: "Microservices Optimizer — service mesh, distributed tracing, inter-service communication"
+    mind: chris_richardson
+    role: "Microservices Optimizer — service mesh, distributed patterns, inter-service communication"
     skills:
       - service-mesh-design
       - inter-service-communication

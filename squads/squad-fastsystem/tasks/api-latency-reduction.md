@@ -1,3 +1,38 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-api-latency-reduction
+  task_name: API Latency Reduction
+  status: active
+  responsible_executor: '@system-architect'
+  execution_type: Agent
+  estimated_time: 2-4h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Profiling de endpoints (decomposicao de latencia)
+  - Eliminar N+1 queries
+  - Otimizar serialization e payload size
+  - Implementar cursor-based pagination
+  - Configurar connection pooling
+  - API response caching (HTTP, Redis, CDN)
+  - Rate limiting e backpressure
+  - Validacao de melhorias (p50, p95, p99 antes/depois)
+  acceptance_criteria:
+  - p95 latency < 500ms para todos os endpoints
+  - N+1 queries eliminadas
+  - Todas as listas com pagination
+  - Connection pool configurado
+  - Rate limiting ativo
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-010: API Latency Reduction
 
 > Reducao sistematica de latencia em APIs

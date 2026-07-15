@@ -1,3 +1,35 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-bottleneck-analysis
+  task_name: Bottleneck Analysis
+  status: active
+  responsible_executor: '@fastsystem-chief'
+  execution_type: Agent
+  estimated_time: 2-6h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Mapear o critical path da requisicao com latencia por hop
+  - Identificar bottlenecks via waterfall analysis
+  - Priorizar gargalos por impacto (frequencia x latencia x usuarios)
+  - Propor solucoes categorizadas por esforco (quick wins, medium, large)
+  - Implementar correcoes e validar melhoria
+  - Documentar relatorio completo com evidencias
+  acceptance_criteria:
+  - Critical path documentado
+  - Top 3 bottlenecks identificados com evidencia
+  - Quick wins implementados
+  - Melhoria total >= 30%
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-006: Bottleneck Analysis
 
 > Identificacao e correcao sistematica de gargalos de performance

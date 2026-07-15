@@ -1,3 +1,37 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-deployment-pipeline-optimization
+  task_name: Deployment Pipeline Optimization
+  status: active
+  responsible_executor: '@delivery-accelerator'
+  execution_type: Agent
+  estimated_time: 2-4h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Medir baseline DORA metrics (deploy freq, lead time, MTTR, change fail rate)
+  - Analisar pipeline atual com tempo por stage
+  - Otimizar build com caching, layer caching e incremental builds
+  - Otimizar testes com splitting, affected-only e flaky quarantine
+  - Definir deployment strategy (blue-green, canary, rolling, feature flags)
+  - Automatizar quality gates no pipeline
+  - Documentar melhorias e impacto no relatorio
+  acceptance_criteria:
+  - Pipeline total < 15 minutos
+  - Deploy frequency >= 1x/dia
+  - Lead time < 1 dia
+  - Change failure rate < 15%
+  - MTTR < 1 hora
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-008: Deployment Pipeline Optimization
 
 > Otimizacao de velocidade e eficiencia do pipeline de CI/CD

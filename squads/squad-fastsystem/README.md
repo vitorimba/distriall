@@ -1,7 +1,7 @@
 # Squad FastSystem
 
 > **System Performance & Speed Optimization**
-> v4.0.0-pro | AIOX Squad Standard
+> v1.1.0 | AIOX Squad Standard v4.0.0-pro
 
 ---
 
@@ -49,33 +49,33 @@ Garantir que todo sistema sob responsabilidade do AIOX opere com performance oti
 ### Tier Diagram
 
 ```
-                    ┌─────────────────────┐
-                    │   ORCHESTRATOR      │
-                    │   Blaze (Lead)      │
-                    └────────┬────────────┘
+                    ┌─────────────────────────┐
+                    │     ORCHESTRATOR        │
+                    │   Velocity (Chief)      │
+                    └────────┬────────────────┘
                              │
               ┌──────────────┼──────────────┐
               │              │              │
         ┌─────┴─────┐ ┌─────┴─────┐ ┌──────┴──────┐
         │    T0     │ │    T0     │ │ SPECIALIST  │
-        │   Probe   │ │   Lens    │ │   Cache     │
+        │  Gregg    │ │  Majors   │ │   Cache     │
         │ (Profiler)│ │  (Observ) │ │ (Caching)   │
         └───────────┘ └───────────┘ └─────────────┘
               │              │
     ┌─────────┼─────────┬────┴────────┐
     │         │         │             │
-┌───┴───┐┌───┴───┐┌────┴───┐┌───────┴───┐
-│  T1   ││  T1   ││  T1    ││    T1     │
-│ Pixel ││ Query ││ Flux   ││  Shield   │
-│(Front)││(DB)   ││(API)   ││(Resilie.) │
-└───────┘└───────┘└────────┘└───────────┘
+┌───┴───┐┌───┴───┐┌────┴────┐┌──────┴───┐
+│  T1   ││  T1   ││  T1     ││    T1    │
+│WebPerf││Markus ││Kleppmann││  Nygard  │
+│(Front)││(DB)   ││(SysArch)││(Resilie.)│
+└───────┘└───────┘└─────────┘└──────────┘
               │
     ┌─────────┼──────────┐
     │         │          │
 ┌───┴───┐┌───┴───┐┌─────┴───┐
 │  T2   ││  T2   ││   T2    │
-│ Surge ││ Pipe  ││  Mesh   │
-│(Load) ││(DevOp)││(Distrib)│
+│ Alex  ││Nicole ││  Chris  │
+│(Scale)││(Deliv)││(Micros) │
 └───────┘└───────┘└─────────┘
 ```
 
@@ -83,16 +83,16 @@ Garantir que todo sistema sob responsabilidade do AIOX opere com performance oti
 
 | Agent | Name | Tier | Mind | Role |
 |-------|------|------|------|------|
-| `performance-lead` | Blaze | Orchestrator | — | Orquestra analises, prioriza otimizacoes |
-| `system-profiler` | Probe | T0 | Brendan Gregg | Diagnostico de sistema, USE method, flame graphs |
-| `observability-engineer` | Lens | T0 | Charity Majors | Instrumentacao, metricas, tracing distribuido |
-| `frontend-performance` | Pixel | T1 | Addy Osmani | Web Vitals, bundle optimization, rendering |
-| `database-optimizer` | Query | T1 | Markus Winand | Query tuning, indexacao, EXPLAIN plans |
-| `api-performance` | Flux | T1 | Alex Xu | Latencia de API, throughput, design eficiente |
-| `resilience-engineer` | Shield | T1 | Michael Nygard | Circuit breakers, bulkheads, graceful degradation |
-| `load-tester` | Surge | T2 | — | Testes de carga, stress e soak |
-| `devops-performance` | Pipe | T2 | Nicole Forsgren | CI/CD speed, DORA metrics |
-| `distributed-systems` | Mesh | T2 | Martin Kleppmann | Consistency, partitioning, replication |
+| `fastsystem-chief` | Velocity | Orchestrator | — | Orquestra analises, prioriza otimizacoes |
+| `system-profiler` | Gregg | T0 | Brendan Gregg | Diagnostico de sistema, USE method, flame graphs |
+| `observability-engineer` | Majors | T0 | Charity Majors | Instrumentacao, metricas, tracing distribuido |
+| `web-performance-engineer` | WebPerf | T1 | Addy Osmani | Web Vitals, bundle optimization, rendering |
+| `database-optimizer` | Markus | T1 | Markus Winand | Query tuning, indexacao, EXPLAIN plans |
+| `system-architect` | Kleppmann | T1 | Martin Kleppmann | Arquitetura de sistemas de dados, distributed systems |
+| `resilience-engineer` | Nygard | T1 | Michael Nygard | Circuit breakers, bulkheads, graceful degradation |
+| `scalability-designer` | Alex | T2 | Alex Xu | Horizontal/vertical scaling, capacity planning |
+| `delivery-accelerator` | Nicole | T2 | Nicole Forsgren | CI/CD speed, DORA metrics |
+| `microservices-optimizer` | Chris | T2 | Martin Kleppmann | Service mesh, distributed patterns |
 | `caching-specialist` | Cache | Specialist | Steve Souders | Multi-layer caching, invalidation, CDN |
 
 ---
@@ -101,18 +101,18 @@ Garantir que todo sistema sob responsabilidade do AIOX opere com performance oti
 
 | ID | Task | Agent Padrao | Descricao |
 |----|------|-------------|-----------|
-| FS-T-001 | `system-diagnostic` | Probe | Diagnostico completo usando USE method |
-| FS-T-002 | `query-optimization` | Query | Otimizacao de queries SQL |
-| FS-T-003 | `frontend-audit` | Pixel | Auditoria Web Vitals + Lighthouse |
+| FS-T-001 | `system-diagnostic` | Gregg | Diagnostico completo usando USE method |
+| FS-T-002 | `query-optimization` | Markus | Otimizacao de queries SQL |
+| FS-T-003 | `frontend-audit` | WebPerf | Auditoria Web Vitals + Lighthouse |
 | FS-T-004 | `caching-strategy` | Cache | Design de caching multi-camada |
-| FS-T-005 | `load-testing` | Surge | Planejamento e execucao de load tests |
-| FS-T-006 | `bottleneck-analysis` | Blaze | Identificacao e correcao de gargalos |
-| FS-T-007 | `resilience-audit` | Shield | Avaliacao de padroes de estabilidade |
-| FS-T-008 | `deployment-pipeline-optimization` | Pipe | Otimizacao de CI/CD |
-| FS-T-009 | `database-indexing` | Query | Design de estrategia de indices |
-| FS-T-010 | `api-latency-reduction` | Flux | Reducao de latencia de APIs |
-| FS-T-011 | `capacity-planning` | Blaze | Estimativa e planejamento de capacidade |
-| FS-T-012 | `performance-budget` | Blaze | Definicao e enforcement de budgets |
+| FS-T-005 | `load-testing` | Alex | Planejamento e execucao de load tests |
+| FS-T-006 | `bottleneck-analysis` | Velocity | Identificacao e correcao de gargalos |
+| FS-T-007 | `resilience-audit` | Nygard | Avaliacao de padroes de estabilidade |
+| FS-T-008 | `deployment-pipeline-optimization` | Nicole | Otimizacao de CI/CD |
+| FS-T-009 | `database-indexing` | Markus | Design de estrategia de indices |
+| FS-T-010 | `api-latency-reduction` | Kleppmann | Reducao de latencia de APIs |
+| FS-T-011 | `capacity-planning` | Velocity | Estimativa e planejamento de capacidade |
+| FS-T-012 | `performance-budget` | Velocity | Definicao e enforcement de budgets |
 
 ---
 
@@ -361,4 +361,4 @@ squad-fastsystem/
 
 ---
 
-*Squad FastSystem v1.0.0 — AIOX Squad Standard v4.0.0-pro*
+*Squad FastSystem v1.1.0 — AIOX Squad Standard v4.0.0-pro*

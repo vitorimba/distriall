@@ -1,3 +1,39 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-frontend-audit
+  task_name: Frontend Audit
+  status: active
+  responsible_executor: '@web-performance-engineer'
+  execution_type: Agent
+  estimated_time: 2-4h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Lighthouse audit automatizado (desktop + mobile)
+  - Core Web Vitals deep dive (LCP, INP, CLS)
+  - Bundle analysis (webpack-bundle-analyzer, source-map-explorer)
+  - Image optimization (formato, dimensoes, lazy loading)
+  - Caching e compressao de assets (Cache-Control, Brotli/Gzip)
+  - Avaliacao de third-party scripts (inventario, impacto, facade pattern)
+  - Rendering performance (long tasks, layout thrashing, forced reflows)
+  - Relatorio e recomendacoes priorizadas por impacto
+  acceptance_criteria:
+  - Lighthouse Performance score >= 90 (desktop)
+  - Lighthouse Performance score >= 75 (mobile)
+  - LCP < 2.5s
+  - CLS < 0.1
+  - INP < 200ms
+  - Bundle size < 250KB gzipped (main bundle)
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-003: Frontend Audit
 
 > Auditoria completa de performance web usando Lighthouse, Web Vitals e analise manual

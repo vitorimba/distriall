@@ -1,3 +1,38 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-query-optimization
+  task_name: Query Optimization
+  status: active
+  responsible_executor: '@database-optimizer'
+  execution_type: Agent
+  estimated_time: 1-3h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Identificacao de queries problematicas (slow query log, pg_stat_statements)
+  - Analise de execution plan com EXPLAIN ANALYZE
+  - Analise de indices existentes e identificacao de gaps
+  - Reescrita de queries para melhor performance
+  - Design de novos indices (compostos, covering, partial)
+  - Otimizacao de parametros do banco (work_mem, random_page_cost)
+  - Validacao de melhorias com metricas antes/depois
+  - Documentacao de todas as mudancas
+  acceptance_criteria:
+  - EXPLAIN ANALYZE executado para todas as queries alvo
+  - Melhoria >= 30% em execution time
+  - Nenhum Seq Scan em tabelas > 10K rows em hot paths
+  - Indices nao utilizados identificados e removidos
+  - Documentacao de antes/depois completa
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-002: Query Optimization
 
 > Otimizacao de queries SQL com analise de execution plans, indexacao e reescrita

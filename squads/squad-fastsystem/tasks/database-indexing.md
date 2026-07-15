@@ -1,3 +1,38 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-database-indexing
+  task_name: Database Indexing Strategy
+  status: active
+  responsible_executor: '@database-optimizer'
+  execution_type: Agent
+  estimated_time: 2-4h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Workload analysis via pg_stat_statements
+  - Audit de indices existentes (nao utilizados, duplicados, missing)
+  - Design de composite indexes
+  - Covering indexes com INCLUDE
+  - Partial indexes com filtros
+  - Expression indexes
+  - Avaliar impacto em writes
+  - Migration scripts com CONCURRENTLY e rollout
+  acceptance_criteria:
+  - Todas sequential scans em tabelas > 10K rows eliminadas
+  - Indices nao utilizados removidos
+  - Covering indexes para top 5 queries
+  - Migration com CONCURRENTLY
+  - Impacto em writes < 15% degradacao
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-009: Database Indexing
 
 > Design de estrategia de indices para otimizacao de queries

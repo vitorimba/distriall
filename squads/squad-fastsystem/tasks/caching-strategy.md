@@ -1,3 +1,38 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-caching-strategy
+  task_name: Caching Strategy
+  status: active
+  responsible_executor: '@caching-specialist'
+  execution_type: Agent
+  estimated_time: 2-4h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Analise de padroes de acesso (hot/warm/cold data, read/write ratio)
+  - Design multi-layer (browser, CDN, API gateway, application, database, OS)
+  - Politicas de invalidacao (TTL, event-driven, write-through, cache-aside)
+  - Configuracao de HTTP caching (Cache-Control, ETag, immutable)
+  - Redis/application cache design (key-value, hash, sorted set, eviction)
+  - Cache warming strategies (startup, predictive, background, cascade)
+  - Metricas e monitoramento (hit rate, eviction rate, latency, alertas)
+  - Documentacao da estrategia completa
+  acceptance_criteria:
+  - Hit rate projetado > 85%
+  - Invalidacao testada para todos os cenarios de escrita
+  - Consistencia eventual documentada e aceita pelo PO
+  - Thundering herd mitigado
+  - Memory budget definido
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-004: Caching Strategy
 
 > Design de estrategia de caching multi-camada para otimizacao de performance

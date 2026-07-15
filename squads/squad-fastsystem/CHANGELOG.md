@@ -5,6 +5,20 @@ All notable changes to Squad FastSystem will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-14
+
+### Changed
+- Aligned agent names across config.yaml, README.md, and agent files (source of truth: agent files)
+- Updated README tier diagram and agent summary table with correct IDs and names
+- Added activation-instructions to all 11 agents (AIOX structural compliance)
+- Added handoff_to routing section to all 11 agents with tier-based routing logic
+- Added SINKRA_TASK_METADATA blocks to all 12 tasks (8-field standard compliance)
+- Bumped version to 1.1.0
+
+### Fixed
+- README had stale agent IDs (performance-lead, frontend-performance, api-performance, load-tester, devops-performance, distributed-systems) that did not match config.yaml or agent files
+- Agent names were inconsistent: config.yaml used persona names (Probe, Pixel, etc.) while agent files used mind-based names (Gregg, WebPerf, etc.)
+
 ## [1.0.0] - 2026-03-13
 
 ### Added

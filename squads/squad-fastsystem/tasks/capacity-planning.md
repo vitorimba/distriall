@@ -1,3 +1,37 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-capacity-planning
+  task_name: Capacity Planning
+  status: active
+  responsible_executor: '@fastsystem-chief'
+  execution_type: Agent
+  estimated_time: 3-5h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Inventario de recursos atuais (compute, DB, cache, CDN)
+  - Projecao de demanda (growth rate, sazonalidade, margem de seguranca)
+  - Modelagem de capacidade (mapear demanda para recursos)
+  - Definir scaling strategy por componente
+  - Cost projection (atual, 6 meses, 12 meses)
+  - Configurar alertas e thresholds proativos
+  - Documentacao do capacity planning
+  acceptance_criteria:
+  - Todos componentes com headroom > 30%
+  - Auto-scaling configurado para compute
+  - Cost projection aprovada por management
+  - Alertas proativos configurados
+  - Scaling plan testado (load test)
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-011: Capacity Planning
 
 > Estimativa e planejamento de capacidade para crescimento futuro

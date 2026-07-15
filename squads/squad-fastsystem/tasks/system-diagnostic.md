@@ -1,3 +1,38 @@
+<!-- SINKRA_TASK_METADATA:START -->
+```yaml
+sinkra_task_metadata:
+  task_id: fs-system-diagnostic
+  task_name: System Diagnostic
+  status: active
+  responsible_executor: '@system-profiler'
+  execution_type: Agent
+  estimated_time: 2-4h
+  domain: Operational
+  input:
+  - Consultar a secao de inputs no corpo da task
+  output:
+  - Consultar a secao de outputs no corpo da task
+  action_items:
+  - Coleta de contexto do sistema (sintoma, impacto, mudancas recentes)
+  - USE Method para CPU (utilization, saturation, errors)
+  - USE Method para Memoria (uso, swap, leaks)
+  - USE Method para Disco/IO (throughput, IOPS, latencia)
+  - USE Method para Rede (bandwidth, latencia, erros)
+  - Profiling de aplicacao (flame graphs, hot paths)
+  - Analise de logs (correlacao metricas com eventos)
+  - Sintese e relatorio acionavel
+  acceptance_criteria:
+  - USE method aplicado para todos os 4 recursos (CPU, Mem, Disk, Net)
+  - Flame graph gerado para aplicacao
+  - Baseline quantitativo documentado (p50, p95, p99)
+  - Pelo menos 3 recomendacoes priorizadas
+  - Relatorio revisado por performance-lead
+  output_persistence: transient_output
+  accountable_id: Human:Squad_Operator
+  accountability_scope: review_only
+```
+<!-- SINKRA_TASK_METADATA:END -->
+
 # FS-T-001: System Diagnostic
 
 > Diagnostico completo do sistema usando USE method (Utilization, Saturation, Errors)
