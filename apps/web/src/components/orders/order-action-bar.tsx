@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { type OrderStatus, VALID_TRANSITIONS } from '@distriall/shared';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Truck, Package } from 'lucide-react';
+import { CheckCircle, Truck, Package, Trash2 } from 'lucide-react';
 
 interface OrderActionBarProps {
   selectedIds: string[];
@@ -25,9 +25,32 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
   const confirmCount = countEligible('confirmado');
   const loadCount = countEligible('carregado');
   const deliverCount = countEligible('entregue');
+  const cancelledCount = selectedOrders.filter((o) => o.status === 'cancelado').length;
   const canConfirm = confirmCount > 0;
   const canLoad = loadCount > 0;
   const canDeliver = deliverCount > 0;
+  const canDelete = cancelledCount > 0;
+
+  async function handleBatchDelete() {
+    const ids = selectedOrders.filter((o) => o.status === 'cancelado').map((o) => o.id);
+    if (!confirm(`Excluir ${ids.length} pedido${ids.length !== 1 ? 's' : ''} cancelado${ids.length !== 1 ? 's' : ''}? Esta acao nao pode ser desfeita.`)) return;
+
+    setLoading(true);
+    setResult(null);
+    const supabase = createClient();
+
+    let deleted = 0;
+    for (const id of ids) {
+      await supabase.from('order_items').delete().eq('order_id', id);
+      await supabase.from('payments').delete().eq('order_id', id);
+      const { error } = await supabase.from('orders').delete().eq('id', id);
+      if (!error) deleted++;
+    }
+
+    setLoading(false);
+    setResult(`${deleted} pedido${deleted !== 1 ? 's' : ''} excluido${deleted !== 1 ? 's' : ''}`);
+    setTimeout(onDone, 1500);
+  }
 
   async function handleBatchTransition(newStatus: OrderStatus) {
     setLoading(true);
@@ -97,6 +120,18 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
             >
               <Truck className="mr-1 size-3.5" />
               Entregar{deliverCount < selectedIds.length ? ` (${deliverCount})` : ''}
+            </Button>
+          )}
+          {canDelete && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-destructive border-destructive/50"
+              onClick={handleBatchDelete}
+              disabled={loading}
+            >
+              <Trash2 className="mr-1 size-3.5" />
+              Excluir{cancelledCount < selectedIds.length ? ` (${cancelledCount})` : ''}
             </Button>
           )}
         </div>
