@@ -512,7 +512,7 @@ export default function OrderDetailPage() {
             </Button>
           </>
         )}
-        {canEdit && (
+        {(canEdit || (isAdmin && order.status === 'cancelado')) && (
           <Button
             variant="outline"
             size="sm"

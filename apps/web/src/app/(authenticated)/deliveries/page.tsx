@@ -196,7 +196,7 @@ export default function DeliveriesPage() {
   if (!user) return null;
 
   return (
-    <div className="space-y-4 px-4 py-4 overflow-hidden">
+    <div className="space-y-4 px-4 py-4">
       <PageHeader title="Entregas" />
 
       {/* Selectors */}

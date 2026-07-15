@@ -16,15 +16,18 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
-  function canTransitionAll(target: OrderStatus): boolean {
-    return selectedOrders.every((o) =>
+  function countEligible(target: OrderStatus): number {
+    return selectedOrders.filter((o) =>
       VALID_TRANSITIONS[o.status]?.includes(target)
-    );
+    ).length;
   }
 
-  const canConfirm = canTransitionAll('confirmado');
-  const canLoad = canTransitionAll('carregado');
-  const canDeliver = canTransitionAll('entregue');
+  const confirmCount = countEligible('confirmado');
+  const loadCount = countEligible('carregado');
+  const deliverCount = countEligible('entregue');
+  const canConfirm = confirmCount > 0;
+  const canLoad = loadCount > 0;
+  const canDeliver = deliverCount > 0;
 
   async function handleBatchTransition(newStatus: OrderStatus) {
     setLoading(true);
@@ -71,7 +74,7 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
               disabled={loading}
             >
               <CheckCircle className="mr-1 size-3.5" />
-              Confirmar
+              Confirmar{confirmCount < selectedIds.length ? ` (${confirmCount})` : ''}
             </Button>
           )}
           {canLoad && (
@@ -82,7 +85,7 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
               disabled={loading}
             >
               <Package className="mr-1 size-3.5" />
-              Carregar
+              Carregar{loadCount < selectedIds.length ? ` (${loadCount})` : ''}
             </Button>
           )}
           {canDeliver && (
@@ -93,7 +96,7 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
               disabled={loading}
             >
               <Truck className="mr-1 size-3.5" />
-              Entregar
+              Entregar{deliverCount < selectedIds.length ? ` (${deliverCount})` : ''}
             </Button>
           )}
         </div>
