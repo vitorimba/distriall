@@ -458,24 +458,56 @@
    Print styles — window.print() mostra apenas o recibo térmico
    ========================================================================== */
 @media print {
-  /* Ocultar elementos de navegação e interface */
-  nav,
-  header,
-  aside,
-  footer,
-  .no-print,
-  [data-slot="sidebar"],
-  [data-slot="page-header"] {
+  /* Esconder TUDO por padrao */
+  body > * {
     display: none !important;
   }
 
-  /* Remover sombra e margens do recibo para impressão */
-  .da-receipt {
-    box-shadow: none;
-    margin: 0;
+  /* Mostrar apenas o portal do dialog (onde o recibo esta) */
+  body > [data-slot="dialog-portal"],
+  body > div:has(.da-receipt) {
+    display: block !important;
   }
 
-  /* Garantir fundo branco e tinta preta na impressão */
+  /* Esconder overlay, botoes e header do dialog */
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-close"],
+  [data-slot="dialog-header"],
+  [data-slot="dialog-footer"],
+  .no-print {
+    display: none !important;
+  }
+
+  /* Dialog sem posicionamento fixo na impressao */
+  [data-slot="dialog-content"] {
+    position: static !important;
+    transform: none !important;
+    max-height: none !important;
+    max-width: none !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    ring: none !important;
+    outline: none !important;
+  }
+
+  /* Recibo sem restricoes de scroll */
+  [data-slot="dialog-content"] > div {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  /* Recibo limpo */
+  .da-receipt {
+    box-shadow: none;
+    margin: 0 auto;
+    width: 58mm;
+  }
+
+  /* Fundo branco e tinta preta */
   body {
     background: white !important;
     color: black !important;
