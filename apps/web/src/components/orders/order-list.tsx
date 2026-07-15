@@ -118,58 +118,27 @@ export function OrderList() {
       ? { start: customStart, end: customEnd }
       : getDateRange(periodTab);
 
-    // For "hoje" tab: also include pending orders from any date
-    // Query: (created within range) OR (status is pending)
-    if (periodTab === 'hoje' && statusFilter === 'all') {
-      // Use or() to include pending orders from any date + today's orders
-      let query = supabase
-        .from('orders')
-        .select('id, order_number, status, payment_method, subtotal, total, delivery_date, created_at, clients(name), order_items(count)', { count: 'exact' })
-        .eq('account_id', activeAccount.id)
-        .or(`created_at.gte.${range!.start}T00:00:00,status.in.(${PENDING_STATUSES.join(',')})`)
-        .order('created_at', { ascending: false });
-
-      if (paymentFilter !== 'all') {
-        query = query.eq('payment_method', paymentFilter);
-      }
-      if (search) {
-        const isNumeric = /^\d+$/.test(search);
-        if (isNumeric) {
-          query = query.eq('order_number', Number(search));
-        } else {
-          query = query.ilike('clients.name', `${search}%`);
-        }
-      }
-
-      const offset = (page - 1) * PAGE_SIZE;
-      query = query.range(offset, offset + PAGE_SIZE - 1);
-
-      const { data, count, error: fetchError } = await query;
-      if (fetchError) {
-        setError('Nao foi possivel carregar os pedidos.');
-        setLoadKey((k) => k + 1);
-        return;
-      }
-      setError(null);
-      setOrders((data as unknown as OrderRow[]) ?? []);
-      setTotalCount(count ?? 0);
-      setLoadKey((k) => k + 1);
-      return;
-    }
-
-    // Standard query for other tabs
     let query = supabase
       .from('orders')
       .select('id, order_number, status, payment_method, subtotal, total, delivery_date, created_at, clients(name), order_items(count)', { count: 'exact' })
       .eq('account_id', activeAccount.id)
       .order('created_at', { ascending: false });
 
-    if (range) {
-      query = query.gte('created_at', `${range.start}T00:00:00`).lte('created_at', `${range.end}T23:59:59`);
-    }
-
-    if (statusFilter !== 'all') {
-      query = query.eq('status', statusFilter);
+    // "Hoje" tab: show only pending orders (need action)
+    if (periodTab === 'hoje') {
+      if (statusFilter === 'all') {
+        query = query.in('status', PENDING_STATUSES);
+      } else {
+        query = query.eq('status', statusFilter);
+      }
+    } else {
+      // Other tabs: filter by date range
+      if (range) {
+        query = query.gte('created_at', `${range.start}T00:00:00`).lte('created_at', `${range.end}T23:59:59`);
+      }
+      if (statusFilter !== 'all') {
+        query = query.eq('status', statusFilter);
+      }
     }
     if (paymentFilter !== 'all') {
       query = query.eq('payment_method', paymentFilter);
