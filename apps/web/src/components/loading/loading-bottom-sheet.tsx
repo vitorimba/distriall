@@ -100,7 +100,7 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-[60]">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
@@ -217,7 +217,7 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
         </div>
 
         {/* Actions — pinned at bottom */}
-        <div className="shrink-0 flex gap-2 px-4 py-3 border-t bg-background">
+        <div className="shrink-0 flex gap-2 px-4 py-3 pb-safe border-t bg-background">
           <Button variant="outline" onClick={handlePrint} className="flex-1">
             <Printer className="mr-1.5 size-4" />
             Imprimir Lista
