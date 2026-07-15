@@ -105,19 +105,20 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* Sheet */}
-      <div className="absolute bottom-0 left-0 right-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-background shadow-xl animate-in slide-in-from-bottom">
+      <div className="absolute bottom-0 left-0 right-0 max-h-[90vh] flex flex-col rounded-t-2xl bg-background shadow-xl animate-in slide-in-from-bottom">
         {/* Handle */}
-        <div className="flex justify-center pt-3 pb-1">
+        <div className="flex justify-center pt-3 pb-1 shrink-0">
           <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
         </div>
 
         {/* Close */}
-        <div className="flex items-center justify-between px-4 pb-2">
+        <div className="flex items-center justify-between px-4 pb-2 shrink-0">
           <h2 className="text-lg font-bold">Lista de Carregamento</h2>
           <button onClick={onClose}><X className="size-5 text-muted-foreground" /></button>
         </div>
 
-        <div className="space-y-4 px-4 pb-6">
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto min-h-0 space-y-4 px-4">
           {/* Section 1: Products */}
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -193,7 +194,7 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
           )}
 
           {/* Section 3: Included Orders */}
-          <div>
+          <div className="pb-2">
             <h3 className="text-sm font-bold uppercase text-muted-foreground mb-2">
               Pedidos Incluidos ({selectedOrders.length})
             </h3>
@@ -213,18 +214,18 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
               })}
             </div>
           </div>
+        </div>
 
-          {/* Actions */}
-          <div className="flex gap-2 pt-2">
-            <Button variant="outline" onClick={handlePrint} className="flex-1">
-              <Printer className="mr-1.5 size-4" />
-              Imprimir Lista
-            </Button>
-            <Button onClick={handleMarkLoaded} disabled={loading} className="flex-1 bg-green-600 hover:bg-green-700">
-              <Truck className="mr-1.5 size-4" />
-              {loading ? 'Marcando...' : 'Marcar Carregado'}
-            </Button>
-          </div>
+        {/* Actions — pinned at bottom */}
+        <div className="shrink-0 flex gap-2 px-4 py-3 border-t bg-background">
+          <Button variant="outline" onClick={handlePrint} className="flex-1">
+            <Printer className="mr-1.5 size-4" />
+            Imprimir Lista
+          </Button>
+          <Button onClick={handleMarkLoaded} disabled={loading} className="flex-1 bg-green-600 hover:bg-green-700">
+            <Truck className="mr-1.5 size-4" />
+            {loading ? 'Marcando...' : 'Marcar Carregado'}
+          </Button>
         </div>
       </div>
     </div>
