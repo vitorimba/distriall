@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { useAccount } from '@/providers/account-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +22,7 @@ interface BatchPriceEditorProps {
 }
 
 export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorProps) {
+  const { activeAccount } = useAccount();
   const [mode, setMode] = useState<'fixed' | 'percent'>('fixed');
   const [fixedPrice, setFixedPrice] = useState<number>(0);
   const [percent, setPercent] = useState<number>(0);
@@ -33,24 +35,20 @@ export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorP
   }
 
   async function handleApply() {
+    if (!activeAccount) return;
     setSaving(true);
     const supabase = createClient();
 
-    if (mode === 'fixed') {
-      await supabase
-        .from('product_variants')
-        .update({ sell_price: fixedPrice })
-        .in('id', selectedVariants.map((v) => v.id));
-    } else {
-      // Percent: update individually
-      for (const v of selectedVariants) {
-        const newPrice = getNewPrice(v.currentPrice);
-        await supabase
-          .from('product_variants')
-          .update({ sell_price: newPrice })
-          .eq('id', v.id);
-      }
-    }
+    // Upsert into account_prices (per-store pricing)
+    const rows = selectedVariants.map((v) => ({
+      account_id: activeAccount.id,
+      product_variant_id: v.id,
+      sell_price: mode === 'fixed' ? fixedPrice : getNewPrice(v.currentPrice),
+    }));
+
+    await supabase
+      .from('account_prices')
+      .upsert(rows, { onConflict: 'account_id,product_variant_id' });
 
     setSaving(false);
     setDone(true);

@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
 import { clientSchema, type ClientInput } from '@/lib/validations/client';
-import { maskPhone, isPhoneComplete, MSG } from '@/lib/mask-utils';
+import { maskPhone, maskCpfCnpj, isPhoneComplete, MSG } from '@/lib/mask-utils';
+import { validateDocument, unmask } from '@/lib/validators/document';
+import { useCnpjLookup } from '@/hooks/use-cnpj-lookup';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
@@ -17,6 +19,10 @@ interface ClientFormProps {
     id: string;
     name: string;
     trade_name: string | null;
+    type: string | null;
+    document: string | null;
+    state_registration: string | null;
+    email: string | null;
     address: string | null;
     city: string | null;
     neighborhood: string | null;
@@ -32,9 +38,14 @@ export function ClientForm({ client }: ClientFormProps) {
   const router = useRouter();
   const toast = useToast();
   const { activeAccount } = useAccount();
+  const cnpjLookup = useCnpjLookup();
 
+  const [clientType, setClientType] = useState<'pf' | 'pj'>((client?.type as 'pf' | 'pj') ?? 'pf');
   const [name, setName] = useState(client?.name ?? '');
   const [tradeName, setTradeName] = useState(client?.trade_name ?? '');
+  const [document, setDocument] = useState(client?.document ? maskCpfCnpj(client.document) : '');
+  const [stateRegistration, setStateRegistration] = useState(client?.state_registration ?? '');
+  const [email, setEmail] = useState(client?.email ?? '');
   const [address, setAddress] = useState(client?.address ?? '');
   const [city, setCity] = useState(client?.city ?? '');
   const [neighborhood, setNeighborhood] = useState(client?.neighborhood ?? '');
@@ -46,6 +57,28 @@ export function ClientForm({ client }: ClientFormProps) {
   const [errors, setErrors] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
+  const isPJ = clientType === 'pj';
+
+  async function handleCnpjBlur() {
+    const digits = unmask(document);
+    if (digits.length !== 14) return;
+
+    const data = await cnpjLookup.lookup(digits);
+    if (!data) return;
+
+    // Auto-fill: never overwrite user-entered values
+    if (!name) setName(data.razao_social);
+    if (!tradeName) setTradeName(data.nome_fantasia);
+    if (!stateRegistration) setStateRegistration(data.inscricao_estadual);
+    if (!email) setEmail(data.email);
+    if (!address) setAddress(data.logradouro ? `${data.logradouro}, ${data.numero}` : '');
+    if (!neighborhood) setNeighborhood(data.bairro);
+    if (!city) setCity(data.cidade);
+    if (!phone && data.telefone) setPhone(maskPhone(data.telefone));
+
+    toast('Dados preenchidos via CNPJ', 'success');
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrors([]);
@@ -54,6 +87,12 @@ export function ClientForm({ client }: ClientFormProps) {
     if (!name.trim()) newFieldErrors.name = MSG.required;
     if (phone && !isPhoneComplete(phone)) newFieldErrors.phone = MSG.phoneIncomplete;
     if (whatsapp && !isPhoneComplete(whatsapp)) newFieldErrors.whatsapp = MSG.phoneIncomplete;
+
+    const docDigits = unmask(document);
+    if (docDigits && !validateDocument(docDigits)) {
+      newFieldErrors.document = MSG.invalidCpfCnpj;
+    }
+
     if (Object.keys(newFieldErrors).length > 0) {
       setFieldErrors(newFieldErrors);
       return;
@@ -62,6 +101,10 @@ export function ClientForm({ client }: ClientFormProps) {
     const input: ClientInput = {
       name,
       trade_name: tradeName || undefined,
+      type: clientType,
+      document: docDigits || undefined,
+      state_registration: stateRegistration || undefined,
+      email: email || undefined,
       address: address || undefined,
       city: city || undefined,
       neighborhood: neighborhood || undefined,
@@ -84,6 +127,10 @@ export function ClientForm({ client }: ClientFormProps) {
     const row = {
       name,
       trade_name: tradeName || null,
+      type: clientType,
+      document: docDigits || null,
+      state_registration: stateRegistration || null,
+      email: email || null,
       address: address || null,
       city: city || null,
       neighborhood: neighborhood || null,
@@ -111,7 +158,27 @@ export function ClientForm({ client }: ClientFormProps) {
           <CardTitle>{isEdit ? 'Editar Cliente' : 'Novo Cliente'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Field label="Nome" required error={fieldErrors.name}>
+          {/* PF/PJ Toggle */}
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant={clientType === 'pf' ? 'default' : 'outline'}
+              onClick={() => setClientType('pf')}
+            >
+              Pessoa Fisica
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={clientType === 'pj' ? 'default' : 'outline'}
+              onClick={() => setClientType('pj')}
+            >
+              Pessoa Juridica
+            </Button>
+          </div>
+
+          <Field label={isPJ ? 'Razao Social' : 'Nome'} required error={fieldErrors.name}>
             <Input
               id="name"
               value={name}
@@ -124,9 +191,62 @@ export function ClientForm({ client }: ClientFormProps) {
               required
             />
           </Field>
+
           <Field label="Nome Fantasia">
             <Input id="trade_name" value={tradeName} onChange={(e) => setTradeName(e.target.value)} />
           </Field>
+
+          {/* Document (CPF/CNPJ) */}
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={isPJ ? 'CNPJ' : 'CPF'} error={fieldErrors.document}>
+              <div className="relative">
+                <Input
+                  id="document"
+                  type="text"
+                  inputMode="numeric"
+                  value={document}
+                  onChange={(e) => setDocument(maskCpfCnpj(e.target.value))}
+                  onBlur={() => {
+                    const digits = unmask(document);
+                    if (digits && !validateDocument(digits)) {
+                      setFieldErrors((prev) => ({ ...prev, document: MSG.invalidCpfCnpj }));
+                    } else {
+                      setFieldErrors((prev) => { const { document: _, ...rest } = prev; return rest; });
+                    }
+                    // Auto-fill CNPJ on blur
+                    if (isPJ && digits.length === 14) handleCnpjBlur();
+                  }}
+                  aria-invalid={!!fieldErrors.document}
+                  placeholder={isPJ ? '00.000.000/0001-00' : '000.000.000-00'}
+                />
+                {cnpjLookup.loading && (
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                  </div>
+                )}
+              </div>
+            </Field>
+            {isPJ && (
+              <Field label="Inscricao Estadual">
+                <Input
+                  id="state_registration"
+                  value={stateRegistration}
+                  onChange={(e) => setStateRegistration(e.target.value)}
+                />
+              </Field>
+            )}
+          </div>
+
+          <Field label="Email">
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="email@exemplo.com"
+            />
+          </Field>
+
           <Field label="Endereco">
             <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} />
           </Field>

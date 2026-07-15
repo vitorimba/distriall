@@ -15,6 +15,10 @@ interface ClientData {
   id: string;
   name: string;
   trade_name: string | null;
+  type: string | null;
+  document: string | null;
+  state_registration: string | null;
+  email: string | null;
   address: string | null;
   city: string | null;
   neighborhood: string | null;

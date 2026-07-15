@@ -25,7 +25,7 @@ Hoje o vendedor precisa digitar o nome do produto na busca para cada item que qu
 |---|-------|--------|--------|
 | 6.1 | Catalogo visual de produtos com toque rapido | 8 | Done |
 | 6.2 | Edicao inline de preco e quantidade no carrinho | 5 | Done |
-| 6.3 | Historico de ultimos pedidos do cliente na tela de pedido | 5 | Draft |
+| 6.3 | Historico de ultimos pedidos do cliente na tela de pedido | 5 | Done |
 
 ## Design System Compliance (NON-NEGOTIABLE)
 

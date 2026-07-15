@@ -7,6 +7,7 @@ import { ClientBalanceCard } from '@/components/clients/client-balance';
 import { ClientPurchaseFrequency } from '@/components/clients/client-purchase-frequency';
 import { ClientPricesTable } from '@/components/clients/client-prices-table';
 import { ClientOrderHistory } from '@/components/clients/client-order-history';
+import { ClientAddresses } from '@/components/clients/client-addresses';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PAYMENT_METHOD_LABELS } from '@distriall/shared';
@@ -102,6 +103,9 @@ export default function ClientDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Addresses */}
+      <ClientAddresses clientId={id} />
 
       {/* Balance */}
       {balance && <ClientBalanceCard clientId={id} balance={balance} />}

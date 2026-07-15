@@ -23,6 +23,7 @@ interface CartStore {
   paymentMethod: string;
   notes: string;
   deliveryDate: string;
+  deliveryAddressId: string | null;
 
   // Actions
   setClient: (client: CartClient | null) => void;
@@ -34,6 +35,7 @@ interface CartStore {
   setPaymentMethod: (method: string) => void;
   setNotes: (notes: string) => void;
   setDeliveryDate: (date: string) => void;
+  setDeliveryAddressId: (id: string | null) => void;
   clearCart: () => void;
   loadOrder: (client: CartClient, items: CartItem[], paymentMethod: string, notes: string, deliveryDate: string) => void;
 
@@ -50,6 +52,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
   paymentMethod: '',
   notes: '',
   deliveryDate: '',
+  deliveryAddressId: null,
 
   setClient: (client) =>
     set({
@@ -117,6 +120,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
   setPaymentMethod: (paymentMethod) => set({ paymentMethod }),
   setNotes: (notes) => set({ notes }),
   setDeliveryDate: (deliveryDate) => set({ deliveryDate }),
+  setDeliveryAddressId: (deliveryAddressId) => set({ deliveryAddressId }),
 
   clearCart: () =>
     set({
@@ -126,6 +130,7 @@ export const useCartStore = create<CartStore>()((set, get) => ({
       paymentMethod: '',
       notes: '',
       deliveryDate: '',
+      deliveryAddressId: null,
     }),
 
   loadOrder: (client, items, paymentMethod, notes, deliveryDate) =>
