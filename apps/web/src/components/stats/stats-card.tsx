@@ -55,7 +55,7 @@ export function StatsCard({
         {loading ? (
           <Skeleton variant="rect" className="h-8 w-24" />
         ) : (
-          <p className={cn('text-2xl font-bold', accent ? '' : 'text-foreground')}>{value}</p>
+          <p className={cn('text-lg sm:text-2xl font-bold truncate', accent ? '' : 'text-foreground')} title={typeof value === 'string' ? value : undefined}>{value}</p>
         )}
 
         {hasDelta && !loading && (

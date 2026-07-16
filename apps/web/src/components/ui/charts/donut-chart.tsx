@@ -45,7 +45,7 @@ export function DonutChart({
   const current = active != null ? segs[active] : null
 
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex items-center gap-4 overflow-hidden">
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         <svg viewBox="0 0 100 100" width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
           {segs.map((s) => (
@@ -75,7 +75,7 @@ export function DonutChart({
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-1.5">
+      <div className="flex min-w-0 flex-col gap-1.5">
         {segs.map((s) => (
           <button
             key={s.i}
@@ -85,8 +85,8 @@ export function DonutChart({
             onMouseLeave={() => setActive(null)}
           >
             <span className="size-2.5 shrink-0 rounded-full" style={{ background: s.segColor }} />
-            <span className="text-muted-foreground">{s.label}</span>
-            <span className="num font-semibold text-foreground">
+            <span className="truncate text-muted-foreground">{s.label}</span>
+            <span className="num shrink-0 font-semibold text-foreground">
               {showPercent ? `${Math.round(s.frac * 100)}%` : formatValue(s.value)}
             </span>
           </button>
