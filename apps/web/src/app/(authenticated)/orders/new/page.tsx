@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useCartStore } from '@/stores/cart-store';
 import { useOrders } from '@/hooks/use-orders';
 import { usePayments } from '@/hooks/use-payments';
+import { useVouchers } from '@/hooks/use-vouchers';
 import { useAccount } from '@/providers/account-provider';
 import { ClientSearch } from '@/components/orders/client-search';
 import { ProductCatalog } from '@/components/orders/product-catalog';
@@ -50,6 +51,7 @@ function NewOrderContent() {
   const exchangeCredit = searchParams.get('credit') ? Number(searchParams.get('credit')) : null;
   const { createOrder } = useOrders();
   const { savePayments } = usePayments();
+  const { createVoucher } = useVouchers();
   const { activeAccount } = useAccount();
   const {
     client,
@@ -131,9 +133,23 @@ function NewOrderContent() {
       setPaymentMethod(isMixed ? 'misto' : (payments[0]?.method ?? ''));
       const orderId = await createOrder();
 
-      // Save payment records
+      // Save payment records and create vouchers for vale payments
       if (activeAccount && payments.length > 0) {
-        await savePayments(activeAccount.id, orderId, payments);
+        const savedPayments = await savePayments(activeAccount.id, orderId, payments);
+
+        // Create voucher for each vale payment
+        if (savedPayments && client) {
+          for (const sp of savedPayments) {
+            if (sp.method === 'vale') {
+              await createVoucher({
+                accountId: activeAccount.id,
+                paymentId: sp.id,
+                clientId: client.id,
+                amount: sp.amount,
+              });
+            }
+          }
+        }
       }
 
       // Link to exchange if this is a replacement order

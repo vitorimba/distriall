@@ -21,8 +21,9 @@ export function usePayments() {
       is_third_party: p.method === 'boleto',
     }));
 
-    const { error } = await supabase.from('payments').insert(rows);
+    const { data, error } = await supabase.from('payments').insert(rows).select();
     if (error) throw error;
+    return data;
   }
 
   async function getPayments(orderId: string) {
