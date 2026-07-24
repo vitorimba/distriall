@@ -10,7 +10,6 @@ import { OrderStatusStepper } from '@/components/orders/order-status-stepper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, ArrowRight, Minus, Pencil, Plus, Printer, Repeat2, RotateCcw, Trash2, X } from 'lucide-react';
-import { usePrinter } from '@/hooks/use-printer';
 import { OrderReceipt } from '@/components/orders/order-receipt';
 import { ReturnForm } from '@/components/orders/return-form';
 import { ExchangeForm } from '@/components/orders/exchange-form';
@@ -160,7 +159,6 @@ export default function OrderDetailPage() {
   const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfo | null>(null);
   const [editingQty, setEditingQty] = useState<string | null>(null);
   const [editingPrice, setEditingPrice] = useState<string | null>(null);
-  const { isSupported, isPrinting, printOrder } = usePrinter();
 
   useEffect(() => {
     async function load() {
@@ -465,31 +463,10 @@ export default function OrderDetailPage() {
             </Button>
           </Link>
         )}
-        {isSupported ? (
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={isPrinting}
-            onClick={async () => {
-              try {
-                await printOrder(
-                  { ...order, client_name: order.clients?.name ?? '', items: order.order_items },
-                  'Distriall'
-                );
-              } catch {
-                setShowReceipt(true);
-              }
-            }}
-          >
-            <Printer className="mr-1 size-3.5" />
-            {isPrinting ? 'Imprimindo...' : 'Imprimir'}
-          </Button>
-        ) : (
-          <Button variant="outline" size="sm" onClick={() => setShowReceipt(true)}>
-            <Printer className="mr-1 size-3.5" />
-            Ver Cupom
-          </Button>
-        )}
+        <Button variant="outline" size="sm" onClick={() => setShowReceipt(true)}>
+          <Printer className="mr-1 size-3.5" />
+          Imprimir
+        </Button>
         {order.status === 'entregue' && (
           <>
             <Button

@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
-import { Printer, Share2 } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { Bluetooth, Printer, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -11,6 +11,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Receipt } from '@/components/orders/receipt';
+import { usePrinter } from '@/hooks/use-printer';
 
 interface ReceiptItem {
   product_name: string;
@@ -36,14 +37,6 @@ function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-/**
- * Dialog de preview do recibo térmico.
- * — Receipt DS (tokens --receipt-*) para preview visual em 58mm
- * — Botão "Imprimir" usa window.print() (CSS @media print mostra apenas .da-receipt)
- * — Botão "Compartilhar" usa Web Share API / clipboard
- * — Bluetooth (usePrinter) é gerenciado pelo pai (orders/[id]/page.tsx); este dialog
- *   é o fallback quando Bluetooth não está disponível ou falha.
- */
 export function OrderReceipt({
   open,
   onClose,
@@ -57,10 +50,15 @@ export function OrderReceipt({
 }: OrderReceiptProps) {
   const date = new Date().toLocaleString('pt-BR');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [printSuccess, setPrintSuccess] = useState(false);
+  const { isSupported, isConnected, isConnecting, isPrinting, error, deviceName, connect, printOrder } = usePrinter();
 
   useEffect(() => {
     if (open && scrollRef.current) {
       scrollRef.current.scrollTop = 0;
+    }
+    if (open) {
+      setPrintSuccess(false);
     }
   }, [open]);
 
@@ -69,6 +67,19 @@ export function OrderReceipt({
     qtd: i.quantity,
     preco: i.unit_price,
   }));
+
+  async function handleBluetoothPrint() {
+    setPrintSuccess(false);
+    try {
+      await printOrder(
+        { order_number: orderNumber, client_name: clientName, payment_method: paymentMethod, total, items },
+        accountName,
+      );
+      setPrintSuccess(true);
+    } catch {
+      // error state is handled by usePrinter hook
+    }
+  }
 
   async function handleShare() {
     const totalQty = items.reduce((s, i) => s + i.quantity, 0);
@@ -110,7 +121,36 @@ export function OrderReceipt({
           <DialogTitle>Cupom fiscal</DialogTitle>
         </DialogHeader>
 
-        {/* Receipt preview — styled via da-receipt CSS classes */}
+        {/* Bluetooth printer status */}
+        {isSupported && (
+          <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-xs">
+            <Bluetooth className={`size-3.5 shrink-0 ${isConnected ? 'text-blue-600' : 'text-muted-foreground'}`} />
+            {isConnected ? (
+              <span className="text-blue-600 font-medium">{deviceName ?? 'Impressora conectada'}</span>
+            ) : (
+              <>
+                <span className="text-muted-foreground">Nenhuma impressora</span>
+                <Button size="xs" variant="outline" onClick={connect} disabled={isConnecting} className="ml-auto h-6 px-2 text-[10px]">
+                  {isConnecting ? 'Conectando...' : 'Conectar'}
+                </Button>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Print feedback */}
+        {error && (
+          <div className="rounded-md bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700">
+            {error}
+          </div>
+        )}
+        {printSuccess && (
+          <div className="rounded-md bg-green-50 border border-green-200 px-3 py-2 text-xs text-green-700">
+            Recibo impresso com sucesso!
+          </div>
+        )}
+
+        {/* Receipt preview */}
         <div ref={scrollRef} className="overflow-auto py-1 flex-1 min-h-0">
           <Receipt
             numero={`#${orderNumber}`}
@@ -128,10 +168,22 @@ export function OrderReceipt({
             <Share2 className="mr-1 size-3.5" />
             {'share' in navigator ? 'Compartilhar' : 'Copiar'}
           </Button>
-          <Button size="sm" onClick={() => window.print()} className="flex-1">
-            <Printer className="mr-1 size-3.5" />
-            Imprimir
-          </Button>
+          {isSupported ? (
+            <Button
+              size="sm"
+              onClick={handleBluetoothPrint}
+              disabled={isPrinting || isConnecting}
+              className="flex-1"
+            >
+              <Printer className="mr-1 size-3.5" />
+              {isPrinting ? 'Imprimindo...' : 'Imprimir Cupom'}
+            </Button>
+          ) : (
+            <Button size="sm" onClick={() => window.print()} className="flex-1">
+              <Printer className="mr-1 size-3.5" />
+              Imprimir
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
