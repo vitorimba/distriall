@@ -165,7 +165,7 @@ export function OrderReceipt({
             <Send className="mr-1 size-3.5" />
             Encaminhar
           </Button>
-          {isSupported && (
+          {isSupported ? (
             <Button
               size="sm"
               onClick={handleBluetoothPrint}
@@ -174,6 +174,11 @@ export function OrderReceipt({
             >
               <Printer className="mr-1 size-3.5" />
               {isPrinting ? 'Imprimindo...' : 'Imprimir Cupom'}
+            </Button>
+          ) : (
+            <Button size="sm" onClick={() => window.print()} className="flex-1">
+              <Printer className="mr-1 size-3.5" />
+              Imprimir
             </Button>
           )}
         </DialogFooter>
