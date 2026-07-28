@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { Bluetooth, Printer, Send } from 'lucide-react';
+import html2canvas from 'html2canvas-pro';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -50,7 +51,9 @@ export function OrderReceipt({
 }: OrderReceiptProps) {
   const date = new Date().toLocaleString('pt-BR');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
   const [printSuccess, setPrintSuccess] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const { isSupported, isConnected, isConnecting, isPrinting, error, deviceName, connect, printOrder } = usePrinter();
 
   useEffect(() => {
@@ -78,6 +81,37 @@ export function OrderReceipt({
       setPrintSuccess(true);
     } catch {
       // error state is handled by usePrinter hook
+    }
+  }
+
+  async function handleShareImage() {
+    if (!receiptRef.current) return;
+    setIsSharing(true);
+    try {
+      const canvas = await html2canvas(receiptRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+      });
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) return;
+
+      const file = new File([blob], `recibo-${orderNumber}.png`, { type: 'image/png' });
+
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: `Recibo #${orderNumber}` });
+      } else {
+        // Fallback: download the image
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `recibo-${orderNumber}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch {
+      // user cancelled share or error
+    } finally {
+      setIsSharing(false);
     }
   }
 
@@ -149,6 +183,7 @@ export function OrderReceipt({
 
         {/* Receipt preview */}
         <div ref={scrollRef} className="overflow-auto py-1 flex-1 min-h-0">
+          <div ref={receiptRef}>
           <Receipt
             numero={`#${orderNumber}`}
             cliente={clientName}
@@ -158,6 +193,7 @@ export function OrderReceipt({
             total={total}
             pagamento={paymentMethod ?? undefined}
           />
+          </div>
         </div>
 
         <DialogFooter>
@@ -176,9 +212,9 @@ export function OrderReceipt({
               {isPrinting ? 'Imprimindo...' : 'Imprimir Cupom'}
             </Button>
           ) : (
-            <Button size="sm" onClick={() => window.print()} className="flex-1">
+            <Button size="sm" onClick={handleShareImage} disabled={isSharing} className="flex-1">
               <Printer className="mr-1 size-3.5" />
-              Imprimir
+              {isSharing ? 'Gerando...' : 'Imprimir'}
             </Button>
           )}
         </DialogFooter>
