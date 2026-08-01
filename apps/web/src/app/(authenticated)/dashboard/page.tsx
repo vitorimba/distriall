@@ -137,6 +137,7 @@ export default function DashboardPage() {
               value={String(stats.order_count)}
               delta={delta?.orders ?? undefined}
               deltaLabel="vs periodo ant."
+              href={`/orders?period=${period}`}
             />
             <StatsCard title="Clientes" value={String(stats.client_count)} />
           </div>

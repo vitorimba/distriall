@@ -15,7 +15,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useState } from 'react';
-import { Send, Loader2, ChevronUp, ChevronDown, X } from 'lucide-react';
+import { Send, Loader2, ChevronUp, ChevronDown, X, Printer } from 'lucide-react';
+import { PAYMENT_METHOD_LABELS } from '@distriall/shared';
 import { RouteItem } from '@/components/deliveries/route-item';
 import { RouteMapLink } from '@/components/deliveries/route-map-link';
 import type { RouteItem as RouteItemType } from '@/hooks/use-deliveries';
@@ -55,6 +56,47 @@ export function RouteBuilder({
   // Use delivery_item_id for existing items, order id for new (not yet sent)
   const dragIds = items.map((item) => item.delivery_item_id ?? item.id);
 
+  function handlePrintRoute() {
+    const lines = items.map((item) => {
+      const addr = [item.client.address, item.client.neighborhood, item.client.city]
+        .filter(Boolean)
+        .join(', ');
+      const payment = item.payment_method
+        ? (PAYMENT_METHOD_LABELS[item.payment_method] ?? item.payment_method)
+        : '';
+      return `
+        <tr>
+          <td style="padding:2px 0;font-weight:bold">${item.sequence}. ${item.client_name}</td>
+        </tr>
+        <tr>
+          <td style="padding:0 0 2px 12px;font-size:11px">${addr || 'Sem endereco'}</td>
+        </tr>
+        ${payment ? `<tr><td style="padding:0 0 6px 12px;font-size:11px">Pgto: ${payment}</td></tr>` : '<tr><td style="padding:0 0 6px"></td></tr>'}
+      `;
+    });
+
+    const html = `
+      <html><head><title>Lista de Rota</title>
+      <style>
+        @page { size: 80mm auto; margin: 2mm; }
+        body { font-family: monospace; font-size: 12px; margin: 0; padding: 4px; width: 76mm; }
+        h2 { text-align: center; margin: 4px 0; font-size: 14px; }
+        .meta { text-align: center; font-size: 11px; margin-bottom: 8px; }
+        hr { border: none; border-top: 1px dashed #000; margin: 4px 0; }
+        table { width: 100%; border-collapse: collapse; }
+      </style></head><body>
+        <h2>LISTA DE ROTA</h2>
+        <div class="meta">${new Date().toLocaleDateString('pt-BR')} - ${items.length} parada${items.length !== 1 ? 's' : ''}</div>
+        <hr/>
+        <table>${lines.join('')}</table>
+        <hr/>
+        <script>window.print();</script>
+      </body></html>
+    `;
+    const w = window.open('', '_blank');
+    if (w) { w.document.write(html); w.document.close(); }
+  }
+
   const sendButton = !deliverySent && (
     <button
       onClick={onSend}
@@ -77,7 +119,18 @@ export function RouteBuilder({
         <span className="font-semibold text-[var(--text-primary)] text-sm">
           Rota montada ({items.length})
         </span>
-        {sendButton}
+        <div className="flex items-center gap-2">
+          {items.length > 0 && (
+            <button
+              onClick={handlePrintRoute}
+              className="flex items-center gap-1.5 rounded-lg border border-[var(--border-subtle)] px-3 py-1.5 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
+            >
+              <Printer className="size-3.5" />
+              Imprimir
+            </button>
+          )}
+          {sendButton}
+        </div>
       </div>
 
       {/* Card body */}
