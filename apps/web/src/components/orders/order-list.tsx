@@ -18,13 +18,10 @@ import { FAB } from '@/components/ui/fab';
 import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/ui/pagination';
 import { ClipboardList, RefreshCw, Calendar } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const PAGE_SIZE = 25;
 const PENDING_STATUSES = ['lancado', 'confirmado', 'carregado'];
-const HISTORY_STATUSES = ['entregue', 'cancelado'];
-type ViewTab = 'ativos' | 'historico';
 
 interface OrderRow {
   id: string;
@@ -94,19 +91,10 @@ const PAYMENT_FILTERS: { value: string; label: string }[] = [
   { value: 'misto', label: 'Misto' },
 ];
 
-const SEARCH_PARAM_PERIOD_MAP: Record<string, PeriodTab> = {
-  day: 'hoje',
-  week: '7dias',
-  month: 'mes',
-};
-
 export function OrderList() {
   const { activeAccount } = useAccount();
-  const searchParams = useSearchParams();
   const [orders, setOrders] = useState<OrderRow[]>([]);
-  const initialPeriod = SEARCH_PARAM_PERIOD_MAP[searchParams.get('period') ?? ''] ?? 'hoje';
-  const [viewTab, setViewTab] = useState<ViewTab>(searchParams.get('view') === 'historico' ? 'historico' : 'ativos');
-  const [periodTab, setPeriodTab] = useState<PeriodTab>(initialPeriod);
+  const [periodTab, setPeriodTab] = useState<PeriodTab>('hoje');
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -118,10 +106,6 @@ export function OrderList() {
   const [loadKey, setLoadKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const loading = loadKey === 0 && orders.length === 0 && !error;
-
-  const statusFiltersForView = viewTab === 'ativos'
-    ? STATUS_FILTERS.filter((f) => f.value === 'all' || PENDING_STATUSES.includes(f.value))
-    : STATUS_FILTERS.filter((f) => f.value === 'all' || HISTORY_STATUSES.includes(f.value));
 
   const loadOrders = useCallback(async () => {
     if (!activeAccount) return;
@@ -140,25 +124,20 @@ export function OrderList() {
       .eq('account_id', activeAccount.id)
       .order('created_at', { ascending: false });
 
-    // Filter by view tab (ativos vs historico)
-    const viewStatuses = viewTab === 'ativos' ? PENDING_STATUSES : HISTORY_STATUSES;
-
-    if (viewTab === 'ativos' && periodTab === 'hoje') {
-      // "Ativos + Hoje": show only pending orders (no date filter)
+    // "Hoje" tab: show only pending orders (need action)
+    if (periodTab === 'hoje') {
       if (statusFilter === 'all') {
-        query = query.in('status', viewStatuses);
+        query = query.in('status', PENDING_STATUSES);
       } else {
         query = query.eq('status', statusFilter);
       }
     } else {
-      // Apply date range
+      // Other tabs: filter by date range
       if (range) {
         query = query.gte('created_at', `${range.start}T00:00:00`).lte('created_at', `${range.end}T23:59:59`);
       }
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
-      } else {
-        query = query.in('status', viewStatuses);
       }
     }
     if (paymentFilter !== 'all') {
@@ -186,7 +165,7 @@ export function OrderList() {
     setOrders((data as unknown as OrderRow[]) ?? []);
     setTotalCount(count ?? 0);
     setLoadKey((k) => k + 1);
-  }, [activeAccount, viewTab, periodTab, customStart, customEnd, statusFilter, paymentFilter, search, page]);
+  }, [activeAccount, periodTab, customStart, customEnd, statusFilter, paymentFilter, search, page]);
 
   useEffect(() => {
     let cancelled = false;
@@ -194,16 +173,7 @@ export function OrderList() {
     return () => { cancelled = true; clearTimeout(t); };
   }, [loadOrders]);
 
-  useEffect(() => { setPage(1); }, [viewTab, periodTab, customStart, customEnd, statusFilter, paymentFilter, search]);
-
-  function switchView(tab: ViewTab) {
-    setViewTab(tab);
-    setStatusFilter('all');
-    setSelectedIds(new Set());
-    if (tab === 'historico' && periodTab === 'hoje') {
-      setPeriodTab('7dias');
-    }
-  }
+  useEffect(() => { setPage(1); }, [periodTab, customStart, customEnd, statusFilter, paymentFilter, search]);
 
   // Realtime subscription
   useEffect(() => {
@@ -250,32 +220,6 @@ export function OrderList() {
 
   return (
     <div className="space-y-3">
-      {/* View tabs: Pedidos vs Historico */}
-      <div className="flex rounded-lg bg-muted p-1">
-        <button
-          onClick={() => switchView('ativos')}
-          className={cn(
-            'flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-            viewTab === 'ativos'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          )}
-        >
-          Pedidos
-        </button>
-        <button
-          onClick={() => switchView('historico')}
-          className={cn(
-            'flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-            viewTab === 'historico'
-              ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
-          )}
-        >
-          Historico
-        </button>
-      </div>
-
       {/* Search */}
       <SearchField
         placeholder="Buscar por cliente ou numero..."
@@ -330,7 +274,7 @@ export function OrderList() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
         >
-          {statusFiltersForView.map((opt) => (
+          {STATUS_FILTERS.map((opt) => (
             <option key={opt.value} value={opt.value}>
               Status: {opt.label}
             </option>
@@ -349,7 +293,7 @@ export function OrderList() {
         </select>
       </div>
       <div className="hidden md:block space-y-2">
-        <ChipFilter options={statusFiltersForView} selected={statusFilter} onChange={setStatusFilter} />
+        <ChipFilter options={STATUS_FILTERS} selected={statusFilter} onChange={setStatusFilter} />
         <ChipFilter options={PAYMENT_FILTERS} selected={paymentFilter} onChange={setPaymentFilter} />
       </div>
 
@@ -375,8 +319,8 @@ export function OrderList() {
       ) : !error && orders.length === 0 ? (
         <EmptyState
           icon={ClipboardList}
-          title={viewTab === 'historico' ? 'Nenhum pedido no historico' : search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Nenhum pedido encontrado' : 'Nenhum pedido pendente'}
-          description={viewTab === 'historico' ? 'Tente ajustar o periodo.' : search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Tente ajustar os filtros ou o periodo.' : 'Todos os pedidos estao no historico ou nenhum foi lancado hoje.'}
+          title={search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Nenhum pedido encontrado' : 'Nenhum pedido hoje'}
+          description={search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Tente ajustar os filtros ou o periodo.' : 'Lance o primeiro pedido para ve-lo aqui.'}
         />
       ) : !error ? (
         <div className="space-y-1 pb-24">

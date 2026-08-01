@@ -15,7 +15,7 @@ export function LoadingActionBar({ onOpenSheet }: LoadingActionBarProps) {
   return (
     <button
       onClick={onOpenSheet}
-      className="fixed bottom-16 left-0 right-0 z-40 bg-green-600 px-4 py-3 pb-safe text-white shadow-lg transition-transform animate-in slide-in-from-bottom md:bottom-0"
+      className="fixed bottom-16 left-0 right-0 z-40 bg-green-600 px-4 py-3 text-white shadow-lg transition-transform animate-in slide-in-from-bottom"
     >
       <div className="mx-auto flex max-w-lg items-center justify-between text-sm">
         <span className="font-medium">

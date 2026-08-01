@@ -64,7 +64,7 @@ export default function LoadingPage() {
   }, [orders, statusFilter, accountFilter, search]);
 
   return (
-    <div className="px-4 py-4 pb-36 space-y-3">
+    <div className="px-4 py-4 pb-32 space-y-3">
       <PageHeader title="Carregamento" />
 
       <SearchField

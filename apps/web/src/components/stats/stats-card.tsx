@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sparkline } from '@/components/ui/charts/sparkline';
@@ -19,7 +18,6 @@ interface StatsCardProps {
   spark?: number[];
   accent?: boolean;
   loading?: boolean;
-  href?: string;
 }
 
 export function StatsCard({
@@ -33,14 +31,13 @@ export function StatsCard({
   spark,
   accent,
   loading,
-  href,
 }: StatsCardProps) {
   const hasDelta = delta !== undefined && delta !== null;
   const isPositive = hasDelta && delta >= 0;
 
-  const card = (
+  return (
     <Card
-      className={cn('relative overflow-hidden', href && 'cursor-pointer transition-shadow hover:shadow-md', className)}
+      className={cn('relative overflow-hidden', className)}
       style={accent ? { background: 'var(--primary)', color: 'var(--primary-foreground)' } : undefined}
     >
       <CardHeader>
@@ -111,10 +108,4 @@ export function StatsCard({
       )}
     </Card>
   );
-
-  if (href) {
-    return <Link href={href} className="block no-underline">{card}</Link>;
-  }
-
-  return card;
 }
