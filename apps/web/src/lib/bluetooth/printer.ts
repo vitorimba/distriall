@@ -91,7 +91,7 @@ export class BluetoothPrinter {
     throw new Error('No writable characteristic found');
   }
 
-  private async writeChunk(chunk: Uint8Array): Promise<void> {
+  private async writeChunk(chunk: Uint8Array<ArrayBuffer>): Promise<void> {
     for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
       try {
         if (this.characteristic!.properties.writeWithoutResponse) {
