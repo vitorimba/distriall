@@ -89,6 +89,29 @@ export class ESCPOSBuilder {
     return this;
   }
 
+  /**
+   * Print QR Code using ESC/POS native commands (GS ( k).
+   */
+  qrCode(data: string, size = 6): this {
+    const encoded = encode(data);
+    const len = encoded.length + 3;
+    const pL = len & 0xff;
+    const pH = (len >> 8) & 0xff;
+
+    // QR model 2
+    this.buffer.push(0x1d, 0x28, 0x6b, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00);
+    // QR size (1-16)
+    this.buffer.push(0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x43, size);
+    // QR error correction (L=48, M=49, Q=50, H=51)
+    this.buffer.push(0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x45, 0x31);
+    // Store QR data
+    this.buffer.push(0x1d, 0x28, 0x6b, pL, pH, 0x31, 0x50, 0x30, ...encoded);
+    // Print QR
+    this.buffer.push(0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x51, 0x30);
+
+    return this;
+  }
+
   cut(): this {
     this.newline(3);
     this.buffer.push(0x1d, 0x56, 0x00); // GS V (full cut)

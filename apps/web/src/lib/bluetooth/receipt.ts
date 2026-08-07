@@ -7,6 +7,7 @@ const COMPANY = {
   address: 'R. Cezar Pupin, S.J. Rio Preto-SP',
   pixKey: '+5517997478319',
   pixInfo: 'Ag 0825 Cc 130037722',
+  pixBRCode: '00020126490014br.gov.bcb.pix0114+55179974783190209Distriall5204000053039865802BR5917TEMPEROS BOA MESA6013S J RIO PRETO62070503***63041EBD',
 };
 
 interface OrderForReceipt {
@@ -90,7 +91,13 @@ export function buildOrderReceipt(
 
   b.fullSeparator()
     .align('center')
-    .text('Pix: ' + COMPANY.pixKey)
+    .bold(true)
+    .text('Pix')
+    .newline()
+    .bold(false)
+    .qrCode(COMPANY.pixBRCode, 6)
+    .newline()
+    .text('Chave: ' + COMPANY.pixKey)
     .newline()
     .text(COMPANY.pixInfo)
     .newline()
