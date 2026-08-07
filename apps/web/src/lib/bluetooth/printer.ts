@@ -13,8 +13,10 @@ const KNOWN_CHARACTERISTICS = [
   '49535343-8841-43f4-a8d4-ecbe34729bb3',
 ];
 
-const CHUNK_SIZE = 512;
-const CHUNK_DELAY = 50;
+const CHUNK_SIZE = 100;
+const CHUNK_DELAY = 100;
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 300;
 const STORAGE_KEY = 'distriall-printer-id';
 
 export class BluetoothPrinter {
@@ -89,19 +91,31 @@ export class BluetoothPrinter {
     throw new Error('No writable characteristic found');
   }
 
+  private async writeChunk(chunk: Uint8Array): Promise<void> {
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        if (this.characteristic!.properties.writeWithoutResponse) {
+          await this.characteristic!.writeValueWithoutResponse(chunk);
+        } else {
+          await this.characteristic!.writeValueWithResponse(chunk);
+        }
+        return;
+      } catch (err) {
+        if (attempt === MAX_RETRIES - 1) throw err;
+        await new Promise((r) => setTimeout(r, RETRY_DELAY * (attempt + 1)));
+      }
+    }
+  }
+
   async print(data: Uint8Array): Promise<void> {
     if (!this.characteristic) {
       throw new Error('Printer not connected');
     }
 
-    // Send in chunks to avoid buffer overflow
+    // Send in small chunks to avoid GATT buffer overflow
     for (let i = 0; i < data.length; i += CHUNK_SIZE) {
       const chunk = data.slice(i, i + CHUNK_SIZE);
-      if (this.characteristic.properties.writeWithoutResponse) {
-        await this.characteristic.writeValueWithoutResponse(chunk);
-      } else {
-        await this.characteristic.writeValueWithResponse(chunk);
-      }
+      await this.writeChunk(chunk);
       if (i + CHUNK_SIZE < data.length) {
         await new Promise((r) => setTimeout(r, CHUNK_DELAY));
       }

@@ -78,8 +78,8 @@ export function usePrinter() {
       const via1 = buildOrderReceipt(order, accountName, 1);
       await printer.print(via1);
 
-      // Delay between vias
-      await new Promise((r) => setTimeout(r, 500));
+      // Delay between vias — give printer time to finish
+      await new Promise((r) => setTimeout(r, 1500));
 
       // Via 2 - Controle
       const via2 = buildOrderReceipt(order, accountName, 2);
