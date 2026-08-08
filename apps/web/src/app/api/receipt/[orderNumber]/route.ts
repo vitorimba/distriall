@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 
 const COMPANY = {
   name: 'Ind. e Com. Temperos Boa Mesa',
@@ -19,10 +18,6 @@ function stripAccents(str: string): string {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
-// Thermer JSON format:
-// type: 0=text, 1=image, 2=barcode, 3=QR
-// bold: 0|1, align: 0=left 1=center 2=right
-// format: 0=normal, 1=doubleH, 2=doubleH+W, 3=doubleW, 4=small
 type ThermerEntry = {
   type: number;
   content?: string;
@@ -31,7 +26,6 @@ type ThermerEntry = {
   format?: number;
   value?: string;
   size?: number;
-  path?: string;
 };
 
 function text(content: string, opts: { bold?: number; align?: number; format?: number } = {}): ThermerEntry {
@@ -49,40 +43,18 @@ function row(left: string, right: string, width = 32): ThermerEntry {
   return text(l + ' '.repeat(pad) + r);
 }
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ orderNumber: string }> }
-) {
-  const { orderNumber } = await params;
-  const num = parseInt(orderNumber, 10);
-  if (isNaN(num)) {
-    return NextResponse.json({ error: 'Invalid order number' }, { status: 400 });
-  }
+interface ReceiptData {
+  order_number: number;
+  client_name: string;
+  payment_method: string | null;
+  total: number;
+  subtotal?: number;
+  date: string;
+  items: { product_name: string; variant_name: string; quantity: number; unit_price: number; total: number }[];
+}
 
-  const supabase = await createClient();
-
-  const { data: order, error } = await supabase
-    .from('orders')
-    .select('order_number, total, subtotal, payment_method, created_at, clients(name), order_items(product_name, variant_name, quantity, unit_price, total)')
-    .eq('order_number', num)
-    .single();
-
-  if (error || !order) {
-    return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-  }
-
-  const clientRaw = order.clients as unknown;
-  const client = Array.isArray(clientRaw) ? (clientRaw[0] as { name: string } | undefined) : (clientRaw as { name: string } | null);
-  const items = (order.order_items ?? []) as {
-    product_name: string;
-    variant_name: string;
-    quantity: number;
-    unit_price: number;
-    total: number;
-  }[];
-  const totalQty = items.reduce((s, i) => s + i.quantity, 0);
-  const date = new Date(order.created_at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-
+function buildReceipt(data: ReceiptData): ThermerEntry[] {
+  const totalQty = data.items.reduce((s, i) => s + i.quantity, 0);
   const entries: ThermerEntry[] = [];
 
   // Header
@@ -92,14 +64,14 @@ export async function GET(
   entries.push(separator('='));
 
   // Order info
-  entries.push(row('Recibo:', `#${order.order_number}`));
-  entries.push(row('Cliente:', stripAccents(client?.name ?? '')));
-  entries.push(row('Data:', date));
-  entries.push(text(`${items.length} itens (Qtd.: ${totalQty})`, { align: 1, format: 4 }));
+  entries.push(row('Recibo:', `#${data.order_number}`));
+  entries.push(row('Cliente:', stripAccents(data.client_name)));
+  entries.push(row('Data:', data.date));
+  entries.push(text(`${data.items.length} itens (Qtd.: ${totalQty})`, { align: 1, format: 4 }));
   entries.push(separator());
 
   // Items
-  for (const item of items) {
+  for (const item of data.items) {
     const name = stripAccents(`${item.product_name} ${item.variant_name}`).slice(0, 20);
     entries.push(row(`${item.quantity} x ${name}`, `R$ ${fmt(item.total)}`));
     entries.push(text(`  1 UN x R$ ${fmt(item.unit_price)}`, { format: 4 }));
@@ -107,15 +79,15 @@ export async function GET(
   entries.push(separator());
 
   // Totals
-  if (order.subtotal != null) {
-    entries.push(row('Subtotal:', `R$ ${fmt(order.subtotal)}`));
+  if (data.subtotal != null) {
+    entries.push(row('Subtotal:', `R$ ${fmt(data.subtotal)}`));
   }
   entries.push(text(' '));
-  entries.push(row('Total:', `R$ ${fmt(order.total)}`));
+  entries.push(row('Total:', `R$ ${fmt(data.total)}`));
 
-  if (order.payment_method) {
+  if (data.payment_method) {
     entries.push(text('Pagamento:'));
-    entries.push(row(stripAccents(order.payment_method), `R$ ${fmt(order.total)}`));
+    entries.push(row(stripAccents(data.payment_method), `R$ ${fmt(data.total)}`));
   }
   entries.push(separator('='));
 
@@ -128,9 +100,37 @@ export async function GET(
 
   // Footer
   entries.push(text('AGRADECEMOS A PREFERENCIA', { align: 1 }));
-  entries.push(text(date, { align: 1, format: 4 }));
+  entries.push(text(data.date, { align: 1, format: 4 }));
   entries.push(text(' '));
   entries.push(text(' '));
 
-  return NextResponse.json(entries);
+  return entries;
+}
+
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ orderNumber: string }> }
+) {
+  const { orderNumber } = await params;
+  const { searchParams } = new URL(request.url);
+  const dataParam = searchParams.get('d');
+
+  if (!dataParam) {
+    return NextResponse.json({ error: 'Missing data' }, { status: 400 });
+  }
+
+  try {
+    const decoded = Buffer.from(dataParam, 'base64url').toString('utf-8');
+    const data: ReceiptData = JSON.parse(decoded);
+
+    // Validate order number matches
+    if (String(data.order_number) !== orderNumber) {
+      return NextResponse.json({ error: 'Order number mismatch' }, { status: 400 });
+    }
+
+    const entries = buildReceipt(data);
+    return NextResponse.json(entries);
+  } catch {
+    return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
+  }
 }

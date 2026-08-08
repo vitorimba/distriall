@@ -153,7 +153,24 @@ export function OrderReceipt({
   }
 
   function handleThermerPrint() {
-    const responseUrl = `${window.location.origin}/api/receipt/${orderNumber}`;
+    const receiptData = {
+      order_number: orderNumber,
+      client_name: clientName,
+      payment_method: paymentMethod,
+      total,
+      subtotal,
+      date,
+      items: items.map((i) => ({
+        product_name: i.product_name,
+        variant_name: i.variant_name,
+        quantity: i.quantity,
+        unit_price: i.unit_price,
+        total: i.total,
+      })),
+    };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(receiptData))))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const responseUrl = `${window.location.origin}/api/receipt/${orderNumber}?d=${encoded}`;
     window.location.href = `bprint://${responseUrl}`;
   }
 
