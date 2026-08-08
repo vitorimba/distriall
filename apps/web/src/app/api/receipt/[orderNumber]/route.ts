@@ -129,7 +129,10 @@ export async function GET(
     }
 
     const entries = buildReceipt(data);
-    return NextResponse.json(entries);
+    // Thermer expects JSON_FORCE_OBJECT format: {"0": {...}, "1": {...}, ...}
+    const obj: Record<string, ThermerEntry> = {};
+    entries.forEach((e, i) => { obj[String(i)] = e; });
+    return NextResponse.json(obj);
   } catch {
     return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
   }
