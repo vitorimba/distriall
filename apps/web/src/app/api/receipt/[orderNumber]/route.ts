@@ -71,7 +71,8 @@ export async function GET(
     return NextResponse.json({ error: 'Order not found' }, { status: 404 });
   }
 
-  const client = order.clients as { name: string } | null;
+  const clientRaw = order.clients as unknown;
+  const client = Array.isArray(clientRaw) ? (clientRaw[0] as { name: string } | undefined) : (clientRaw as { name: string } | null);
   const items = (order.order_items ?? []) as {
     product_name: string;
     variant_name: string;
