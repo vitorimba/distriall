@@ -85,12 +85,30 @@ export function OrderReceipt({
   }
 
   async function captureReceipt(): Promise<Blob | null> {
-    if (!receiptRef.current) return null;
-    const canvas = await html2canvas(receiptRef.current, {
-      backgroundColor: '#ffffff',
-      scale: 2,
-    });
-    return new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+    if (!receiptRef.current || !scrollRef.current) return null;
+
+    // Temporarily remove overflow so html2canvas captures the full receipt
+    const scrollEl = scrollRef.current;
+    const prevOverflow = scrollEl.style.overflow;
+    const prevMaxHeight = scrollEl.style.maxHeight;
+    const prevHeight = scrollEl.style.height;
+    scrollEl.style.overflow = 'visible';
+    scrollEl.style.maxHeight = 'none';
+    scrollEl.style.height = 'auto';
+
+    try {
+      const canvas = await html2canvas(receiptRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        scrollY: 0,
+        windowHeight: receiptRef.current.scrollHeight + 200,
+      });
+      return new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+    } finally {
+      scrollEl.style.overflow = prevOverflow;
+      scrollEl.style.maxHeight = prevMaxHeight;
+      scrollEl.style.height = prevHeight;
+    }
   }
 
   async function handleShareImage() {
