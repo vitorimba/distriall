@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { Bluetooth, Printer, Send } from 'lucide-react';
+import { Bluetooth, Printer, Send, Share2, Download } from 'lucide-react';
 import html2canvas from 'html2canvas-pro';
 import { Button } from '@/components/ui/button';
 import {
@@ -61,7 +61,7 @@ export function OrderReceipt({
       scrollRef.current.scrollTop = 0;
     }
     if (open) {
-      setPrintSuccess(false);
+      setTimeout(() => setPrintSuccess(false), 0);
     }
   }, [open]);
 
@@ -84,15 +84,19 @@ export function OrderReceipt({
     }
   }
 
+  async function captureReceipt(): Promise<Blob | null> {
+    if (!receiptRef.current) return null;
+    const canvas = await html2canvas(receiptRef.current, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+    });
+    return new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+  }
+
   async function handleShareImage() {
-    if (!receiptRef.current) return;
     setIsSharing(true);
     try {
-      const canvas = await html2canvas(receiptRef.current, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-      });
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+      const blob = await captureReceipt();
       if (!blob) return;
 
       const file = new File([blob], `recibo-${orderNumber}.png`, { type: 'image/png' });
@@ -100,19 +104,34 @@ export function OrderReceipt({
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: `Recibo #${orderNumber}` });
       } else {
-        // Fallback: download the image
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `recibo-${orderNumber}.png`;
-        a.click();
-        URL.revokeObjectURL(url);
+        downloadBlob(blob);
       }
     } catch {
       // user cancelled share or error
     } finally {
       setIsSharing(false);
     }
+  }
+
+  async function handleDownloadImage() {
+    setIsSharing(true);
+    try {
+      const blob = await captureReceipt();
+      if (blob) downloadBlob(blob);
+    } catch {
+      // error
+    } finally {
+      setIsSharing(false);
+    }
+  }
+
+  function downloadBlob(blob: Blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `recibo-${orderNumber}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   function handleForward() {
@@ -212,10 +231,16 @@ export function OrderReceipt({
               {isPrinting ? 'Imprimindo...' : 'Imprimir Cupom'}
             </Button>
           ) : (
-            <Button size="sm" onClick={handleShareImage} disabled={isSharing} className="flex-1">
-              <Printer className="mr-1 size-3.5" />
-              {isSharing ? 'Gerando...' : 'Imprimir'}
-            </Button>
+            <>
+              <Button size="sm" onClick={handleShareImage} disabled={isSharing} className="flex-1">
+                <Share2 className="mr-1 size-3.5" />
+                {isSharing ? 'Gerando...' : 'Compartilhar'}
+              </Button>
+              <Button size="sm" variant="outline" onClick={handleDownloadImage} disabled={isSharing} className="flex-1">
+                <Download className="mr-1 size-3.5" />
+                Salvar
+              </Button>
+            </>
           )}
         </DialogFooter>
       </DialogContent>
