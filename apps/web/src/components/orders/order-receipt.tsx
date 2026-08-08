@@ -152,6 +152,11 @@ export function OrderReceipt({
     URL.revokeObjectURL(url);
   }
 
+  function handleThermerPrint() {
+    const responseUrl = `${window.location.origin}/api/receipt/${orderNumber}`;
+    window.location.href = `bprint://${responseUrl}`;
+  }
+
   function handleForward() {
     const totalQty = items.reduce((s, i) => s + i.quantity, 0);
     const text = [
@@ -250,13 +255,13 @@ export function OrderReceipt({
             </Button>
           ) : (
             <>
-              <Button size="sm" onClick={handleShareImage} disabled={isSharing} className="flex-1">
+              <Button size="sm" onClick={handleThermerPrint} className="flex-1">
+                <Printer className="mr-1 size-3.5" />
+                Imprimir Cupom
+              </Button>
+              <Button size="sm" variant="outline" onClick={handleShareImage} disabled={isSharing} className="flex-1">
                 <Share2 className="mr-1 size-3.5" />
                 {isSharing ? 'Gerando...' : 'Compartilhar'}
-              </Button>
-              <Button size="sm" variant="outline" onClick={handleDownloadImage} disabled={isSharing} className="flex-1">
-                <Download className="mr-1 size-3.5" />
-                Salvar
               </Button>
             </>
           )}
