@@ -1,7 +1,7 @@
 import { ESCPOSBuilder } from './escpos';
 import type { ConsolidatedProduct, LoadingSummary } from '@/lib/utils/loading-consolidation';
 
-const COMPANY = {
+export const COMPANY = {
   name: 'Ind. e Com. Temperos Boa Mesa',
   phone: '+5517932254908',
   address: 'R. Cezar Pupin, S.J. Rio Preto-SP',

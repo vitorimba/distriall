@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Receipt } from '@/components/orders/receipt';
 import { usePrinter } from '@/hooks/use-printer';
+import { COMPANY } from '@/lib/bluetooth/receipt';
 
 interface ReceiptItem {
   product_name: string;
@@ -153,25 +154,66 @@ export function OrderReceipt({
   }
 
   function handleThermerPrint() {
-    const receiptData = {
-      order_number: orderNumber,
-      client_name: clientName,
-      payment_method: paymentMethod,
-      total,
-      subtotal,
-      date,
-      items: items.map((i) => ({
-        product_name: i.product_name,
-        variant_name: i.variant_name,
-        quantity: i.quantity,
-        unit_price: i.unit_price,
-        total: i.total,
-      })),
+    // Thermer official URL scheme (github.com/tussharmate/ios-thermer-custom-schema):
+    // thermer://?data=<url-encoded JSON object with numeric keys>
+    // PrintEntry types: 0=text (content,bold,align,format), 1=image (path/base64Image,align),
+    //                   2=barcode (value,height,align), 3=qr (value,size,align)
+    // align: 0=left 1=center 2=right | bold: 0/1 | format: 0-4 | <br /> = line break
+    const totalQty = items.reduce((s, i) => s + i.quantity, 0);
+    type PrintEntry = {
+      type: number;
+      content?: string;
+      bold?: number;
+      align?: number;
+      value?: string;
+      size?: number;
     };
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(receiptData))))
-      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    const responseUrl = `${window.location.origin}/api/receipt/${orderNumber}?d=${encoded}`;
-    window.location.href = `bprint://${responseUrl}`;
+    const entries: PrintEntry[] = [];
+    const text = (content: string, align = 0, bold = 0) =>
+      entries.push({ type: 0, content, bold, align });
+    const blank = () => text(' ');
+
+    // Header (centered)
+    text(COMPANY.name, 1, 1);
+    text(COMPANY.phone, 1);
+    text(COMPANY.address, 1);
+    text('--------------------------------');
+
+    // Order info
+    text(`Recibo: #${orderNumber}`);
+    text(`Cliente: ${clientName}`);
+    text(`Data: ${date}`);
+    blank();
+    text(`${items.length} itens (Qtd.: ${totalQty})`, 1);
+    text('--------------------------------');
+
+    // Items
+    for (const i of items) {
+      text(`${i.quantity} x ${i.product_name} ${i.variant_name} .... R$ ${formatBRL(i.total)}`);
+      text(`  1 UN x R$ ${formatBRL(i.unit_price)}`);
+    }
+
+    text('--------------------------------');
+    text(`Total: R$ ${formatBRL(total)}`, 0, 1);
+    if (paymentMethod) {
+      text(`Pagamento: ${paymentMethod} R$ ${formatBRL(total)}`);
+    }
+    text('--------------------------------');
+
+    // Pix QR (copia-e-cola BR Code)
+    text('Pix', 1, 1);
+    entries.push({ type: 3, value: COMPANY.pixBRCode, size: 40, align: 1 });
+    text(`Chave: ${COMPANY.pixKey}`, 1);
+    text(COMPANY.pixInfo, 1);
+    text('--------------------------------');
+    text('AGRADECEMOS A PREFERENCIA', 1);
+    text(date, 1);
+
+    // Thermer expects an object keyed by numeric index, url-encoded
+    const dataObj: Record<number, PrintEntry> = {};
+    entries.forEach((e, idx) => { dataObj[idx] = e; });
+    const encoded = encodeURIComponent(JSON.stringify(dataObj));
+    window.location.href = `thermer://?data=${encoded}`;
   }
 
   function handleForward() {
