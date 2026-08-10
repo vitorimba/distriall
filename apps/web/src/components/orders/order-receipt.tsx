@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/dialog';
 import { Receipt } from '@/components/orders/receipt';
 import { usePrinter } from '@/hooks/use-printer';
-import { COMPANY } from '@/lib/bluetooth/receipt';
 
 interface ReceiptItem {
   product_name: string;
@@ -153,67 +152,70 @@ export function OrderReceipt({
     URL.revokeObjectURL(url);
   }
 
-  function handleThermerPrint() {
+  async function handleThermerPrint() {
     // Thermer official URL scheme (github.com/tussharmate/ios-thermer-custom-schema):
     // thermer://?data=<url-encoded JSON object with numeric keys>
-    // PrintEntry types: 0=text (content,bold,align,format), 1=image (path/base64Image,align),
-    //                   2=barcode (value,height,align), 3=qr (value,size,align)
-    // align: 0=left 1=center 2=right | bold: 0/1 | format: 0-4 | <br /> = line break
-    const totalQty = items.reduce((s, i) => s + i.quantity, 0);
-    type PrintEntry = {
-      type: number;
-      content?: string;
-      bold?: number;
-      align?: number;
-      value?: string;
-      size?: number;
-    };
-    const entries: PrintEntry[] = [];
-    const text = (content: string, align = 0, bold = 0) =>
-      entries.push({ type: 0, content, bold, align });
-    const blank = () => text(' ');
+    // We print the receipt AS AN IMAGE (PrintEntry type 1, base64Image) so the output
+    // matches the app preview pixel-for-pixel — aligned columns + the Pix QR code.
+    setIsSharing(true);
+    try {
+      const base64 = await captureReceiptBase64();
+      if (!base64) return;
 
-    // Header (centered)
-    text(COMPANY.name, 1, 1);
-    text(COMPANY.phone, 1);
-    text(COMPANY.address, 1);
-    text('--------------------------------');
-
-    // Order info
-    text(`Recibo: #${orderNumber}`);
-    text(`Cliente: ${clientName}`);
-    text(`Data: ${date}`);
-    blank();
-    text(`${items.length} itens (Qtd.: ${totalQty})`, 1);
-    text('--------------------------------');
-
-    // Items
-    for (const i of items) {
-      text(`${i.quantity} x ${i.product_name} ${i.variant_name} .... R$ ${formatBRL(i.total)}`);
-      text(`  1 UN x R$ ${formatBRL(i.unit_price)}`);
+      const entry = { type: 1, align: 1, base64Image: base64 };
+      // Thermer expects an object keyed by index (single image entry here).
+      const dataObj = { '000': entry };
+      const encoded = encodeURIComponent(JSON.stringify(dataObj));
+      window.location.assign(`thermer://?data=${encoded}`);
+    } catch {
+      // error
+    } finally {
+      setIsSharing(false);
     }
+  }
 
-    text('--------------------------------');
-    text(`Total: R$ ${formatBRL(total)}`, 0, 1);
-    if (paymentMethod) {
-      text(`Pagamento: ${paymentMethod} R$ ${formatBRL(total)}`);
+  // Capture the receipt preview as a printer-width PNG and return raw base64
+  // (no data: prefix — Thermer wants the bare base64 string). Width is capped to
+  // 384px (58mm thermal head) to keep the deep-link URL within iOS limits.
+  async function captureReceiptBase64(): Promise<string | null> {
+    if (!receiptRef.current || !scrollRef.current) return null;
+
+    const scrollEl = scrollRef.current;
+    const prevOverflow = scrollEl.style.overflow;
+    const prevMaxHeight = scrollEl.style.maxHeight;
+    const prevHeight = scrollEl.style.height;
+    scrollEl.style.overflow = 'visible';
+    scrollEl.style.maxHeight = 'none';
+    scrollEl.style.height = 'auto';
+
+    try {
+      const source = await html2canvas(receiptRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        scrollY: 0,
+        windowHeight: receiptRef.current.scrollHeight + 200,
+      });
+
+      // Downscale to 384px wide (thermal printer resolution) to shrink the payload.
+      const TARGET_WIDTH = 384;
+      const ratio = TARGET_WIDTH / source.width;
+      const out = document.createElement('canvas');
+      out.width = TARGET_WIDTH;
+      out.height = Math.round(source.height * ratio);
+      const ctx = out.getContext('2d');
+      if (!ctx) return null;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, out.width, out.height);
+      ctx.drawImage(source, 0, 0, out.width, out.height);
+
+      // PNG keeps text/QR crisp; strip the "data:image/png;base64," prefix.
+      const dataUrl = out.toDataURL('image/png');
+      return dataUrl.split(',')[1] ?? null;
+    } finally {
+      scrollEl.style.overflow = prevOverflow;
+      scrollEl.style.maxHeight = prevMaxHeight;
+      scrollEl.style.height = prevHeight;
     }
-    text('--------------------------------');
-
-    // Pix QR (copia-e-cola BR Code)
-    text('Pix', 1, 1);
-    entries.push({ type: 3, value: COMPANY.pixBRCode, size: 40, align: 1 });
-    text(`Chave: ${COMPANY.pixKey}`, 1);
-    text(COMPANY.pixInfo, 1);
-    text('--------------------------------');
-    text('AGRADECEMOS A PREFERENCIA', 1);
-    text(date, 1);
-
-    // Thermer expects an object keyed by numeric index, url-encoded
-    const dataObj: Record<number, PrintEntry> = {};
-    entries.forEach((e, idx) => { dataObj[idx] = e; });
-    const encoded = encodeURIComponent(JSON.stringify(dataObj));
-    window.location.href = `thermer://?data=${encoded}`;
   }
 
   function handleForward() {
