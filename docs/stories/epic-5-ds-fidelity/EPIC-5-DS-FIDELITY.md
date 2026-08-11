@@ -30,7 +30,8 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.4 | Formularios e Mascaras ✓ COMPLETE | 4 | 13 | MEDIUM |
 | 5.5 | Telas Faltantes e Patterns ✓ COMPLETE | 6 | 23 | MEDIUM |
 | 5.6 | Polish Visual Final ✓ COMPLETE | 5 | 12 | LOW |
-| | **Total** | **32** | **102** | |
+| 5.7 | Refresh Visual do Dashboard + Auditoria pt-BR ✓ COMPLETE | 1 | 5 | MEDIUM |
+| | **Total** | **33** | **107** | |
 
 ## Criterio de conclusao
 
@@ -82,6 +83,7 @@ Alinhar o codigo do app (`apps/web`) ao Design System exportado do Claude Design
 | 5.6.3 | Acessibilidade — focus ring, aria-labels, contraste | Done | 2026-06-14 |
 | 5.6.4 | Pagination em listas longas | Done | 2026-06-14 |
 | 5.6.5 | Bottom navigation mobile — 5 itens corretos | Done | 2026-06-14 |
+| 5.7.1 | Refresh visual do dashboard + auditoria de acentuacao pt-BR | Done | 2026-08-11 |
 
 ## Development Log
 
