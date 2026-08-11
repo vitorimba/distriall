@@ -103,6 +103,9 @@ export function useStats() {
         prevParams.set('period', 'custom');
         prevParams.set('start_date', prevRange.start);
         prevParams.set('end_date', prevRange.end);
+        // Só precisamos de revenue/profit/order_count do período anterior para o delta.
+        // delta_only evita as agregações pesadas no servidor. O spark vem do período atual.
+        prevParams.set('delta_only', '1');
 
         const prevRes = await fetch(`/api/stats?${prevParams.toString()}`);
         if (prevRes.ok) {
