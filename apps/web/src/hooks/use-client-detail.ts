@@ -63,8 +63,7 @@ export function useClientDetail(clientId: string) {
           });
           setLoading(false);
         }
-      } catch (err) {
-        console.error('Error loading client detail:', err);
+      } catch {
         if (!cancelled) setLoading(false);
       }
     }

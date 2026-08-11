@@ -1,5 +1,15 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { z } from 'zod/v4';
+
+const generateSettlementSchema = z.object({
+  account_id: z.string().uuid(),
+  period_start: z.string().date(),
+  period_end: z.string().date(),
+}).refine(
+  (data) => data.period_start < data.period_end,
+  { message: 'period_start deve ser anterior a period_end' }
+);
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -13,18 +23,16 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { account_id, period_start, period_end } = body as {
-    account_id: string;
-    period_start: string;
-    period_end: string;
-  };
+  const parsed = generateSettlementSchema.safeParse(body);
 
-  if (!account_id || !period_start || !period_end) {
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: 'account_id, period_start e period_end sao obrigatorios' },
+      { error: 'account_id, period_start e period_end são obrigatórios', details: parsed.error.issues },
       { status: 400 }
     );
   }
+
+  const { account_id, period_start, period_end } = parsed.data;
 
   // Verify user has admin role in the account
   const { data: accountUser } = await supabase

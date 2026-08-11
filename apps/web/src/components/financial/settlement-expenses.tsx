@@ -35,7 +35,7 @@ export function SettlementExpenses({ expenses }: SettlementExpensesProps) {
         {expanded && (
           <div className="space-y-1 pt-1">
             {expenses.length === 0 ? (
-              <EmptyState icon={DollarSign} title="Nenhum gasto no periodo" />
+              <EmptyState icon={DollarSign} title="Nenhum gasto no período" />
             ) : (
               expenses.map((row) => {
                 const expense = row.expenses;

@@ -29,7 +29,7 @@ function AccountGate({ children }: { children: React.ReactNode }) {
         <div className="max-w-sm space-y-4 text-center">
           <h2 className="text-lg font-semibold">Sem acesso</h2>
           <p className="text-sm text-muted-foreground">
-            Sua conta nao esta vinculada a nenhuma empresa ativa. Entre em contato com o administrador.
+            Sua conta não está vinculada a nenhuma empresa ativa. Entre em contato com o administrador.
           </p>
           <Button variant="outline" onClick={signOut}>
             Sair

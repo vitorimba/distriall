@@ -12,6 +12,8 @@ interface StatsCardProps {
   value: ReactNode;
   subtitle?: string;
   icon?: ReactNode;
+  /** Cor do badge do ícone (token do DS: var(--chart-1..5)). Ignorado quando accent. */
+  iconColor?: string;
   className?: string;
   delta?: number;
   deltaLabel?: string;
@@ -25,6 +27,7 @@ export function StatsCard({
   value,
   subtitle,
   icon,
+  iconColor = 'var(--chart-1)',
   className,
   delta,
   deltaLabel,
@@ -38,32 +41,58 @@ export function StatsCard({
   return (
     <Card
       className={cn('relative overflow-hidden', className)}
-      style={accent ? { background: 'var(--primary)', color: 'var(--primary-foreground)' } : undefined}
+      style={
+        accent
+          ? {
+              background: 'var(--primary)',
+              color: 'var(--primary-foreground)',
+              boxShadow: 'var(--shadow-accent)',
+            }
+          : { boxShadow: 'var(--shadow-card)' }
+      }
     >
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <CardTitle
-            className="text-sm font-medium"
+            className="text-base font-medium"
             style={accent ? { color: 'var(--primary-foreground)' } : { color: 'var(--text-secondary)' }}
           >
             {title}
           </CardTitle>
-          {icon && <span style={accent ? { color: 'var(--primary-foreground)' } : { color: 'var(--text-secondary)' }}>{icon}</span>}
+          {icon && (
+            <span
+              className="flex size-9 shrink-0 items-center justify-center rounded-[var(--radius-ds-md)]"
+              style={
+                accent
+                  ? { background: 'rgba(255,255,255,0.16)', color: 'var(--primary-foreground)' }
+                  : { background: `color-mix(in oklab, ${iconColor} 14%, transparent)`, color: iconColor }
+              }
+              aria-hidden="true"
+            >
+              {icon}
+            </span>
+          )}
         </div>
       </CardHeader>
       <CardContent>
         {loading ? (
-          <Skeleton variant="rect" className="h-8 w-24" />
+          <Skeleton variant="rect" className="h-10 w-28" />
         ) : (
-          <p className={cn('text-lg sm:text-2xl font-bold truncate', accent ? '' : 'text-foreground')} title={typeof value === 'string' ? value : undefined}>{value}</p>
+          <p
+            className={cn('font-bold leading-tight tracking-tight truncate', accent ? '' : 'text-foreground')}
+            style={{ fontSize: 'var(--text-display)' }}
+            title={typeof value === 'string' ? value : undefined}
+          >
+            {value}
+          </p>
         )}
 
         {hasDelta && !loading && (
-          <div className="mt-1 flex items-center gap-1">
+          <div className="mt-1.5 flex items-center gap-1">
             {isPositive ? (
-              <TrendingUp className="size-3" style={{ color: accent ? 'var(--primary-foreground)' : 'var(--text-positive)' }} />
+              <TrendingUp className="size-3.5" style={{ color: accent ? 'var(--primary-foreground)' : 'var(--text-positive)' }} />
             ) : (
-              <TrendingDown className="size-3" style={{ color: accent ? 'var(--primary-foreground)' : 'var(--status-vencido)' }} />
+              <TrendingDown className="size-3.5" style={{ color: accent ? 'var(--primary-foreground)' : 'var(--status-vencido)' }} />
             )}
             <span
               className="text-xs font-semibold"
@@ -89,7 +118,7 @@ export function StatsCard({
         )}
 
         {subtitle && !loading && (
-          <p className="mt-1 text-xs" style={{ color: accent ? 'rgba(255,255,255,0.7)' : 'var(--text-secondary)' }}>
+          <p className="mt-1.5 text-sm font-medium" style={{ color: accent ? 'rgba(255,255,255,0.72)' : 'var(--text-secondary)' }}>
             {subtitle}
           </p>
         )}

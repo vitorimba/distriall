@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Distriall",
-  description: "Gestao de vendas e distribuicao",
+  description: "Gestão de vendas e distribuição",
   manifest: "/manifest.json",
 };
 

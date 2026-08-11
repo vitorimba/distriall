@@ -35,13 +35,13 @@ export default function StatsPage() {
   const periodOptions = [
     { value: 'day', label: 'Hoje' },
     { value: 'week', label: 'Semana' },
-    { value: 'month', label: 'Mes' },
+    { value: 'month', label: 'Mês' },
     { value: 'custom', label: 'Customizado' },
   ];
 
   return (
     <div className="space-y-6 p-4 pb-20">
-      <PageHeader title="Estatisticas" />
+      <PageHeader title="Estatísticas" />
 
       {/* Filters */}
       <div className="flex flex-wrap items-end gap-3">
@@ -64,7 +64,7 @@ export default function StatsPage() {
         {period === 'custom' && (
           <div className="flex items-center gap-2">
             <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-36" />
-            <span className="text-sm text-muted-foreground">ate</span>
+            <span className="text-sm text-muted-foreground">até</span>
             <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-36" />
           </div>
         )}

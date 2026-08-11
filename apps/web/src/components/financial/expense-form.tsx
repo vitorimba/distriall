@@ -184,7 +184,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
           <CardTitle>{isEdit ? 'Editar Gasto' : 'Novo Gasto'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Field label="Descricao" required error={fieldErrors.description}>
+          <Field label="Descrição" required error={fieldErrors.description}>
             <Input
               id="description"
               value={description}
@@ -260,7 +260,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
             </Field>
           </div>
 
-          <Field label="Recorrencia">
+          <Field label="Recorrência">
             <select
               id="recurrence"
               value={recurrence}
@@ -310,7 +310,7 @@ export function ExpenseForm({ expense }: ExpenseFormProps) {
 
       <div className="flex gap-2">
         <Button type="submit" className="flex-1" disabled={saving}>
-          {saving ? 'Salvando...' : isEdit ? 'Salvar Alteracoes' : 'Criar Gasto'}
+          {saving ? 'Salvando...' : isEdit ? 'Salvar Alterações' : 'Criar Gasto'}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()}>
           Cancelar

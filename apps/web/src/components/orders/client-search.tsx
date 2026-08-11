@@ -113,7 +113,7 @@ export function ClientSearch() {
                 <span className="flex-1">{c.name}</span>
                 {priceCount > 0 && (
                   <Badge variant="secondary" className="text-[10px]">
-                    {priceCount} preco{priceCount !== 1 ? 's' : ''}
+                    {priceCount} preço{priceCount !== 1 ? 's' : ''}
                   </Badge>
                 )}
               </button>

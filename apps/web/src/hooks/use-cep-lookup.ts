@@ -53,7 +53,7 @@ export function useCepLookup(): UseCepLookupReturn {
         };
       }
 
-      setError('CEP nao encontrado');
+      setError('CEP não encontrado');
       return null;
     } catch {
       setError('Erro ao consultar CEP');

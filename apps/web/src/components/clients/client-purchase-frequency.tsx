@@ -68,13 +68,13 @@ export function ClientPurchaseFrequency({ clientId }: ClientPurchaseFrequencyPro
       <CardContent className="pt-4 pb-4 space-y-2">
         <div className="flex items-center gap-2 text-sm">
           <Calendar className="size-4 text-muted-foreground shrink-0" />
-          <span className="text-muted-foreground">Ultimo pedido:</span>
+          <span className="text-muted-foreground">Último pedido:</span>
           {data.lastOrderDate ? (
             <span className="font-medium">
               {data.lastOrderDate.toLocaleDateString('pt-BR')}
               {data.daysSinceLastOrder !== null && (
                 <span className="text-muted-foreground font-normal">
-                  {' '}(ha {data.daysSinceLastOrder} {data.daysSinceLastOrder === 1 ? 'dia' : 'dias'})
+                  {' '}(há {data.daysSinceLastOrder} {data.daysSinceLastOrder === 1 ? 'dia' : 'dias'})
                 </span>
               )}
             </span>
@@ -84,7 +84,7 @@ export function ClientPurchaseFrequency({ clientId }: ClientPurchaseFrequencyPro
         </div>
         <div className="flex items-center gap-2 text-sm">
           <TrendingUp className="size-4 text-muted-foreground shrink-0" />
-          <span className="text-muted-foreground">Frequencia:</span>
+          <span className="text-muted-foreground">Frequência:</span>
           <span className="font-medium">{label}</span>
           {data.avgIntervalDays > 0 && (
             <span className="text-muted-foreground">(~{data.avgIntervalDays} dias)</span>

@@ -32,7 +32,7 @@ const PAYMENT_LABELS: Record<string, string> = {
   pix: 'Pix',
   boleto: 'Boleto',
   vale: 'Vale',
-  cartao: 'Cartao',
+  cartao: 'Cartão',
 };
 
 export function ClientList() {
@@ -61,7 +61,7 @@ export function ClientList() {
 
     const { data, error: fetchError } = await query;
     if (fetchError) {
-      setError('Nao foi possivel carregar os clientes.');
+      setError('Não foi possível carregar os clientes.');
     } else {
       setError(null);
       setClients((data as unknown as Client[]) ?? []);
@@ -118,7 +118,7 @@ export function ClientList() {
         <EmptyState
           icon={Users}
           title={search ? 'Nenhum cliente encontrado' : 'Nenhum cliente ainda'}
-          description={search ? undefined : 'Cadastre o primeiro cliente para ve-lo aqui.'}
+          description={search ? undefined : 'Cadastre o primeiro cliente para vê-lo aqui.'}
         />
       ) : !error ? (
         <div className="space-y-1">

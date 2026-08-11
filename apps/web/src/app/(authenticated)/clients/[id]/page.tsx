@@ -35,7 +35,7 @@ export default function ClientDetailPage() {
   if (!client) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Cliente nao encontrado.
+        Cliente não encontrado.
       </div>
     );
   }
@@ -90,7 +90,7 @@ export default function ClientDetailPage() {
           )}
           {client.default_payment_method && (
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">Pagamento padrao:</span>
+              <span className="text-muted-foreground">Pagamento padrão:</span>
               <span className="font-medium">
                 {PAYMENT_METHOD_LABELS[client.default_payment_method] ?? client.default_payment_method}
               </span>

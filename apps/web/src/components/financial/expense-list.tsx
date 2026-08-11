@@ -53,14 +53,14 @@ interface ExpenseRow {
 const CATEGORY_FILTERS = [
   { value: 'all', label: 'Todas' },
   { value: 'fixo', label: 'Fixo' },
-  { value: 'variavel', label: 'Variavel' },
+  { value: 'variavel', label: 'Variável' },
 ];
 
 const TYPE_FILTERS = [
   { value: 'all', label: 'Todos' },
   { value: 'impostos', label: 'Impostos' },
   { value: 'gasolina', label: 'Gasolina' },
-  { value: 'manutencao', label: 'Manutencao' },
+  { value: 'manutencao', label: 'Manutenção' },
   { value: 'outros', label: 'Outros' },
 ];
 
@@ -111,7 +111,7 @@ export function ExpenseList() {
         }))
       );
     } catch {
-      setLoadError('Nao foi possivel carregar os gastos.');
+      setLoadError('Não foi possível carregar os gastos.');
       setExpenses([]);
     } finally {
       setLoading(false);
@@ -124,12 +124,15 @@ export function ExpenseList() {
     return () => { cancelled = true; clearTimeout(t); };
   }, [activeAccount, categoryFilter, typeFilter, dateFrom, dateTo]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => { setPage(1); }, [categoryFilter, typeFilter, dateFrom, dateTo]);
+  useEffect(() => {
+    const t = setTimeout(() => setPage(1), 0);
+    return () => clearTimeout(t);
+  }, [categoryFilter, typeFilter, dateFrom, dateTo]);
 
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function handleDelete(id: string) {
-    if (!confirm('Confirma exclusao do gasto?')) return;
+    if (!confirm('Confirma exclusão do gasto?')) return;
     setDeleteError(null);
     try {
       await deleteExpense(id);
@@ -165,7 +168,7 @@ export function ExpenseList() {
       <Card>
         <CardContent className="flex items-center justify-between pt-4">
           <div>
-            <p className="text-xs text-muted-foreground">Total no periodo</p>
+            <p className="text-xs text-muted-foreground">Total no período</p>
             <Money value={totalSum} className="text-lg font-bold" />
           </div>
           <p className="text-sm text-muted-foreground">{expenses.length} gasto{expenses.length !== 1 ? 's' : ''}</p>
@@ -194,7 +197,7 @@ export function ExpenseList() {
               <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">Ate</Label>
+              <Label className="text-xs">Até</Label>
               <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
             </div>
           </div>

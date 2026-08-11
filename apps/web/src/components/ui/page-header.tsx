@@ -26,8 +26,17 @@ export function PageHeader({ title, subtitle, onBack, actions, children, classNa
           </Tooltip>
         )}
         <div>
-          <h1 className="text-lg font-bold tracking-tight text-foreground">{title}</h1>
-          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+          <h1
+            className="font-bold tracking-tight text-foreground"
+            style={{ fontSize: 'var(--text-2xl)' }}
+          >
+            {title}
+          </h1>
+          {subtitle && (
+            <p className="text-muted-foreground" style={{ fontSize: 'var(--text-base)' }}>
+              {subtitle}
+            </p>
+          )}
         </div>
         {children}
       </div>

@@ -47,13 +47,13 @@ export function DeliveryConfirmSheet({
 
         <div className="space-y-1.5">
           <label className="text-sm text-muted-foreground font-medium" htmlFor="observation">
-            Observacao (opcional)
+            Observação (opcional)
           </label>
           <textarea
             id="observation"
             value={observation}
             onChange={(e) => setObservation(e.target.value)}
-            placeholder="Alguma observacao? (opcional)"
+            placeholder="Alguma observação? (opcional)"
             className="w-full rounded-lg border border-input bg-background p-3 text-sm text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
             rows={3}
           />

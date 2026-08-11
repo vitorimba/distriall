@@ -54,8 +54,8 @@ export function parseMoney(formatted: string): number {
 }
 
 export const MSG = {
-  required: 'Campo obrigatorio',
+  required: 'Campo obrigatório',
   phoneIncomplete: 'Telefone incompleto',
-  invalidCpfCnpj: 'CPF ou CNPJ invalido',
-  invalidCep: 'CEP invalido',
+  invalidCpfCnpj: 'CPF ou CNPJ inválido',
+  invalidCep: 'CEP inválido',
 } as const;

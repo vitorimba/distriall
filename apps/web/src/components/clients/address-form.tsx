@@ -74,11 +74,11 @@ export function AddressForm({ initial, onSave, onCancel, saving }: AddressFormPr
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Rotulo">
+        <Field label="Rótulo">
           <Input
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            placeholder="Ex: Matriz, Filial, Deposito"
+            placeholder="Ex: Matriz, Filial, Depósito"
           />
         </Field>
         <Field label="CEP">
@@ -105,7 +105,7 @@ export function AddressForm({ initial, onSave, onCancel, saving }: AddressFormPr
             <Input value={street} onChange={(e) => setStreet(e.target.value)} />
           </Field>
         </div>
-        <Field label="Numero">
+        <Field label="Número">
           <Input value={number} onChange={(e) => setNumber(e.target.value)} />
         </Field>
       </div>
@@ -134,7 +134,7 @@ export function AddressForm({ initial, onSave, onCancel, saving }: AddressFormPr
             onChange={(e) => setIsFiscal(e.target.checked)}
             className="h-4 w-4 rounded border-gray-300"
           />
-          Endereco fiscal (NF-e)
+          Endereço fiscal (NF-e)
         </label>
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -143,13 +143,13 @@ export function AddressForm({ initial, onSave, onCancel, saving }: AddressFormPr
             onChange={(e) => setIsDelivery(e.target.checked)}
             className="h-4 w-4 rounded border-gray-300"
           />
-          Entrega padrao
+          Entrega padrão
         </label>
       </div>
 
       <div className="flex gap-2 pt-2">
         <Button type="submit" size="sm" disabled={saving}>
-          {saving ? 'Salvando...' : 'Salvar endereco'}
+          {saving ? 'Salvando...' : 'Salvar endereço'}
         </Button>
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>
           Cancelar

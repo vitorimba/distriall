@@ -48,6 +48,10 @@ export async function GET(request: Request) {
   const period = searchParams.get('period') ?? 'month';
   const startDate = searchParams.get('start_date');
   const endDate = searchParams.get('end_date');
+  // delta_only: chamada do período anterior só precisa de revenue/profit/order_count
+  // para o cálculo de variação. Pula as agregações pesadas (pagamentos, ranking,
+  // evolução de 12 semanas) que o front descarta nessa chamada.
+  const deltaOnly = searchParams.get('delta_only') === '1';
 
   const { start, end } = getDateRange(period, startDate, endDate);
 
@@ -113,6 +117,27 @@ export async function GET(request: Request) {
   const order_count = orders.length;
   const client_count = new Set(orders.map((o) => o.client_id).filter(Boolean)).size;
   const avg_ticket = order_count > 0 ? revenue / order_count : 0;
+
+  // Fast path: para o cálculo de delta o front só usa revenue/profit/order_count.
+  // Retorna cedo e evita as 3 queries pesadas (pagamentos, itens, 84 dias de pedidos).
+  if (deltaOnly) {
+    const deltaResponse: DashboardStats = {
+      revenue,
+      cost,
+      profit,
+      order_count,
+      client_count,
+      avg_ticket,
+      payment_breakdown: [],
+      product_ranking: [],
+      weekly_evolution: [],
+    };
+    return NextResponse.json(deltaResponse, {
+      headers: {
+        'Cache-Control': 'private, max-age=60, stale-while-revalidate=300',
+      },
+    });
+  }
 
   // Queries 2-4 in parallel (independent of each other)
   const twelveWeeksAgo = new Date();

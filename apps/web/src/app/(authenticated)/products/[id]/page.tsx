@@ -77,7 +77,7 @@ export default function EditProductPage() {
   if (!product) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Produto nao encontrado.
+        Produto não encontrado.
       </div>
     );
   }

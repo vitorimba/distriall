@@ -10,19 +10,19 @@ import { Bluetooth, Check, X, Printer } from 'lucide-react';
 
 const FAQ = [
   {
-    title: 'A impressora nao aparece na lista de pareamento',
+    title: 'A impressora não aparece na lista de pareamento',
     content:
-      'Verifique se a impressora esta ligada e em modo de pareamento (LED piscando). Mantenha-a a menos de 1 metro do aparelho e tente novamente.',
+      'Verifique se a impressora está ligada e em modo de pareamento (LED piscando). Mantenha-a a menos de 1 metro do aparelho e tente novamente.',
   },
   {
     title: 'O recibo sai em branco ou cortado',
     content:
-      'Confirme a largura do papel nas opcoes da impressora (58mm ou 80mm). Recibos cortados geralmente indicam configuracao de largura errada.',
+      'Confirme a largura do papel nas opções da impressora (58mm ou 80mm). Recibos cortados geralmente indicam configuração de largura errada.',
   },
   {
-    title: 'A conexao cai durante a impressao',
+    title: 'A conexão cai durante a impressão',
     content:
-      'Bluetooth de baixa energia pode hibernar. Desative a economia de bateria para o navegador nas configuracoes do Android.',
+      'Bluetooth de baixa energia pode hibernar. Desative a economia de bateria para o navegador nas configurações do Android.',
   },
 ];
 
@@ -49,14 +49,14 @@ export default function SettingsPage() {
 
   return (
     <div className="px-4 py-4 space-y-4">
-      <PageHeader title="Configuracoes" />
+      <PageHeader title="Configurações" />
 
       {/* Impressora termica */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Bluetooth className="size-4" />
-            Impressora termica
+            Impressora térmica
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -117,7 +117,7 @@ export default function SettingsPage() {
                   disabled={isPrinting}
                 >
                   <Printer className="mr-1 size-3.5" />
-                  {isPrinting ? 'Imprimindo...' : 'Teste de impressao'}
+                  {isPrinting ? 'Imprimindo...' : 'Teste de impressão'}
                 </Button>
                 <Button size="sm" variant="outline" onClick={disconnect}>
                   Desconectar
@@ -130,7 +130,7 @@ export default function SettingsPage() {
 
           {!isSupported && (
             <p className="text-xs text-muted-foreground">
-              Web Bluetooth nao e suportado neste navegador. Use Android Chrome
+              Web Bluetooth não é suportado neste navegador. Use Android Chrome
               ou Windows Chrome/Edge.
             </p>
           )}
@@ -170,7 +170,7 @@ export default function SettingsPage() {
 
           <Alert
             tone="warning"
-            title="Safari e Firefox nao suportam Web Bluetooth"
+            title="Safari e Firefox não suportam Web Bluetooth"
           >
             Para imprimir recibos, use Chrome ou Edge no Android.
           </Alert>
@@ -180,7 +180,7 @@ export default function SettingsPage() {
       {/* Solucao de problemas */}
       <Card>
         <CardHeader className="pb-0">
-          <CardTitle className="text-base">Solucao de problemas</CardTitle>
+          <CardTitle className="text-base">Solução de problemas</CardTitle>
         </CardHeader>
         <CardContent className="px-0 pb-0">
           <Accordion items={FAQ} />

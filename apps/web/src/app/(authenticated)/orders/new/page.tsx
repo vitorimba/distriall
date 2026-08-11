@@ -187,7 +187,7 @@ function NewOrderContent() {
           <Repeat2 className="size-4 text-amber-600 shrink-0" />
           <div className="text-sm">
             <span className="font-medium text-amber-700">Troca em andamento</span>
-            <span className="text-amber-600"> · Credito: </span>
+            <span className="text-amber-600"> · Crédito: </span>
             <Money value={exchangeCredit} className="font-medium text-amber-700" />
           </div>
         </div>
@@ -224,12 +224,12 @@ function NewOrderContent() {
                 onChange={(e) => setDeliveryDate(e.target.value)}
               />
             </Field>
-            <Field label="Observacoes">
+            <Field label="Observações">
               <Textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
-                placeholder="Observacoes do pedido..."
+                placeholder="Observações do pedido..."
               />
             </Field>
           </CardContent>

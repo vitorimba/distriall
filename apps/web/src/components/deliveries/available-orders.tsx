@@ -21,7 +21,7 @@ export function AvailableOrders({ orders, routeOrderIds, onAdd, loading }: Avail
       {/* Card header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)]">
         <span className="font-semibold text-[var(--text-primary)] text-sm">
-          Pedidos disponiveis ({loading ? '…' : pending.length})
+          Pedidos disponíveis ({loading ? '…' : pending.length})
         </span>
       </div>
 
@@ -34,7 +34,7 @@ export function AvailableOrders({ orders, routeOrderIds, onAdd, loading }: Avail
         </div>
       ) : pending.length === 0 ? (
         <div className="py-10 text-center text-sm text-[var(--text-muted)] px-4">
-          Todos os pedidos carregados ja foram adicionados a rota
+          Todos os pedidos carregados já foram adicionados à rota
         </div>
       ) : (
         <div>
@@ -80,7 +80,7 @@ export function AvailableOrders({ orders, routeOrderIds, onAdd, loading }: Avail
                 <button
                   onClick={(e) => { e.stopPropagation(); onAdd(order); }}
                   className="ml-1 shrink-0 rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent-fg)]"
-                  aria-label={`Adicionar ${order.client_name} a rota`}
+                  aria-label={`Adicionar ${order.client_name} à rota`}
                 >
                   <Plus className="size-4" />
                 </button>

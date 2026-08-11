@@ -16,7 +16,7 @@ import { PageHeader } from '@/components/ui/page-header';
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'Todos' },
-  { value: 'lancado', label: 'Lancado' },
+  { value: 'lancado', label: 'Lançado' },
   { value: 'confirmado', label: 'Confirmado' },
 ];
 
@@ -68,7 +68,7 @@ export default function LoadingPage() {
       <PageHeader title="Carregamento" />
 
       <SearchField
-        placeholder="Buscar por cliente ou numero..."
+        placeholder="Buscar por cliente ou número..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onClear={() => setSearch('')}

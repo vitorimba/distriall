@@ -66,7 +66,7 @@ export function ProductList() {
 
     const { data, error: fetchError } = await query;
     if (fetchError) {
-      setError('Nao foi possivel carregar os produtos.');
+      setError('Não foi possível carregar os produtos.');
     } else {
       setError(null);
       const productsData = (data as Product[]) ?? [];
@@ -167,7 +167,7 @@ export function ProductList() {
         <EmptyState
           icon={Package}
           title={search ? 'Nenhum produto encontrado' : 'Nenhum produto ainda'}
-          description={search ? undefined : 'Cadastre o primeiro produto para ve-lo aqui.'}
+          description={search ? undefined : 'Cadastre o primeiro produto para vê-lo aqui.'}
         />
       ) : !error ? (
         <div className="space-y-1">
@@ -195,7 +195,7 @@ export function ProductList() {
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {variants.length} variacao{variants.length !== 1 ? 'es' : ''} · {getPriceRange(variants)}
+                      {variants.length} variação{variants.length !== 1 ? 'ões' : ''} · {getPriceRange(variants)}
                     </div>
                   </div>
                   <Link
@@ -212,7 +212,7 @@ export function ProductList() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="text-xs text-muted-foreground">
-                          <th className="pb-1 text-left font-normal">Variacao</th>
+                          <th className="pb-1 text-left font-normal">Variação</th>
                           <th className="pb-1 text-right font-normal">Custo</th>
                           <th className="pb-1 text-right font-normal">Venda</th>
                         </tr>

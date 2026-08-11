@@ -29,7 +29,7 @@ export function SettlementSummary({ settlement }: SettlementSummaryProps) {
             <p className="font-semibold text-orange-600">- <Money value={settlement.total_expenses} /></p>
           </div>
           <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Devolucoes</p>
+            <p className="text-xs text-muted-foreground">Devoluções</p>
             <p className="font-semibold text-orange-600">- <Money value={settlement.total_returns} /></p>
           </div>
         </div>
@@ -40,7 +40,7 @@ export function SettlementSummary({ settlement }: SettlementSummaryProps) {
             <Money value={settlement.gross_profit} className="font-semibold" />
           </div>
           <div className="flex items-center justify-between mt-1">
-            <p className="text-base font-bold">Lucro Liquido</p>
+            <p className="text-base font-bold">Lucro Líquido</p>
             <Money value={settlement.net_profit} signed className="text-lg font-bold" />
           </div>
         </div>

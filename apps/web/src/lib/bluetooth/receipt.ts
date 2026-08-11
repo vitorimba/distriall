@@ -34,7 +34,7 @@ function truncate(str: string, max: number): string {
 
 function formatDate(): string {
   const now = new Date();
-  return `${now.toLocaleDateString('pt-BR')} as ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+  return `${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
 }
 
 /**
@@ -104,7 +104,7 @@ export function buildOrderReceipt(
     .fullSeparator()
     .text(via === 1 ? '1a VIA - CLIENTE' : '2a VIA - CONTROLE')
     .newline()
-    .text('AGRADECEMOS A PREFERENCIA')
+    .text('AGRADECEMOS A PREFERÊNCIA')
     .newline()
     .text(formatDate())
     .newline()

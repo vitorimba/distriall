@@ -49,7 +49,7 @@ export function useCnpjLookup(): UseCnpjLookupReturn {
           const fallbackData = await fetchBrasilApi(digits);
           if (fallbackData) { resolve(fallbackData); return; }
 
-          setError('CNPJ nao encontrado');
+          setError('CNPJ não encontrado');
           resolve(null);
         } catch {
           setError('Erro ao consultar CNPJ');

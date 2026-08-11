@@ -2,10 +2,10 @@ import { z } from 'zod/v4';
 
 export const productVariantSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, 'Nome da variacao obrigatorio'),
+  name: z.string().min(1, 'Nome da variação obrigatório'),
   weight_grams: z.number().int().positive().optional(),
-  cost_price: z.number().min(0, 'Preco de custo deve ser >= 0'),
-  sell_price: z.number().min(0, 'Preco de venda deve ser >= 0'),
+  cost_price: z.number().min(0, 'Preço de custo deve ser >= 0'),
+  sell_price: z.number().min(0, 'Preço de venda deve ser >= 0'),
   sku: z.string().optional(),
 });
 
@@ -14,7 +14,7 @@ export const productSchema = z.object({
   description: z.string().optional(),
   category: z.string().optional(),
   unit: z.enum(['un', 'kg', 'g', 'l', 'cm']),
-  variants: z.array(productVariantSchema).min(1, 'Pelo menos 1 variacao obrigatoria'),
+  variants: z.array(productVariantSchema).min(1, 'Pelo menos 1 variação obrigatória'),
 });
 
 export type ProductVariantInput = z.infer<typeof productVariantSchema>;

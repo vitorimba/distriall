@@ -221,9 +221,9 @@ export function OrderReceipt({
   function handleForward() {
     const totalQty = items.reduce((s, i) => s + i.quantity, 0);
     const text = [
-      '*Industria e Comercio Temperos Boa Mesa*',
+      '*Indústria e Comércio Temperos Boa Mesa*',
       '+5517932254908',
-      'Rua Cezar Pupin, Sao Jose do Rio Preto - SP',
+      'Rua Cezar Pupin, São José do Rio Preto - SP',
       '',
       `Recibo *#${orderNumber}*`,
       `Cliente: ${clientName}`,
@@ -240,7 +240,7 @@ export function OrderReceipt({
       'Pix: +5517997478319',
       'Ag 0825 Cc 130037722',
       '',
-      '_AGRADECEMOS A PREFERENCIA_',
+      '_AGRADECEMOS A PREFERÊNCIA_',
       date,
     ].filter(Boolean).join('\n');
 

@@ -52,7 +52,7 @@ export function AddressSelector({ clientId }: AddressSelectorProps) {
   return (
     <div className="space-y-2">
       <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
-        <MapPin className="h-3 w-3" /> Endereco de entrega
+        <MapPin className="h-3 w-3" /> Endereço de entrega
       </p>
 
       {addresses.map((addr) => (
@@ -70,7 +70,7 @@ export function AddressSelector({ clientId }: AddressSelectorProps) {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-medium">{addr.label}</span>
-                  {addr.is_default_delivery && <Badge variant="default" className="text-[10px] px-1 py-0">Padrao</Badge>}
+                  {addr.is_default_delivery && <Badge variant="default" className="text-[10px] px-1 py-0">Padrão</Badge>}
                   {addr.is_fiscal && <Badge variant="secondary" className="text-[10px] px-1 py-0">Fiscal</Badge>}
                 </div>
                 <p className="text-xs text-muted-foreground truncate">{formatAddress(addr)}</p>

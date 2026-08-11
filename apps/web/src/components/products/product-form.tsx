@@ -266,7 +266,7 @@ export function ProductForm({ product }: ProductFormProps) {
               required
             />
           </Field>
-          <Field label="Descricao">
+          <Field label="Descrição">
             <Input id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
           </Field>
           <div className="grid grid-cols-2 gap-3">
@@ -293,16 +293,16 @@ export function ProductForm({ product }: ProductFormProps) {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-base">Variacoes</CardTitle>
+          <CardTitle className="text-base">Variações</CardTitle>
           <Button type="button" variant="outline" size="sm" onClick={addVariant}>
-            <Plus className="mr-1 size-3.5" /> Variacao
+            <Plus className="mr-1 size-3.5" /> Variação
           </Button>
         </CardHeader>
         <CardContent className="space-y-3">
           {variants.map((v, i) => (
             <div key={i} className="rounded-md border p-3 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Variacao {i + 1}</span>
+                <span className="text-sm font-medium">Variação {i + 1}</span>
                 {variants.length > 1 && (
                   <Button type="button" variant="ghost" size="icon-xs" onClick={() => removeVariant(i)}>
                     <Trash2 className="size-3.5 text-destructive" />
@@ -333,7 +333,7 @@ export function ProductForm({ product }: ProductFormProps) {
                 </Field>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <Field label="Preco Custo" required>
+                <Field label="Preço Custo" required>
                   <Input
                     type="text"
                     inputMode="numeric"
@@ -345,7 +345,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     required
                   />
                 </Field>
-                <Field label="Preco Venda" required error={variantErrors[i]?.sell_price}>
+                <Field label="Preço Venda" required error={variantErrors[i]?.sell_price}>
                   <Input
                     type="text"
                     inputMode="numeric"
@@ -378,7 +378,7 @@ export function ProductForm({ product }: ProductFormProps) {
 
       <div className="flex gap-2">
         <Button type="submit" className="flex-1" disabled={saving}>
-          {saving ? 'Salvando...' : isEdit ? 'Salvar Alteracoes' : 'Criar Produto'}
+          {saving ? 'Salvando...' : isEdit ? 'Salvar Alterações' : 'Criar Produto'}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()}>
           Cancelar

@@ -94,7 +94,7 @@ export function ReturnForm({ orderId, items, onClose, onReturned }: ReturnFormPr
         </div>
 
         <div className="flex items-center justify-between px-4 pb-2">
-          <h2 className="text-lg font-bold">Registrar Devolucao</h2>
+          <h2 className="text-lg font-bold">Registrar Devolução</h2>
           <button onClick={onClose}><X className="size-5 text-muted-foreground" /></button>
         </div>
 
@@ -109,8 +109,8 @@ export function ReturnForm({ orderId, items, onClose, onReturned }: ReturnFormPr
                   <div className="text-sm font-medium">{item.product_name}</div>
                   <div className="text-xs text-muted-foreground mb-2">
                     {item.variant_name} · Qtd original: {item.quantity}
-                    {item.returned_quantity > 0 && ` · Ja devolvido: ${item.returned_quantity}`}
-                    {' '}· Disponivel: {available}
+                    {item.returned_quantity > 0 && ` · Já devolvido: ${item.returned_quantity}`}
+                    {' '}· Disponível: {available}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">Devolver:</span>
@@ -140,7 +140,7 @@ export function ReturnForm({ orderId, items, onClose, onReturned }: ReturnFormPr
 
           {/* Reason */}
           <div className="space-y-1">
-            <Label>Motivo da devolucao *</Label>
+            <Label>Motivo da devolução *</Label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -154,7 +154,7 @@ export function ReturnForm({ orderId, items, onClose, onReturned }: ReturnFormPr
           {hasSelection && (
             <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
               <div className="flex justify-between font-medium text-destructive">
-                <span>Valor da devolucao:</span>
+                <span>Valor da devolução:</span>
                 <span>-<Money value={totalReturnValue} /></span>
               </div>
             </div>
@@ -177,7 +177,7 @@ export function ReturnForm({ orderId, items, onClose, onReturned }: ReturnFormPr
               disabled={saving || !hasSelection}
               className="flex-1 bg-destructive hover:bg-destructive/90"
             >
-              {saving ? 'Processando...' : 'Confirmar Devolucao'}
+              {saving ? 'Processando...' : 'Confirmar Devolução'}
             </Button>
           </div>
         </div>

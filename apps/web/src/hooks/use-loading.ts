@@ -26,7 +26,7 @@ export function useLoading() {
       .order('created_at', { ascending: false });
 
     if (fetchError) {
-      setError('Nao foi possivel carregar os pedidos de carregamento.');
+      setError('Não foi possível carregar os pedidos de carregamento.');
       setLoading(false);
       return;
     }

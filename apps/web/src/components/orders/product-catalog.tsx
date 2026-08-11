@@ -176,7 +176,7 @@ export function ProductCatalog() {
       <EmptyState
         icon={Package}
         title="Nenhum produto cadastrado"
-        description="Cadastre produtos para comecar a lancar pedidos"
+        description="Cadastre produtos para começar a lançar pedidos"
         actionLabel="Ir para Produtos"
         onAction={() => { window.location.href = '/products'; }}
       />

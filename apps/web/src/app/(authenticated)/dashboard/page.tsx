@@ -16,7 +16,7 @@ import { ChipFilter } from '@/components/ui/chip-filter';
 import { Alert } from '@/components/ui/alert';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, DollarSign, TrendingUp, Receipt, ClipboardList, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { PageHeader } from '@/components/ui/page-header';
 
@@ -45,13 +45,13 @@ export default function DashboardPage() {
   const periodOptions = [
     { value: 'day', label: 'Hoje' },
     { value: 'week', label: 'Semana' },
-    { value: 'month', label: 'Mes' },
+    { value: 'month', label: 'Mês' },
     { value: 'custom', label: 'Customizado' },
   ];
 
   return (
     <div className="space-y-6 p-4 pb-20">
-      <PageHeader title="Dashboard" subtitle="Visao geral do negocio" />
+      <PageHeader title="Dashboard" subtitle="Visão geral do negócio" />
 
       {/* Filters */}
       <div className="flex flex-wrap items-end gap-3">
@@ -79,7 +79,7 @@ export default function DashboardPage() {
               onChange={(e) => setStartDate(e.target.value)}
               className="w-36"
             />
-            <span className="text-sm text-muted-foreground">ate</span>
+            <span className="text-sm text-muted-foreground">até</span>
             <Input
               type="date"
               value={endDate}
@@ -91,7 +91,7 @@ export default function DashboardPage() {
       </div>
 
       {error && (
-        <Alert tone="danger" title="Erro ao carregar estatisticas">
+        <Alert tone="danger" title="Erro ao carregar estatísticas">
           {error}
         </Alert>
       )}
@@ -101,7 +101,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             <StatsCard title="Faturamento" value="" accent loading />
             <StatsCard title="Lucro" value="" loading />
-            <StatsCard title="Ticket medio" value="" loading />
+            <StatsCard title="Ticket médio" value="" loading />
             <StatsCard title="Pedidos" value="" loading />
             <StatsCard title="Clientes" value="" loading />
           </div>
@@ -120,32 +120,52 @@ export default function DashboardPage() {
             <StatsCard
               title="Faturamento"
               value={<Money value={stats.revenue} />}
+              icon={<DollarSign className="size-[18px]" />}
               accent
               delta={delta?.revenue ?? undefined}
-              deltaLabel="vs periodo ant."
+              deltaLabel="vs período ant."
               spark={delta?.spark}
+              subtitle={`${stats.order_count} ${stats.order_count === 1 ? 'pedido' : 'pedidos'} no período`}
             />
             <StatsCard
               title="Lucro"
               value={<Money value={stats.profit} signed />}
+              icon={<TrendingUp className="size-[18px]" />}
+              iconColor="var(--chart-4)"
               delta={delta?.profit ?? undefined}
-              deltaLabel="vs periodo ant."
+              deltaLabel="vs período ant."
+              subtitle={stats.revenue > 0 ? `Margem ${((stats.profit / stats.revenue) * 100).toFixed(1)}%` : 'Sem faturamento'}
             />
-            <StatsCard title="Ticket medio" value={<Money value={stats.avg_ticket} />} />
+            <StatsCard
+              title="Ticket médio"
+              value={<Money value={stats.avg_ticket} />}
+              icon={<Receipt className="size-[18px]" />}
+              iconColor="var(--chart-3)"
+              subtitle="Por pedido no período"
+            />
             <StatsCard
               title="Pedidos"
               value={String(stats.order_count)}
+              icon={<ClipboardList className="size-[18px]" />}
+              iconColor="var(--chart-2)"
               delta={delta?.orders ?? undefined}
-              deltaLabel="vs periodo ant."
+              deltaLabel="vs período ant."
+              subtitle={`Ticket ${fmtBRL(stats.avg_ticket)}`}
             />
-            <StatsCard title="Clientes" value={String(stats.client_count)} />
+            <StatsCard
+              title="Clientes"
+              value={String(stats.client_count)}
+              icon={<Users className="size-[18px]" />}
+              iconColor="var(--chart-5)"
+              subtitle="Compraram no período"
+            />
           </div>
 
           {/* Charts row */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Evolucao semanal</CardTitle>
+                <CardTitle>Evolução semanal</CardTitle>
               </CardHeader>
               <CardContent>
                 {stats.weekly_evolution.length > 0 ? (

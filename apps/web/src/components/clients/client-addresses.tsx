@@ -42,7 +42,11 @@ export function ClientAddresses({ clientId }: ClientAddressesProps) {
     setLoading(false);
   }, [clientId]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    let cancelled = false;
+    const t = setTimeout(() => { if (!cancelled) load(); }, 0);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [load]);
 
   const activeAddresses = addresses.filter((a) => a.is_active);
   const inactiveAddresses = addresses.filter((a) => !a.is_active);
@@ -83,7 +87,7 @@ export function ClientAddresses({ clientId }: ClientAddressesProps) {
     setSaving(false);
     setShowForm(false);
     setEditingId(null);
-    toast('Endereco salvo', 'success');
+    toast('Endereço salvo', 'success');
     load();
   }
 
@@ -100,7 +104,7 @@ export function ClientAddresses({ clientId }: ClientAddressesProps) {
       .update({ is_active: newActive })
       .eq('id', addr.id);
 
-    toast(newActive ? 'Endereco reativado' : 'Endereco desativado', 'success');
+    toast(newActive ? 'Endereço reativado' : 'Endereço desativado', 'success');
     load();
   }
 
@@ -111,7 +115,7 @@ export function ClientAddresses({ clientId }: ClientAddressesProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-muted-foreground">Enderecos</h3>
+        <h3 className="text-sm font-medium text-muted-foreground">Endereços</h3>
         {!showForm && (
           <Button type="button" size="sm" variant="outline" onClick={() => { setShowForm(true); setEditingId(null); }}>
             <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar
@@ -136,7 +140,7 @@ export function ClientAddresses({ clientId }: ClientAddressesProps) {
       )}
 
       {activeAddresses.length === 0 && !showForm && (
-        <EmptyState icon={MapPin} title="Nenhum endereco cadastrado" />
+        <EmptyState icon={MapPin} title="Nenhum endereço cadastrado" />
       )}
 
       {activeAddresses.map((addr) => (
@@ -184,7 +188,7 @@ export function ClientAddresses({ clientId }: ClientAddressesProps) {
             onClick={() => setShowInactive(!showInactive)}
             className="text-xs text-muted-foreground underline"
           >
-            {showInactive ? 'Ocultar' : 'Mostrar'} {inactiveAddresses.length} endereco(s) inativo(s)
+            {showInactive ? 'Ocultar' : 'Mostrar'} {inactiveAddresses.length} endereço(s) inativo(s)
           </button>
           {showInactive && (
             <div className="mt-2 space-y-2 opacity-60">
