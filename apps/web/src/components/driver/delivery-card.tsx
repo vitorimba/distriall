@@ -13,7 +13,7 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
   pix: 'PIX',
   boleto: 'Boleto',
   vale: 'Vale',
-  cartao: 'Cartao',
+  cartao: 'Cartão',
 };
 
 interface DeliveryCardProps {

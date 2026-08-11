@@ -17,7 +17,7 @@ import { ChevronRight, ClipboardList } from 'lucide-react';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'Todos' },
-  { value: 'lancado', label: 'Lancado' },
+  { value: 'lancado', label: 'Lançado' },
   { value: 'confirmado', label: 'Confirmado' },
   { value: 'carregado', label: 'Carregado' },
   { value: 'entregue', label: 'Entregue' },
@@ -52,7 +52,7 @@ export function ClientOrderHistory({ clientId }: ClientOrderHistoryProps) {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Historico de Pedidos</CardTitle>
+        <CardTitle className="text-base">Histórico de Pedidos</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Filters */}
@@ -68,7 +68,7 @@ export function ClientOrderHistory({ clientId }: ClientOrderHistoryProps) {
               />
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Ate</label>
+              <label className="text-xs text-muted-foreground mb-1 block">Até</label>
               <Input
                 type="date"
                 value={dateTo}

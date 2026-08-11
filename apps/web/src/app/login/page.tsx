@@ -43,7 +43,7 @@ export default function LoginPage() {
     });
 
     if (authError) {
-      setError('Email ou senha invalidos.');
+      setError('Email ou senha inválidos.');
       setLoading(false);
       return;
     }

@@ -231,7 +231,7 @@ export default function DeliveriesPage() {
 
       {/* Delivery error */}
       {deliveryError && (
-        <Alert tone="danger" title="Nao foi possivel carregar as entregas." />
+        <Alert tone="danger" title="Não foi possível carregar as entregas." />
       )}
 
       {/* 2-column layout: available orders (left) + route builder (right) */}

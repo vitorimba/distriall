@@ -53,7 +53,7 @@ export function SettlementDetail({ settlement, orders, expenses, onRefresh }: Se
   }
 
   async function handleClose() {
-    if (!confirm('Fechar o acerto? Esta acao e irreversivel.')) return;
+    if (!confirm('Fechar o acerto? Esta ação é irreversível.')) return;
     setError(null);
     setLoading(true);
     try {
@@ -68,7 +68,7 @@ export function SettlementDetail({ settlement, orders, expenses, onRefresh }: Se
   }
 
   async function handleRegenerate() {
-    if (!confirm('Regenerar o acerto? O acerto atual sera excluido e recalculado.')) return;
+    if (!confirm('Regenerar o acerto? O acerto atual será excluído e recalculado.')) return;
     setError(null);
     setLoading(true);
     try {

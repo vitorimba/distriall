@@ -2,13 +2,13 @@ import { z } from 'zod/v4';
 
 export const expenseSplitSchema = z.object({
   accountId: z.string().uuid(),
-  percentage: z.number().min(0.01, 'Percentual deve ser > 0').max(100, 'Percentual maximo 100%'),
+  percentage: z.number().min(0.01, 'Percentual deve ser > 0').max(100, 'Percentual máximo 100%'),
 });
 
 export const expenseSchema = z.object({
-  description: z.string().min(1, 'Descricao obrigatoria'),
+  description: z.string().min(1, 'Descrição obrigatória'),
   amount: z.number().min(0.01, 'Valor deve ser maior que zero'),
-  expense_date: z.string().min(1, 'Data obrigatoria'),
+  expense_date: z.string().min(1, 'Data obrigatória'),
   category: z.enum(['fixo', 'variavel']),
   type: z.enum(['impostos', 'gasolina', 'manutencao', 'outros']).optional(),
   recurrence: z.enum(['unico', 'semanal', 'mensal']).optional(),

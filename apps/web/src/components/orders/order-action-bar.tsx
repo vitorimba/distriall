@@ -33,7 +33,7 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
 
   async function handleBatchDelete() {
     const ids = selectedOrders.filter((o) => o.status === 'cancelado').map((o) => o.id);
-    if (!confirm(`Excluir ${ids.length} pedido${ids.length !== 1 ? 's' : ''} cancelado${ids.length !== 1 ? 's' : ''}? Esta acao nao pode ser desfeita.`)) return;
+    if (!confirm(`Excluir ${ids.length} pedido${ids.length !== 1 ? 's' : ''} cancelado${ids.length !== 1 ? 's' : ''}? Esta ação não pode ser desfeita.`)) return;
 
     setLoading(true);
     setResult(null);
@@ -48,7 +48,7 @@ export function OrderActionBar({ selectedIds, selectedOrders, onDone }: OrderAct
     }
 
     setLoading(false);
-    setResult(`${deleted} pedido${deleted !== 1 ? 's' : ''} excluido${deleted !== 1 ? 's' : ''}`);
+    setResult(`${deleted} pedido${deleted !== 1 ? 's' : ''} excluído${deleted !== 1 ? 's' : ''}`);
     setTimeout(onDone, 1500);
   }
 

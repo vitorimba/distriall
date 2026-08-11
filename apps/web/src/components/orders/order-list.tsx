@@ -42,7 +42,7 @@ const PERIOD_TABS: { value: PeriodTab; label: string }[] = [
   { value: 'hoje', label: 'Hoje' },
   { value: 'ontem', label: 'Ontem' },
   { value: '7dias', label: '7 dias' },
-  { value: 'mes', label: 'Mes' },
+  { value: 'mes', label: 'Mês' },
   { value: 'custom', label: 'Personalizado' },
 ];
 
@@ -74,7 +74,7 @@ function getDateRange(tab: PeriodTab): { start: string; end: string } | null {
 
 const STATUS_FILTERS: { value: string; label: string }[] = [
   { value: 'all', label: 'Todos' },
-  { value: 'lancado', label: 'Lancado' },
+  { value: 'lancado', label: 'Lançado' },
   { value: 'confirmado', label: 'Confirmado' },
   { value: 'carregado', label: 'Carregado' },
   { value: 'entregue', label: 'Entregue' },
@@ -87,7 +87,7 @@ const PAYMENT_FILTERS: { value: string; label: string }[] = [
   { value: 'pix', label: 'Pix' },
   { value: 'boleto', label: 'Boleto' },
   { value: 'vale', label: 'Vale' },
-  { value: 'cartao', label: 'Cartao' },
+  { value: 'cartao', label: 'Cartão' },
   { value: 'misto', label: 'Misto' },
 ];
 
@@ -157,7 +157,7 @@ export function OrderList() {
 
     const { data, count, error: fetchError } = await query;
     if (fetchError) {
-      setError('Nao foi possivel carregar os pedidos.');
+      setError('Não foi possível carregar os pedidos.');
       setLoadKey((k) => k + 1);
       return;
     }
@@ -222,7 +222,7 @@ export function OrderList() {
     <div className="space-y-3">
       {/* Search */}
       <SearchField
-        placeholder="Buscar por cliente ou numero..."
+        placeholder="Buscar por cliente ou número..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onClear={() => setSearch('')}
@@ -320,7 +320,7 @@ export function OrderList() {
         <EmptyState
           icon={ClipboardList}
           title={search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Nenhum pedido encontrado' : 'Nenhum pedido hoje'}
-          description={search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Tente ajustar os filtros ou o periodo.' : 'Lance o primeiro pedido para ve-lo aqui.'}
+          description={search || statusFilter !== 'all' || periodTab !== 'hoje' ? 'Tente ajustar os filtros ou o período.' : 'Lance o primeiro pedido para vê-lo aqui.'}
         />
       ) : !error ? (
         <div className="space-y-1 pb-24">

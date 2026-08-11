@@ -62,7 +62,7 @@ export default function EditClientPage() {
   if (!client) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
-        <EmptyState icon={Users} title="Cliente nao encontrado" />
+        <EmptyState icon={Users} title="Cliente não encontrado" />
       </div>
     );
   }
@@ -74,7 +74,7 @@ export default function EditClientPage() {
       <Tabs
         tabs={[
           { id: 'info', label: 'Dados' },
-          { id: 'prices', label: 'Precos especiais' },
+          { id: 'prices', label: 'Preços especiais' },
         ]}
         active={tab}
         onChange={setTab}

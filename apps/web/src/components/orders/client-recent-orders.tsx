@@ -208,7 +208,7 @@ export function ClientRecentOrders({ clientId }: { clientId: string }) {
           className="flex w-full items-center gap-2 px-[var(--card-pad)] py-3 text-left"
         >
           <span className="flex-1 text-sm font-semibold text-[var(--text-primary)]">
-            Ultimos Pedidos ({orders.length})
+            Últimos Pedidos ({orders.length})
           </span>
           <ChevronDown
             className={cn(
@@ -308,8 +308,8 @@ export function ClientRecentOrders({ clientId }: { clientId: string }) {
           <DialogHeader>
             <DialogTitle>Substituir itens atuais?</DialogTitle>
             <DialogDescription>
-              O carrinho ja tem {cartItems.length} {cartItems.length === 1 ? 'item' : 'itens'}.
-              Ao repetir o pedido, os itens atuais serao substituidos.
+              O carrinho já tem {cartItems.length} {cartItems.length === 1 ? 'item' : 'itens'}.
+              Ao repetir o pedido, os itens atuais serão substituídos.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

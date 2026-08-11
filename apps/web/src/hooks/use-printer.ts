@@ -62,7 +62,7 @@ export function usePrinter() {
     // Try reconnect
     await connect();
     if (!printerRef.current?.isConnected) {
-      throw new Error('Impressora nao conectada');
+      throw new Error('Impressora não conectada');
     }
     return printerRef.current;
   }
@@ -123,7 +123,7 @@ export function usePrinter() {
         .newline()
         .doubleSize(false)
         .bold(false)
-        .text('Teste de Impressao')
+        .text('Teste de Impressão')
         .newline()
         .fullSeparator()
         .text('Impressora configurada!')

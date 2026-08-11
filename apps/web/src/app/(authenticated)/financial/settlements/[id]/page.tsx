@@ -64,7 +64,7 @@ export default function SettlementDetailPage({
       <div className="px-4 py-4 space-y-4">
         <PageHeader title="Detalhe do acerto" onBack={() => router.back()} />
         <div className="py-8 text-center text-destructive">
-          {error ?? 'Acerto nao encontrado.'}
+          {error ?? 'Acerto não encontrado.'}
         </div>
       </div>
     );

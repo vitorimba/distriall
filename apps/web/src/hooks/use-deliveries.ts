@@ -89,7 +89,7 @@ export function useDeliveries() {
 
       setAvailableOrders(mapped);
     } catch (err) {
-      setError((err as Error).message || 'Erro ao carregar pedidos disponiveis');
+      setError((err as Error).message || 'Erro ao carregar pedidos disponíveis');
     } finally {
       setLoading(false);
     }

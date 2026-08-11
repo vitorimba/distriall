@@ -108,7 +108,7 @@ export function ExchangeForm({ orderId, clientId, items, onClose, onExchangeCrea
 
         <div className="space-y-4 px-4 pb-6">
           <p className="text-sm text-muted-foreground">
-            Selecione os itens que o cliente esta devolvendo. Voce sera redirecionado para criar o novo pedido de troca.
+            Selecione os itens que o cliente está devolvendo. Você será redirecionado para criar o novo pedido de troca.
           </p>
 
           {/* Items */}
@@ -121,8 +121,8 @@ export function ExchangeForm({ orderId, clientId, items, onClose, onExchangeCrea
                   <div className="text-sm font-medium">{item.product_name}</div>
                   <div className="text-xs text-muted-foreground mb-2">
                     {item.variant_name} · Qtd original: {item.quantity}
-                    {item.returned_quantity > 0 && ` · Ja devolvido: ${item.returned_quantity}`}
-                    {' '}· Disponivel: {available}
+                    {item.returned_quantity > 0 && ` · Já devolvido: ${item.returned_quantity}`}
+                    {' '}· Disponível: {available}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">Devolver:</span>
@@ -166,11 +166,11 @@ export function ExchangeForm({ orderId, clientId, items, onClose, onExchangeCrea
           {hasSelection && (
             <div className="rounded-md border border-amber-500/30 bg-amber-50 p-3 text-sm">
               <div className="flex justify-between font-medium text-amber-700">
-                <span>Credito de troca:</span>
+                <span>Crédito de troca:</span>
                 <span><Money value={totalCreditValue} /></span>
               </div>
               <p className="text-xs text-amber-600 mt-1">
-                Este valor sera exibido como referencia no novo pedido.
+                Este valor será exibido como referência no novo pedido.
               </p>
             </div>
           )}

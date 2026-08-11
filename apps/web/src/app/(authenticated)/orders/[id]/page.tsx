@@ -351,7 +351,7 @@ export default function OrderDetailPage() {
   if (!order) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        Pedido nao encontrado.
+        Pedido não encontrado.
       </div>
     );
   }
@@ -394,7 +394,7 @@ export default function OrderDetailPage() {
                 <Repeat2 className="size-4 text-amber-600 shrink-0" />
                 <div>
                   <span className="font-medium text-amber-700">Troca realizada</span>
-                  <span className="text-muted-foreground"> · Credito: </span>
+                  <span className="text-muted-foreground"> · Crédito: </span>
                   <Money value={exchangeInfo.credit_amount} className="font-medium" />
                   {exchangeInfo.exchange_order_id && (
                     <span>
@@ -417,7 +417,7 @@ export default function OrderDetailPage() {
                 <Repeat2 className="size-4 text-amber-600 shrink-0" />
                 <div>
                   <span className="font-medium text-amber-700">Pedido de troca</span>
-                  <span className="text-muted-foreground"> · Credito: </span>
+                  <span className="text-muted-foreground"> · Crédito: </span>
                   <Money value={exchangeInfo.credit_amount} className="font-medium" />
                   <span>
                     {' · '}
@@ -476,7 +476,7 @@ export default function OrderDetailPage() {
               onClick={() => setShowReturnForm(true)}
             >
               <RotateCcw className="mr-1 size-3.5" />
-              Devolucao
+              Devolução
             </Button>
             <Button
               variant="outline"
@@ -731,7 +731,7 @@ export default function OrderDetailPage() {
                 <option value="pix">Pix</option>
                 <option value="boleto">Boleto</option>
                 <option value="vale">Vale</option>
-                <option value="cartao">Cartao</option>
+                <option value="cartao">Cartão</option>
                 <option value="misto">Misto</option>
               </select>
             </div>
@@ -750,7 +750,7 @@ export default function OrderDetailPage() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-medium">Observacoes</label>
+              <label className="text-sm font-medium">Observações</label>
               <textarea
                 value={order.notes ?? ''}
                 onChange={(e) => setOrder({ ...order, notes: e.target.value })}
@@ -760,7 +760,7 @@ export default function OrderDetailPage() {
                 }}
                 rows={2}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                placeholder="Observacoes do pedido..."
+                placeholder="Observações do pedido..."
               />
             </div>
           </CardContent>

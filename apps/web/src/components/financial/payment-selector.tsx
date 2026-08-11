@@ -13,7 +13,7 @@ const METHODS = [
   { value: 'pix', label: 'Pix' },
   { value: 'boleto', label: 'Boleto' },
   { value: 'vale', label: 'Vale' },
-  { value: 'cartao', label: 'Cartao' },
+  { value: 'cartao', label: 'Cartão' },
 ] as const;
 
 interface MixedPaymentUI {
@@ -96,7 +96,7 @@ export function PaymentSelector({ defaultMethod, orderTotal, onChange }: Payment
               : 'border-input text-muted-foreground hover:bg-muted'
           }`}
         >
-          Unico
+          Único
         </button>
         <button
           type="button"

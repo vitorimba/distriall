@@ -19,7 +19,7 @@ export function ClientBalanceCard({ clientId, balance }: ClientBalanceCardProps)
       <Card className="border-green-300 bg-green-50">
         <CardContent className="flex items-center gap-2 pt-4 pb-4">
           <CheckCircle className="size-4 text-green-700 shrink-0" />
-          <span className="text-sm font-medium text-green-800">Sem debito pendente</span>
+          <span className="text-sm font-medium text-green-800">Sem débito pendente</span>
         </CardContent>
       </Card>
     );

@@ -25,11 +25,11 @@ export async function POST(
     .single();
 
   if (fetchError || !settlement) {
-    return NextResponse.json({ error: 'Acerto nao encontrado' }, { status: 404 });
+    return NextResponse.json({ error: 'Acerto não encontrado' }, { status: 404 });
   }
 
   if (settlement.status === 'fechado') {
-    return NextResponse.json({ error: 'Acerto ja esta fechado' }, { status: 409 });
+    return NextResponse.json({ error: 'Acerto já está fechado' }, { status: 409 });
   }
 
   // Verify user has admin role in the account

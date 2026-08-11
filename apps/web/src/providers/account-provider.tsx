@@ -84,7 +84,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   }, [user, setAccounts, clear]);
 
   useEffect(() => {
-    loadAccounts();
+    const t = setTimeout(() => loadAccounts(), 0);
+    return () => clearTimeout(t);
   }, [loadAccounts]);
 
   const switchAccount = useCallback(

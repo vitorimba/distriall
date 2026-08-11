@@ -196,7 +196,7 @@ export function LoadingBottomSheet({ open, onClose, onMarked }: LoadingBottomShe
           {/* Section 3: Included Orders */}
           <div className="pb-2">
             <h3 className="text-sm font-bold uppercase text-muted-foreground mb-2">
-              Pedidos Incluidos ({selectedOrders.length})
+              Pedidos Incluídos ({selectedOrders.length})
             </h3>
             <div className="space-y-0.5">
               {selectedOrders.map((o) => {

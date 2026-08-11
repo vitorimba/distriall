@@ -16,7 +16,7 @@ const METHODS = [
   { key: 'revenue_pix' as const, label: 'Pix' },
   { key: 'revenue_boleto' as const, label: 'Boleto (Boa Mesa)' },
   { key: 'revenue_vale' as const, label: 'Vale' },
-  { key: 'revenue_cartao' as const, label: 'Cartao' },
+  { key: 'revenue_cartao' as const, label: 'Cartão' },
 ];
 
 export function RevenueBreakdown({ settlement }: RevenueBreakdownProps) {
@@ -52,7 +52,7 @@ export function RevenueBreakdown({ settlement }: RevenueBreakdownProps) {
         })}
 
         {total === 0 && (
-          <EmptyState icon={TrendingUp} title="Nenhuma receita no periodo" />
+          <EmptyState icon={TrendingUp} title="Nenhuma receita no período" />
         )}
       </CardContent>
     </Card>

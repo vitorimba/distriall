@@ -34,13 +34,12 @@ export function DonutChart({
 
   const r = 50 - thickness / 2
   const C = 2 * Math.PI * r
-  let acc = 0
-  const segs = data.map((d, i) => {
+  const segs = data.reduce<Array<DataPoint & { i: number; frac: number; offset: number; segColor: string }>>((result, d, i) => {
     const frac = d.value / total
-    const seg = { ...d, i, frac, offset: acc, segColor: d.color || CHART_COLORS[i % CHART_COLORS.length] }
-    acc += frac
-    return seg
-  })
+    const offset = result.length > 0 ? result[result.length - 1].offset + result[result.length - 1].frac : 0
+    result.push({ ...d, i, frac, offset, segColor: d.color || CHART_COLORS[i % CHART_COLORS.length] })
+    return result
+  }, [])
 
   const current = active != null ? segs[active] : null
 

@@ -80,7 +80,7 @@ export default function SettlementsPage() {
       });
       setSettlements(data);
     } catch {
-      setLoadError('Nao foi possivel carregar os acertos.');
+      setLoadError('Não foi possível carregar os acertos.');
       setSettlements([]);
     } finally {
       setLoading(false);
@@ -121,7 +121,7 @@ export default function SettlementsPage() {
         <CardContent className="pt-4 space-y-3">
           <p className="text-sm font-medium">Gerar Novo Acerto</p>
           <div className="grid grid-cols-2 gap-2">
-            <Field label="Inicio">
+            <Field label="Início">
               <Input
                 type="date"
                 value={newStart}
@@ -159,7 +159,7 @@ export default function SettlementsPage() {
         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
       >
         <Calendar className="size-3" />
-        Filtrar por periodo
+        Filtrar por período
         {showFilters ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
       </button>
 

@@ -59,7 +59,7 @@ export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorP
       <Card>
         <CardContent className="py-6 text-center">
           <p className="text-sm font-medium text-primary">
-            {selectedVariants.length} variacao{selectedVariants.length !== 1 ? 'es' : ''} atualizada{selectedVariants.length !== 1 ? 's' : ''}!
+            {selectedVariants.length} variação{selectedVariants.length !== 1 ? 'ões' : ''} atualizada{selectedVariants.length !== 1 ? 's' : ''}!
           </p>
           <Button className="mt-3" size="sm" onClick={onDone}>Fechar</Button>
         </CardContent>
@@ -70,7 +70,7 @@ export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorP
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Editar Precos em Lote ({selectedVariants.length} selecionadas)</CardTitle>
+        <CardTitle className="text-base">Editar Preços em Lote ({selectedVariants.length} selecionadas)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex gap-2">
@@ -80,7 +80,7 @@ export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorP
             variant={mode === 'fixed' ? 'default' : 'outline'}
             onClick={() => setMode('fixed')}
           >
-            Preco Fixo
+            Preço Fixo
           </Button>
           <Button
             type="button"
@@ -94,7 +94,7 @@ export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorP
 
         {mode === 'fixed' ? (
           <div className="space-y-1">
-            <Label>Novo preco de venda (R$)</Label>
+            <Label>Novo preço de venda (R$)</Label>
             <Input
               type="number"
               step="0.01"
@@ -120,7 +120,7 @@ export function BatchPriceEditor({ selectedVariants, onDone }: BatchPriceEditorP
           <table className="w-full text-xs">
             <thead className="bg-muted">
               <tr>
-                <th className="px-2 py-1 text-left font-normal">Variacao</th>
+                <th className="px-2 py-1 text-left font-normal">Variação</th>
                 <th className="px-2 py-1 text-right font-normal">Atual</th>
                 <th className="px-2 py-1 text-right font-normal">Novo</th>
               </tr>

@@ -162,7 +162,7 @@ export function ClientPricesEditor({ clientId }: { clientId: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Precos Especiais</CardTitle>
+        <CardTitle className="text-base">Preços Especiais</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Search */}
@@ -182,7 +182,7 @@ export function ClientPricesEditor({ clientId }: { clientId: string }) {
             <thead className="sticky top-0 bg-muted">
               <tr>
                 <th className="px-2 py-1.5 text-left font-normal text-xs">Produto</th>
-                <th className="px-2 py-1.5 text-right font-normal text-xs">Padrao</th>
+                <th className="px-2 py-1.5 text-right font-normal text-xs">Padrão</th>
                 <th className="px-2 py-1.5 text-right font-normal text-xs">Especial</th>
                 <th className="px-2 py-1.5 w-8"></th>
               </tr>
@@ -202,7 +202,7 @@ export function ClientPricesEditor({ clientId }: { clientId: string }) {
         </div>
 
         <p className="text-xs text-muted-foreground">
-          {rows.filter((r) => r.customPrice !== null).length} preco(s) especial(is) definido(s)
+          {rows.filter((r) => r.customPrice !== null).length} preço(s) especial(is) definido(s)
         </p>
       </CardContent>
     </Card>

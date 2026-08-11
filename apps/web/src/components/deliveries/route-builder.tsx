@@ -83,7 +83,7 @@ export function RouteBuilder({
       {/* Card body */}
       {items.length === 0 ? (
         <div className="py-10 text-center text-sm text-[var(--text-muted)] px-4">
-          Adicione pedidos da lista ao lado e ordene a sequencia de entrega.
+          Adicione pedidos da lista ao lado e ordene a sequência de entrega.
         </div>
       ) : (
         <DndContext

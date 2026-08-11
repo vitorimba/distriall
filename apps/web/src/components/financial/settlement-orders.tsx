@@ -34,7 +34,7 @@ export function SettlementOrders({ orders }: SettlementOrdersProps) {
         {expanded && (
           <div className="space-y-1 pt-1">
             {orders.length === 0 ? (
-              <EmptyState icon={ShoppingCart} title="Nenhum pedido no periodo" />
+              <EmptyState icon={ShoppingCart} title="Nenhum pedido no período" />
             ) : (
               orders.map((row) => {
                 const order = row.orders;

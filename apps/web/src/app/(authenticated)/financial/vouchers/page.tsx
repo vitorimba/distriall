@@ -64,7 +64,7 @@ export default function VouchersPage() {
       const data = await listVouchers(activeAccount.id, statusFilter);
       setVouchers(data as unknown as VoucherRow[]);
     } catch {
-      setLoadError('Nao foi possivel carregar os vales.');
+      setLoadError('Não foi possível carregar os vales.');
       setVouchers([]);
     } finally {
       setLoading(false);

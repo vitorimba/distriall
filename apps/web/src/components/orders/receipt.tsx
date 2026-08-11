@@ -4,9 +4,9 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const COMPANY = {
-  name: 'Industria e Comercio Temperos Boa Mesa',
+  name: 'Indústria e Comércio Temperos Boa Mesa',
   phone: '+5517932254908',
-  address: 'Rua Cezar Pupin, Sao Jose do Rio Preto - SP, 15051-010',
+  address: 'Rua Cezar Pupin, São José do Rio Preto - SP, 15051-010',
   pixKey: '+5517997478319',
   pixInfo: 'Ag 0825 Cc 130037722',
   pixBRCode: '00020126490014br.gov.bcb.pix0114+55179974783190209Distriall5204000053039865802BR5917TEMPEROS BOA MESA6013S J RIO PRETO62070503***63041EBD',
@@ -45,7 +45,7 @@ export function Receipt({
   desconto = 0,
   total,
   pagamento,
-  rodape = 'Agradecemos a preferencia!',
+  rodape = 'Agradecemos a preferência!',
   largura = '58mm',
   totalQtd,
 }: ReceiptProps) {

@@ -73,7 +73,7 @@ export function ClientPricesTable({ clientId }: ClientPricesTableProps) {
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
-          Precos Especiais
+          Preços Especiais
           <Badge variant="secondary" className="text-xs">
             {prices.length}
           </Badge>

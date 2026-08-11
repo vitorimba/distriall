@@ -46,13 +46,13 @@ export default function EditOrderPage() {
       try {
         const order = await getOrder(id);
         if (!order) {
-          setError('Pedido nao encontrado');
+          setError('Pedido não encontrado');
           setLoading(false);
           return;
         }
 
         if (order.status === 'entregue' || order.status === 'cancelado') {
-          setError(`Pedido com status "${order.status}" nao pode ser editado`);
+          setError(`Pedido com status "${order.status}" não pode ser editado`);
           setLoading(false);
           return;
         }
@@ -88,7 +88,6 @@ export default function EditOrderPage() {
         );
       } catch (err) {
         const msg = err instanceof Error ? err.message : (err as { message?: string })?.message ?? 'Erro ao carregar pedido';
-        console.error('Erro ao carregar pedido:', err);
         setError(msg);
       } finally {
         setLoading(false);
@@ -101,7 +100,7 @@ export default function EditOrderPage() {
 
   async function handleSave() {
     if (!client || items.length === 0) {
-      setError('Cliente e pelo menos um produto sao obrigatorios');
+      setError('Cliente e pelo menos um produto são obrigatórios');
       return;
     }
 
@@ -115,7 +114,6 @@ export default function EditOrderPage() {
       router.push(`/orders/${id}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : (err as { message?: string })?.message ?? 'Erro ao atualizar pedido';
-      console.error('Erro ao atualizar pedido:', err);
       setError(msg);
     } finally {
       setSaving(false);
@@ -169,7 +167,7 @@ export default function EditOrderPage() {
                 <option value="pix">Pix</option>
                 <option value="boleto">Boleto</option>
                 <option value="vale">Vale</option>
-                <option value="cartao">Cartao</option>
+                <option value="cartao">Cartão</option>
                 <option value="misto">Misto</option>
               </select>
             </Field>
@@ -180,13 +178,13 @@ export default function EditOrderPage() {
                 onChange={(e) => setDeliveryDate(e.target.value)}
               />
             </Field>
-            <Field label="Observacoes">
+            <Field label="Observações">
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                placeholder="Observacoes do pedido..."
+                placeholder="Observações do pedido..."
               />
             </Field>
           </CardContent>

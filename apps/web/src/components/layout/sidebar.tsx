@@ -20,7 +20,7 @@ const navSections = [
   {
     label: 'Principal',
     items: [
-      { href: '/dashboard', label: 'Inicio', icon: LayoutDashboard },
+      { href: '/dashboard', label: 'Início', icon: LayoutDashboard },
       { href: '/orders', label: 'Pedidos', icon: ClipboardList },
       { href: '/products', label: 'Produtos', icon: Package },
       { href: '/clients', label: 'Clientes', icon: Users },
@@ -37,12 +37,12 @@ const navSections = [
     label: 'Financeiro',
     items: [
       { href: '/financial', label: 'Financeiro', icon: Wallet },
-      { href: '/stats', label: 'Estatisticas', icon: ChartColumn },
+      { href: '/stats', label: 'Estatísticas', icon: ChartColumn },
     ],
   },
   {
     label: 'Sistema',
-    items: [{ href: '/settings', label: 'Configuracoes', icon: Settings }],
+    items: [{ href: '/settings', label: 'Configurações', icon: Settings }],
   },
 ];
 

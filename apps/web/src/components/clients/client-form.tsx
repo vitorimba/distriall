@@ -166,7 +166,7 @@ export function ClientForm({ client }: ClientFormProps) {
               variant={clientType === 'pf' ? 'default' : 'outline'}
               onClick={() => setClientType('pf')}
             >
-              Pessoa Fisica
+              Pessoa Física
             </Button>
             <Button
               type="button"
@@ -174,11 +174,11 @@ export function ClientForm({ client }: ClientFormProps) {
               variant={clientType === 'pj' ? 'default' : 'outline'}
               onClick={() => setClientType('pj')}
             >
-              Pessoa Juridica
+              Pessoa Jurídica
             </Button>
           </div>
 
-          <Field label={isPJ ? 'Razao Social' : 'Nome'} required error={fieldErrors.name}>
+          <Field label={isPJ ? 'Razão Social' : 'Nome'} required error={fieldErrors.name}>
             <Input
               id="name"
               value={name}
@@ -227,7 +227,7 @@ export function ClientForm({ client }: ClientFormProps) {
               </div>
             </Field>
             {isPJ && (
-              <Field label="Inscricao Estadual">
+              <Field label="Inscrição Estadual">
                 <Input
                   id="state_registration"
                   value={stateRegistration}
@@ -247,7 +247,7 @@ export function ClientForm({ client }: ClientFormProps) {
             />
           </Field>
 
-          <Field label="Endereco">
+          <Field label="Endereço">
             <Input id="address" value={address} onChange={(e) => setAddress(e.target.value)} />
           </Field>
           <div className="grid grid-cols-2 gap-3">
@@ -288,7 +288,7 @@ export function ClientForm({ client }: ClientFormProps) {
               />
             </Field>
           </div>
-          <Field label="Forma de Pagamento Padrao">
+          <Field label="Forma de Pagamento Padrão">
             <select
               id="payment"
               value={paymentMethod}
@@ -300,7 +300,7 @@ export function ClientForm({ client }: ClientFormProps) {
               <option value="pix">Pix</option>
               <option value="boleto">Boleto</option>
               <option value="vale">Vale</option>
-              <option value="cartao">Cartao</option>
+              <option value="cartao">Cartão</option>
             </select>
           </Field>
           <Field label="Notas">
@@ -325,7 +325,7 @@ export function ClientForm({ client }: ClientFormProps) {
 
       <div className="flex gap-2">
         <Button type="submit" className="flex-1" disabled={saving}>
-          {saving ? 'Salvando...' : isEdit ? 'Salvar Alteracoes' : 'Criar Cliente'}
+          {saving ? 'Salvando...' : isEdit ? 'Salvar Alterações' : 'Criar Cliente'}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()}>
           Cancelar
