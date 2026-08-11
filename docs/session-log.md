@@ -45,9 +45,13 @@ Registro cronológico das sessões (mais recente no topo). Continuidade entre se
    - CRLF (herdado de checkout Windows) normalizado para LF nos arquivos tocados.
 
 ### Onde paramos
-- Branch `fix/dashboard-stats-delta-only` com 3 commits limpos:
-  `a64b385` (perf delta_only), `eaad2cb` (refresh visual + Story 5.7.1), `ce1df84` (acentuação pt-BR).
-- Dev server local foi encerrado (resubir com `pnpm dev` quando precisar). Visual aprovado pelo autor.
+- Branch `fix/dashboard-stats-delta-only` com **4 commits limpos**:
+  `a64b385` (perf delta_only), `eaad2cb` (refresh visual + Story 5.7.1), `ce1df84` (acentuação pt-BR),
+  `cafa9da` (docs: Story 5.7.1 + session-log).
+- Tudo o que foi feito nesta sessão está commitado. Verificado local: `localhost:3000/login` respondeu
+  HTTP 200 e o app abriu no navegador.
+- **Nota de ambiente:** o dev server via background do assistente cai quando o turno termina. Para
+  sessão estável, rodar `pnpm dev` num terminal próprio (fora do Claude Code).
 - Nada mesclado em `master` ainda; nada deployado.
 
 ### Próximos passos
@@ -57,3 +61,5 @@ Registro cronológico das sessões (mais recente no topo). Continuidade entre se
 - Push da branch (operação @devops) e/ou abrir PR para `master`.
 - Ambiente local roda em Node 20, mas o projeto pede Node 22 (`engines`). Considerar `nvm use 22`.
 - Opcional: revisar o título 25px nas outras 19 telas que usam PageHeader.
+- Opcional: erro de lint pré-existente em `order-list.tsx:176` (setState-in-effect) — não abordado
+  nesta sessão (fora do escopo de acentuação).
