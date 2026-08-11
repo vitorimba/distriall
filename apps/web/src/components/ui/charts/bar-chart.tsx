@@ -52,8 +52,8 @@ export function BarChart({
                   style={{
                     height: `${(d.value / max) * (showValues ? 82 : 96)}%`,
                     background: color,
-                    opacity: isMax || active ? 1 : 0.5,
-                    minHeight: 2,
+                    opacity: isMax || active ? 1 : 0.7,
+                    minHeight: 8,
                   }}
                 />
               </div>

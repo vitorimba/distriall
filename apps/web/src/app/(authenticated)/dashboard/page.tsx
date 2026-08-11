@@ -16,7 +16,7 @@ import { ChipFilter } from '@/components/ui/chip-filter';
 import { Alert } from '@/components/ui/alert';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, DollarSign, TrendingUp, Receipt, ClipboardList, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { PageHeader } from '@/components/ui/page-header';
 
@@ -120,25 +120,45 @@ export default function DashboardPage() {
             <StatsCard
               title="Faturamento"
               value={<Money value={stats.revenue} />}
+              icon={<DollarSign className="size-[18px]" />}
               accent
               delta={delta?.revenue ?? undefined}
               deltaLabel="vs periodo ant."
               spark={delta?.spark}
+              subtitle={`${stats.order_count} ${stats.order_count === 1 ? 'pedido' : 'pedidos'} no periodo`}
             />
             <StatsCard
               title="Lucro"
               value={<Money value={stats.profit} signed />}
+              icon={<TrendingUp className="size-[18px]" />}
+              iconColor="var(--chart-4)"
               delta={delta?.profit ?? undefined}
               deltaLabel="vs periodo ant."
+              subtitle={stats.revenue > 0 ? `Margem ${((stats.profit / stats.revenue) * 100).toFixed(1)}%` : 'Sem faturamento'}
             />
-            <StatsCard title="Ticket medio" value={<Money value={stats.avg_ticket} />} />
+            <StatsCard
+              title="Ticket medio"
+              value={<Money value={stats.avg_ticket} />}
+              icon={<Receipt className="size-[18px]" />}
+              iconColor="var(--chart-3)"
+              subtitle="Por pedido no periodo"
+            />
             <StatsCard
               title="Pedidos"
               value={String(stats.order_count)}
+              icon={<ClipboardList className="size-[18px]" />}
+              iconColor="var(--chart-2)"
               delta={delta?.orders ?? undefined}
               deltaLabel="vs periodo ant."
+              subtitle={`Ticket ${fmtBRL(stats.avg_ticket)}`}
             />
-            <StatsCard title="Clientes" value={String(stats.client_count)} />
+            <StatsCard
+              title="Clientes"
+              value={String(stats.client_count)}
+              icon={<Users className="size-[18px]" />}
+              iconColor="var(--chart-5)"
+              subtitle="Compraram no periodo"
+            />
           </div>
 
           {/* Charts row */}
