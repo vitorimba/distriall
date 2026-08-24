@@ -469,6 +469,25 @@
     visibility: visible !important;
   }
 
+  /* Mostrar a rota de entrega para impressao */
+  .route-print-view,
+  .route-print-view * {
+    visibility: visible !important;
+  }
+
+  .route-print-view {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    display: block !important;
+  }
+
   /* Recibo posicionado no topo centralizado */
   .da-receipt {
     position: fixed !important;
@@ -501,7 +520,7 @@
   /* Pagina continua sem quebra, sem cabecalho/rodape do browser */
   @page {
     margin: 0;
-    size: 80mm auto;
+    size: auto;
   }
 
   /* Sem quebra de pagina */

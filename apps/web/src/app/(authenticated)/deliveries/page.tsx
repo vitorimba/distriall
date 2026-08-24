@@ -248,11 +248,14 @@ export default function DeliveriesPage() {
           canEdit={canEdit}
           deliverySent={deliverySent}
           isSending={isSending}
+          driverName={drivers.find((d) => d.id === selectedDriverId)?.name ?? 'Entregador'}
+          date={selectedDate}
           onDragEnd={handleDragEnd}
           onRemove={handleRemoveItem}
           onSend={handleSend}
           onMoveUp={handleMoveUp}
           onMoveDown={handleMoveDown}
+          onToast={showToast}
         />
       </div>
     </div>

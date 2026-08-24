@@ -1,6 +1,7 @@
 // Delivery utility functions
 // DeliveryItemStatus is now the canonical enum from enums.ts
 import type { DeliveryItemStatus } from '../types/enums';
+import { PAYMENT_METHOD_LABELS } from '../types/enums';
 export type { DeliveryItemStatus };
 
 /**
@@ -64,4 +65,40 @@ export function getDeliveryStatusLabel(status: DeliveryItemStatus): string {
     nao_entregue: 'Nao entregue',
   };
   return labels[status];
+}
+
+export interface RouteTextItem {
+  sequence: number;
+  client_name: string;
+  client: { address: string | null; neighborhood: string | null; city: string | null };
+  payment_method: string | null;
+}
+
+/**
+ * Formats a delivery route as a plain-text list for clipboard/WhatsApp sharing.
+ *
+ * Output example:
+ *   Rota 23/08 - Joao (3 paradas)
+ *   1. Cliente A - Rua X, 123, Centro - PIX
+ *   2. Cliente B - Rua Y, 456 - Dinheiro
+ */
+export function formatRouteAsText(
+  items: RouteTextItem[],
+  driverName: string,
+  date: string,
+): string {
+  const [year, month, day] = date.split('-');
+  const dateLabel = `${day}/${month}`;
+  const header = `Rota ${dateLabel} - ${driverName} (${items.length} parada${items.length !== 1 ? 's' : ''})`;
+
+  const lines = items.map((item) => {
+    const address = [item.client.address, item.client.neighborhood, item.client.city]
+      .filter(Boolean)
+      .join(', ');
+    const payment = item.payment_method ? PAYMENT_METHOD_LABELS[item.payment_method] ?? item.payment_method : '';
+    const parts = [item.client_name, address, payment].filter(Boolean);
+    return `${item.sequence}. ${parts.join(' - ')}`;
+  });
+
+  return [header, ...lines].join('\n');
 }
