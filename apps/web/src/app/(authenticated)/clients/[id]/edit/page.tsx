@@ -26,6 +26,7 @@ interface ClientData {
   whatsapp: string | null;
   default_payment_method: string | null;
   notes: string | null;
+  region_id: string | null;
 }
 
 export default function EditClientPage() {

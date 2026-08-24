@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Plus, Trash2 } from 'lucide-react';
 import type { PaymentEntry } from '@/lib/validations/payment';
 import { maskMoney, parseMoney } from '@/lib/mask-utils';
-import { VoucherSelector } from '@/components/financial/voucher-selector';
+
 
 const METHODS = [
   { value: 'dinheiro', label: 'Dinheiro' },
