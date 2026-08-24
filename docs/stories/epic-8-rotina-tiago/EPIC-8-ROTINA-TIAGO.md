@@ -64,3 +64,4 @@ Transcricoes dos audios salvas em `transcricoes.json` (local, nao commitado).
 | 2026-08-23 | Epic criado a partir de levantamento de campo com o Tiago |
 | 2026-08-23 | Adicionadas Stories 8.7 e 8.8 apos auditoria de features "Done" (rota sem impressao, boleto sem atalho) |
 | 2026-08-23 | Story 8.7 DONE — impressao/copia da rota de entrega. Deploy Vercel OK. QA PASS 93/100 |
+| 2026-08-24 | Wave 1 completa (full SDC): 8.1 CONCERNS 62, 8.5 PASS 85, 8.6 PASS 85, 8.8 PASS 92 |
