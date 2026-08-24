@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert } from '@/components/ui/alert';
 import { FAB } from '@/components/ui/fab';
 import { Button } from '@/components/ui/button';
+import { Money } from '@/components/ui/money';
 import { Users, MapPin, Phone, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -25,6 +26,7 @@ interface Client {
   default_payment_method: string | null;
   is_active: boolean;
   client_prices: { count: number }[];
+  voucher_debt?: number;
 }
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -64,7 +66,26 @@ export function ClientList() {
       setError('Não foi possível carregar os clientes.');
     } else {
       setError(null);
-      setClients((data as unknown as Client[]) ?? []);
+      const clientList = (data as unknown as Client[]) ?? [];
+
+      // Fetch voucher debts for all clients in this account
+      const { data: debtData } = await supabase
+        .from('vouchers')
+        .select('client_id, amount')
+        .eq('account_id', activeAccount.id)
+        .eq('status', 'pendente');
+
+      if (debtData && debtData.length > 0) {
+        const debtMap = new Map<string, number>();
+        for (const v of debtData) {
+          debtMap.set(v.client_id, (debtMap.get(v.client_id) ?? 0) + Number(v.amount));
+        }
+        for (const c of clientList) {
+          c.voucher_debt = debtMap.get(c.id) ?? 0;
+        }
+      }
+
+      setClients(clientList);
     }
     setLoadKey((k) => k + 1);
   }, [activeAccount, search]);

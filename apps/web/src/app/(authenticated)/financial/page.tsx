@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Scale, Receipt, Ticket, ArrowRight } from 'lucide-react';
+import { Scale, Receipt, Ticket, Users, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page-header';
 
@@ -23,6 +23,12 @@ const SECOES = [
     icon: Ticket,
     titulo: 'Vales',
     desc: 'Vales de clientes: pendentes, pagos e vencidos.',
+  },
+  {
+    href: '/financial/receivables',
+    icon: Users,
+    titulo: 'Contas a Receber',
+    desc: 'Clientes com saldo devedor: vales pendentes por cliente.',
   },
 ];
 
