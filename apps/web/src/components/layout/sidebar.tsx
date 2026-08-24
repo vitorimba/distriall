@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
+  ClipboardCheck,
   ClipboardList,
   Package,
   Users,
@@ -32,6 +33,7 @@ const navSections = [
     items: [
       { href: '/loading', label: 'Carregamento', icon: Forklift },
       { href: '/deliveries', label: 'Entregas', icon: Truck },
+      { href: '/deliveries/settlement', label: 'Acerto', icon: ClipboardCheck },
     ],
   },
   {

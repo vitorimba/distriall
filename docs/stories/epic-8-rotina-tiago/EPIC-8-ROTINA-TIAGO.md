@@ -67,3 +67,4 @@ Transcricoes dos audios salvas em `transcricoes.json` (local, nao commitado).
 | 2026-08-24 | Wave 1 completa (full SDC): 8.1 CONCERNS 62, 8.5 PASS 85, 8.6 PASS 85, 8.8 PASS 92 |
 | 2026-08-24 | Story 8.2 validada por @po: 9/10 GO, Status Draft -> Ready. PoC WAIVED (RPC = PoC) |
 | 2026-08-24 | Wave 2 completa (full SDC): 8.2 PASS 88, 8.3 PASS 88 |
+| 2026-08-24 | Story 8.4 validada por @po: 9/10 GO, Status Draft -> Ready. DoD + deploy_type adicionados |
