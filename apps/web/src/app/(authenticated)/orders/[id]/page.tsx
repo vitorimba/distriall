@@ -9,7 +9,7 @@ import { OrderStatusBadge } from '@/components/orders/order-status-badge';
 import { OrderStatusStepper } from '@/components/orders/order-status-stepper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, ArrowRight, Minus, Pencil, Plus, Printer, Repeat2, RotateCcw, Trash2, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Copy, Minus, Pencil, Plus, Printer, Repeat2, RotateCcw, Trash2, X } from 'lucide-react';
 import { OrderReceipt } from '@/components/orders/order-receipt';
 import { ReturnForm } from '@/components/orders/return-form';
 import { ExchangeForm } from '@/components/orders/exchange-form';
