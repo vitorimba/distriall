@@ -18,6 +18,7 @@ import { Money } from '@/components/ui/money';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast';
 import { useAccount } from '@/providers/account-provider';
+import { formatOrderForInvoice } from '@/lib/format-order-invoice';
 
 function InlineInput({
   value,
@@ -111,7 +112,7 @@ interface OrderDetail {
   loaded_at: string | null;
   delivered_at: string | null;
   exchange_id: string | null;
-  clients: { id: string; name: string } | null;
+  clients: { id: string; name: string; document: string | null; address: string | null; neighborhood: string | null; city: string | null } | null;
   order_items: OrderItem[];
 }
 
@@ -165,7 +166,7 @@ export default function OrderDetailPage() {
       const supabase = createClient();
       const { data } = await supabase
         .from('orders')
-        .select('*, clients(id, name), order_items(*)')
+        .select('*, clients(id, name, document, address, neighborhood, city), order_items(*)')
         .eq('id', id)
         .single();
 
@@ -204,7 +205,7 @@ export default function OrderDetailPage() {
     const supabase = createClient();
     const { data } = await supabase
       .from('orders')
-      .select('*, clients(id, name), order_items(*)')
+      .select('*, clients(id, name, document, address, neighborhood, city), order_items(*)')
       .eq('id', id)
       .single();
     setOrder(data as unknown as OrderDetail | null);
@@ -316,7 +317,7 @@ export default function OrderDetailPage() {
     // Reload
     const { data } = await supabase
       .from('orders')
-      .select('*, clients(id, name), order_items(*)')
+      .select('*, clients(id, name, document, address, neighborhood, city), order_items(*)')
       .eq('id', id)
       .single();
 
@@ -467,6 +468,24 @@ export default function OrderDetailPage() {
           <Printer className="mr-1 size-3.5" />
           Imprimir
         </Button>
+        {order.payment_method === 'boleto' && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              const text = formatOrderForInvoice(
+                { order_number: order.order_number, total: order.total, created_at: order.created_at },
+                order.clients ? { name: order.clients.name, document: order.clients.document, address: order.clients.address, city: order.clients.city, neighborhood: order.clients.neighborhood } : null,
+                order.order_items.map((i) => ({ product_name: i.product_name, variant_name: i.variant_name, quantity: i.quantity, unit_price: i.unit_price, total: i.total })),
+              );
+              await navigator.clipboard.writeText(text);
+              toast('Dados copiados!', 'success');
+            }}
+          >
+            <Copy className="mr-1 size-3.5" />
+            Copiar dados NF
+          </Button>
+        )}
         {order.status === 'entregue' && (
           <>
             <Button
