@@ -280,6 +280,33 @@ function NewOrderContent() {
           }
         />
       )}
+
+      {/* Dialog de confirmacao para margem negativa */}
+      <Dialog open={showMarginDialog} onOpenChange={setShowMarginDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              <AlertTriangle className="inline mr-2 size-5 text-destructive" />
+              Produtos abaixo do custo
+            </DialogTitle>
+            <DialogDescription>
+              {negativMarginItems.length} {negativMarginItems.length === 1 ? 'produto esta' : 'produtos estao'} com preco abaixo do custo. Confirmar mesmo assim?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-1 text-sm">
+            {negativMarginItems.map((i) => (
+              <div key={i.variantId} className="flex justify-between text-destructive">
+                <span>{i.productName}</span>
+                <span>Custo: R$ {i.costPrice.toFixed(2)} / Venda: R$ {i.unitPrice.toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowMarginDialog(false)}>Cancelar</Button>
+            <Button variant="destructive" onClick={handleSave}>Confirmar mesmo assim</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

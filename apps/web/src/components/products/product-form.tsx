@@ -11,7 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/toast';
-import { Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, Plus, Trash2 } from 'lucide-react';
+import { calculateCostVariation } from '@distriall/shared';
 
 interface ProductFormProps {
   product?: {
@@ -344,6 +345,18 @@ export function ProductForm({ product }: ProductFormProps) {
                     className="num"
                     required
                   />
+                  {product && v.id && (() => {
+                    const original = product.product_variants.find((pv) => pv.id === v.id);
+                    if (!original || original.cost_price <= 0) return null;
+                    const variation = calculateCostVariation(original.cost_price, parseMoney(v.cost_price));
+                    if (variation <= 20) return null;
+                    return (
+                      <p className="mt-1 flex items-center gap-1 text-xs text-amber-600">
+                        <AlertTriangle className="size-3" />
+                        Custo alterou {variation}% — verificar
+                      </p>
+                    );
+                  })()}
                 </Field>
                 <Field label="Preço Venda" required error={variantErrors[i]?.sell_price}>
                   <Input
