@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAccount } from '@/providers/account-provider';
@@ -55,6 +55,15 @@ export function ClientForm({ client }: ClientFormProps) {
   const [whatsapp, setWhatsapp] = useState(client?.whatsapp ?? '');
   const [paymentMethod, setPaymentMethod] = useState(client?.default_payment_method ?? '');
   const [notes, setNotes] = useState(client?.notes ?? '');
+  const [regionId, setRegionId] = useState(client?.region_id ?? '');
+  const [regionOptions, setRegionOptions] = useState<Region[]>([]);
+  const { listRegions } = useRegions();
+
+  useEffect(() => {
+    if (activeAccount) {
+      listRegions(activeAccount.id).then(setRegionOptions);
+    }
+  }, [activeAccount]); // eslint-disable-line react-hooks/exhaustive-deps
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -140,6 +149,7 @@ export function ClientForm({ client }: ClientFormProps) {
       whatsapp: whatsapp || null,
       default_payment_method: paymentMethod || null,
       notes: notes || null,
+      region_id: regionId || null,
     };
 
     if (isEdit && client) {
@@ -303,6 +313,18 @@ export function ClientForm({ client }: ClientFormProps) {
               <option value="boleto">Boleto</option>
               <option value="vale">Vale</option>
               <option value="cartao">Cartão</option>
+            </select>
+          </Field>
+          <Field label="Regiao de entrega">
+            <select
+              value={regionId}
+              onChange={(e) => setRegionId(e.target.value)}
+              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+            >
+              <option value="">Sem regiao</option>
+              {regionOptions.map((r) => (
+                <option key={r.id} value={r.id}>{r.name}</option>
+              ))}
             </select>
           </Field>
           <Field label="Notas">

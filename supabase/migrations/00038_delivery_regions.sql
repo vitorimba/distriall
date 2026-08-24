@@ -1,4 +1,4 @@
--- Migration: 00037_delivery_regions
+-- Migration: 00038_delivery_regions
 -- Story 8.6: Regioes de Entrega
 
 -- 1. Delivery regions table
