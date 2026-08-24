@@ -11,6 +11,8 @@ import { Money } from '@/components/ui/money';
 import { useToast } from '@/components/ui/toast';
 import { useRouter } from 'next/navigation';
 import { ClipboardCopy, Printer, Package } from 'lucide-react';
+import { usePrinter } from '@/hooks/use-printer';
+import type { ConsolidatedProduct, LoadingSummary } from '@/lib/utils/loading-consolidation';
 
 function todayISO() {
   return new Date().toISOString().split('T')[0];
@@ -34,6 +36,7 @@ export default function PickingListPage() {
   const toast = useToast();
   const [date, setDate] = useState(todayISO());
   const { items, loading, error } = usePickingList(date);
+  const { printLoadingList, isPrinting } = usePrinter();
 
   const totalQty = items.reduce((s, i) => s + i.total_quantity, 0);
   const totalCost = items.reduce((s, i) => s + i.total_cost, 0);
@@ -50,8 +53,21 @@ export default function PickingListPage() {
     toast('Picking list copiada!', 'success');
   }
 
-  function handlePrint() {
-    window.print();
+  async function handlePrint() {
+    const products: ConsolidatedProduct[] = items.map((i) => ({
+      productName: i.product_name,
+      variantName: i.variant_name,
+      totalQuantity: i.total_quantity,
+    }));
+    const summary: LoadingSummary = {
+      totalRevenue: 0,
+      totalCost,
+      totalProfit: 0,
+      orderCount: items.reduce((s, i) => s + i.order_count, 0),
+      accountCount: 1,
+      accountBreakdown: [],
+    };
+    await printLoadingList(products, summary);
   }
 
   return (
@@ -134,9 +150,9 @@ export default function PickingListPage() {
               <ClipboardCopy className="mr-1 size-3.5" />
               Compartilhar
             </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint}>
+            <Button variant="outline" size="sm" onClick={handlePrint} disabled={isPrinting}>
               <Printer className="mr-1 size-3.5" />
-              Imprimir
+              {isPrinting ? 'Imprimindo...' : 'Imprimir'}
             </Button>
           </div>
         </>

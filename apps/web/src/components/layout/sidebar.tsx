@@ -22,6 +22,7 @@ const navSections = [
     items: [
       { href: '/dashboard', label: 'Início', icon: LayoutDashboard },
       { href: '/orders', label: 'Pedidos', icon: ClipboardList },
+      { href: '/orders/picking-list', label: 'Picking List', icon: Forklift },
       { href: '/products', label: 'Produtos', icon: Package },
       { href: '/clients', label: 'Clientes', icon: Users },
     ],
