@@ -52,7 +52,7 @@ export function PaymentSelector({ defaultMethod, orderTotal, clientId, accountId
     linkedVoucherIds: [],
   });
 
-  // Emit changes
+  // Emit payment changes
   useEffect(() => {
     if (mode === 'simple') {
       onChange(
@@ -66,6 +66,12 @@ export function PaymentSelector({ defaultMethod, orderTotal, clientId, accountId
       );
     }
   }, [mode, simpleMethod, mixedPayments, orderTotal]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Emit check field changes
+  useEffect(() => {
+    const isCheque = mode === 'simple' && simpleMethod === 'cheque';
+    onCheckFieldsChange?.(isCheque ? checkFields : null);
+  }, [mode, simpleMethod, checkFields]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function addMixedLine() {
     setMixedPayments([...mixedPayments, { method: 'pix', amountDisplay: '' }]);
@@ -149,7 +155,44 @@ export function PaymentSelector({ defaultMethod, orderTotal, clientId, accountId
             </button>
           ))}
         </div>
-      ) : (
+      ) : null}
+
+      {/* Cheque fields (conditional) */}
+      {mode === 'simple' && simpleMethod === 'cheque' && (
+        <div className="space-y-2 rounded-lg border border-dashed border-amber-400 bg-amber-50/50 p-3">
+          <p className="text-xs font-medium text-amber-700">Dados do cheque</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-xs">Numero do cheque</Label>
+              <Input
+                type="text"
+                value={checkFields.checkNumber}
+                onChange={(e) => setCheckFields({ ...checkFields, checkNumber: e.target.value })}
+                placeholder="000123"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Banco</Label>
+              <Input
+                type="text"
+                value={checkFields.bank}
+                onChange={(e) => setCheckFields({ ...checkFields, bank: e.target.value })}
+                placeholder="Bradesco"
+              />
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs">Data de compensacao</Label>
+            <Input
+              type="date"
+              value={checkFields.compensationDate}
+              onChange={(e) => setCheckFields({ ...checkFields, compensationDate: e.target.value })}
+            />
+          </div>
+        </div>
+      )}
+
+      {mode === 'mixed' && (
         <div className="space-y-2">
           {mixedPayments.map((p, i) => (
             <div key={i} className="flex items-center gap-2">
