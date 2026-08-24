@@ -53,6 +53,7 @@ export const PaymentMethod = {
   BOLETO: 'boleto',
   VALE: 'vale',
   CARTAO: 'cartao',
+  CHEQUE: 'cheque',
   MISTO: 'misto',
 } as const;
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
@@ -63,6 +64,7 @@ export const PAYMENT_METHOD_LABELS: Record<string, string> = {
   boleto: 'Boleto',
   vale: 'Vale',
   cartao: 'Cartao',
+  cheque: 'Cheque',
   misto: 'Misto',
 };
 
@@ -72,7 +74,27 @@ export const PAYMENT_METHOD_COLORS: Record<string, string> = {
   boleto: 'bg-yellow-100 text-yellow-800',
   vale: 'bg-purple-100 text-purple-800',
   cartao: 'bg-orange-100 text-orange-800',
+  cheque: 'bg-teal-100 text-teal-800',
   misto: 'bg-gray-100 text-gray-800',
+};
+
+export const CheckPaymentStatus = {
+  PENDENTE: 'pendente',
+  COMPENSADO: 'compensado',
+  DEVOLVIDO: 'devolvido',
+} as const;
+export type CheckPaymentStatus = (typeof CheckPaymentStatus)[keyof typeof CheckPaymentStatus];
+
+export const CHECK_PAYMENT_STATUS_LABELS: Record<CheckPaymentStatus, string> = {
+  pendente: 'Pendente',
+  compensado: 'Compensado',
+  devolvido: 'Devolvido',
+};
+
+export const CHECK_PAYMENT_STATUS_COLORS: Record<CheckPaymentStatus, { bg: string; text: string; border: string }> = {
+  pendente:   { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-300' },
+  compensado: { bg: 'bg-green-100',  text: 'text-green-800',  border: 'border-green-300' },
+  devolvido:  { bg: 'bg-red-100',    text: 'text-red-800',    border: 'border-red-300' },
 };
 
 export const VoucherStatus = {

@@ -1,7 +1,7 @@
 import { z } from 'zod/v4';
 
 export const paymentEntrySchema = z.object({
-  method: z.enum(['dinheiro', 'pix', 'boleto', 'vale', 'cartao']),
+  method: z.enum(['dinheiro', 'pix', 'boleto', 'vale', 'cartao', 'cheque']),
   amount: z.number().positive('Valor deve ser maior que 0'),
 });
 

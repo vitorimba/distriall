@@ -7,13 +7,15 @@ import { Label } from '@/components/ui/label';
 import { Plus, Trash2 } from 'lucide-react';
 import type { PaymentEntry } from '@/lib/validations/payment';
 import { maskMoney, parseMoney } from '@/lib/mask-utils';
+import { VoucherSelector } from '@/components/financial/voucher-selector';
 
 const METHODS = [
   { value: 'dinheiro', label: 'Dinheiro' },
   { value: 'pix', label: 'Pix' },
   { value: 'boleto', label: 'Boleto' },
   { value: 'vale', label: 'Vale' },
-  { value: 'cartao', label: 'Cartão' },
+  { value: 'cartao', label: 'Cartao' },
+  { value: 'cheque', label: 'Cheque' },
 ] as const;
 
 interface MixedPaymentUI {
@@ -21,18 +23,34 @@ interface MixedPaymentUI {
   amountDisplay: string;
 }
 
+export interface CheckFields {
+  checkNumber: string;
+  bank: string;
+  compensationDate: string;
+  linkedVoucherIds: string[];
+}
+
 interface PaymentSelectorProps {
   defaultMethod?: string;
   orderTotal: number;
+  clientId?: string;
+  accountId?: string;
   onChange: (payments: PaymentEntry[], isMixed: boolean) => void;
+  onCheckFieldsChange?: (fields: CheckFields | null) => void;
 }
 
-export function PaymentSelector({ defaultMethod, orderTotal, onChange }: PaymentSelectorProps) {
+export function PaymentSelector({ defaultMethod, orderTotal, clientId, accountId, onChange, onCheckFieldsChange }: PaymentSelectorProps) {
   const [mode, setMode] = useState<'simple' | 'mixed'>('simple');
   const [simpleMethod, setSimpleMethod] = useState(defaultMethod ?? 'dinheiro');
   const [mixedPayments, setMixedPayments] = useState<MixedPaymentUI[]>([
     { method: 'dinheiro', amountDisplay: '' },
   ]);
+  const [checkFields, setCheckFields] = useState<CheckFields>({
+    checkNumber: '',
+    bank: '',
+    compensationDate: '',
+    linkedVoucherIds: [],
+  });
 
   // Emit changes
   useEffect(() => {

@@ -57,7 +57,7 @@ export interface Payment {
   id: string;
   account_id: string;
   order_id: string;
-  method: 'dinheiro' | 'pix' | 'boleto' | 'vale' | 'cartao';
+  method: 'dinheiro' | 'pix' | 'boleto' | 'vale' | 'cartao' | 'cheque';
   amount: number;
   status: 'pendente' | 'confirmado' | 'cancelado';
   is_third_party: boolean;
@@ -80,6 +80,28 @@ export interface Voucher {
   notes: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface CheckPayment {
+  id: string;
+  account_id: string;
+  payment_id: string;
+  check_number: string;
+  bank: string;
+  compensation_date: string | null;
+  status: 'pendente' | 'compensado' | 'devolvido';
+  compensated_at: string | null;
+  returned_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CheckVoucherLink {
+  id: string;
+  check_payment_id: string;
+  voucher_id: string;
+  created_at: string;
 }
 
 export interface AccountUser {
