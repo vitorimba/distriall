@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useCartStore } from '@/stores/cart-store';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, X } from 'lucide-react';
+import { Minus, Plus, X, AlertTriangle } from 'lucide-react';
 import { Money } from '@/components/ui/money';
+import { calculateMargin, getMarginLevel } from '@distriall/shared';
 
 function InlineInput({
   value,
@@ -81,6 +82,8 @@ export function OrderItemList() {
         const isQtyEditing = editingQty === item.variantId;
         const isPriceEditing = editingPrice === item.variantId;
         const priceWasEdited = item.originalPrice != null && item.originalPrice !== item.unitPrice;
+        const marginLevel = item.costPrice > 0 ? getMarginLevel(item.unitPrice, item.costPrice) : null;
+        const margin = item.costPrice > 0 ? calculateMargin(item.unitPrice, item.costPrice) : null;
 
         return (
           <div
@@ -90,6 +93,18 @@ export function OrderItemList() {
             <div className="min-w-0 flex-1">
               <div className="text-sm font-medium">{item.productName}</div>
               <div className="text-xs text-muted-foreground">{item.variantName}</div>
+              {marginLevel === 'negative' && margin !== null && (
+                <div className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-[var(--danger-fg)]">
+                  <AlertTriangle className="size-3" />
+                  Preco abaixo do custo! ({margin.toFixed(1)}%)
+                </div>
+              )}
+              {marginLevel === 'low' && margin !== null && (
+                <div className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-[var(--warning)]">
+                  <AlertTriangle className="size-3" />
+                  Margem baixa ({margin.toFixed(1)}%)
+                </div>
+              )}
               <div className="mt-0.5">
                 {isPriceEditing ? (
                   <InlineInput

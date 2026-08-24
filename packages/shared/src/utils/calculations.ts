@@ -63,6 +63,41 @@ function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+/**
+ * Calculate margin percentage between sell price and cost price.
+ * Returns null when cost is 0 or negative (cannot compute margin).
+ * Formula: ((price - cost) / price) * 100
+ */
+export function calculateMargin(price: number, cost: number): number | null {
+  if (cost <= 0 || price <= 0) return null;
+  return round2(((price - cost) / price) * 100);
+}
+
+export type MarginLevel = 'negative' | 'low' | 'healthy';
+
+/**
+ * Classify margin into alert level.
+ * - negative: price < cost (margin < 0)
+ * - low: margin >= 0 but < 10%
+ * - healthy: margin >= 10%
+ */
+export function getMarginLevel(price: number, cost: number): MarginLevel {
+  const margin = calculateMargin(price, cost);
+  if (margin === null) return 'healthy'; // no cost info, no alert
+  if (margin < 0) return 'negative';
+  if (margin < 10) return 'low';
+  return 'healthy';
+}
+
+/**
+ * Calculate cost variation percentage between old and new cost.
+ * Returns absolute percentage change.
+ */
+export function calculateCostVariation(oldCost: number, newCost: number): number {
+  if (oldCost <= 0) return 0;
+  return round2(Math.abs((newCost - oldCost) / oldCost) * 100);
+}
+
 export type PurchaseFrequency = 'semanal' | 'quinzenal' | 'mensal' | 'irregular' | 'novo';
 
 export interface PurchaseFrequencyResult {

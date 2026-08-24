@@ -10,7 +10,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Package, RefreshCw } from 'lucide-react';
+import { Package, RefreshCw, TrendingDown, TrendingUp } from 'lucide-react';
+import { calculateMargin, getMarginLevel } from '@distriall/shared';
 
 interface ProductVariant {
   id: string;
@@ -200,6 +201,8 @@ export function ProductCatalog() {
           const effectivePrice = priceMap.get(item.variantId) ?? item.sellPrice;
           const hasCustomPrice = priceMap.has(item.variantId);
           const isTapped = tappedId === item.variantId;
+          const marginLevel = item.costPrice > 0 ? getMarginLevel(effectivePrice, item.costPrice) : null;
+          const margin = item.costPrice > 0 ? calculateMargin(effectivePrice, item.costPrice) : null;
 
           return (
             <button
@@ -241,6 +244,20 @@ export function ProductCatalog() {
                   hasCustomPrice ? 'font-medium text-[var(--accent-fg)]' : 'text-[var(--text-secondary)]',
                 ].join(' ')}
               />
+
+              {/* Margin badge */}
+              {marginLevel === 'negative' && margin !== null && (
+                <span className="mt-1 inline-flex items-center gap-0.5 rounded-md bg-[var(--danger-soft)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--danger-fg)]">
+                  <TrendingDown className="size-3" />
+                  {margin.toFixed(1)}%
+                </span>
+              )}
+              {marginLevel === 'low' && margin !== null && (
+                <span className="mt-1 inline-flex items-center gap-0.5 rounded-md bg-[var(--warning-soft)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--warning)]">
+                  <TrendingUp className="size-3" />
+                  {margin.toFixed(1)}%
+                </span>
+              )}
             </button>
           );
         })}

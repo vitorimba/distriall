@@ -27,7 +27,16 @@ import type { PaymentEntry } from '@/lib/validations/payment';
 import { validatePaymentsTotal } from '@/lib/validations/payment';
 import { PageHeader } from '@/components/ui/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Repeat2 } from 'lucide-react';
+import { Repeat2, AlertTriangle } from 'lucide-react';
+import { getMarginLevel } from '@distriall/shared';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 export default function NewOrderPage() {
   return (
@@ -74,6 +83,7 @@ function NewOrderContent() {
   const [error, setError] = useState('');
   const [payments, setPayments] = useState<PaymentEntry[]>([]);
   const [isMixed, setIsMixed] = useState(false);
+  const [showMarginDialog, setShowMarginDialog] = useState(false);
 
   // Clear cart on mount for new orders, then pre-select client if provided
   useEffect(() => {
@@ -105,7 +115,12 @@ function NewOrderContent() {
     preloadClient();
   }, [preselectedClientId, activeAccount]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function handleSave() {
+  // Items with negative margin (price below cost)
+  const negativMarginItems = items.filter(
+    (i) => i.costPrice > 0 && getMarginLevel(i.unitPrice, i.costPrice) === 'negative'
+  );
+
+  function handleSaveClick() {
     if (!client) {
       setError('Selecione um cliente');
       return;
@@ -125,6 +140,17 @@ function NewOrderContent() {
       }
     }
 
+    // Check for negative margin items before proceeding
+    if (negativMarginItems.length > 0) {
+      setShowMarginDialog(true);
+      return;
+    }
+
+    handleSave();
+  }
+
+  async function handleSave() {
+    setShowMarginDialog(false);
     setError('');
     setSaving(true);
 
@@ -248,7 +274,7 @@ function NewOrderContent() {
             { label: 'Lucro est.', value: <Money value={profit} signed />, highlight: profit >= 0 },
           ]}
           action={
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={handleSaveClick} disabled={saving}>
               {saving ? 'Salvando...' : 'Salvar pedido'}
             </Button>
           }
