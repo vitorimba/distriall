@@ -32,34 +32,64 @@ export default function SettlementPage() {
   const [history, setHistory] = useState<DeliverySettlement[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(true);
+  const [drivers, setDrivers] = useState<{ id: string; driver_id: string; driver_name: string }[]>([]);
+  const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
 
-  // Load orders for the day
+  // Load available drivers/deliveries for the date
+  useEffect(() => {
+    async function loadDrivers() {
+      if (!activeAccount) return;
+      setLoadingOrders(true);
+      setDrivers([]);
+      setSelectedDriverId(null);
+      setItems([]);
+      setDeliveryId(null);
+      setSettled(false);
+
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      const { data: dayDeliveries } = await supabase
+        .from('deliveries')
+        .select('id, driver_id, users!inner(raw_user_meta_data)')
+        .eq('account_id', activeAccount.id)
+        .eq('delivery_date', date);
+
+      if (!dayDeliveries || dayDeliveries.length === 0) {
+        setLoadingOrders(false);
+        return;
+      }
+
+      const driverList = dayDeliveries.map((d: Record<string, unknown>) => {
+        const user = d.users as Record<string, unknown> | null;
+        const meta = user?.raw_user_meta_data as Record<string, unknown> | null;
+        return {
+          id: d.id as string,
+          driver_id: d.driver_id as string,
+          driver_name: (meta?.name as string) ?? (meta?.full_name as string) ?? 'Entregador',
+        };
+      });
+
+      setDrivers(driverList);
+      // Auto-select first if only one
+      if (driverList.length === 1) {
+        setSelectedDriverId(driverList[0].driver_id);
+      } else {
+        setLoadingOrders(false);
+      }
+    }
+    loadDrivers();
+  }, [activeAccount, date]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load orders for selected driver
   useEffect(() => {
     async function load() {
-      if (!activeAccount) return;
+      if (!activeAccount || !selectedDriverId) return;
       setLoadingOrders(true);
       setSettled(false);
       setItems([]);
       setDeliveryId(null);
 
-      // For now, fetch first driver's delivery (admin view)
-      // We query deliveries for this account + date
-      const { createClient } = await import('@/lib/supabase/client');
-      const supabase = createClient();
-      const { data: deliveries } = await supabase
-        .from('deliveries')
-        .select('id, driver_id')
-        .eq('account_id', activeAccount.id)
-        .eq('delivery_date', date)
-        .limit(1)
-        .maybeSingle();
-
-      if (!deliveries) {
-        setLoadingOrders(false);
-        return;
-      }
-
-      const result = await fetchDeliveryOrders(deliveries.driver_id, date, activeAccount.id);
+      const result = await fetchDeliveryOrders(selectedDriverId, date, activeAccount.id);
       if (result) {
         setDeliveryId(result.deliveryId);
 
@@ -100,17 +130,17 @@ export default function SettlementPage() {
       setLoadingOrders(false);
     }
     load();
-  }, [activeAccount, date]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeAccount, selectedDriverId, date]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Load history
   useEffect(() => {
     async function loadHistory() {
       if (!activeAccount || !showHistory) return;
-      const settlements = await listSettlements({ accountId: activeAccount.id });
+      const settlements = await listSettlements({ accountId: activeAccount.id, dateFrom: date, dateTo: date });
       setHistory(settlements);
     }
     loadHistory();
-  }, [activeAccount, showHistory]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeAccount, showHistory, date]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function updateItem(index: number, updated: SettlementItemData) {
     setItems(items.map((it, i) => (i === index ? updated : it)));
@@ -156,25 +186,42 @@ export default function SettlementPage() {
     <div className="px-4 py-4 space-y-4">
       <PageHeader title="Acerto do Dia" onBack={() => router.back()} />
 
-      {/* Date selector */}
+      {/* Date + driver selector */}
       <Card>
-        <CardContent className="py-3 flex items-center gap-3">
-          <label className="text-sm font-medium">Data:</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
-          />
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-auto"
-            onClick={() => setShowHistory(!showHistory)}
-          >
-            <History className="mr-1 size-3.5" />
-            {showHistory ? 'Voltar' : 'Historico'}
-          </Button>
+        <CardContent className="py-3 space-y-2">
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium">Data:</label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+              onClick={() => setShowHistory(!showHistory)}
+            >
+              <History className="mr-1 size-3.5" />
+              {showHistory ? 'Voltar' : 'Historico'}
+            </Button>
+          </div>
+          {drivers.length > 1 && (
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium">Entregador:</label>
+              <select
+                value={selectedDriverId ?? ''}
+                onChange={(e) => setSelectedDriverId(e.target.value || null)}
+                className="h-9 rounded-md border border-input bg-background px-3 text-sm flex-1"
+              >
+                <option value="">Selecione...</option>
+                {drivers.map((d) => (
+                  <option key={d.driver_id} value={d.driver_id}>{d.driver_name}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </CardContent>
       </Card>
 
