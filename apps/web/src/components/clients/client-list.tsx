@@ -160,6 +160,11 @@ export function ClientList() {
                         {PAYMENT_LABELS[client.default_payment_method] ?? client.default_payment_method}
                       </Badge>
                     )}
+                    {(client.voucher_debt ?? 0) > 0 && (
+                      <Badge variant="destructive" className="text-xs">
+                        R$ {client.voucher_debt!.toFixed(2)}
+                      </Badge>
+                    )}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     {location && (
