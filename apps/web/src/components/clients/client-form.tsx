@@ -8,6 +8,7 @@ import { clientSchema, type ClientInput } from '@/lib/validations/client';
 import { maskPhone, maskCpfCnpj, isPhoneComplete, MSG } from '@/lib/mask-utils';
 import { validateDocument, unmask } from '@/lib/validators/document';
 import { useCnpjLookup } from '@/hooks/use-cnpj-lookup';
+import { useRegions, type Region } from '@/hooks/use-regions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field } from '@/components/ui/field';
@@ -30,6 +31,7 @@ interface ClientFormProps {
     whatsapp: string | null;
     default_payment_method: string | null;
     notes: string | null;
+    region_id: string | null;
   };
 }
 

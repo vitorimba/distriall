@@ -1,12 +1,13 @@
 'use client';
 
+import Link from 'next/link';
 import { usePrinter } from '@/hooks/use-printer';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion } from '@/components/ui/accordion';
 import { Alert } from '@/components/ui/alert';
-import { Bluetooth, Check, X, Printer } from 'lucide-react';
+import { Bluetooth, Check, X, Printer, MapPin, ChevronRight } from 'lucide-react';
 
 const FAQ = [
   {
@@ -50,6 +51,27 @@ export default function SettingsPage() {
   return (
     <div className="px-4 py-4 space-y-4">
       <PageHeader title="Configurações" />
+
+      {/* Regioes de entrega */}
+      <Link href="/settings/regions">
+        <Card>
+          <CardContent className="flex items-center gap-3 py-4">
+            <span
+              className="inline-flex items-center justify-center rounded-lg"
+              style={{ width: 40, height: 40, background: 'var(--surface-inset)', color: 'var(--text-muted)' }}
+            >
+              <MapPin className="size-5" />
+            </span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold">Regioes de Entrega</p>
+              <p className="text-xs text-muted-foreground">
+                Gerenciar regioes para agrupar clientes e pedidos
+              </p>
+            </div>
+            <ChevronRight className="size-4 text-muted-foreground" />
+          </CardContent>
+        </Card>
+      </Link>
 
       {/* Impressora termica */}
       <Card>
